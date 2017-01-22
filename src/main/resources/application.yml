@@ -18,3 +18,16 @@ spring:
         properties:
             hibernate.cache.use_second_level_cache: true
             hibernate.enable_lazy_load_no_trans: true
+    mvc:
+        favicon:
+            enabled: false
+    thymeleaf:
+        mode: XHTML
+
+# ===================================================================
+# Quis Listing specific properties
+# ===================================================================
+quislisting:
+    ribbon:
+        # comma separated list of profiles to show a ribbon on the GUI
+        displayOnActiveProfiles: dev
