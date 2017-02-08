@@ -10,7 +10,7 @@ public class DashboardController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String dashboardPage() {
-        return "admin/ql-admin";
+        return "admin/index";
     }
 
 }

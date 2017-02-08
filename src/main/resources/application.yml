@@ -1,3 +1,9 @@
+management:
+    context-path: /management
+    health:
+        mail:
+            enabled: false # When using the MailService, configure an SMTP server and set this to true
+
 spring:
     application:
         name: quis-listing
@@ -31,3 +37,5 @@ quislisting:
     ribbon:
         # comma separated list of profiles to show a ribbon on the GUI
         displayOnActiveProfiles: dev
+    mail:
+        from: tmanev@localhost

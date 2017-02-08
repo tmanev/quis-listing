@@ -20,7 +20,7 @@ public class ThymeleafConfiguration {
     @Description("Thymeleaf template resolver serving HTML 5 page templates")
     public ServletContextTemplateResolver templateResolver() {
         ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
-        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setPrefix("/templates/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setCharacterEncoding(CharEncoding.UTF_8);
@@ -28,17 +28,17 @@ public class ThymeleafConfiguration {
         return templateResolver;
     }
 
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
-        springTemplateEngine.setTemplateResolver(templateResolver());
-        return springTemplateEngine;
-    }
-
-    @Bean
-    public ThymeleafViewResolver thymeleafViewResolver() {
-        ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
-        thymeleafViewResolver.setTemplateEngine(templateEngine());
-        return thymeleafViewResolver;
-    }
+//    @Bean
+//    public SpringTemplateEngine templateEngine() {
+//        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
+//        springTemplateEngine.setTemplateResolver(templateResolver());
+//        return springTemplateEngine;
+//    }
+//
+//    @Bean
+//    public ThymeleafViewResolver thymeleafViewResolver() {
+//        ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
+//        thymeleafViewResolver.setTemplateEngine(templateEngine());
+//        return thymeleafViewResolver;
+//    }
 }

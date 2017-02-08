@@ -24,17 +24,20 @@ import java.util.Collections;
 @RequestMapping("/api")
 public class UserJWTController {
 
-    @Inject
-    private TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
-    @Inject
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
+        this.tokenProvider = tokenProvider;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authorize(@Valid @RequestBody LoginVM loginVM, HttpServletResponse response) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
+                new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
 
         try {
             Authentication authentication = this.authenticationManager.authenticate(authenticationToken);

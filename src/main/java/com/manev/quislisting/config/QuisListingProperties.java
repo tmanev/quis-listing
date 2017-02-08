@@ -2,6 +2,7 @@ package com.manev.quislisting.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsConfiguration;
 
 /**
  * Properties specific to Quis Listing.
@@ -15,8 +16,9 @@ import org.springframework.stereotype.Component;
 public class QuisListingProperties {
 
     private final Security security = new Security();
-
     private final Ribbon ribbon = new Ribbon();
+    private final QuisListingProperties.Mail mail = new QuisListingProperties.Mail();
+    private final CorsConfiguration cors = new CorsConfiguration();
 
     public Security getSecurity() {
         return security;
@@ -24,6 +26,14 @@ public class QuisListingProperties {
 
     public Ribbon getRibbon() {
         return ribbon;
+    }
+
+    public QuisListingProperties.Mail getMail() {
+        return this.mail;
+    }
+
+    public CorsConfiguration getCors() {
+        return this.cors;
     }
 
     public static class Security {
@@ -87,6 +97,30 @@ public class QuisListingProperties {
 
         public void setDisplayOnActiveProfiles(String[] displayOnActiveProfiles) {
             this.displayOnActiveProfiles = displayOnActiveProfiles;
+        }
+    }
+
+    public static class Mail {
+        private String from = "";
+        private String baseUrl = "";
+
+        public Mail() {
+        }
+
+        public String getFrom() {
+            return this.from;
+        }
+
+        public void setFrom(String from) {
+            this.from = from;
+        }
+
+        public String getBaseUrl() {
+            return this.baseUrl;
+        }
+
+        public void setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
         }
     }
 }

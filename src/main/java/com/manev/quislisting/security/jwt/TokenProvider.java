@@ -1,7 +1,10 @@
-    package com.manev.quislisting.security.jwt;
+package com.manev.quislisting.security.jwt;
 
 import com.manev.quislisting.config.QuisListingProperties;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +15,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -31,18 +33,21 @@ public class TokenProvider {
 
     private long tokenValidityInMillisecondsForRememberMe;
 
-    @Inject
-    private QuisListingProperties quisListingProperties;
+    private final QuisListingProperties jHipsterProperties;
+
+    public TokenProvider(QuisListingProperties jHipsterProperties) {
+        this.jHipsterProperties = jHipsterProperties;
+    }
 
     @PostConstruct
     public void init() {
         this.secretKey =
-            quisListingProperties.getSecurity().getAuthentication().getJwt().getSecret();
+            jHipsterProperties.getSecurity().getAuthentication().getJwt().getSecret();
 
         this.tokenValidityInMilliseconds =
-            1000 * quisListingProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSeconds();
+            1000 * jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSeconds();
         this.tokenValidityInMillisecondsForRememberMe =
-            1000 * quisListingProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSecondsForRememberMe();
+            1000 * jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSecondsForRememberMe();
     }
 
     public String createToken(Authentication authentication, Boolean rememberMe) {

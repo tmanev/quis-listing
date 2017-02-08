@@ -1,6 +1,6 @@
 package com.manev.quislisting.web.rest.vm;
 
-import com.manev.quislisting.domain.User;
+
 import com.manev.quislisting.service.dto.UserDTO;
 
 import javax.validation.constraints.Size;
@@ -13,81 +13,25 @@ import java.util.Set;
 public class ManagedUserVM extends UserDTO {
 
     public static final int PASSWORD_MIN_LENGTH = 4;
+
     public static final int PASSWORD_MAX_LENGTH = 100;
-
-    private Long id;
-
-    private String createdBy;
-
-    private ZonedDateTime createdDate;
-
-    private String lastModifiedBy;
-
-    private ZonedDateTime lastModifiedDate;
 
     @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
     private String password;
 
     public ManagedUserVM() {
-    }
-
-    public ManagedUserVM(User user) {
-        super(user);
-        this.id = user.getId();
-        this.password = null;
+        // Empty constructor needed for Jackson.
     }
 
     public ManagedUserVM(Long id, String login, String password, String firstName, String lastName,
-                         String email, boolean activated, String langKey, Set<String> authorities,
-                         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate) {
-        super(login, email, activated, authorities);
-        this.id = id;
-        this.createdBy = createdBy;
-        this.createdDate = createdDate;
-        this.lastModifiedBy = lastModifiedBy;
-        this.lastModifiedDate = lastModifiedDate;
+                         String email, boolean activated, String imageUrl, String langKey,
+                         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
+                        Set<String> authorities) {
+
+        super(id, login, firstName, lastName, email, activated,  imageUrl, langKey,
+            createdBy, createdDate, lastModifiedBy, lastModifiedDate,  authorities);
+
         this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public ZonedDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
     }
 
     public String getPassword() {
@@ -97,11 +41,6 @@ public class ManagedUserVM extends UserDTO {
     @Override
     public String toString() {
         return "ManagedUserVM{" +
-            "id=" + id +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
             "} " + super.toString();
     }
 }

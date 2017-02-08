@@ -7,8 +7,12 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -24,6 +28,9 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private QuisListingProperties jHipsterProperties;
 
     /**
      * Customize the Servlet engine: Mime types, the document root, the cache.
@@ -88,6 +95,18 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         h2ConsoleServlet.addMapping("/h2-console/*");
         h2ConsoleServlet.setInitParameter("-properties", "src/main/resources/");
         h2ConsoleServlet.setLoadOnStartup(1);
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = jHipsterProperties.getCors();
+        if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
+            log.debug("Registering CORS filter");
+            source.registerCorsConfiguration("/api/**", config);
+            source.registerCorsConfiguration("/v2/api-docs", config);
+        }
+        return new CorsFilter(source);
     }
 
 
