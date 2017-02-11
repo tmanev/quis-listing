@@ -1,4 +1,4 @@
-package com.manev.quislisting.repository;
+package com.manev.quislisting.repository.taxonomy;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
@@ -6,6 +6,7 @@ import com.manev.quislisting.domain.taxonomy.Term;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.PostCategoryBuilder;
+import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

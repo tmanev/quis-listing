@@ -1,4 +1,4 @@
-package com.manev.quislisting.service.dto.taxonomy;
+package com.manev.quislisting.service.taxonomy.dto;
 
 /**
  * Created by tmanev on 2/7/2017.

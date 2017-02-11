@@ -1,6 +1,6 @@
-package com.manev.quislisting.service.dto.taxonomy.builder;
+package com.manev.quislisting.service.taxonomy.dto.builder;
 
-import com.manev.quislisting.service.dto.taxonomy.TermDTO;
+import com.manev.quislisting.service.taxonomy.dto.TermDTO;
 
 public final class TermDTOBuilder {
     private Long id;
