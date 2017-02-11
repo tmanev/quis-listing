@@ -160,22 +160,28 @@
                 <constraints nullable="false" />
             </column>
             <column name="content" type="longtext" />
-            <column name="name" type="varchar(200)">
+            <column name="name" type="varchar(200)" defaultValue="">
                 <constraints nullable="false" />
             </column>
-            <column name="type" type="varchar(20)">
+            <column name="type" type="varchar(20)" defaultValue="post">
                 <constraints nullable="false" />
             </column>
-            <column name="status" type="varchar(20)">
+            <column name="status" type="varchar(20)" defaultValue="publish">
                 <constraints nullable="false" />
             </column>
-            <column name="date" type="datetime">
+            <column name="created" type="datetime">
                 <constraints nullable="false" />
             </column>
-            <column name="modified" type="datetime">
+            <column name="modified" type="datetime" defaultValueDate="0000-00-00 00:00:00">
                 <constraints nullable="false" />
             </column>
-            <column name="user_id" type="bigint">
+            <column name="mime_type" type="varchar(100)" defaultValue="">
+                <constraints nullable="false" />
+            </column>
+            <column name="comment_count" type="bigint" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
         </createTable>
