@@ -1,11 +1,11 @@
-package com.manev.quislisting.service.mapper;
+package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.PostCategoryBuilder;
-import com.manev.quislisting.service.dto.taxonomy.PostCategoryDTO;
-import com.manev.quislisting.service.dto.taxonomy.builder.PostCategoryDTOBuilder;
-import com.manev.quislisting.service.dto.taxonomy.builder.TermDTOBuilder;
+import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
+import com.manev.quislisting.service.taxonomy.dto.builder.PostCategoryDTOBuilder;
+import com.manev.quislisting.service.taxonomy.dto.builder.TermDTOBuilder;
 import org.springframework.stereotype.Component;
 
 @Component

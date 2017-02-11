@@ -1,7 +1,7 @@
-package com.manev.quislisting.service.dto.taxonomy.builder;
+package com.manev.quislisting.service.taxonomy.dto.builder;
 
-import com.manev.quislisting.service.dto.taxonomy.PostCategoryDTO;
-import com.manev.quislisting.service.dto.taxonomy.TermDTO;
+import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
+import com.manev.quislisting.service.taxonomy.dto.TermDTO;
 
 public final class PostCategoryDTOBuilder {
     private Long id;

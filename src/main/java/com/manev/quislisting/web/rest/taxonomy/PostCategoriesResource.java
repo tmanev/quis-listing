@@ -1,7 +1,7 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
 import com.manev.quislisting.service.taxonomy.PostCategoryService;
-import com.manev.quislisting.service.dto.taxonomy.PostCategoryDTO;
+import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;

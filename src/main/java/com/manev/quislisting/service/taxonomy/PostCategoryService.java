@@ -1,9 +1,9 @@
 package com.manev.quislisting.service.taxonomy;
 
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
-import com.manev.quislisting.repository.TermTaxonomyRepository;
-import com.manev.quislisting.service.dto.taxonomy.PostCategoryDTO;
-import com.manev.quislisting.service.mapper.PostCategoryMapper;
+import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
+import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
+import com.manev.quislisting.service.taxonomy.mapper.PostCategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
