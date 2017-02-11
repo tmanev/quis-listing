@@ -1,9 +1,9 @@
 package com.manev.quislisting.service.taxonomy;
 
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
-import com.manev.quislisting.repository.TermTaxonomyRepository;
-import com.manev.quislisting.service.dto.taxonomy.NavMenuDTO;
-import com.manev.quislisting.service.mapper.NavMenuMapper;
+import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
+import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
+import com.manev.quislisting.service.taxonomy.mapper.NavMenuMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

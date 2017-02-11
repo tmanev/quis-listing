@@ -1,7 +1,7 @@
-package com.manev.quislisting.service.dto.taxonomy.builder;
+package com.manev.quislisting.service.taxonomy.dto.builder;
 
-import com.manev.quislisting.service.dto.taxonomy.DlCategoryDTO;
-import com.manev.quislisting.service.dto.taxonomy.TermDTO;
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import com.manev.quislisting.service.taxonomy.dto.TermDTO;
 
 /**
  * Created by tmanev on 2/7/2017.
