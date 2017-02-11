@@ -1,6 +1,6 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
-import com.manev.quislisting.service.dto.taxonomy.DlLocationDTO;
+import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;

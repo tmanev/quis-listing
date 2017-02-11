@@ -1,6 +1,6 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
-import com.manev.quislisting.service.dto.taxonomy.NavMenuDTO;
+import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
 import com.manev.quislisting.service.taxonomy.NavMenuService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
