@@ -7,7 +7,10 @@ public final class Constants {
     public static final String RESOURCE_API_NAV_MENUS = RESOURCE_API_BASE + "/nav-menus";
     public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";
     public static final String RESOURCE_API_DL_CATEGORIES = RESOURCE_API_BASE + "/dl-categories";
+    private static final String RESOURCE_ADMIN = "/admin";
+    public static final String RESOURCE_API_ADMIN_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-listings";
 
-    private Constants(){}
+    private Constants() {
+    }
 
 }

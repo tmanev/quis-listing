@@ -1,0 +1,26 @@
+{
+    "quisListingApp": {
+        "listing" : {
+            "home": {
+                "title": "Listings",
+                "createLabel": "Create a new Listing",
+                "createOrEditLabel": "Create or edit a Listing",
+                "search": "Search for Listing"
+            },
+            "created": "A new Listing is created with identifier {{ param }}",
+            "updated": "A Listing is updated with identifier {{ param }}",
+            "deleted": "A Listing is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Listing {{ id }}?"
+            },
+            "detail": {
+                "title": "Listing"
+            },
+            "title": "Title",
+            "expirationDate": "Expiration Date",
+            "status": "Status",
+            "author": "Author",
+            "views": "Views"
+        }
+    }
+}

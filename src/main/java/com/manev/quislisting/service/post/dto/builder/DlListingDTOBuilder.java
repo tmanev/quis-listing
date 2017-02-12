@@ -1,20 +1,22 @@
 package com.manev.quislisting.service.post.dto.builder;
 
+import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
+import com.manev.quislisting.service.post.dto.Author;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.PostUser;
+import org.joda.time.DateTime;
 
-import java.time.ZonedDateTime;
-
+/**
+ * Created by tmanev on 2/12/2017.
+ */
 public final class DlListingDTOBuilder {
     private Long id;
     private String title;
     private String content;
     private String name;
+    private DateTime expirationDate;
     private String status;
-    private ZonedDateTime created;
-    private ZonedDateTime modified;
-    private Long commentCount = 0L;
-    private PostUser user;
+    private Integer counts;
+    private Author author;
 
     private DlListingDTOBuilder() {
     }
@@ -43,28 +45,23 @@ public final class DlListingDTOBuilder {
         return this;
     }
 
+    public DlListingDTOBuilder withExpirationDate(DateTime expirationDate) {
+        this.expirationDate = expirationDate;
+        return this;
+    }
+
     public DlListingDTOBuilder withStatus(String status) {
         this.status = status;
         return this;
     }
 
-    public DlListingDTOBuilder withCreated(ZonedDateTime created) {
-        this.created = created;
+    public DlListingDTOBuilder withCounts(Integer counts) {
+        this.counts = counts;
         return this;
     }
 
-    public DlListingDTOBuilder withModified(ZonedDateTime modified) {
-        this.modified = modified;
-        return this;
-    }
-
-    public DlListingDTOBuilder withCommentCount(Long commentCount) {
-        this.commentCount = commentCount;
-        return this;
-    }
-
-    public DlListingDTOBuilder withUser(PostUser user) {
-        this.user = user;
+    public DlListingDTOBuilder withAuthor(Author author) {
+        this.author = author;
         return this;
     }
 
@@ -74,11 +71,11 @@ public final class DlListingDTOBuilder {
         dlListingDTO.setTitle(title);
         dlListingDTO.setContent(content);
         dlListingDTO.setName(name);
+        dlListingDTO.setExpirationDate(expirationDate);
         dlListingDTO.setStatus(status);
-        dlListingDTO.setCreated(created);
-        dlListingDTO.setModified(modified);
-        dlListingDTO.setCommentCount(commentCount);
-        dlListingDTO.setUser(user);
+        dlListingDTO.setCounts(counts);
+        dlListingDTO.setAuthor(author);
         return dlListingDTO;
     }
+
 }

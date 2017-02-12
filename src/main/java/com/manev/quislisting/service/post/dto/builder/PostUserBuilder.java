@@ -1,6 +1,6 @@
 package com.manev.quislisting.service.post.dto.builder;
 
-import com.manev.quislisting.service.post.dto.PostUser;
+import com.manev.quislisting.service.post.dto.Author;
 
 /**
  * Created by tmanev on 2/8/2017.
@@ -38,12 +38,12 @@ public final class PostUserBuilder {
         return this;
     }
 
-    public PostUser build() {
-        PostUser postUser = new PostUser();
-        postUser.setId(id);
-        postUser.setLogin(login);
-        postUser.setFirstName(firstName);
-        postUser.setLastName(lastName);
-        return postUser;
+    public Author build() {
+        Author author = new Author();
+        author.setId(id);
+        author.setLogin(login);
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+        return author;
     }
 }

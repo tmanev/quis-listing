@@ -1,6 +1,6 @@
 package com.manev.quislisting.service.post.dto;
 
-public class PostUser {
+public class Author {
 
     private Long id;
     private String login;

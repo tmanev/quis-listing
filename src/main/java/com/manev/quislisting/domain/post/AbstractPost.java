@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.User;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "ql_post")
@@ -42,6 +43,9 @@ public abstract class AbstractPost {
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false, updatable=false)
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "abstractPost", fetch = FetchType.EAGER)
+    private Set<PostMeta> postMeta;
 
     public Long getId() {
         return id;
@@ -121,5 +125,13 @@ public abstract class AbstractPost {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<PostMeta> getPostMeta() {
+        return postMeta;
+    }
+
+    public void setPostMeta(Set<PostMeta> postMeta) {
+        this.postMeta = postMeta;
     }
 }

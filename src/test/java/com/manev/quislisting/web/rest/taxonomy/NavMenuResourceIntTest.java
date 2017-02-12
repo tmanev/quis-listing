@@ -66,7 +66,7 @@ public class NavMenuResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    private MockMvc restBookMockMvc;
+    private MockMvc restNavMenuMockMvc;
 
     private NavMenu navMenu;
 
@@ -81,7 +81,7 @@ public class NavMenuResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         NavMenuResource navMenuResource = new NavMenuResource(navMenuService);
-        this.restBookMockMvc = MockMvcBuilders.standaloneSetup(navMenuResource)
+        this.restNavMenuMockMvc = MockMvcBuilders.standaloneSetup(navMenuResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
     }
@@ -100,7 +100,7 @@ public class NavMenuResourceIntTest {
         // Create the NavMenu
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu);
 
-        restBookMockMvc.perform(post(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(post(RESOURCE_API_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isCreated());
@@ -127,7 +127,7 @@ public class NavMenuResourceIntTest {
         NavMenuDTO existingNavMenuDTO = navMenuMapper.navMenuToNavMenuDTO(existingNavMenu);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restBookMockMvc.perform(post(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(post(RESOURCE_API_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingNavMenuDTO)))
                 .andExpect(status().isBadRequest());
@@ -144,7 +144,7 @@ public class NavMenuResourceIntTest {
         termTaxonomyRepository.saveAndFlush(navMenu);
 
         // Get all the navMenus
-        restBookMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "?sort=id,desc"))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(navMenu.getId().intValue())))
@@ -161,7 +161,7 @@ public class NavMenuResourceIntTest {
         termTaxonomyRepository.saveAndFlush(navMenu);
 
         // Get the NavMenu
-        restBookMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "/{id}", navMenu.getId()))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "/{id}", navMenu.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(navMenu.getId().intValue()))
@@ -175,7 +175,7 @@ public class NavMenuResourceIntTest {
     @Transactional
     public void getNonExistingNavMenu() throws Exception {
         // Get the navMenu
-        restBookMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "/{id}", Long.MAX_VALUE))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -195,7 +195,7 @@ public class NavMenuResourceIntTest {
         updatedNavMenu.setCount(UPDATED_COUNT);
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(updatedNavMenu);
 
-        restBookMockMvc.perform(put(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(put(RESOURCE_API_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isOk());
@@ -220,7 +220,7 @@ public class NavMenuResourceIntTest {
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restBookMockMvc.perform(put(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(put(RESOURCE_API_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isCreated());
@@ -238,7 +238,7 @@ public class NavMenuResourceIntTest {
         int databaseSizeBeforeDelete = termTaxonomyRepository.findAll().size();
 
         // Get the navMenu
-        restBookMockMvc.perform(delete(RESOURCE_API_NAV_MENUS + "/{id}", navMenu.getId())
+        restNavMenuMockMvc.perform(delete(RESOURCE_API_NAV_MENUS + "/{id}", navMenu.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

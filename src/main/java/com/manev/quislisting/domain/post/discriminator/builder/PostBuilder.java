@@ -1,10 +1,15 @@
 package com.manev.quislisting.domain.post.discriminator.builder;
 
 import com.manev.quislisting.domain.User;
+import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.Post;
 
 import java.time.ZonedDateTime;
+import java.util.Set;
 
+/**
+ * Created by tmanev on 2/12/2017.
+ */
 public final class PostBuilder {
     private Long id;
     private String title;
@@ -16,6 +21,7 @@ public final class PostBuilder {
     private ZonedDateTime modified;
     private Long commentCount = 0L;
     private User user;
+    private Set<PostMeta> postMeta;
 
     private PostBuilder() {
     }
@@ -74,6 +80,11 @@ public final class PostBuilder {
         return this;
     }
 
+    public PostBuilder withPostMeta(Set<PostMeta> postMeta) {
+        this.postMeta = postMeta;
+        return this;
+    }
+
     public Post build() {
         Post post = new Post();
         post.setId(id);
@@ -86,6 +97,7 @@ public final class PostBuilder {
         post.setModified(modified);
         post.setCommentCount(commentCount);
         post.setUser(user);
+        post.setPostMeta(postMeta);
         return post;
     }
 }

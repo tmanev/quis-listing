@@ -1,13 +1,12 @@
 package com.manev.quislisting.domain.post.discriminator.builder;
 
 import com.manev.quislisting.domain.User;
+import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
 import java.time.ZonedDateTime;
+import java.util.Set;
 
-/**
- * Created by tmanev on 2/8/2017.
- */
 public final class DlListingBuilder {
     private Long id;
     private String title;
@@ -19,6 +18,7 @@ public final class DlListingBuilder {
     private ZonedDateTime modified;
     private Long commentCount = 0L;
     private User user;
+    private Set<PostMeta> postMeta;
 
     private DlListingBuilder() {
     }
@@ -77,6 +77,11 @@ public final class DlListingBuilder {
         return this;
     }
 
+    public DlListingBuilder withPostMeta(Set<PostMeta> postMeta) {
+        this.postMeta = postMeta;
+        return this;
+    }
+
     public DlListing build() {
         DlListing dlListing = new DlListing();
         dlListing.setId(id);
@@ -89,6 +94,7 @@ public final class DlListingBuilder {
         dlListing.setModified(modified);
         dlListing.setCommentCount(commentCount);
         dlListing.setUser(user);
+        dlListing.setPostMeta(postMeta);
         return dlListing;
     }
 }

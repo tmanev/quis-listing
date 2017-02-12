@@ -196,6 +196,30 @@
                      unique="false">
             <column name="user_id" type="bigint"/>
         </createIndex>
+
+        <createTable tableName="ql_postmeta">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="value" type="longtext">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/posts.csv"
+                  separator=";"
+                  tableName="ql_post"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/postmetas.csv"
+                  separator=";"
+                  tableName="ql_postmeta"/>
         
         <createTable tableName="ql_term">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">

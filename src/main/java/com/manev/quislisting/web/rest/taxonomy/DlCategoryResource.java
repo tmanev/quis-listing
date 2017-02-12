@@ -1,7 +1,7 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -38,7 +38,7 @@ public class DlCategoryResource {
 
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlCategoryDTO> createPostCategory(@RequestBody DlCategoryDTO dlCategoryDTO) throws URISyntaxException {
+    public ResponseEntity<DlCategoryDTO> createDlCategory(@RequestBody DlCategoryDTO dlCategoryDTO) throws URISyntaxException {
         log.debug("REST request to save DlCategoryDTO : {}", dlCategoryDTO);
         if (dlCategoryDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
@@ -51,10 +51,10 @@ public class DlCategoryResource {
     }
 
     @PutMapping
-    public ResponseEntity<DlCategoryDTO> updateAuthor(@RequestBody DlCategoryDTO dlCategoryDTO) throws URISyntaxException {
+    public ResponseEntity<DlCategoryDTO> updateDlCategory(@RequestBody DlCategoryDTO dlCategoryDTO) throws URISyntaxException {
         log.debug("REST request to update DlCategoryDTO : {}", dlCategoryDTO);
         if (dlCategoryDTO.getId() == null) {
-            return createPostCategory(dlCategoryDTO);
+            return createDlCategory(dlCategoryDTO);
         }
         DlCategoryDTO result = dlCategoryService.save(dlCategoryDTO);
         return ResponseEntity.ok()
@@ -63,7 +63,7 @@ public class DlCategoryResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlCategoryDTO>> getAllAuthors(Pageable pageable)
+    public ResponseEntity<List<DlCategoryDTO>> getAllDlCategories(Pageable pageable)
             throws URISyntaxException {
         log.debug("REST request to get a page of DlCategoryDTO");
         Page<DlCategoryDTO> page = dlCategoryService.findAll(pageable);
@@ -72,14 +72,14 @@ public class DlCategoryResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DlCategoryDTO> getAuthor(@PathVariable Long id) {
+    public ResponseEntity<DlCategoryDTO> getDlCategory(@PathVariable Long id) {
         log.debug("REST request to get DlCategoryDTO : {}", id);
         DlCategoryDTO dlCategoryDTO = dlCategoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlCategoryDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDlCategory(@PathVariable Long id) {
         log.debug("REST request to delete DlCategoryDTO : {}", id);
         dlCategoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

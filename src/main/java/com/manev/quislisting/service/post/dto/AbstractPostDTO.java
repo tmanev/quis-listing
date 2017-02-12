@@ -20,7 +20,7 @@ public abstract class AbstractPostDTO {
 
     private Long commentCount = 0L;
 
-    private PostUser user;
+    private Author user;
 
     public Long getId() {
         return id;
@@ -86,11 +86,11 @@ public abstract class AbstractPostDTO {
         this.commentCount = commentCount;
     }
 
-    public PostUser getUser() {
+    public Author getUser() {
         return user;
     }
 
-    public void setUser(PostUser user) {
+    public void setUser(Author user) {
         this.user = user;
     }
 }
