@@ -50,7 +50,7 @@ public class PostCategoriesResource {
     }
 
     @PutMapping
-    public ResponseEntity<PostCategoryDTO> updateAuthor(@RequestBody PostCategoryDTO postCategoryDTO) throws URISyntaxException {
+    public ResponseEntity<PostCategoryDTO> updatePostCategory(@RequestBody PostCategoryDTO postCategoryDTO) throws URISyntaxException {
         log.debug("REST request to update PostCategoryDTO : {}", postCategoryDTO);
         if (postCategoryDTO.getId() == null) {
             return createPostCategory(postCategoryDTO);
@@ -62,7 +62,7 @@ public class PostCategoriesResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostCategoryDTO>> getAllAuthors(Pageable pageable)
+    public ResponseEntity<List<PostCategoryDTO>> getAllPostCategories(Pageable pageable)
             throws URISyntaxException {
         log.debug("REST request to get a page of PostCategoryDTO");
         Page<PostCategoryDTO> page = postCategoryService.findAll(pageable);
@@ -71,14 +71,14 @@ public class PostCategoriesResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostCategoryDTO> getAuthor(@PathVariable Long id) {
+    public ResponseEntity<PostCategoryDTO> getPostCategory(@PathVariable Long id) {
         log.debug("REST request to get PostCategoryDTO : {}", id);
         PostCategoryDTO postCategoryDTO = postCategoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(postCategoryDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePostCategory(@PathVariable Long id) {
         log.debug("REST request to delete PostCategoryDTO : {}", id);
         postCategoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
