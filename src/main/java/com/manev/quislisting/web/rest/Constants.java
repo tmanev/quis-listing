@@ -9,7 +9,7 @@ public final class Constants {
     public static final String RESOURCE_API_DL_CATEGORIES = RESOURCE_API_BASE + "/dl-categories";
     private static final String RESOURCE_ADMIN = "/admin";
     public static final String RESOURCE_API_ADMIN_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-listings";
-
+    public static final String RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS = RESOURCE_API_BASE + RESOURCE_ADMIN + "content-field-groups";
     private Constants() {
     }
 
