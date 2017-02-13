@@ -427,5 +427,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/content-field-groups.csv"
+                  separator=";"
+                  tableName="ql_dl_content_fields_group"/>
     </changeSet>
 </databaseChangeLog>
