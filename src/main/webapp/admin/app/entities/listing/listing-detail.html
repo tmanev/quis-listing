@@ -14,7 +14,7 @@
         </dd>
         <dt><span data-translate="quisListingApp.listing.expirationDate">Expiration Date</span></dt>
         <dd>
-            <span>{{vm.listing.meta.expirationDate}}</span>
+            <span>{{vm.listing.expirationDate | date:'medium'}}</span>
         </dd>
         <dt><span data-translate="quisListingApp.listing.status">Status</span></dt>
         <dd>
@@ -22,7 +22,7 @@
         </dd>
         <dt><span data-translate="quisListingApp.listing.author">Author</span></dt>
         <dd>
-            <a ui-sref="author-detail({id:vm.listing.user.userId})">{{vm.listing.user.userId}}</a>
+            <a ui-sref="author-detail({id:vm.listing.author.id})">{{vm.listing.author.login}}</a>
         </dd>
     </dl>
 

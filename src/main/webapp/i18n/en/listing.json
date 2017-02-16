@@ -19,8 +19,13 @@
             "title": "Title",
             "expirationDate": "Expiration Date",
             "status": "Status",
+            "views": "Views",
+            "description": "Description",
             "author": "Author",
-            "views": "Views"
+            "categories": "Categories",
+            "contentFields": "Content fields",
+            "listingMedia": "Listing media",
+            "listingLocations": "Listing locations"
         }
     }
 }

@@ -1,9 +1,6 @@
 package com.manev.quislisting.service.post.dto;
 
-import org.joda.time.DateTime;
-
-import java.util.List;
-import java.util.Map;
+import java.time.ZonedDateTime;
 
 public class DlListingDTO {
 
@@ -11,10 +8,12 @@ public class DlListingDTO {
     private String title;
     private String content;
     private String name;
-    private DateTime expirationDate;
+    private String expirationDate;
     private String status;
-    private Integer counts;
+    private String views;
     private Author author;
+    private ZonedDateTime created;
+    private ZonedDateTime modified;
 
     public Long getId() {
         return id;
@@ -48,11 +47,11 @@ public class DlListingDTO {
         this.name = name;
     }
 
-    public DateTime getExpirationDate() {
+    public String getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(DateTime expirationDate) {
+    public void setExpirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -64,12 +63,12 @@ public class DlListingDTO {
         this.status = status;
     }
 
-    public Integer getCounts() {
-        return counts;
+    public String getViews() {
+        return views;
     }
 
-    public void setCounts(Integer counts) {
-        this.counts = counts;
+    public void setViews(String views) {
+        this.views = views;
     }
 
     public Author getAuthor() {
@@ -78,5 +77,21 @@ public class DlListingDTO {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
+    }
+
+    public void setModified(ZonedDateTime modified) {
+        this.modified = modified;
+    }
+
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
+    public ZonedDateTime getModified() {
+        return modified;
     }
 }

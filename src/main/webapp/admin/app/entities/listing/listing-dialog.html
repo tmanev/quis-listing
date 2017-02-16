@@ -26,10 +26,35 @@
             />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.listing.content" for="field_description">Description</label>
-            <input type="text" class="form-control" name="description" id="field_description"
+            <label class="control-label" data-translate="quisListingApp.listing.description" for="field_description">Description</label>
+            <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
                     ng-model="vm.listing.content"
-                    />
+                    >
+            </textarea>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.listing.categories" for="field_categories">Categories</label>
+            <div id="field_categories">
+                TODO
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.listing.contentFields" for="field_content_fields">Content fields</label>
+            <div id="field_content_fields">
+                TODO
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.listing.listingMedia" for="field_listing_media">Listing media</label>
+            <div id="field_listing_media">
+                TODO
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.listing.listingLocations" for="field_listing_media">Listing locations</label>
+            <div id="field_listing_locations">
+                TODO
+            </div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.listing.expirationDate" for="field_expirationDate">Expiration Date</label>
@@ -42,9 +67,9 @@
                 </div>
         </div>
         <div class="form-group">
-            <label data-translate="quisListinApp.listing.author" for="field_author">Author</label>
+            <label class="control-label" data-translate="quisListingApp.listing.author" for="field_author">Author</label>
             <input type="text" class="form-control" name="author" id="field_author"
-                   ng-model="vm.listing.user.login"
+                   ng-model="vm.listing.author.login"
             />
         </div>
     </div>

@@ -40,7 +40,7 @@
                     <th jh-sort-by="expirationDate"><span data-translate="quisListingApp.listing.expirationDate">Expiration Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="quisListingApp.listing.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="author.login"><span data-translate="quisListingApp.listing.author">Author</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="counts"><span data-translate="quisListingApp.listing.views">Views</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="views"><span data-translate="quisListingApp.listing.views">Views</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -48,12 +48,12 @@
                 <tr ng-repeat="listing in vm.listings track by listing.id">
                     <td><a ui-sref="listing-detail({id:listing.id})">{{listing.id}}</a></td>
                     <td>{{listing.title}}</td>
-                    <td>{{listing.expirationDate}}</td>
+                    <td>{{listing.expirationDate | date:'medium'}}</td>
                     <td>{{listing.status}}</td>
                     <td>
-                        <a ui-sref="author-detail({id:listing.userId})">{{listing.userId}}</a>
+                        <a ui-sref="author-detail({id:listing.author.login})">{{listing.author.login}}</a>
                     </td>
-                    <td>{{listing.counts}}</td>
+                    <td>{{listing.views}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

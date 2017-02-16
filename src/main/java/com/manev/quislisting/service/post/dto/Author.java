@@ -7,6 +7,16 @@ public class Author {
     private String firstName;
     private String lastName;
 
+    public Author() {
+    }
+
+    public Author(Long id, String login, String firstName, String lastName) {
+        this.id = id;
+        this.login = login;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Long getId() {
         return id;
     }
