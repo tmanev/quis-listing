@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_CATEGORIES;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CATEGORIES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -100,7 +100,7 @@ public class DlCategoryResourceIntTest {
         // Create the DlCategory
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
 
-        restDlCategoryMockMvc.perform(post(RESOURCE_API_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CATEGORIES)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlCategoryDTO)))
                 .andExpect(status().isCreated());
@@ -127,7 +127,7 @@ public class DlCategoryResourceIntTest {
         DlCategoryDTO existingDlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(existingDlCategory);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restDlCategoryMockMvc.perform(post(RESOURCE_API_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CATEGORIES)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingDlCategoryDTO)))
                 .andExpect(status().isBadRequest());
@@ -144,7 +144,7 @@ public class DlCategoryResourceIntTest {
         termTaxonomyRepository.saveAndFlush(dlCategory);
 
         // Get all the dlCategories
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_DL_CATEGORIES + "?sort=id,desc"))
+        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlCategory.getId().intValue())))
@@ -161,7 +161,7 @@ public class DlCategoryResourceIntTest {
         termTaxonomyRepository.saveAndFlush(dlCategory);
 
         // Get the DlCategory
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_DL_CATEGORIES + "/{id}", dlCategory.getId()))
+        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))
@@ -175,7 +175,7 @@ public class DlCategoryResourceIntTest {
     @Transactional
     public void getNonExistingDlCategory() throws Exception {
         // Get the dlCategory
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_DL_CATEGORIES + "/{id}", Long.MAX_VALUE))
+        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -195,7 +195,7 @@ public class DlCategoryResourceIntTest {
         updatedDlCategory.setCount(UPDATED_COUNT);
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(updatedDlCategory);
 
-        restDlCategoryMockMvc.perform(put(RESOURCE_API_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CATEGORIES)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlCategoryDTO)))
                 .andExpect(status().isOk());
@@ -220,7 +220,7 @@ public class DlCategoryResourceIntTest {
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restDlCategoryMockMvc.perform(put(RESOURCE_API_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CATEGORIES)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlCategoryDTO)))
                 .andExpect(status().isCreated());
@@ -238,7 +238,7 @@ public class DlCategoryResourceIntTest {
         int databaseSizeBeforeDelete = termTaxonomyRepository.findAll().size();
 
         // Get the dlCategory
-        restDlCategoryMockMvc.perform(delete(RESOURCE_API_DL_CATEGORIES + "/{id}", dlCategory.getId())
+        restDlCategoryMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

@@ -45,7 +45,7 @@
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('dlCategory');
+                    $translatePartialLoader.addPart('dl-category');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]

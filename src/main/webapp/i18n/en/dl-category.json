@@ -1,0 +1,31 @@
+{
+    "quisListingApp": {
+        "dlCategory" : {
+            "home": {
+                "title": "Dl Categories",
+                "createLabel": "Create a new Dl Category",
+                "createOrEditLabel": "Create or edit a Dl Category",
+                "search": "Search for Listing"
+            },
+            "created": "A new Dl Category is created with identifier {{ param }}",
+            "updated": "A Dl Category is updated with identifier {{ param }}",
+            "deleted": "A Dl Category is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Dl Category {{ id }}?"
+            },
+            "detail": {
+                "title": "Dl Category"
+            },
+            "title": "Title",
+            "expirationDate": "Expiration Date",
+            "status": "Status",
+            "views": "Views",
+            "description": "Description",
+            "author": "Author",
+            "categories": "Categories",
+            "contentFields": "Content fields",
+            "listingMedia": "Listing media",
+            "listingLocations": "Listing locations"
+        }
+    }
+}

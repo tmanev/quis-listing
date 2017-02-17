@@ -20,11 +20,11 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_CATEGORIES;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CATEGORIES;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LOCATIONS;
 
 @RestController
-@RequestMapping(RESOURCE_API_DL_CATEGORIES)
+@RequestMapping(RESOURCE_API_ADMIN_DL_CATEGORIES)
 public class DlCategoryResource {
 
     private static final String ENTITY_NAME = "DlCategory";

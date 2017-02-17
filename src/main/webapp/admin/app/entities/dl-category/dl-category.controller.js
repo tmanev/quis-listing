@@ -25,14 +25,14 @@
 
         function loadAll () {
             if (pagingParams.search) {
-                ListingSearch.query({
+                DlCategorySearch.query({
                     query: pagingParams.search,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
             } else {
-                Listing.query({
+                DlCategory.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
@@ -49,7 +49,7 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.listings = data;
+                vm.dlCategories = data;
                 vm.page = pagingParams.page;
             }
             function onError(error) {
