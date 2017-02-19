@@ -63,8 +63,7 @@ public final class NavMenuBuilder {
         navMenu.setTerm(term);
         navMenu.setTaxonomy(taxonomy);
         navMenu.setDescription(description);
-        navMenu.setParentId(parentId);
-        navMenu.setChildren(children);
+//        navMenu.setParentId(parentId);
         navMenu.setCount(count);
         return navMenu;
     }

@@ -44,9 +44,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="dlCategory in vm.dlCategories track by dlCategory.id">
-                    <td><a ui-sref="listing-detail({id:listing.id})">{{dlCategory.id}}</a></td>
-                    <td>{{dlCategory.name}}</td>
-                    <td>{{dlCategory.slug}}</td>
+                    <td><a ui-sref="dl-category-detail({id:dlCategory.id})">{{dlCategory.id}}</a></td>
+                    <td><span ng-repeat="n in [] | range:dlCategory.depthLevel">—</span> {{dlCategory.term.name}}</td>
+                    <td>{{dlCategory.term.slug}}</td>
                     <td>{{dlCategory.count}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -78,4 +78,5 @@
         <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
         <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
+
 </div>

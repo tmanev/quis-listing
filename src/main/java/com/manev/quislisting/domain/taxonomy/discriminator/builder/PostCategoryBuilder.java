@@ -9,10 +9,8 @@ import java.util.Set;
 public final class PostCategoryBuilder {
     private Long id;
     private Term term;
-    private String taxonomy;
     private String description;
-    private Long parentId;
-    private Set<TermTaxonomy> children;
+    private PostCategory parent;
     private Long count = 0L;
 
     private PostCategoryBuilder() {
@@ -32,23 +30,8 @@ public final class PostCategoryBuilder {
         return this;
     }
 
-    public PostCategoryBuilder withTaxonomy(String taxonomy) {
-        this.taxonomy = taxonomy;
-        return this;
-    }
-
     public PostCategoryBuilder withDescription(String description) {
         this.description = description;
-        return this;
-    }
-
-    public PostCategoryBuilder withParentId(Long parentId) {
-        this.parentId = parentId;
-        return this;
-    }
-
-    public PostCategoryBuilder withChildren(Set<TermTaxonomy> children) {
-        this.children = children;
         return this;
     }
 
@@ -57,15 +40,18 @@ public final class PostCategoryBuilder {
         return this;
     }
 
+    public PostCategoryBuilder withParent(PostCategory parent) {
+        this.parent = parent;
+        return this;
+    }
+
     public PostCategory build() {
         PostCategory postCategory = new PostCategory();
         postCategory.setId(id);
         postCategory.setTerm(term);
-        postCategory.setTaxonomy(taxonomy);
         postCategory.setDescription(description);
-        postCategory.setParentId(parentId);
-        postCategory.setChildren(children);
         postCategory.setCount(count);
+        postCategory.setParent(parent);
         return postCategory;
     }
 }

@@ -1,12 +1,10 @@
 package com.manev.quislisting.repository.taxonomy;
 
 import com.manev.QuisListingApp;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.Term;
-import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
+import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.PostCategoryBuilder;
-import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class TermRepositoryTest {
 
     @Inject
-    TermTaxonomyRepository<PostCategory> termTaxonomyRepository;
+    PostCategoryRepository postCategoryRepository;
 
     @Test
     public void saveTest() {
@@ -32,7 +30,7 @@ public class TermRepositoryTest {
                         TermBuilder.aTerm().withName("Category 1").withSlug("category-1").build()
                 ).withDescription("Some description").build();
 
-        PostCategory savedPostCategory = termTaxonomyRepository.save(postCategory);
+        PostCategory savedPostCategory = postCategoryRepository.save(postCategory);
 
         Term term2 = new Term();
         term2.setName("Sub Cat Name 2");
@@ -41,12 +39,12 @@ public class TermRepositoryTest {
         PostCategory postCategorySub = PostCategoryBuilder.aPostCategory()
                 .withTerm(TermBuilder.aTerm().withName("Sub Category 1").withSlug("sub-category-1").build())
                 .withDescription("Sub category description")
-                .withParentId(savedPostCategory.getId()).build();
+                .withParent(savedPostCategory).build();
 
-        PostCategory savedPostSubCategory = termTaxonomyRepository.save(postCategorySub);
+        PostCategory savedPostSubCategory = postCategoryRepository.save(postCategorySub);
 
-        TermTaxonomy child = termTaxonomyRepository.findOne(savedPostSubCategory.getId());
-        assertEquals(savedPostCategory.getId(), child.getParentId());
+        PostCategory child = postCategoryRepository.findOne(savedPostSubCategory.getId());
+        assertEquals(savedPostCategory.getId(), child.getParent() != null ? child.getParent().getId() : null);
     }
 
 }

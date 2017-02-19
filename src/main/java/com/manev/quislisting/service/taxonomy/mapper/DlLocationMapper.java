@@ -6,7 +6,13 @@ import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBui
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.builder.DlLocationDTOBuilder;
 import com.manev.quislisting.service.taxonomy.dto.builder.TermDTOBuilder;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class DlLocationMapper {
@@ -32,8 +38,32 @@ public class DlLocationMapper {
                                 .withName(dlLocation.getTerm().getName())
                                 .withSlug(dlLocation.getTerm().getSlug()).build())
                 .withDescription(dlLocation.getDescription())
-                .withParentId(dlLocation.getParentId())
+                .withParentId(dlLocation.getParent() != null ? dlLocation.getParent().getId() : null)
                 .withCount(dlLocation.getCount()).build();
     }
 
+    public List<DlLocationDTO> dlLocationToDlLocationDtoFlat(Page<DlLocation> page) {
+        Set<Long> ids = new HashSet<>();
+
+        List<DlLocationDTO> result = new ArrayList<>();
+        for (DlLocation dlLocation : page) {
+            doMappingAndFillDepthLevel(dlLocation, ids, result, 0);
+        }
+
+        return result;
+    }
+
+    private int doMappingAndFillDepthLevel(DlLocation dlCategory, Set<Long> ids, List<DlLocationDTO> result, int depthLevel) {
+        int resultDepthLevel = depthLevel;
+        if (dlCategory.getParent() != null) {
+            resultDepthLevel = doMappingAndFillDepthLevel(dlCategory.getParent(), ids, result, depthLevel + 1);
+        }
+        if (!ids.contains(dlCategory.getId())) {
+            ids.add(dlCategory.getId());
+            DlLocationDTO dlCategoryDTO = dlLocationToDlLocationDTO(dlCategory);
+            dlCategoryDTO.setDepthLevel(resultDepthLevel);
+            result.add(dlCategoryDTO);
+        }
+        return resultDepthLevel;
+    }
 }

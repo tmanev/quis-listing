@@ -11,9 +11,8 @@ public final class DlCategoryBuilder {
     private Term term;
     private String taxonomy;
     private String description;
-    private Long parentId;
-    private Set<TermTaxonomy> children;
     private Long count = 0L;
+    private DlCategory parent;
 
     private DlCategoryBuilder() {
     }
@@ -42,18 +41,13 @@ public final class DlCategoryBuilder {
         return this;
     }
 
-    public DlCategoryBuilder withParentId(Long parentId) {
-        this.parentId = parentId;
-        return this;
-    }
-
-    public DlCategoryBuilder withChildren(Set<TermTaxonomy> children) {
-        this.children = children;
-        return this;
-    }
-
     public DlCategoryBuilder withCount(Long count) {
         this.count = count;
+        return this;
+    }
+
+    public DlCategoryBuilder withParent(DlCategory dlCategory) {
+        this.parent = dlCategory;
         return this;
     }
 
@@ -63,9 +57,9 @@ public final class DlCategoryBuilder {
         dlCategory.setTerm(term);
         dlCategory.setTaxonomy(taxonomy);
         dlCategory.setDescription(description);
-        dlCategory.setParentId(parentId);
-        dlCategory.setChildren(children);
         dlCategory.setCount(count);
+        dlCategory.setParent(parent);
         return dlCategory;
     }
+
 }

@@ -16,16 +16,9 @@
             "detail": {
                 "title": "Dl Category"
             },
-            "title": "Title",
-            "expirationDate": "Expiration Date",
-            "status": "Status",
-            "views": "Views",
-            "description": "Description",
-            "author": "Author",
-            "categories": "Categories",
-            "contentFields": "Content fields",
-            "listingMedia": "Listing media",
-            "listingLocations": "Listing locations"
+            "name": "Name",
+            "slug": "Slug",
+            "count": "Count"
         }
     }
 }

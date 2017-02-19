@@ -2,9 +2,11 @@ package com.manev.quislisting.web.rest.taxonomy;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.PostCategoryBuilder;
-import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
+import com.manev.quislisting.repository.taxonomy.PostCategoryRepository;
 import com.manev.quislisting.service.taxonomy.PostCategoryService;
 import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.PostCategoryMapper;
@@ -39,20 +41,24 @@ public class PostCategoryResourceIntTest {
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
-    private static final Long DEFAULT_PARENT_ID = 0L;
+    private static final Long DEFAULT_PARENT_ID = null;
     private static final Long DEFAULT_COUNT = 0L;
+
+    private static final String DEFAULT_NAME_2 = "DEFAULT_NAME_2";
+    private static final String DEFAULT_SLUG_2 = "DEFAULT_SLUG_2";
+    private static final String DEFAULT_DESCRIPTION_2 = "DEFAULT_DESCRIPTION_2";
+    private static final Long DEFAULT_COUNT_2 = 0L;
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_SLUG = "UPDATED_SLUG";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    private static final Long UPDATED_PARENT_ID = 1L;
     private static final Long UPDATED_COUNT = 1L;
 
     @Autowired
     private PostCategoryService postCategoryService;
 
     @Autowired
-    private TermTaxonomyRepository<PostCategory> termTaxonomyRepository;
+    private PostCategoryRepository postCategoryRepository;
 
     @Autowired
     private PostCategoryMapper postCategoryMapper;
@@ -70,11 +76,18 @@ public class PostCategoryResourceIntTest {
 
     private PostCategory postCategory;
 
-    public static PostCategory createEntity(EntityManager em) {
+    public static PostCategory createEntity() {
         return PostCategoryBuilder.aPostCategory().withTerm(
                 TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build()
-        ).withDescription(DEFAULT_DESCRIPTION).withParentId(DEFAULT_PARENT_ID)
+        ).withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT).build();
+    }
+
+    public static PostCategory createEntity2() {
+        return PostCategoryBuilder.aPostCategory().withTerm(
+                TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build()
+        ).withDescription(DEFAULT_DESCRIPTION_2)
+                .withCount(DEFAULT_COUNT_2).build();
     }
 
     @Before
@@ -88,14 +101,14 @@ public class PostCategoryResourceIntTest {
 
     @Before
     public void initTest() {
-        termTaxonomyRepository.deleteAll();
-        postCategory = createEntity(em);
+        postCategoryRepository.deleteAll();
+        postCategory = createEntity();
     }
 
     @Test
     @Transactional
     public void createPostCategory() throws Exception {
-        int databaseSizeBeforeCreate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeCreate = postCategoryRepository.findAll().size();
 
         // Create the PostCategory
         PostCategoryDTO postCategoryDTO = postCategoryMapper.postCategoryToPostCategoryDTO(postCategory);
@@ -106,20 +119,20 @@ public class PostCategoryResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the PostCategory in the database
-        List<PostCategory> postCategoryList = termTaxonomyRepository.findAll();
+        List<PostCategory> postCategoryList = postCategoryRepository.findAll();
         assertThat(postCategoryList).hasSize(databaseSizeBeforeCreate + 1);
         PostCategory postCategory = postCategoryList.get(postCategoryList.size() - 1);
         assertThat(postCategory.getTerm().getName()).isEqualTo(DEFAULT_NAME);
         assertThat(postCategory.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
         assertThat(postCategory.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(postCategory.getParentId()).isEqualTo(DEFAULT_PARENT_ID);
+//        assertThat(postCategory.getParentId()).isEqualTo(DEFAULT_PARENT_ID);
         assertThat(postCategory.getCount()).isEqualTo(DEFAULT_COUNT);
     }
 
     @Test
     @Transactional
     public void createPostCategoryExistingId() throws Exception {
-        int databaseSizeBeforeCreate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeCreate = postCategoryRepository.findAll().size();
 
         // Create the PostCategory with an existing ID
         PostCategory existingPostCategory = new PostCategory();
@@ -133,7 +146,7 @@ public class PostCategoryResourceIntTest {
                 .andExpect(status().isBadRequest());
 
         // Validate the PostCategory in the database
-        List<PostCategory> bookList = termTaxonomyRepository.findAll();
+        List<PostCategory> bookList = postCategoryRepository.findAll();
         assertThat(bookList).hasSize(databaseSizeBeforeCreate);
     }
 
@@ -141,16 +154,16 @@ public class PostCategoryResourceIntTest {
     @Transactional
     public void getAllPostCategories() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(postCategory);
+        postCategoryRepository.saveAndFlush(postCategory);
 
         // Get all the postCategories
         restBookMockMvc.perform(get(RESOURCE_API_POST_CATEGORIES + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(postCategory.getId().intValue())))
-                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-                .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID.intValue())))
+                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+                .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID)))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT.intValue())));
     }
 
@@ -158,16 +171,16 @@ public class PostCategoryResourceIntTest {
     @Transactional
     public void getPostCategory() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(postCategory);
+        postCategoryRepository.saveAndFlush(postCategory);
 
         // Get the PostCategory
         restBookMockMvc.perform(get(RESOURCE_API_POST_CATEGORIES + "/{id}", postCategory.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(postCategory.getId().intValue()))
-                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID.intValue()))
+                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
                 .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
     }
 
@@ -183,15 +196,16 @@ public class PostCategoryResourceIntTest {
     @Transactional
     public void updatePostCategory() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(postCategory);
-        int databaseSizeBeforeUpdate = termTaxonomyRepository.findAll().size();
+        postCategoryRepository.saveAndFlush(postCategory);
+        PostCategory parent = postCategoryRepository.saveAndFlush(createEntity2());
+        int databaseSizeBeforeUpdate = postCategoryRepository.findAll().size();
 
         // Update the PostCategory
-        PostCategory updatedPostCategory = termTaxonomyRepository.findOne(postCategory.getId());
+        PostCategory updatedPostCategory = postCategoryRepository.findOne(postCategory.getId());
         updatedPostCategory.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
 
         updatedPostCategory.setDescription(UPDATED_DESCRIPTION);
-        updatedPostCategory.setParentId(UPDATED_PARENT_ID);
+        updatedPostCategory.setParent(parent);
         updatedPostCategory.setCount(UPDATED_COUNT);
         PostCategoryDTO postCategoryDTO = postCategoryMapper.postCategoryToPostCategoryDTO(updatedPostCategory);
 
@@ -201,20 +215,20 @@ public class PostCategoryResourceIntTest {
                 .andExpect(status().isOk());
 
         // Validate the PostCategory in the database
-        List<PostCategory> postCategoryList = termTaxonomyRepository.findAll();
+        List<PostCategory> postCategoryList = postCategoryRepository.findAll();
         assertThat(postCategoryList).hasSize(databaseSizeBeforeUpdate);
-        PostCategory testPostCategory = postCategoryList.get(postCategoryList.size() - 1);
-        assertThat(testPostCategory.getTerm().getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testPostCategory.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
-        assertThat(testPostCategory.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testPostCategory.getParentId()).isEqualTo(UPDATED_PARENT_ID);
-        assertThat(testPostCategory.getCount()).isEqualTo(UPDATED_COUNT);
+        PostCategory testDlLocation = postCategoryRepository.findOne(updatedPostCategory.getId());
+        assertThat(testDlLocation.getTerm().getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testDlLocation.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
+        assertThat(testDlLocation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testDlLocation.getParent().getId()).isEqualTo(parent.getId());
+        assertThat(testDlLocation.getCount()).isEqualTo(UPDATED_COUNT);
     }
 
     @Test
     @Transactional
     public void updateNonExistingPostCategory() throws Exception {
-        int databaseSizeBeforeUpdate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeUpdate = postCategoryRepository.findAll().size();
 
         // Create the PostCategory
         PostCategoryDTO postCategoryDTO = postCategoryMapper.postCategoryToPostCategoryDTO(postCategory);
@@ -226,7 +240,7 @@ public class PostCategoryResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the PostCategory in the database
-        List<PostCategory> postCategoryList = termTaxonomyRepository.findAll();
+        List<PostCategory> postCategoryList = postCategoryRepository.findAll();
         assertThat(postCategoryList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -234,8 +248,8 @@ public class PostCategoryResourceIntTest {
     @Transactional
     public void deletePostCategory() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(postCategory);
-        int databaseSizeBeforeDelete = termTaxonomyRepository.findAll().size();
+        postCategoryRepository.saveAndFlush(postCategory);
+        int databaseSizeBeforeDelete = postCategoryRepository.findAll().size();
 
         // Get the postCategory
         restBookMockMvc.perform(delete(RESOURCE_API_POST_CATEGORIES + "/{id}", postCategory.getId())
@@ -243,7 +257,7 @@ public class PostCategoryResourceIntTest {
                 .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<PostCategory> postCategoryList = termTaxonomyRepository.findAll();
+        List<PostCategory> postCategoryList = postCategoryRepository.findAll();
         assertThat(postCategoryList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

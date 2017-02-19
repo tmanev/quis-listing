@@ -14,7 +14,7 @@
         vm.previousState = previousState.name;
 
         var unsubscribe = $rootScope.$on('quisListingApp:listingUpdate', function(event, result) {
-            vm.book = result;
+            vm.listing = result;
         });
         $scope.$on('$destroy', unsubscribe);
     }

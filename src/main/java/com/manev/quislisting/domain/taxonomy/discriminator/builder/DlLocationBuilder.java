@@ -63,8 +63,7 @@ public final class DlLocationBuilder {
         dlLocation.setTerm(term);
         dlLocation.setTaxonomy(taxonomy);
         dlLocation.setDescription(description);
-        dlLocation.setParentId(parentId);
-        dlLocation.setChildren(children);
+//        dlLocation.setParentId(parentId);
         dlLocation.setCount(count);
         return dlLocation;
     }

@@ -8,6 +8,8 @@ public abstract class TermTaxonomyDTO {
     private Long count;
     private String languageId;
 
+    private int depthLevel;
+
     public TermTaxonomyDTO() {
         this.term = new TermDTO();
     }
@@ -58,5 +60,13 @@ public abstract class TermTaxonomyDTO {
 
     public void setLanguageId(String languageId) {
         this.languageId = languageId;
+    }
+
+    public void setDepthLevel(int depthLevel) {
+        this.depthLevel = depthLevel;
+    }
+
+    public int getDepthLevel() {
+        return depthLevel;
     }
 }

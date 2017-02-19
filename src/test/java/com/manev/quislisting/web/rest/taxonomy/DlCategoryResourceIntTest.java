@@ -4,10 +4,10 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
-import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
+import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
+import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
-import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,20 +39,24 @@ public class DlCategoryResourceIntTest {
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
-    private static final Long DEFAULT_PARENT_ID = 0L;
+    private static final Long DEFAULT_PARENT_ID = null;
     private static final Long DEFAULT_COUNT = 0L;
+
+    private static final String DEFAULT_NAME_2 = "DEFAULT_NAME_2";
+    private static final String DEFAULT_SLUG_2 = "DEFAULT_SLUG_2";
+    private static final String DEFAULT_DESCRIPTION_2 = "DEFAULT_DESCRIPTION_2";
+    private static final Long DEFAULT_COUNT_2 = 0L;
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_SLUG = "UPDATED_SLUG";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    private static final Long UPDATED_PARENT_ID = 1L;
     private static final Long UPDATED_COUNT = 1L;
 
     @Autowired
     private DlCategoryService dlCategoryService;
 
     @Autowired
-    private TermTaxonomyRepository<DlCategory> termTaxonomyRepository;
+    private DlCategoryRepository dlCategoryRepository;
 
     @Autowired
     private DlCategoryMapper dlCategoryMapper;
@@ -70,11 +74,18 @@ public class DlCategoryResourceIntTest {
 
     private DlCategory dlCategory;
 
-    public static DlCategory createEntity(EntityManager em) {
+    public static DlCategory createEntity() {
         return DlCategoryBuilder.aDlCategory().withTerm(
                 TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build()
-        ).withDescription(DEFAULT_DESCRIPTION).withParentId(DEFAULT_PARENT_ID)
+        ).withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT).build();
+    }
+
+    public static DlCategory createEntity2() {
+        return DlCategoryBuilder.aDlCategory().withTerm(
+                TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build()
+        ).withDescription(DEFAULT_DESCRIPTION_2)
+                .withCount(DEFAULT_COUNT_2).build();
     }
 
     @Before
@@ -88,14 +99,14 @@ public class DlCategoryResourceIntTest {
 
     @Before
     public void initTest() {
-        termTaxonomyRepository.deleteAll();
-        dlCategory = createEntity(em);
+        dlCategoryRepository.deleteAll();
+        dlCategory = createEntity();
     }
 
     @Test
     @Transactional
     public void createDlCategory() throws Exception {
-        int databaseSizeBeforeCreate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeCreate = dlCategoryRepository.findAll().size();
 
         // Create the DlCategory
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
@@ -106,20 +117,20 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the DlCategory in the database
-        List<DlCategory> dlCategoryList = termTaxonomyRepository.findAll();
+        List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeCreate + 1);
         DlCategory dlCategory = dlCategoryList.get(dlCategoryList.size() - 1);
         assertThat(dlCategory.getTerm().getName()).isEqualTo(DEFAULT_NAME);
         assertThat(dlCategory.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
         assertThat(dlCategory.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(dlCategory.getParentId()).isEqualTo(DEFAULT_PARENT_ID);
+        assertThat(dlCategory.getParent()).isEqualTo(DEFAULT_PARENT_ID);
         assertThat(dlCategory.getCount()).isEqualTo(DEFAULT_COUNT);
     }
 
     @Test
     @Transactional
     public void createDlCategoryExistingId() throws Exception {
-        int databaseSizeBeforeCreate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeCreate = dlCategoryRepository.findAll().size();
 
         // Create the DlCategory with an existing ID
         DlCategory existingDlCategory = new DlCategory();
@@ -133,7 +144,7 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isBadRequest());
 
         // Validate the DlCategory in the database
-        List<DlCategory> dlCategoryList = termTaxonomyRepository.findAll();
+        List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeCreate);
     }
 
@@ -141,16 +152,16 @@ public class DlCategoryResourceIntTest {
     @Transactional
     public void getAllDlCategories() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlCategory);
+        dlCategoryRepository.saveAndFlush(dlCategory);
 
         // Get all the dlCategories
         restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlCategory.getId().intValue())))
-                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-                .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID.intValue())))
+                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+                .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID)))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT.intValue())));
     }
 
@@ -158,16 +169,16 @@ public class DlCategoryResourceIntTest {
     @Transactional
     public void getDlCategory() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlCategory);
+        dlCategoryRepository.saveAndFlush(dlCategory);
 
         // Get the DlCategory
         restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))
-                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID.intValue()))
+                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
                 .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
     }
 
@@ -183,15 +194,16 @@ public class DlCategoryResourceIntTest {
     @Transactional
     public void updateDlCategory() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlCategory);
-        int databaseSizeBeforeUpdate = termTaxonomyRepository.findAll().size();
+        dlCategoryRepository.saveAndFlush(dlCategory);
+        DlCategory parent = dlCategoryRepository.saveAndFlush(createEntity2());
+        int databaseSizeBeforeUpdate = dlCategoryRepository.findAll().size();
 
         // Update the DlCategory
-        DlCategory updatedDlCategory = termTaxonomyRepository.findOne(dlCategory.getId());
+        DlCategory updatedDlCategory = dlCategoryRepository.findOne(this.dlCategory.getId());
         updatedDlCategory.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
 
         updatedDlCategory.setDescription(UPDATED_DESCRIPTION);
-        updatedDlCategory.setParentId(UPDATED_PARENT_ID);
+        updatedDlCategory.setParent(parent);
         updatedDlCategory.setCount(UPDATED_COUNT);
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(updatedDlCategory);
 
@@ -201,20 +213,20 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isOk());
 
         // Validate the DlCategory in the database
-        List<DlCategory> dlCategoryList = termTaxonomyRepository.findAll();
+        List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeUpdate);
-        DlCategory testDlCategory = dlCategoryList.get(dlCategoryList.size() - 1);
+        DlCategory testDlCategory = dlCategoryRepository.findOne(updatedDlCategory.getId());
         assertThat(testDlCategory.getTerm().getName()).isEqualTo(UPDATED_NAME);
         assertThat(testDlCategory.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
         assertThat(testDlCategory.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testDlCategory.getParentId()).isEqualTo(UPDATED_PARENT_ID);
+        assertThat(testDlCategory.getParent().getId()).isEqualTo(parent.getId());
         assertThat(testDlCategory.getCount()).isEqualTo(UPDATED_COUNT);
     }
 
     @Test
     @Transactional
     public void updateNonExistingDlCategory() throws Exception {
-        int databaseSizeBeforeUpdate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeUpdate = dlCategoryRepository.findAll().size();
 
         // Create the DlCategory
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
@@ -226,7 +238,7 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the DlCategory in the database
-        List<DlCategory> dlCategoryList = termTaxonomyRepository.findAll();
+        List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -234,8 +246,8 @@ public class DlCategoryResourceIntTest {
     @Transactional
     public void deleteDlCategory() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlCategory);
-        int databaseSizeBeforeDelete = termTaxonomyRepository.findAll().size();
+        dlCategoryRepository.saveAndFlush(dlCategory);
+        int databaseSizeBeforeDelete = dlCategoryRepository.findAll().size();
 
         // Get the dlCategory
         restDlCategoryMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId())
@@ -243,7 +255,7 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<DlCategory> dlCategoryList = termTaxonomyRepository.findAll();
+        List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

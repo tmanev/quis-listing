@@ -1,7 +1,6 @@
 package com.manev.quislisting.domain.taxonomy;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "ql_term_taxonomy")
@@ -22,12 +21,6 @@ public abstract class TermTaxonomy {
 
     @Column
     private String description;
-
-    @Column
-    private Long parentId;
-
-    @OneToMany(mappedBy = "parentId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<TermTaxonomy> children;
 
     @Column
     private Long count = 0L;
@@ -60,14 +53,6 @@ public abstract class TermTaxonomy {
         this.description = description;
     }
 
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
-
     public Long getCount() {
         return count;
     }
@@ -82,14 +67,6 @@ public abstract class TermTaxonomy {
 
     public void setTerm(Term term) {
         this.term = term;
-    }
-
-    public Set<TermTaxonomy> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<TermTaxonomy> children) {
-        this.children = children;
     }
 
 }

@@ -37,7 +37,7 @@ public class DlLocationResource {
 
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlLocationDTO> createPostCategory(@RequestBody DlLocationDTO dlLocationDTO) throws URISyntaxException {
+    public ResponseEntity<DlLocationDTO> createDlLocation(@RequestBody DlLocationDTO dlLocationDTO) throws URISyntaxException {
         log.debug("REST request to save DlLocationDTO : {}", dlLocationDTO);
         if (dlLocationDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
@@ -50,10 +50,10 @@ public class DlLocationResource {
     }
 
     @PutMapping
-    public ResponseEntity<DlLocationDTO> updateAuthor(@RequestBody DlLocationDTO dlLocationDTO) throws URISyntaxException {
+    public ResponseEntity<DlLocationDTO> updateDlLocation(@RequestBody DlLocationDTO dlLocationDTO) throws URISyntaxException {
         log.debug("REST request to update DlLocationDTO : {}", dlLocationDTO);
         if (dlLocationDTO.getId() == null) {
-            return createPostCategory(dlLocationDTO);
+            return createDlLocation(dlLocationDTO);
         }
         DlLocationDTO result = dlLocationService.save(dlLocationDTO);
         return ResponseEntity.ok()
@@ -62,7 +62,7 @@ public class DlLocationResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlLocationDTO>> getAllAuthors(Pageable pageable)
+    public ResponseEntity<List<DlLocationDTO>> getAllDlLocations(Pageable pageable)
             throws URISyntaxException {
         log.debug("REST request to get a page of DlLocationDTO");
         Page<DlLocationDTO> page = dlLocationService.findAll(pageable);
@@ -71,14 +71,14 @@ public class DlLocationResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DlLocationDTO> getAuthor(@PathVariable Long id) {
+    public ResponseEntity<DlLocationDTO> getDlLocation(@PathVariable Long id) {
         log.debug("REST request to get DlLocationDTO : {}", id);
         DlLocationDTO dlLocationDTO = dlLocationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlLocationDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDlLocation(@PathVariable Long id) {
         log.debug("REST request to delete DlLocationDTO : {}", id);
         dlLocationService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

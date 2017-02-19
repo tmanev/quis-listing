@@ -20,7 +20,6 @@ public class PostCategoryMapper {
                                 .withName(postCategoryDto.getTerm().getName())
                                 .withSlug(postCategoryDto.getTerm().getSlug()).build()
                 ).withDescription(postCategoryDto.getDescription())
-                .withParentId(postCategoryDto.getParentId())
                 .withCount(postCategoryDto.getCount()).build();
     }
 
@@ -32,7 +31,7 @@ public class PostCategoryMapper {
                                 .withName(postCategory.getTerm().getName())
                                 .withSlug(postCategory.getTerm().getSlug()).build())
                 .withDescription(postCategory.getDescription())
-                .withParentId(postCategory.getParentId())
+                .withParentId(postCategory.getParent() != null ? postCategory.getParent().getId() : null)
                 .withCount(postCategory.getCount()).build();
     }
 

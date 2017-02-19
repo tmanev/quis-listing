@@ -2,12 +2,13 @@ package com.manev.quislisting.web.rest.taxonomy;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;
-import com.manev.quislisting.repository.taxonomy.TermTaxonomyRepository;
+import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
+import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
-import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,20 +40,24 @@ public class DlLocationResourceIntTest {
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
-    private static final Long DEFAULT_PARENT_ID = 0L;
+    private static final Long DEFAULT_PARENT_ID = null;
     private static final Long DEFAULT_COUNT = 0L;
+
+    private static final String DEFAULT_NAME_2 = "DEFAULT_NAME_2";
+    private static final String DEFAULT_SLUG_2 = "DEFAULT_SLUG_2";
+    private static final String DEFAULT_DESCRIPTION_2 = "DEFAULT_DESCRIPTION_2";
+    private static final Long DEFAULT_COUNT_2 = 0L;
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_SLUG = "UPDATED_SLUG";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    private static final Long UPDATED_PARENT_ID = 1L;
     private static final Long UPDATED_COUNT = 1L;
 
     @Autowired
     private DlLocationService dlLocationService;
 
     @Autowired
-    private TermTaxonomyRepository<DlLocation> termTaxonomyRepository;
+    private DlLocationRepository dlLocationRepository;
 
     @Autowired
     private DlLocationMapper dlLocationMapper;
@@ -70,11 +75,18 @@ public class DlLocationResourceIntTest {
 
     private DlLocation dlLocation;
 
-    public static DlLocation createEntity(EntityManager em) {
+    public static DlLocation createEntity() {
         return DlLocationBuilder.aDlLocation().withTerm(
                 TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build()
-        ).withDescription(DEFAULT_DESCRIPTION).withParentId(DEFAULT_PARENT_ID)
+        ).withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT).build();
+    }
+
+    public static DlLocation createEntity2() {
+        return DlLocationBuilder.aDlLocation().withTerm(
+                TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build()
+        ).withDescription(DEFAULT_DESCRIPTION_2)
+                .withCount(DEFAULT_COUNT_2).build();
     }
 
     @Before
@@ -88,14 +100,14 @@ public class DlLocationResourceIntTest {
 
     @Before
     public void initTest() {
-        termTaxonomyRepository.deleteAll();
-        dlLocation = createEntity(em);
+        dlLocationRepository.deleteAll();
+        dlLocation = createEntity();
     }
 
     @Test
     @Transactional
     public void createDlLocation() throws Exception {
-        int databaseSizeBeforeCreate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeCreate = dlLocationRepository.findAll().size();
 
         // Create the DlLocation
         DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(dlLocation);
@@ -106,20 +118,20 @@ public class DlLocationResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the DlLocation in the database
-        List<DlLocation> dlLocationList = termTaxonomyRepository.findAll();
+        List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeCreate + 1);
         DlLocation dlLocation = dlLocationList.get(dlLocationList.size() - 1);
         assertThat(dlLocation.getTerm().getName()).isEqualTo(DEFAULT_NAME);
         assertThat(dlLocation.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
         assertThat(dlLocation.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(dlLocation.getParentId()).isEqualTo(DEFAULT_PARENT_ID);
+        assertThat(dlLocation.getParent()).isEqualTo(DEFAULT_PARENT_ID);
         assertThat(dlLocation.getCount()).isEqualTo(DEFAULT_COUNT);
     }
 
     @Test
     @Transactional
     public void createDlLocationExistingId() throws Exception {
-        int databaseSizeBeforeCreate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeCreate = dlLocationRepository.findAll().size();
 
         // Create the DlLocation with an existing ID
         DlLocation existingDlLocation = new DlLocation();
@@ -133,7 +145,7 @@ public class DlLocationResourceIntTest {
                 .andExpect(status().isBadRequest());
 
         // Validate the DlLocation in the database
-        List<DlLocation> dlLocationList = termTaxonomyRepository.findAll();
+        List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeCreate);
     }
 
@@ -141,16 +153,16 @@ public class DlLocationResourceIntTest {
     @Transactional
     public void getAllDlLocations() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlLocation);
+        dlLocationRepository.saveAndFlush(dlLocation);
 
         // Get all the dlLocations
         restBookMockMvc.perform(get(RESOURCE_API_DL_LOCATIONS + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlLocation.getId().intValue())))
-                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-                .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID.intValue())))
+                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+                .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID)))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT.intValue())));
     }
 
@@ -158,16 +170,16 @@ public class DlLocationResourceIntTest {
     @Transactional
     public void getDlLocation() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlLocation);
+        dlLocationRepository.saveAndFlush(dlLocation);
 
         // Get the DlLocation
         restBookMockMvc.perform(get(RESOURCE_API_DL_LOCATIONS + "/{id}", dlLocation.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlLocation.getId().intValue()))
-                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID.intValue()))
+                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
                 .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
     }
 
@@ -183,15 +195,16 @@ public class DlLocationResourceIntTest {
     @Transactional
     public void updateDlLocation() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlLocation);
-        int databaseSizeBeforeUpdate = termTaxonomyRepository.findAll().size();
+        dlLocationRepository.saveAndFlush(dlLocation);
+        DlLocation parent = dlLocationRepository.saveAndFlush(createEntity2());
+        int databaseSizeBeforeUpdate = dlLocationRepository.findAll().size();
 
         // Update the DlLocation
-        DlLocation updatedDlLocation = termTaxonomyRepository.findOne(dlLocation.getId());
+        DlLocation updatedDlLocation = dlLocationRepository.findOne(dlLocation.getId());
         updatedDlLocation.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
 
         updatedDlLocation.setDescription(UPDATED_DESCRIPTION);
-        updatedDlLocation.setParentId(UPDATED_PARENT_ID);
+        updatedDlLocation.setParent(parent);
         updatedDlLocation.setCount(UPDATED_COUNT);
         DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(updatedDlLocation);
 
@@ -201,20 +214,20 @@ public class DlLocationResourceIntTest {
                 .andExpect(status().isOk());
 
         // Validate the DlLocation in the database
-        List<DlLocation> dlLocationList = termTaxonomyRepository.findAll();
+        List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeUpdate);
-        DlLocation testDlLocation = dlLocationList.get(dlLocationList.size() - 1);
+        DlLocation testDlLocation = dlLocationRepository.findOne(updatedDlLocation.getId());
         assertThat(testDlLocation.getTerm().getName()).isEqualTo(UPDATED_NAME);
         assertThat(testDlLocation.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
         assertThat(testDlLocation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testDlLocation.getParentId()).isEqualTo(UPDATED_PARENT_ID);
+        assertThat(testDlLocation.getParent().getId()).isEqualTo(parent.getId());
         assertThat(testDlLocation.getCount()).isEqualTo(UPDATED_COUNT);
     }
 
     @Test
     @Transactional
     public void updateNonExistingDlLocation() throws Exception {
-        int databaseSizeBeforeUpdate = termTaxonomyRepository.findAll().size();
+        int databaseSizeBeforeUpdate = dlLocationRepository.findAll().size();
 
         // Create the DlLocation
         DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(dlLocation);
@@ -226,7 +239,7 @@ public class DlLocationResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the DlLocation in the database
-        List<DlLocation> dlLocationList = termTaxonomyRepository.findAll();
+        List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -234,8 +247,8 @@ public class DlLocationResourceIntTest {
     @Transactional
     public void deleteDlLocation() throws Exception {
         // Initialize the database
-        termTaxonomyRepository.saveAndFlush(dlLocation);
-        int databaseSizeBeforeDelete = termTaxonomyRepository.findAll().size();
+        dlLocationRepository.saveAndFlush(dlLocation);
+        int databaseSizeBeforeDelete = dlLocationRepository.findAll().size();
 
         // Get the dlLocation
         restBookMockMvc.perform(delete(RESOURCE_API_DL_LOCATIONS + "/{id}", dlLocation.getId())
@@ -243,7 +256,7 @@ public class DlLocationResourceIntTest {
                 .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<DlLocation> dlLocationList = termTaxonomyRepository.findAll();
+        List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

@@ -1,5 +1,7 @@
 id;term_id;taxonomy;description;parent_id;count
-1;1;dl-category;Work Description;0;0
-2;2;dl-category;Sales of Real Estate;0;0
-3;3;dl-category;Rents of Real Estate;0;0
-4;4;dl-category;Auto Moto;0;0
+1;1;dl-category;Work Description;null;0
+2;2;dl-category;Sales of Real Estate;null;0
+3;3;dl-category;Rents of Real Estate;null;0
+4;4;dl-category;Auto Moto;null;0
+5;5;dl-category;Automobiles, Jeeps, Pickups any car;4;0
+6;6;dl-category;Trucks for you;4;0

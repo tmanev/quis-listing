@@ -250,7 +250,7 @@
             <column name="description" type="longtext">
                 <constraints nullable="false" />
             </column>
-            <column name="parent_id" type="bigint" defaultValue="0">
+            <column name="parent_id" type="bigint">
                 <constraints nullable="true"/>
             </column>
             <column name="count" type="bigint(20)" defaultValue="0">
