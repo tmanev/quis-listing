@@ -12,7 +12,6 @@
 
         vm.dlCategory = entity;
         vm.clear = clear;
-        vm.datePickerOpenStatus = {};
         vm.save = save;
 
         $timeout(function (){

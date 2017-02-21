@@ -127,10 +127,12 @@
                     resolve: {
                         entity: function () {
                             return {
+                                id: null,
                                 name: null,
                                 slug: null,
-                                count: null,
-                                id: null
+                                description: "",
+                                parentId: null,
+                                count: null
                             };
                         }
                     }

@@ -18,6 +18,7 @@
             },
             "name": "Name",
             "slug": "Slug",
+            "description": "Description",
             "count": "Count"
         }
     }

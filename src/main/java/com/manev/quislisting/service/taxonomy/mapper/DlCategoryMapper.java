@@ -25,8 +25,7 @@ public class DlCategoryMapper {
                                 .withId(dlCategoryDTO.getTerm().getId())
                                 .withName(dlCategoryDTO.getTerm().getName())
                                 .withSlug(dlCategoryDTO.getTerm().getSlug()).build()
-                ).withDescription(dlCategoryDTO.getDescription())
-                .withCount(dlCategoryDTO.getCount()).build();
+                ).withDescription(dlCategoryDTO.getDescription()).build();
     }
 
     public List<DlCategoryDTO> dlCategoryToDlCategoryDtoFlat(Page<DlCategory> page) {
