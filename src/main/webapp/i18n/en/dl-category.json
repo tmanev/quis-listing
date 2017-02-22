@@ -19,6 +19,7 @@
             "name": "Name",
             "slug": "Slug",
             "description": "Description",
+            "parent": "Parent",
             "count": "Count"
         }
     }

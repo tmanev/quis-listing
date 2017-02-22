@@ -3,12 +3,55 @@
 
     angular
         .module('quisListingApp')
-        .controller('DlCategoryDialogController', DlCategoryDialogController);
+        .controller('DlCategoryDialogController', DlCategoryDialogController)
+        .filter('range', function() {
+            return function(input, total) {
+                total = parseInt(total);
+                for (var i=0; i<total; i++)
+                    input.push(i);
+                return input;
+            };
+        });
 
-    DlCategoryDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DlCategory'];
+    DlCategoryDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DlCategory', 'AlertService'];
 
-    function DlCategoryDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, DlCategory) {
+    function DlCategoryDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, DlCategory, AlertService) {
         var vm = this;
+        vm.predicate = 'id';
+        vm.reverse = true;
+
+        vm.person = {};
+
+        vm.person.selectedValue = {};
+        vm.person.selectedSingle = 'Samantha';
+        vm.person.selectedSingleKey = '5';
+        // To run the demos with a preselected person object, uncomment the line below.
+        //vm.person.selected = vm.person.selectedValue;
+
+        loadAll();
+
+        function loadAll () {
+
+            DlCategory.query({
+                sort: sort()
+            }, onSuccess, onError);
+
+            function sort() {
+                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
+                if (vm.predicate !== 'id') {
+                    result.push('id');
+                }
+                return result;
+            }
+            function onSuccess(data, headers) {
+                vm.totalItems = headers('X-Total-Count');
+                vm.queryCount = vm.totalItems;
+                vm.dlCategories = data;
+            }
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
 
         vm.dlCategory = entity;
         vm.clear = clear;

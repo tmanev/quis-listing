@@ -3,6 +3,8 @@
 
     angular
         .module('quisListingApp', [
+            'ui.select',
+            'ngSanitize',
             'ngStorage',
             'tmh.dynamicLocale',
             'pascalprecht.translate',
