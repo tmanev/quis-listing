@@ -30,6 +30,13 @@
 
         loadAll();
 
+        vm.onSelectCallback = function ($item, $model) {
+            console.log("Item:");
+            console.log($item);
+            console.log("Model:");
+console.log($model);
+        };
+
         function loadAll () {
 
             DlCategory.query({

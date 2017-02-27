@@ -7,7 +7,8 @@
 
     function TreeUtils () {
         var service = {
-            getTree : getTree
+            getTree : getTree,
+            getFlat : getFlat
         };
 
         return service;
@@ -50,6 +51,25 @@
             }
 
             return tree;
+        }
+
+        function getFlat(tree) {
+            var flatObjs = [];
+            for (var i = 0, len = tree.length; i< len; i++) {
+                getChildren(tree[i], flatObjs);
+            }
+
+            return flatObjs;
+        }
+
+        function getChildren(data, $array) {
+            $array.push(data);
+            var children = data.children;
+            if (children){
+                for (var i = 0, len = children.length; i < len; i++) {
+                    getChildren(children[i], $array);
+                }
+            }
         }
     }
 

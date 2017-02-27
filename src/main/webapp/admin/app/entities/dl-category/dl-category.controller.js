@@ -13,9 +13,9 @@
             };
         });
 
-    DlCategoryController.$inject = ['$scope', '$state', 'DlCategory', 'DlCategorySearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    DlCategoryController.$inject = ['$scope', '$state', 'DlCategory', 'DlCategorySearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams', 'TreeUtils'];
 
-    function DlCategoryController ($scope, $state, DlCategory, DlCategorySearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function DlCategoryController ($scope, $state, DlCategory, DlCategorySearch, ParseLinks, AlertService, paginationConstants, pagingParams, TreeUtils) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -58,6 +58,8 @@
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
                 vm.dlCategories = data;
+                vm.dlCategoriesTree = TreeUtils.getTree(data, "id", "parentId");
+                vm.dlCategoriesFlat = TreeUtils.getFlat(vm.dlCategoriesTree);
                 vm.page = pagingParams.page;
             }
             function onError(error) {

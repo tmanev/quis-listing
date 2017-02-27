@@ -34,18 +34,19 @@
 
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.dlCategory.parent">Parent</label>
+            <p>Selected: {{vm.dlCategory.parentId}}</p>
             <div class="input-group">
 
-                <ui-select allow-clear ng-model="vm.person.selected" theme="bootstrap">
+                <ui-select allow-clear ng-model="vm.dlCategory.parentId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
                     <ui-select-match placeholder="Select or search a category in the list...">{{$select.selected.term.name}}</ui-select-match>
-                    <ui-select-choices repeat="item in vm.dlCategories | filter: $select.search">
+                    <ui-select-choices repeat="item.id as item in vm.dlCategories | filter: $select.search">
                         <span ng-repeat="n in [] | range:item.depthLevel">—</span>
                         <span ng-bind-html="item.term.name | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
 
                 <span class="input-group-btn">
-                  <button type="button" ng-click="vm.person.selected = undefined" class="btn btn-default">
+                  <button type="button" ng-click="vm.dlCategory.parentId = undefined" class="btn btn-default">
                     <span class="glyphicon glyphicon-trash"></span>
                   </button>
                 </span>
