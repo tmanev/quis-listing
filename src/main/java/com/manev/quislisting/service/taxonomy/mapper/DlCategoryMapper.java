@@ -33,24 +33,31 @@ public class DlCategoryMapper {
 
         List<DlCategoryDTO> result = new ArrayList<>();
         for (DlCategory dlCategory : page) {
-            doMappingAndFillDepthLevel(dlCategory, ids, result, 0);
+            doMappingAndFillDepthLevel(dlCategory, ids, result);
         }
 
         return result;
     }
 
-    private int doMappingAndFillDepthLevel(DlCategory dlCategory, Set<Long> ids, List<DlCategoryDTO> result, int depthLevel) {
-        int resultDepthLevel = depthLevel;
+    private int doMappingAndFillDepthLevel(DlCategory dlCategory, Set<Long> ids, List<DlCategoryDTO> result) {
         if (dlCategory.getParent() != null) {
-            resultDepthLevel = doMappingAndFillDepthLevel(dlCategory.getParent(), ids, result, depthLevel + 1);
+            int depthLevel = doMappingAndFillDepthLevel(dlCategory.getParent(), ids, result) + 1;
+            pushToTheList(dlCategory, ids, result, depthLevel);
+            return depthLevel;
+        } else {
+            int depthLevel = 0;
+            pushToTheList(dlCategory, ids, result, depthLevel);
+            return 0;
         }
+    }
+
+    private void pushToTheList(DlCategory dlCategory, Set<Long> ids, List<DlCategoryDTO> result, int depthLevel) {
         if (!ids.contains(dlCategory.getId())) {
             ids.add(dlCategory.getId());
             DlCategoryDTO dlCategoryDTO = dlCategoryToDlCategoryDTO(dlCategory);
-            dlCategoryDTO.setDepthLevel(resultDepthLevel);
+            dlCategoryDTO.setDepthLevel(depthLevel);
             result.add(dlCategoryDTO);
         }
-        return resultDepthLevel;
     }
 
     public DlCategoryDTO dlCategoryToDlCategoryDTO(DlCategory dlCategory) {
