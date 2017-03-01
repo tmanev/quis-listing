@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span data-translate="quisListingApp.language.detail.title">Language</span> {{vm.language.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="quisListingApp.language.code">Code</span></dt>
+        <dd>
+            <span>{{vm.language.code}}</span>
+        </dd>
+        <dt><span data-translate="quisListingApp.language.englishName">English name</span></dt>
+        <dd>
+            <span>{{vm.language.englishName}}</span>
+        </dd>
+        <dt><span data-translate="quisListingApp.language.defaultLocale">Default locale</span></dt>
+        <dd>
+            <span>{{vm.language.defaultLocale}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="language-detail.edit({id:vm.language.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

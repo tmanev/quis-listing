@@ -7,9 +7,17 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
+                "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+            },
+            "qlml": {
+                "main": "QLML",
+                "languages": "Languages"
+            },
+            "dl": {
+                "main": "DL",
                 "listing": "Listings",
                 "dlCategory": "Dl Categories",
-                "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+                "dlLocation": "Dl Locations"
             },
             "account": {
                 "main": "Account",
