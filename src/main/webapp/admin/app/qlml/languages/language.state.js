@@ -61,7 +61,7 @@
             },
             views: {
                 'content@': {
-                    templateUrl: 'admin/app/qlml/language/language-detail.html',
+                    templateUrl: 'admin/app/qlml/languages/language-detail.html',
                     controller: 'LanguageDetailController',
                     controllerAs: 'vm'
                 }
@@ -93,7 +93,7 @@
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/qlml/language/language-dialog.html',
+                    templateUrl: 'admin/app/qlml/languages/language-dialog.html',
                     controller: 'LanguageDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
@@ -119,7 +119,7 @@
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/qlml/language/language-dialog.html',
+                    templateUrl: 'admin/app/qlml/languages/language-dialog.html',
                     controller: 'LanguageDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
@@ -150,7 +150,7 @@
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/qlml/language/language-dialog.html',
+                    templateUrl: 'admin/app/qlml/languages/language-dialog.html',
                     controller: 'LanguageDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
@@ -176,7 +176,7 @@
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/qlml/language/language-delete-dialog.html',
+                    templateUrl: 'admin/app/qlml/languages/language-delete-dialog.html',
                     controller: 'LanguageDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
