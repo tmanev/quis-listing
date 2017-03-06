@@ -1,6 +1,8 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -23,36 +26,45 @@ public class DlCategoryService {
 
     private DlCategoryRepository dlCategoryRepository;
 
-    private DlCategoryMapper postCategoryMapper;
+    private TranslationGroupRepository translationGroupRepository;
 
-    public DlCategoryService(DlCategoryRepository dlCategoryRepository, DlCategoryMapper postCategoryMapper) {
+    private DlCategoryMapper dlCategoryMapper;
+
+    public DlCategoryService(DlCategoryRepository dlCategoryRepository, DlCategoryMapper dlCategoryMapper,
+                             TranslationGroupRepository translationGroupRepository) {
         this.dlCategoryRepository = dlCategoryRepository;
-        this.postCategoryMapper = postCategoryMapper;
+        this.dlCategoryMapper = dlCategoryMapper;
+        this.translationGroupRepository = translationGroupRepository;
     }
 
     public DlCategoryDTO save(DlCategoryDTO dlCategoryDTO) {
         log.debug("Request to save DlCategoryDTO : {}", dlCategoryDTO);
 
-        DlCategory dlCategory = postCategoryMapper.dlCategoryDTOTodlCategory(dlCategoryDTO);
+        DlCategory dlCategory = dlCategoryMapper.dlCategoryDTOTodlCategory(dlCategoryDTO);
+        if (dlCategoryDTO.getTrGroupId() != null) {
+            dlCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlCategoryDTO.getTrGroupId()));
+        } else {
+            dlCategory.getTranslation().setTranslationGroup(new TranslationGroup());
+        }
         if (dlCategoryDTO.getParentId() != null) {
             dlCategory.setParent(dlCategoryRepository.findOne(dlCategoryDTO.getParentId()));
         }
         dlCategory = dlCategoryRepository.save(dlCategory);
-        return postCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
+        return dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
     }
 
-    public Page<DlCategoryDTO> findAll(Pageable pageable) {
+    public Page<DlCategoryDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all DlCategoryDTO");
         Page<DlCategory> result = dlCategoryRepository.findAll(pageable);
-        List<DlCategoryDTO> dlCategoryDTOS = postCategoryMapper.dlCategoryToDlCategoryDtoFlat(result);
-        return new PageImpl<>(dlCategoryDTOS, pageable, result.getTotalElements());
+        List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(result);
+        return new PageImpl<>(dlCategoryDTOs, pageable, result.getTotalElements());
     }
 
     @Transactional(readOnly = true)
     public DlCategoryDTO findOne(Long id) {
         log.debug("Request to get DlCategoryDTO : {}", id);
         DlCategory result = dlCategoryRepository.findOne(id);
-        return result != null ? postCategoryMapper.dlCategoryToDlCategoryDTO(result) : null;
+        return result != null ? dlCategoryMapper.dlCategoryToDlCategoryDTO(result) : null;
     }
 
     public void delete(Long id) {

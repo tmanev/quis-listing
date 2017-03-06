@@ -58,7 +58,7 @@ public final class DlLocationDTOBuilder {
         dlLocationDTO.setParentId(parentId);
         dlLocationDTO.setDescription(description);
         dlLocationDTO.setCount(count);
-        dlLocationDTO.setLanguageId(languageId);
+        dlLocationDTO.setLanguageCode(languageId);
         return dlLocationDTO;
     }
 }

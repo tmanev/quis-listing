@@ -1,6 +1,8 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
+import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
 import com.manev.quislisting.service.taxonomy.mapper.NavMenuMapper;
@@ -23,17 +25,29 @@ public class NavMenuService {
 
     private NavMenuRepository navMenuRepository;
 
+    private TranslationGroupRepository translationGroupRepository;
+
     private NavMenuMapper navMenuMapper;
 
-    public NavMenuService(NavMenuRepository navMenuRepository, NavMenuMapper navMenuMapper) {
+    public NavMenuService(NavMenuRepository navMenuRepository, NavMenuMapper navMenuMapper,
+                          TranslationGroupRepository translationGroupRepository) {
         this.navMenuRepository = navMenuRepository;
         this.navMenuMapper = navMenuMapper;
+        this.translationGroupRepository = translationGroupRepository;
     }
 
     public NavMenuDTO save(NavMenuDTO navMenuDTO) {
         log.debug("Request to save NavMenuDTO : {}", navMenuDTO);
 
         NavMenu navMenu = navMenuMapper.navMenuDTOToNavMenu(navMenuDTO);
+        if (navMenuDTO.getTrGroupId() != null) {
+            navMenu.getTranslation().setTranslationGroup(translationGroupRepository.findOne(navMenuDTO.getTrGroupId()));
+        } else {
+            navMenu.getTranslation().setTranslationGroup(new TranslationGroup());
+        }
+        if (navMenuDTO.getParentId() != null) {
+            navMenu.setParent(navMenuRepository.findOne(navMenuDTO.getParentId()));
+        }
         if (navMenuDTO.getParentId() != null) {
             navMenu.setParent(navMenuRepository.findOne(navMenuDTO.getParentId()));
         }

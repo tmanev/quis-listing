@@ -13,7 +13,7 @@ public class DlCategory extends TermTaxonomy {
     public static final String TAXONOMY = "dl-category";
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = true, updatable = true)
+    @JoinColumn(name = "parent_id")
     private DlCategory parent;
 
     public DlCategory getParent() {

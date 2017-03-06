@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
@@ -17,43 +18,52 @@ public class DlCategoryMapperTest {
 
     private DlCategoryMapper dlCategoryMapper = new DlCategoryMapper();
 
+    private DlCategory createDlCategory(Long id, DlCategory parent) {
+        return DlCategoryBuilder.aDlCategory()
+                .withId(id)
+                .withParent(parent)
+                .withTerm(TermBuilder.aTerm().withId(1L).build())
+                .withTranslation(TranslationBuilder.aTranslation().withLanguageCode("en").build())
+                .build();
+    }
+
     @Test
     public void dlCategoryToDlCategoryDtoFlat() throws Exception {
         List<DlCategory> dlCategoryList = new ArrayList<>();
-        DlCategory dlCat1 = DlCategoryBuilder.aDlCategory().withId(1L).withTerm(TermBuilder.aTerm().withId(1L).build()).build();
+        DlCategory dlCat1 = createDlCategory(1L, null);
         dlCategoryList.add(dlCat1);
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(2L).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(3L).withParent(dlCat1).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
-        DlCategory dlCat4 = DlCategoryBuilder.aDlCategory().withId(4L).withParent(dlCat1).withTerm(TermBuilder.aTerm().withId(1L).build()).build();
+        dlCategoryList.add(createDlCategory(2L, null));
+        dlCategoryList.add(createDlCategory(3L, dlCat1));
+        DlCategory dlCat4 = createDlCategory(4L, dlCat1);
         dlCategoryList.add(dlCat4);
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(5L).withParent(dlCat1).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
-        DlCategory dlCat6 = DlCategoryBuilder.aDlCategory().withId(6L).withParent(dlCat1).withTerm(TermBuilder.aTerm().withId(1L).build()).build();
+        dlCategoryList.add(createDlCategory(5L, dlCat1));
+        DlCategory dlCat6 = createDlCategory(6L, dlCat1);
         dlCategoryList.add(dlCat6);
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(7L).withParent(dlCat4).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(8L).withParent(dlCat4).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
-        DlCategory dlCat9 = DlCategoryBuilder.aDlCategory().withId(9L).withParent(dlCat6).withTerm(TermBuilder.aTerm().withId(1L).build()).build();
+        dlCategoryList.add(createDlCategory(7L, dlCat4));
+        dlCategoryList.add(createDlCategory(8L, dlCat4));
+        DlCategory dlCat9 = createDlCategory(9L, dlCat6);
         dlCategoryList.add(dlCat9);
-        DlCategory dlCat10 = DlCategoryBuilder.aDlCategory().withId(10L).withParent(dlCat9).withTerm(TermBuilder.aTerm().withId(1L).build()).build();
+        DlCategory dlCat10 = createDlCategory(10L, dlCat9);
         dlCategoryList.add(dlCat10);
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(11L).withParent(dlCat9).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
-        dlCategoryList.add(DlCategoryBuilder.aDlCategory().withId(12L).withParent(dlCat10).withTerm(TermBuilder.aTerm().withId(1L).build()).build());
+        dlCategoryList.add(createDlCategory(11L, dlCat9));
+        dlCategoryList.add(createDlCategory(12L, dlCat10));
 
         PageImpl<DlCategory> page = new PageImpl<>(dlCategoryList);
 
-        List<DlCategoryDTO> dlCategoryDTOS = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(page);
-        assertEquals(dlCategoryList.size(), dlCategoryDTOS.size());
-        assertEquals(0, findById(1L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(0, findById(2L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(1, findById(3L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(1, findById(4L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(1, findById(5L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(1, findById(6L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(2, findById(7L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(2, findById(8L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(2, findById(9L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(3, findById(10L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(3, findById(11L, dlCategoryDTOS).getDepthLevel());
-        assertEquals(4, findById(12L, dlCategoryDTOS).getDepthLevel());
+        List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(page);
+        assertEquals(dlCategoryList.size(), dlCategoryDTOs.size());
+        assertEquals(0, findById(1L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(0, findById(2L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(1, findById(3L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(1, findById(4L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(1, findById(5L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(1, findById(6L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(2, findById(7L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(2, findById(8L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(2, findById(9L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(3, findById(10L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(3, findById(11L, dlCategoryDTOs).getDepthLevel());
+        assertEquals(4, findById(12L, dlCategoryDTOs).getDepthLevel());
     }
 
     private DlCategoryDTO findById(Long id, List<DlCategoryDTO> dlCategoryDTOList) {

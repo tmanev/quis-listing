@@ -1,18 +1,16 @@
 package com.manev.quislisting.domain.taxonomy.discriminator.builder;
 
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.taxonomy.Term;
-import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
-
-import java.util.Set;
 
 public final class NavMenuBuilder {
     private Long id;
+    private NavMenu parent;
     private Term term;
+    private Translation translation;
     private String taxonomy;
     private String description;
-    private Long parentId;
-    private Set<TermTaxonomy> children;
     private Long count = 0L;
 
     private NavMenuBuilder() {
@@ -27,8 +25,18 @@ public final class NavMenuBuilder {
         return this;
     }
 
+    public NavMenuBuilder withParent(NavMenu parent) {
+        this.parent = parent;
+        return this;
+    }
+
     public NavMenuBuilder withTerm(Term term) {
         this.term = term;
+        return this;
+    }
+
+    public NavMenuBuilder withTranslation(Translation translation) {
+        this.translation = translation;
         return this;
     }
 
@@ -42,16 +50,6 @@ public final class NavMenuBuilder {
         return this;
     }
 
-    public NavMenuBuilder withParentId(Long parentId) {
-        this.parentId = parentId;
-        return this;
-    }
-
-    public NavMenuBuilder withChildren(Set<TermTaxonomy> children) {
-        this.children = children;
-        return this;
-    }
-
     public NavMenuBuilder withCount(Long count) {
         this.count = count;
         return this;
@@ -60,10 +58,11 @@ public final class NavMenuBuilder {
     public NavMenu build() {
         NavMenu navMenu = new NavMenu();
         navMenu.setId(id);
+        navMenu.setParent(parent);
         navMenu.setTerm(term);
+        navMenu.setTranslation(translation);
         navMenu.setTaxonomy(taxonomy);
         navMenu.setDescription(description);
-//        navMenu.setParentId(parentId);
         navMenu.setCount(count);
         return navMenu;
     }

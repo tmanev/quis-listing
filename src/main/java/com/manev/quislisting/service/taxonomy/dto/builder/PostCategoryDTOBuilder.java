@@ -55,7 +55,7 @@ public final class PostCategoryDTOBuilder {
         postCategoryDTO.setParentId(parentId);
         postCategoryDTO.setDescription(description);
         postCategoryDTO.setCount(count);
-        postCategoryDTO.setLanguageId(languageId);
+        postCategoryDTO.setLanguageCode(languageId);
         return postCategoryDTO;
     }
 }

@@ -1,6 +1,8 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
 import com.manev.QuisListingApp;
+import com.manev.quislisting.domain.TranslationBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
@@ -32,6 +34,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
 public class DlCategoryResourceIntTest {
@@ -41,16 +44,19 @@ public class DlCategoryResourceIntTest {
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
     private static final Long DEFAULT_PARENT_ID = null;
     private static final Long DEFAULT_COUNT = 0L;
+    private static final String DEFAULT_LANGUAGE_CODE = "en";
 
     private static final String DEFAULT_NAME_2 = "DEFAULT_NAME_2";
     private static final String DEFAULT_SLUG_2 = "DEFAULT_SLUG_2";
     private static final String DEFAULT_DESCRIPTION_2 = "DEFAULT_DESCRIPTION_2";
     private static final Long DEFAULT_COUNT_2 = 0L;
+    private static final String DEFAULT_LANGUAGE_CODE_2 = "en";
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_SLUG = "UPDATED_SLUG";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    private static final Long UPDATED_COUNT = 1L;
+    private static final Long UPDATED_COUNT = 0L;
+    private static final String UPDATED_LANGUAGE_CODE = "it";
 
     @Autowired
     private DlCategoryService dlCategoryService;
@@ -75,17 +81,27 @@ public class DlCategoryResourceIntTest {
     private DlCategory dlCategory;
 
     public static DlCategory createEntity() {
-        return DlCategoryBuilder.aDlCategory().withTerm(
-                TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build()
-        ).withDescription(DEFAULT_DESCRIPTION)
-                .withCount(DEFAULT_COUNT).build();
+        return DlCategoryBuilder.aDlCategory()
+                .withTerm(TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build())
+                .withDescription(DEFAULT_DESCRIPTION)
+                .withCount(DEFAULT_COUNT)
+                .withTranslation(TranslationBuilder.aTranslation()
+                        .withLanguageCode("en")
+                        .withTranslationGroup(new TranslationGroup())
+                        .build())
+                .build();
     }
 
     public static DlCategory createEntity2() {
-        return DlCategoryBuilder.aDlCategory().withTerm(
-                TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build()
-        ).withDescription(DEFAULT_DESCRIPTION_2)
-                .withCount(DEFAULT_COUNT_2).build();
+        return DlCategoryBuilder.aDlCategory()
+                .withTerm(TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build())
+                .withDescription(DEFAULT_DESCRIPTION_2)
+                .withCount(DEFAULT_COUNT_2)
+                .withTranslation(TranslationBuilder.aTranslation()
+                        .withLanguageCode("bg")
+                        .withTranslationGroup(new TranslationGroup())
+                        .build())
+                .build();
     }
 
     @Before
@@ -117,14 +133,15 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isCreated());
 
         // Validate the DlCategory in the database
-        List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
-        assertThat(dlCategoryList).hasSize(databaseSizeBeforeCreate + 1);
-        DlCategory dlCategory = dlCategoryList.get(dlCategoryList.size() - 1);
-        assertThat(dlCategory.getTerm().getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(dlCategory.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
-        assertThat(dlCategory.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(dlCategory.getParent()).isEqualTo(DEFAULT_PARENT_ID);
-        assertThat(dlCategory.getCount()).isEqualTo(DEFAULT_COUNT);
+        List<DlCategory> dlCategoryTrList = dlCategoryRepository.findAll();
+        assertThat(dlCategoryTrList).hasSize(databaseSizeBeforeCreate + 1);
+        DlCategory dlCategorySaved = dlCategoryTrList.get(dlCategoryTrList.size() - 1);
+        assertThat(dlCategorySaved.getTerm().getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(dlCategorySaved.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
+        assertThat(dlCategorySaved.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(dlCategorySaved.getParent()).isEqualTo(DEFAULT_PARENT_ID);
+        assertThat(dlCategorySaved.getCount()).isEqualTo(DEFAULT_COUNT);
+        assertThat(dlCategorySaved.getTranslation().getLanguageCode()).isEqualTo(DEFAULT_LANGUAGE_CODE);
     }
 
     @Test

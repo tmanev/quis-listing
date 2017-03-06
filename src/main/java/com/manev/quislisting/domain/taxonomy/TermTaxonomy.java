@@ -1,5 +1,8 @@
 package com.manev.quislisting.domain.taxonomy;
 
+import com.manev.quislisting.domain.Translation;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +18,10 @@ public abstract class TermTaxonomy {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "term_id")
     private Term term;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "translation_id")
+    private Translation translation;
 
     @Column(name = "taxonomy", insertable = false, updatable = false)
     private String taxonomy;
@@ -69,4 +76,11 @@ public abstract class TermTaxonomy {
         this.term = term;
     }
 
+    public Translation getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(Translation translation) {
+        this.translation = translation;
+    }
 }

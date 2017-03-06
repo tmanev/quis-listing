@@ -43,7 +43,8 @@
                 DlCategory.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
-                    sort: sort()
+                    sort: sort(),
+                    lang: 'en'
                 }, onSuccess, onError);
             }
             function sort() {

@@ -1,18 +1,16 @@
 package com.manev.quislisting.domain.taxonomy.discriminator.builder;
 
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.taxonomy.Term;
-import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
-
-import java.util.Set;
 
 public final class DlLocationBuilder {
     private Long id;
     private Term term;
+    private DlLocation parent;
+    private Translation translation;
     private String taxonomy;
     private String description;
-    private Long parentId;
-    private Set<TermTaxonomy> children;
     private Long count = 0L;
 
     private DlLocationBuilder() {
@@ -32,6 +30,16 @@ public final class DlLocationBuilder {
         return this;
     }
 
+    public DlLocationBuilder withParent(DlLocation parent) {
+        this.parent = parent;
+        return this;
+    }
+
+    public DlLocationBuilder withTranslation(Translation translation) {
+        this.translation = translation;
+        return this;
+    }
+
     public DlLocationBuilder withTaxonomy(String taxonomy) {
         this.taxonomy = taxonomy;
         return this;
@@ -39,16 +47,6 @@ public final class DlLocationBuilder {
 
     public DlLocationBuilder withDescription(String description) {
         this.description = description;
-        return this;
-    }
-
-    public DlLocationBuilder withParentId(Long parentId) {
-        this.parentId = parentId;
-        return this;
-    }
-
-    public DlLocationBuilder withChildren(Set<TermTaxonomy> children) {
-        this.children = children;
         return this;
     }
 
@@ -61,9 +59,10 @@ public final class DlLocationBuilder {
         DlLocation dlLocation = new DlLocation();
         dlLocation.setId(id);
         dlLocation.setTerm(term);
+        dlLocation.setParent(parent);
+        dlLocation.setTranslation(translation);
         dlLocation.setTaxonomy(taxonomy);
         dlLocation.setDescription(description);
-//        dlLocation.setParentId(parentId);
         dlLocation.setCount(count);
         return dlLocation;
     }

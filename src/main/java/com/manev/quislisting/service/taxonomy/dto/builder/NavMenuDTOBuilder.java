@@ -58,7 +58,7 @@ public final class NavMenuDTOBuilder {
         navMenuDTO.setParentId(parentId);
         navMenuDTO.setDescription(description);
         navMenuDTO.setCount(count);
-        navMenuDTO.setLanguageId(languageId);
+        navMenuDTO.setLanguageCode(languageId);
         return navMenuDTO;
     }
 }

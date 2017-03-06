@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
@@ -20,12 +21,17 @@ public class DlCategoryMapper {
     public DlCategory dlCategoryDTOTodlCategory(DlCategoryDTO dlCategoryDTO) {
         return DlCategoryBuilder.aDlCategory()
                 .withId(dlCategoryDTO.getId())
-                .withTerm(
-                        TermBuilder.aTerm()
-                                .withId(dlCategoryDTO.getTerm().getId())
-                                .withName(dlCategoryDTO.getTerm().getName())
-                                .withSlug(dlCategoryDTO.getTerm().getSlug()).build()
-                ).withDescription(dlCategoryDTO.getDescription()).build();
+                .withTerm(TermBuilder.aTerm()
+                        .withId(dlCategoryDTO.getTerm().getId())
+                        .withName(dlCategoryDTO.getTerm().getName())
+                        .withSlug(dlCategoryDTO.getTerm().getSlug())
+                        .build())
+                .withDescription(dlCategoryDTO.getDescription())
+                .withTranslation(
+                        TranslationBuilder.aTranslation()
+                                .withLanguageCode(dlCategoryDTO.getLanguageCode())
+                                .build())
+                .build();
     }
 
     public List<DlCategoryDTO> dlCategoryToDlCategoryDtoFlat(Page<DlCategory> page) {
@@ -61,15 +67,18 @@ public class DlCategoryMapper {
     }
 
     public DlCategoryDTO dlCategoryToDlCategoryDTO(DlCategory dlCategory) {
-        return DlCategoryDTOBuilder.aDlCategoryDTO().withId(dlCategory.getId())
-                .withTerm(
-                        TermDTOBuilder.aTerm()
-                                .withId(dlCategory.getTerm().getId())
-                                .withName(dlCategory.getTerm().getName())
-                                .withSlug(dlCategory.getTerm().getSlug()).build())
+        return DlCategoryDTOBuilder.aDlCategoryDTO()
+                .withId(dlCategory.getId())
+                .withTerm(TermDTOBuilder.aTerm()
+                        .withId(dlCategory.getTerm().getId())
+                        .withName(dlCategory.getTerm().getName())
+                        .withSlug(dlCategory.getTerm().getSlug())
+                        .build())
                 .withDescription(dlCategory.getDescription())
                 .withParentId(dlCategory.getParent() != null ? dlCategory.getParent().getId() : null)
-                .withCount(dlCategory.getCount()).build();
+                .withCount(dlCategory.getCount())
+                .withLanguageId(dlCategory.getTranslation() != null ? dlCategory.getTranslation().getLanguageCode() : null)
+                .build();
     }
 
 }

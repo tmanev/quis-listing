@@ -1,9 +1,9 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
 import com.manev.QuisListingApp;
+import com.manev.quislisting.domain.TranslationBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.PostCategoryBuilder;
 import com.manev.quislisting.repository.taxonomy.PostCategoryRepository;
@@ -77,17 +77,33 @@ public class PostCategoryResourceIntTest {
     private PostCategory postCategory;
 
     public static PostCategory createEntity() {
-        return PostCategoryBuilder.aPostCategory().withTerm(
-                TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build()
-        ).withDescription(DEFAULT_DESCRIPTION)
-                .withCount(DEFAULT_COUNT).build();
+        return PostCategoryBuilder.aPostCategory()
+                .withTerm(TermBuilder.aTerm()
+                        .withName(DEFAULT_NAME)
+                        .withSlug(DEFAULT_SLUG)
+                        .build())
+                .withDescription(DEFAULT_DESCRIPTION)
+                .withCount(DEFAULT_COUNT)
+                .withTranslation(TranslationBuilder.aTranslation()
+                        .withLanguageCode("en")
+                        .withTranslationGroup(new TranslationGroup())
+                        .build())
+                .build();
     }
 
     public static PostCategory createEntity2() {
-        return PostCategoryBuilder.aPostCategory().withTerm(
-                TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build()
-        ).withDescription(DEFAULT_DESCRIPTION_2)
-                .withCount(DEFAULT_COUNT_2).build();
+        return PostCategoryBuilder.aPostCategory()
+                .withTerm(TermBuilder.aTerm()
+                        .withName(DEFAULT_NAME_2)
+                        .withSlug(DEFAULT_SLUG_2)
+                        .build()
+                ).withDescription(DEFAULT_DESCRIPTION_2)
+                .withCount(DEFAULT_COUNT_2)
+                .withTranslation(TranslationBuilder.aTranslation()
+                        .withLanguageCode("bg")
+                        .withTranslationGroup(new TranslationGroup())
+                        .build())
+                .build();
     }
 
     @Before

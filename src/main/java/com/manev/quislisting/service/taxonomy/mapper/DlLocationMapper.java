@@ -1,5 +1,7 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
+import com.manev.quislisting.domain.TranslationBuilder;
+import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;
@@ -20,26 +22,18 @@ public class DlLocationMapper {
     public DlLocation dlLocationDTOTodlLocation(DlLocationDTO dlLocationDTO) {
         return DlLocationBuilder.aDlLocation()
                 .withId(dlLocationDTO.getId())
-                .withTerm(
-                        TermBuilder.aTerm()
-                                .withId(dlLocationDTO.getTerm().getId())
-                                .withName(dlLocationDTO.getTerm().getName())
-                                .withSlug(dlLocationDTO.getTerm().getSlug()).build()
-                ).withDescription(dlLocationDTO.getDescription())
-                .withParentId(dlLocationDTO.getParentId())
-                .withCount(dlLocationDTO.getCount()).build();
-    }
-
-    public DlLocationDTO dlLocationToDlLocationDTO(DlLocation dlLocation) {
-        return DlLocationDTOBuilder.aDlLocationDTO().withId(dlLocation.getId())
-                .withTerm(
-                        TermDTOBuilder.aTerm()
-                                .withId(dlLocation.getTerm().getId())
-                                .withName(dlLocation.getTerm().getName())
-                                .withSlug(dlLocation.getTerm().getSlug()).build())
-                .withDescription(dlLocation.getDescription())
-                .withParentId(dlLocation.getParent() != null ? dlLocation.getParent().getId() : null)
-                .withCount(dlLocation.getCount()).build();
+                .withTerm(TermBuilder.aTerm()
+                        .withId(dlLocationDTO.getTerm().getId())
+                        .withName(dlLocationDTO.getTerm().getName())
+                        .withSlug(dlLocationDTO.getTerm().getSlug())
+                        .build())
+                .withDescription(dlLocationDTO.getDescription())
+                .withCount(dlLocationDTO.getCount())
+                .withTranslation(
+                        TranslationBuilder.aTranslation()
+                                .withLanguageCode(dlLocationDTO.getLanguageCode())
+                                .build())
+                .build();
     }
 
     public List<DlLocationDTO> dlLocationToDlLocationDtoFlat(Page<DlLocation> page) {
@@ -47,23 +41,44 @@ public class DlLocationMapper {
 
         List<DlLocationDTO> result = new ArrayList<>();
         for (DlLocation dlLocation : page) {
-            doMappingAndFillDepthLevel(dlLocation, ids, result, 0);
+            doMappingAndFillDepthLevel(dlLocation, ids, result);
         }
 
         return result;
     }
 
-    private int doMappingAndFillDepthLevel(DlLocation dlCategory, Set<Long> ids, List<DlLocationDTO> result, int depthLevel) {
-        int resultDepthLevel = depthLevel;
-        if (dlCategory.getParent() != null) {
-            resultDepthLevel = doMappingAndFillDepthLevel(dlCategory.getParent(), ids, result, depthLevel + 1);
+    private int doMappingAndFillDepthLevel(DlLocation dlLocation, Set<Long> ids, List<DlLocationDTO> result) {
+        if (dlLocation.getParent() != null) {
+            int depthLevel = doMappingAndFillDepthLevel(dlLocation.getParent(), ids, result) + 1;
+            pushToTheList(dlLocation, ids, result, depthLevel);
+            return depthLevel;
+        } else {
+            int depthLevel = 0;
+            pushToTheList(dlLocation, ids, result, depthLevel);
+            return 0;
         }
-        if (!ids.contains(dlCategory.getId())) {
-            ids.add(dlCategory.getId());
-            DlLocationDTO dlCategoryDTO = dlLocationToDlLocationDTO(dlCategory);
-            dlCategoryDTO.setDepthLevel(resultDepthLevel);
-            result.add(dlCategoryDTO);
+    }
+
+    private void pushToTheList(DlLocation dlLocation, Set<Long> ids, List<DlLocationDTO> result, int depthLevel) {
+        if (!ids.contains(dlLocation.getId())) {
+            ids.add(dlLocation.getId());
+            DlLocationDTO dlLocationDTO = dlLocationToDlLocationDTO(dlLocation);
+            dlLocationDTO.setDepthLevel(depthLevel);
+            result.add(dlLocationDTO);
         }
-        return resultDepthLevel;
+    }
+
+    public DlLocationDTO dlLocationToDlLocationDTO(DlLocation dlLocation) {
+        return DlLocationDTOBuilder.aDlLocationDTO().withId(dlLocation.getId())
+                .withTerm(TermDTOBuilder.aTerm()
+                        .withId(dlLocation.getTerm().getId())
+                        .withName(dlLocation.getTerm().getName())
+                        .withSlug(dlLocation.getTerm().getSlug())
+                        .build())
+                .withDescription(dlLocation.getDescription())
+                .withParentId(dlLocation.getParent() != null ? dlLocation.getParent().getId() : null)
+                .withCount(dlLocation.getCount())
+                .withLanguageId(dlLocation.getTranslation() != null ? dlLocation.getTranslation().getLanguageCode() : null)
+                .build();
     }
 }

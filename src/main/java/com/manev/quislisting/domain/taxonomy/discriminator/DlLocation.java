@@ -13,7 +13,7 @@ public class DlLocation extends TermTaxonomy {
     public static final String TAXONOMY = "dl-location";
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = true, updatable = true)
+    @JoinColumn(name = "parent_id")
     private DlLocation parent;
 
     public DlLocation getParent() {

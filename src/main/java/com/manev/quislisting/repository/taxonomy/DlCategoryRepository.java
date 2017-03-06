@@ -5,4 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface DlCategoryRepository extends TermTaxonomyRepository<DlCategory> {
+
+
+
 }

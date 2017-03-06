@@ -6,7 +6,8 @@ public abstract class TermTaxonomyDTO {
     private Long parentId;
     private String description;
     private Long count;
-    private String languageId;
+    private String languageCode;
+    private Long trGroupId;
 
     private int depthLevel;
 
@@ -54,12 +55,12 @@ public abstract class TermTaxonomyDTO {
         this.count = count;
     }
 
-    public String getLanguageId() {
-        return languageId;
+    public String getLanguageCode() {
+        return languageCode;
     }
 
-    public void setLanguageId(String languageId) {
-        this.languageId = languageId;
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 
     public void setDepthLevel(int depthLevel) {
@@ -68,5 +69,13 @@ public abstract class TermTaxonomyDTO {
 
     public int getDepthLevel() {
         return depthLevel;
+    }
+
+    public Long getTrGroupId() {
+        return trGroupId;
+    }
+
+    public void setTrGroupId(Long trGroupId) {
+        this.trGroupId = trGroupId;
     }
 }

@@ -1,6 +1,8 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
@@ -24,17 +26,26 @@ public class DlLocationService {
 
     private DlLocationRepository dlLocationRepository;
 
+    private TranslationGroupRepository translationGroupRepository;
+
     private DlLocationMapper dlLocationMapper;
 
-    public DlLocationService(DlLocationRepository dlLocationRepository, DlLocationMapper dlLocationMapper) {
+    public DlLocationService(DlLocationRepository dlLocationRepository, DlLocationMapper dlLocationMapper,
+                             TranslationGroupRepository translationGroupRepository) {
         this.dlLocationRepository = dlLocationRepository;
         this.dlLocationMapper = dlLocationMapper;
+        this.translationGroupRepository = translationGroupRepository;
     }
 
     public DlLocationDTO save(DlLocationDTO dlLocationDTO) {
         log.debug("Request to save DlLocationDTO : {}", dlLocationDTO);
 
         DlLocation dlLocation = dlLocationMapper.dlLocationDTOTodlLocation(dlLocationDTO);
+        if (dlLocationDTO.getTrGroupId() != null) {
+            dlLocation.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlLocationDTO.getTrGroupId()));
+        } else {
+            dlLocation.getTranslation().setTranslationGroup(new TranslationGroup());
+        }
         if (dlLocationDTO.getParentId() != null) {
             dlLocation.setParent(dlLocationRepository.findOne(dlLocationDTO.getParentId()));
         }

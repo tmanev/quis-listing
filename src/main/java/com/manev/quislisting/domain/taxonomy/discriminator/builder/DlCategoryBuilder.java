@@ -1,10 +1,8 @@
 package com.manev.quislisting.domain.taxonomy.discriminator.builder;
 
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.taxonomy.Term;
-import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-
-import java.util.Set;
 
 public final class DlCategoryBuilder {
     private Long id;
@@ -13,6 +11,7 @@ public final class DlCategoryBuilder {
     private String description;
     private Long count = 0L;
     private DlCategory parent;
+    private Translation translation;
 
     private DlCategoryBuilder() {
     }
@@ -51,6 +50,11 @@ public final class DlCategoryBuilder {
         return this;
     }
 
+    public DlCategoryBuilder withTranslation(Translation translation) {
+        this.translation = translation;
+        return this;
+    }
+
     public DlCategory build() {
         DlCategory dlCategory = new DlCategory();
         dlCategory.setId(id);
@@ -59,6 +63,7 @@ public final class DlCategoryBuilder {
         dlCategory.setDescription(description);
         dlCategory.setCount(count);
         dlCategory.setParent(parent);
+        dlCategory.setTranslation(translation);
         return dlCategory;
     }
 

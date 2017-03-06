@@ -1,6 +1,8 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.PostCategory;
+import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.taxonomy.PostCategoryRepository;
 import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.PostCategoryMapper;
@@ -20,17 +22,26 @@ public class PostCategoryService {
 
     private PostCategoryRepository postCategoryRepository;
 
+    private TranslationGroupRepository translationGroupRepository;
+
     private PostCategoryMapper postCategoryMapper;
 
-    public PostCategoryService(PostCategoryRepository postCategoryRepository, PostCategoryMapper postCategoryMapper) {
+    public PostCategoryService(PostCategoryRepository postCategoryRepository, PostCategoryMapper postCategoryMapper,
+                               TranslationGroupRepository translationGroupRepository) {
         this.postCategoryRepository = postCategoryRepository;
         this.postCategoryMapper = postCategoryMapper;
+        this.translationGroupRepository = translationGroupRepository;
     }
 
     public PostCategoryDTO save(PostCategoryDTO postCategoryDTO) {
         log.debug("Request to save PostCategory : {}", postCategoryDTO);
 
         PostCategory postCategory = postCategoryMapper.postCategoryDTOToPostCategory(postCategoryDTO);
+        if (postCategoryDTO.getTrGroupId() != null) {
+            postCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(postCategoryDTO.getTrGroupId()));
+        } else {
+            postCategory.getTranslation().setTranslationGroup(new TranslationGroup());
+        }
         if (postCategoryDTO.getParentId() != null) {
             postCategory.setParent(postCategoryRepository.findOne(postCategoryDTO.getParentId()));
         }

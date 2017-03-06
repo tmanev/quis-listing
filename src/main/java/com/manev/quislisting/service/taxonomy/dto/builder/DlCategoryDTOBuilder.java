@@ -58,7 +58,7 @@ public final class DlCategoryDTOBuilder {
         dlCategoryDTO.setParentId(parentId);
         dlCategoryDTO.setDescription(description);
         dlCategoryDTO.setCount(count);
-        dlCategoryDTO.setLanguageId(languageId);
+        dlCategoryDTO.setLanguageCode(languageId);
         return dlCategoryDTO;
     }
 }
