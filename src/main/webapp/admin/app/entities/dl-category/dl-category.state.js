@@ -172,30 +172,30 @@
             }]
         })
 
-        // .state('dl-category.delete', {
-        //     parent: 'dl-category',
-        //     url: '/{id}/delete',
-        //     data: {
-        //         authorities: ['ROLE_USER']
-        //     },
-        //     onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-        //         $uibModal.open({
-        //             templateUrl: 'admin/app/entities/dl-category/dl-category-delete-dialog.html',
-        //             controller: 'DlCategoryDeleteController',
-        //             controllerAs: 'vm',
-        //             size: 'md',
-        //             resolve: {
-        //                 entity: ['DlCategory', function(DlCategory) {
-        //                     return DlCategory.get({id : $stateParams.id}).$promise;
-        //                 }]
-        //             }
-        //         }).result.then(function() {
-        //             $state.go('dl-category', null, { reload: 'dl-category' });
-        //         }, function() {
-        //             $state.go('^');
-        //         });
-        //     }]
-        // })
+        .state('dl-categories.delete', {
+            parent: 'dl-categories',
+            url: '/{id}/delete',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'admin/app/entities/dl-category/dl-category-delete-dialog.html',
+                    controller: 'DlCategoryDeleteController',
+                    controllerAs: 'vm',
+                    size: 'md',
+                    resolve: {
+                        entity: ['DlCategory', function(DlCategory) {
+                            return DlCategory.get({id : $stateParams.id}).$promise;
+                        }]
+                    }
+                }).result.then(function() {
+                    $state.go('dl-categories', null, { reload: 'dl-categories' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
         ;
     }
 

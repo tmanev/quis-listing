@@ -119,7 +119,7 @@ public class DlCategoryResourceIntTest {
 
     @Before
     public void initTest() {
-        dlCategoryRepository.deleteAll();
+        dlCategoryRepository.deleteAllByParent(null);
         languageRepository.deleteAll();
         dlCategory = createEntity();
     }
@@ -177,7 +177,7 @@ public class DlCategoryResourceIntTest {
         dlCategoryRepository.saveAndFlush(dlCategory);
 
         // Get all the dlCategories
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "?sort=id,desc"))
+        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "?sort=id,desc&languageCode=en"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlCategory.getId().intValue())))

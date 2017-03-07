@@ -8,7 +8,6 @@ import java.util.List;
 
 @Transactional
 public interface DlCategoryRepository extends TermTaxonomyRepository<DlCategory> {
-
-//    List<DlCategory> findAllByTranslation_languageCode(Pageable pageable, String languageCode);
+    void deleteAllByParent(DlCategory parent);
 
 }
