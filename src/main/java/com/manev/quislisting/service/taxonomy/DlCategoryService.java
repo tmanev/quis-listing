@@ -1,10 +1,14 @@
 package com.manev.quislisting.service.taxonomy;
 
 import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.TranslationGroupRepository;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,16 +30,22 @@ public class DlCategoryService {
     private final Logger log = LoggerFactory.getLogger(DlCategoryService.class);
 
     private DlCategoryRepository dlCategoryRepository;
+    private LanguageRepository languageRepository;
 
     private TranslationGroupRepository translationGroupRepository;
 
     private DlCategoryMapper dlCategoryMapper;
+    private ActiveLanguageMapper activeLanguageMapper;
 
     public DlCategoryService(DlCategoryRepository dlCategoryRepository, DlCategoryMapper dlCategoryMapper,
-                             TranslationGroupRepository translationGroupRepository) {
+                             TranslationGroupRepository translationGroupRepository,
+                             LanguageRepository languageRepository,
+                             ActiveLanguageMapper activeLanguageMapper) {
         this.dlCategoryRepository = dlCategoryRepository;
         this.dlCategoryMapper = dlCategoryMapper;
         this.translationGroupRepository = translationGroupRepository;
+        this.languageRepository = languageRepository;
+        this.activeLanguageMapper = activeLanguageMapper;
     }
 
     public DlCategoryDTO save(DlCategoryDTO dlCategoryDTO) {
@@ -55,7 +66,8 @@ public class DlCategoryService {
 
     public Page<DlCategoryDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all DlCategoryDTO");
-        Page<DlCategory> result = dlCategoryRepository.findAll(pageable);
+        String languageCode = allRequestParams.get("languageCode");
+        Page<DlCategory> result = dlCategoryRepository.findAllByTranslation_languageCode(pageable, languageCode);
         List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(result);
         return new PageImpl<>(dlCategoryDTOs, pageable, result.getTotalElements());
     }
@@ -72,4 +84,16 @@ public class DlCategoryService {
         dlCategoryRepository.delete(id);
     }
 
+    public List<ActiveLanguageDTO> findAllActiveLanguages() {
+        log.debug("Request to retrieve all active languages");
+        List<ActiveLanguageDTO> result = new ArrayList<>();
+
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        for (Language language : allByActive) {
+            Long count = dlCategoryRepository.countByTranslation_languageCode(language.getCode());
+            result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
+        }
+
+        return result;
+    }
 }

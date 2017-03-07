@@ -11,6 +11,11 @@
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
+            'activeLanguages': {
+                url: resourceUrl+'/active-languages',
+                method: 'GET',
+                isArray: true
+            },
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {

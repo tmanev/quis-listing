@@ -34,13 +34,14 @@
             console.log("Item:");
             console.log($item);
             console.log("Model:");
-console.log($model);
+            console.log($model);
         };
 
         function loadAll () {
 
             DlCategory.query({
-                sort: sort()
+                sort: sort(),
+                languageCode: entity.languageCode
             }, onSuccess, onError);
 
             function sort() {

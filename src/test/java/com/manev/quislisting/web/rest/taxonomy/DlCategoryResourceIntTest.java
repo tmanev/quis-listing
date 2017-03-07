@@ -3,9 +3,11 @@ package com.manev.quislisting.web.rest.taxonomy;
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
@@ -63,6 +65,8 @@ public class DlCategoryResourceIntTest {
 
     @Autowired
     private DlCategoryRepository dlCategoryRepository;
+    @Autowired
+    private LanguageRepository languageRepository;
 
     @Autowired
     private DlCategoryMapper dlCategoryMapper;
@@ -116,6 +120,7 @@ public class DlCategoryResourceIntTest {
     @Before
     public void initTest() {
         dlCategoryRepository.deleteAll();
+        languageRepository.deleteAll();
         dlCategory = createEntity();
     }
 
@@ -274,5 +279,29 @@ public class DlCategoryResourceIntTest {
         // Validate the database is empty
         List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void getActiveLanguages() throws Exception {
+        // Initialize the database
+        dlCategoryRepository.saveAndFlush(dlCategory);
+
+        Language lanEn = new Language().code("en").active(true).englishName("English");
+        Language lanBg = new Language().code("bg").active(true).englishName("Bulgarian");
+        Language lanRo = new Language().code("ro").active(true).englishName("Romanian");
+        Language lanRu = new Language().code("ru").active(true).englishName("Russian");
+        languageRepository.saveAndFlush(lanEn);
+        languageRepository.saveAndFlush(lanBg);
+        languageRepository.saveAndFlush(lanRo);
+        languageRepository.saveAndFlush(lanRu);
+
+        // Get active languages
+        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/active-languages"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
+                .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
+                .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 }

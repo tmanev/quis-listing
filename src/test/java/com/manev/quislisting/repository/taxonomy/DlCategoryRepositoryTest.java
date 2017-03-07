@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,22 @@ public class DlCategoryRepositoryTest {
         entity2.getTranslation().setTranslationGroup(dlCategorySaved.getTranslation().getTranslationGroup());
         dlCategoryRepository.saveAndFlush(entity2);
         assertEquals(size + 2, dlCategoryRepository.findAll().size());
+    }
+
+    @Test
+    public void findAllByLanguageCode() {
+        Page<DlCategory> translationsEn = dlCategoryRepository.findAllByTranslation_languageCode(new PageRequest(0, 20), "en");
+        Assert.assertEquals(6, translationsEn.getContent().size());
+        Page<DlCategory> translationsBg = dlCategoryRepository.findAllByTranslation_languageCode(new PageRequest(0, 20), "bg");
+        Assert.assertEquals(0, translationsBg.getContent().size());
+        Page<DlCategory> translationsNull = dlCategoryRepository.findAllByTranslation_languageCode(new PageRequest(0, 20), null);
+        Assert.assertEquals(0, translationsNull.getContent().size());
+    }
+
+    @Test
+    public void countByLanguageCode() {
+        Long count = dlCategoryRepository.countByTranslation_languageCode("en");
+        assertEquals(6L, count.longValue());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -84,6 +85,12 @@ public class DlCategoryResource {
         log.debug("REST request to delete DlCategoryDTO : {}", id);
         dlCategoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/active-languages")
+    public List<ActiveLanguageDTO> getActivelanguages() {
+        log.debug("REST request to retrieve active languages for dlCategories : {}");
+        return dlCategoryService.findAllActiveLanguages();
     }
 
 }

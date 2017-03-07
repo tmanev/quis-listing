@@ -9,9 +9,9 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('dl-category', {
+        .state('dl-categories', {
             parent: 'entity',
-            url: '/dl-category?page&sort&search',
+            url: '/dl-categories?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'quisListingApp.dlCategory.home.title'
@@ -19,7 +19,7 @@
             views: {
                 'content@': {
                     templateUrl: 'admin/app/entities/dl-category/dl-categories.html',
-                    controller: 'DlCategoryController',
+                    controller: 'DlCategoriesController',
                     controllerAs: 'vm'
                 }
             },
@@ -53,7 +53,7 @@
         })
 
         .state('dl-category-detail', {
-            parent: 'dl-category',
+            parent: 'dl-categories',
             url: '/dl-category/{id}',
             data: {
                 authorities: ['ROLE_USER'],
@@ -111,12 +111,13 @@
             }]
         })
 
-        .state('dl-category.new', {
-            parent: 'dl-category',
+        .state('dl-categories.new', {
+            parent: 'dl-categories',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
             },
+            params: {selectedLanguageCode: null},
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
                     templateUrl: 'admin/app/entities/dl-category/dl-category-dialog.html',
@@ -132,20 +133,21 @@
                                 slug: null,
                                 description: "",
                                 parentId: null,
-                                count: null
+                                count: null,
+                                languageCode: $stateParams.selectedLanguageCode
                             };
                         }
                     }
                 }).result.then(function() {
-                    $state.go('dl-category', null, { reload: 'dl-category' });
+                    $state.go('dl-categories', null, { reload: 'dl-categories' });
                 }, function() {
-                    $state.go('dl-category');
+                    $state.go('dl-categories');
                 });
             }]
         })
 
-        .state('dl-category.edit', {
-            parent: 'dl-category',
+        .state('dl-categories.edit', {
+            parent: 'dl-categories',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
@@ -163,7 +165,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('dl-category', null, { reload: 'dl-category' });
+                    $state.go('dl-categories', null, { reload: 'dl-categories' });
                 }, function() {
                     $state.go('^');
                 });

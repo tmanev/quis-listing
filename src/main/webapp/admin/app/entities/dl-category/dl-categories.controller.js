@@ -3,7 +3,7 @@
 
     angular
         .module('quisListingApp')
-        .controller('DlCategoryController', DlCategoryController)
+        .controller('DlCategoriesController', DlCategoriesController)
         .filter('range', function() {
             return function(input, total) {
                 total = parseInt(total);
@@ -13,11 +13,13 @@
             };
         });
 
-    DlCategoryController.$inject = ['$scope', '$state', 'DlCategory', 'DlCategorySearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams', 'TreeUtils'];
+    DlCategoriesController.$inject = ['$scope', '$state', 'DlCategory', 'DlCategorySearch', 'ParseLinks', 'AlertService',
+        'paginationConstants', 'pagingParams', 'TreeUtils', 'DataLanguageHub'];
 
-    function DlCategoryController ($scope, $state, DlCategory, DlCategorySearch, ParseLinks, AlertService, paginationConstants, pagingParams, TreeUtils) {
+    function DlCategoriesController ($scope, $state, DlCategory, DlCategorySearch, ParseLinks, AlertService,
+                                   paginationConstants, pagingParams, TreeUtils, DataLanguageHub) {
         var vm = this;
-
+        vm.dataLanguageHub = DataLanguageHub.get();
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -28,8 +30,27 @@
         vm.loadAll = loadAll;
         vm.searchQuery = pagingParams.search;
         vm.currentSearch = pagingParams.search;
+        vm.onLanguageChange = onLanguageChange;
 
+        vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
+        vm.activeLanguages = [
+               {code: "en", englishName: "English", count: 0}
+        ];
+
+        loadActiveLanguages();
         loadAll();
+
+        function loadActiveLanguages() {
+            DlCategory.activeLanguages({
+
+            }, onSuccess, onError);
+            function onSuccess(data, headers) {
+                vm.activeLanguages = data;
+            }
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
 
         function loadAll () {
             if (pagingParams.search) {
@@ -44,7 +65,7 @@
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort(),
-                    lang: 'en'
+                    languageCode: vm.selectedLanguageCode
                 }, onSuccess, onError);
             }
             function sort() {
@@ -100,6 +121,11 @@
             vm.reverse = true;
             vm.currentSearch = null;
             vm.transition();
+        }
+
+        function onLanguageChange() {
+            loadAll();
+            vm.dataLanguageHub.selectedLanguageCode = vm.selectedLanguageCode;
         }
     }
 })();
