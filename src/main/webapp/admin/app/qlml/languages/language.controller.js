@@ -36,7 +36,8 @@
                 Language.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
-                    sort: sort()
+                    sort: sort(),
+                    active: true
                 }, onSuccess, onError);
             }
             function sort() {
