@@ -88,7 +88,7 @@ public class DlCategoryResource {
     }
 
     @GetMapping("/active-languages")
-    public List<ActiveLanguageDTO> getActivelanguages() {
+    public List<ActiveLanguageDTO> getActiveLanguages() {
         log.debug("REST request to retrieve active languages for dlCategories : {}");
         return dlCategoryService.findAllActiveLanguages();
     }

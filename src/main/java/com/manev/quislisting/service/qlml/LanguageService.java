@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 /**
  * Service Implementation for managing Language.
  */
@@ -43,10 +45,16 @@ public class LanguageService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Language> findAll(Pageable pageable) {
+    public Page<Language> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all Languages");
-        Page<Language> result = languageRepository.findAll(pageable);
-        return result;
+
+        String active = allRequestParams.get("active");
+
+        if (active != null) {
+            return languageRepository.findAllByActive(pageable, Boolean.valueOf(active));
+        } else {
+            return languageRepository.findAll(pageable);
+        }
     }
 
     /**

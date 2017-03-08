@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_LANGUAGES;
@@ -84,11 +85,11 @@ public class LanguageResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping
-    public ResponseEntity<List<Language>> getAllLanguages(Pageable pageable)
+    public ResponseEntity<List<Language>> getAllLanguages(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
             throws URISyntaxException {
         log.debug("REST request to get a page of Languages");
-        Page<Language> page = languageService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/languages");
+        Page<Language> page = languageService.findAll(pageable, allRequestParams);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_LANGUAGES);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
