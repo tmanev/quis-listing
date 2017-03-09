@@ -223,6 +223,32 @@
                 });
             }]
         })
+
+        .state('languages.deactivate', {
+            parent: 'languages',
+            url: '/{id}/deactivate',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'admin/app/qlml/languages/language-deactivate-dialog.html',
+                    controller: 'LanguageDeactivateController',
+                    controllerAs: 'vm',
+                    size: 'md',
+                    resolve: {
+                        entity: ['Language', function(Language) {
+                            return Language.get({id : $stateParams.id}).$promise;
+                        }]
+                    }
+                }).result.then(function() {
+                    $state.go('languages', null, { reload: 'languages' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+
         ;
     }
 

@@ -99,7 +99,8 @@
             "open": "Open",
             "save": "Save",
             "view": "View",
-            "add": "Add"
+            "add": "Add",
+            "deactivate": "Deactivate"
         },
         "detail": {
             "field": "Field",
@@ -107,6 +108,9 @@
         },
         "delete": {
             "title": "Confirm delete operation"
+        },
+        "deactivate": {
+            "title": "Confirm deactivate operation"
         },
         "validation": {
             "required": "This field is required.",

@@ -14,6 +14,9 @@
             "delete": {
                 "question": "Are you sure you want to delete Language {{ id }}?"
             },
+            "deactivate": {
+                "question": "Are you sure you want to deactivate Language {{ id }}?"
+            },
             "detail": {
                 "title": "Language"
             },

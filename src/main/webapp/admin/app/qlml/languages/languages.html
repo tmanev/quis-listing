@@ -71,6 +71,12 @@
                             <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                         </button>
                         <button type="submit"
+                                ui-sref="languages.deactivate({id:language.id})"
+                                class="btn btn-warning btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="hidden-sm-down" data-translate="entity.action.deactivate"></span>
+                        </button>
+                        <button type="submit"
                                 ui-sref="languages.delete({id:language.id})"
                                 class="btn btn-danger btn-sm">
                             <span class="glyphicon glyphicon-remove-circle"></span>

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,7 +86,7 @@ public class LanguageResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping
-    public ResponseEntity<List<Language>> getAllLanguages(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
+    public ResponseEntity<List<Language>> getAllLanguages(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable, @RequestParam Map<String, String> allRequestParams)
             throws URISyntaxException {
         log.debug("REST request to get a page of Languages");
         Page<Language> page = languageService.findAll(pageable, allRequestParams);
