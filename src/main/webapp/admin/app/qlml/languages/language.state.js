@@ -142,6 +142,37 @@
             }]
         })
 
+        .state('language.add', {
+            parent: 'language',
+            url: '/add',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'admin/app/qlml/languages/language-add-dialog.html',
+                    controller: 'LanguageAddController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function () {
+                            return {
+                                id: null,
+                                code: null,
+                                englishName: null,
+                                defaultLocale: null
+                            };
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('language', null, { reload: 'language' });
+                }, function() {
+                    $state.go('language');
+                });
+            }]
+        })
+
         .state('language.edit', {
             parent: 'language',
             url: '/{id}/edit',

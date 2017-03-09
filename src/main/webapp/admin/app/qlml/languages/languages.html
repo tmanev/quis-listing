@@ -11,7 +11,15 @@
                     </span>
                 </button>
             </div>
-            <div class="col-xs-8 no-padding-right">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="language.add" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.language.home.addLabel">
+                        Add Language
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-4 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
                         <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.language.home.search' | translate }}">

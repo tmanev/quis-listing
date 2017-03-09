@@ -4,6 +4,7 @@
             "home": {
                 "title": "Languages",
                 "createLabel": "Create a new Language",
+                "addLabel": "Add Language",
                 "createOrEditLabel": "Create or edit a Language",
                 "search": "Search for Language"
             },
@@ -15,6 +16,10 @@
             },
             "detail": {
                 "title": "Language"
+            },
+            "add": {
+                "title": "Add Language as active",
+                "selectLanguage": "Select Language"
             },
             "code": "Code",
             "englishName": "English name",

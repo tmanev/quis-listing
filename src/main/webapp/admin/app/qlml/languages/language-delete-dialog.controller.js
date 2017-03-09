@@ -19,7 +19,7 @@
         }
 
         function confirmDelete (id) {
-            Listing.delete({id: id},
+            Language.delete({id: id},
                 function () {
                     $uibModalInstance.close(true);
                 });
