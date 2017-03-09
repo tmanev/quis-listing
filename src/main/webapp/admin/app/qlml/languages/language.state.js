@@ -9,9 +9,9 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('language', {
+        .state('languages', {
             parent: 'qlml',
-            url: '/language?page&sort&search',
+            url: '/languages?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'quisListingApp.language.home.title'
@@ -19,7 +19,7 @@
             views: {
                 'content@': {
                     templateUrl: 'admin/app/qlml/languages/languages.html',
-                    controller: 'LanguageController',
+                    controller: 'LanguagesController',
                     controllerAs: 'vm'
                 }
             },
@@ -53,7 +53,7 @@
         })
 
         .state('language-detail', {
-            parent: 'language',
+            parent: 'languages',
             url: '/language/{id}',
             data: {
                 authorities: ['ROLE_USER'],
@@ -76,7 +76,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'language',
+                        name: $state.current.name || 'languages',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -111,8 +111,8 @@
             }]
         })
 
-        .state('language.new', {
-            parent: 'language',
+        .state('languages.new', {
+            parent: 'languages',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
@@ -135,15 +135,15 @@
                         }
                     }
                 }).result.then(function() {
-                    $state.go('language', null, { reload: 'language' });
+                    $state.go('languages', null, { reload: 'languages' });
                 }, function() {
-                    $state.go('language');
+                    $state.go('languages');
                 });
             }]
         })
 
-        .state('language.add', {
-            parent: 'language',
+        .state('languages.add', {
+            parent: 'languages',
             url: '/add',
             data: {
                 authorities: ['ROLE_USER']
@@ -166,15 +166,15 @@
                         }
                     }
                 }).result.then(function() {
-                    $state.go('language', null, { reload: 'language' });
+                    $state.go('languages', null, { reload: 'languages' });
                 }, function() {
-                    $state.go('language');
+                    $state.go('languages');
                 });
             }]
         })
 
-        .state('language.edit', {
-            parent: 'language',
+        .state('languages.edit', {
+            parent: 'languages',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
@@ -192,15 +192,15 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('language', null, { reload: 'language' });
+                    $state.go('languages', null, { reload: 'languages' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
 
-        .state('language.delete', {
-            parent: 'language',
+        .state('languages.delete', {
+            parent: 'languages',
             url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
@@ -217,7 +217,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('language', null, { reload: 'language' });
+                    $state.go('languages', null, { reload: 'languages' });
                 }, function() {
                     $state.go('^');
                 });

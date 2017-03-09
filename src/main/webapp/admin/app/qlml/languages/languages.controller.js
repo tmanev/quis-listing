@@ -3,12 +3,12 @@
 
     angular
         .module('quisListingApp')
-        .controller('LanguageController', LanguageController)
+        .controller('LanguagesController', LanguagesController)
         ;
 
-    LanguageController.$inject = ['$scope', '$state', 'Language', 'LanguageSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    LanguagesController.$inject = ['$scope', '$state', 'Language', 'LanguageSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function LanguageController ($scope, $state, Language, LanguageSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function LanguagesController ($scope, $state, Language, LanguageSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
