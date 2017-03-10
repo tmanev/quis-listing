@@ -3,7 +3,7 @@ package com.manev.quislisting.domain;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ql_tr_group")
+@Table(name = "ql_translation_group")
 public class TranslationGroup {
 
     @Id
