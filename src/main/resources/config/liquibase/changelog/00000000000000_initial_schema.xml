@@ -272,14 +272,17 @@
 
     <changeSet id="00000000000004" author="tmanev">
         <comment>Tables for keeping custom content fields</comment>
-        <createTable tableName="ql_dl_content_fields">
+        <createTable tableName="ql_dl_content_field">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="is_core_field" type="tinyint(1)" defaultValue="0">
+            <column name="string_id" type="bigint" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="core_field" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="order_num" type="tinyint(1)">
+            <column name="order_num" type="tinyint(4)">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
@@ -297,19 +300,19 @@
             <column name="icon_image" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_required" type="tinyint(1)" defaultValue="0">
+            <column name="required" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_configuration_page" type="tinyint(1)" defaultValue="0">
+            <column name="has_configuration" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_search_configuration_page" type="tinyint(1)" defaultValue="0">
+            <column name="has_search_configuration" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_ordered" type="tinyint(1)" defaultValue="0">
+            <column name="can_be_ordered" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_hide_name" type="tinyint(1)" defaultValue="0">
+            <column name="hide_name" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
             <column name="on_excerpt_page" type="tinyint(1)" defaultValue="0">
@@ -324,7 +327,7 @@
             <column name="on_map" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="advanced_search_form" type="tinyint(1)" defaultValue="0">
+            <column name="on_advanced_search_form" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
             <column name="categories" type="text">
@@ -336,8 +339,8 @@
             <column name="search_options" type="text">
                 <constraints nullable="false"/>
             </column>
-            <column name="group_id" type="bigint" defaultValue="0">
-                <constraints nullable="false"/>
+            <column name="group_id" type="bigint" >
+                <constraints nullable="true"/>
             </column>
         </createTable>
         <createTable tableName="ql_dl_content_fields_group">
@@ -357,7 +360,7 @@
     </changeSet>
 
     <changeSet id="00000000000005" author="tmanev">
-        <comment>Tables for keeping and manageing languages and translations</comment>
+        <comment>Tables for keeping and managing languages and translations</comment>
         <createTable tableName="ql_language">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -430,6 +433,51 @@
             </column>
         </createTable>
 
+        <createTable tableName="ql_string">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="language_code" type="varchar(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="varchar(160)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(160)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(40)" defaultValue="LINE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="tinyint(4)" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_string_translation">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="string_id" type="bigint" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="language_code" type="varchar(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="tinyint(4)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="translation_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
     </changeSet>
 
     <changeSet id="00000000000006" author="tmanev">
@@ -470,7 +518,7 @@
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/dl-categories/translation_groups.csv"
                   separator=";"
-                  tableName="ql_tr_group"/>
+                  tableName="ql_translation_group"/>
 
         <loadData encoding="UTF-8"
                   file="config/liquibase/languages.csv"

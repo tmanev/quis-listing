@@ -271,7 +271,7 @@ public class DlCategoryResourceIntTest {
         dlCategoryRepository.saveAndFlush(dlCategory);
         int databaseSizeBeforeDelete = dlCategoryRepository.findAll().size();
 
-        // Get the dlCategory
+        // Delete the dlCategory
         restDlCategoryMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
