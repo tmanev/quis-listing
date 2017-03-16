@@ -1,0 +1,38 @@
+{
+    "quisListingApp": {
+        "dlContentField" : {
+            "home": {
+                "title": "Dl Content Fields",
+                "createLabel": "Create a new Dl Content Field",
+                "createOrEditLabel": "Create or edit a Dl Content Field",
+                "search": "Search for Dl Content Field"
+            },
+            "created": "A new Dl Content Field is created with identifier {{ param }}",
+            "updated": "A Dl Content Field is updated with identifier {{ param }}",
+            "deleted": "A Dl Content Field is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Dl Content Field {{ id }}?"
+            },
+            "detail": {
+                "title": "Dl Content Field"
+            },
+            "config": {
+                "title": "Dl Content Field Configuration"
+            },
+            "searchConfig": {
+                "title": "Dl Content Field Search Configuration"
+            },
+            "name": "Field name",
+            "slug": "Field slug",
+            "hideName": "Hide name",
+            "description": "Field description",
+            "type": "Field type",
+            "required": "Is this field required?",
+            "order": "Can be ordered by this field?",
+            "onExcerptPage": "On excerpt page",
+            "onListingPage": "On listing page",
+            "onMap": "In map marker window",
+            "categories": "Assigned categories"
+        }
+    }
+}

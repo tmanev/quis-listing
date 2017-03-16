@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_CONTENT_FIELDS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CONTENT_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -140,7 +140,7 @@ public class DlContentFieldResourceTest {
         // Create the DlContentField
         DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
 
-        restDlContentFieldMockMvc.perform(post(RESOURCE_API_DL_CONTENT_FIELDS)
+        restDlContentFieldMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldDTO)))
                 .andExpect(status().isCreated());
@@ -186,7 +186,7 @@ public class DlContentFieldResourceTest {
         DlContentFieldDTO existingDlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(existingDlContentField);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restDlContentFieldMockMvc.perform(post(RESOURCE_API_DL_CONTENT_FIELDS)
+        restDlContentFieldMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingDlContentFieldDTO)))
                 .andExpect(status().isBadRequest());
@@ -203,7 +203,7 @@ public class DlContentFieldResourceTest {
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         // Get the DlContentField
-        restDlContentFieldMockMvc.perform(get(RESOURCE_API_DL_CONTENT_FIELDS + "/{id}", dlContentField.getId()))
+        restDlContentFieldMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}", dlContentField.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlContentField.getId().intValue()))
@@ -234,7 +234,7 @@ public class DlContentFieldResourceTest {
     @Transactional
     public void getNonExistingDlContentField() throws Exception {
         // Get non existing DlContentField
-        restDlContentFieldMockMvc.perform(get(RESOURCE_API_DL_CONTENT_FIELDS + "/{id}", Long.MAX_VALUE))
+        restDlContentFieldMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -271,7 +271,7 @@ public class DlContentFieldResourceTest {
 
         DlContentFieldDTO updateContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(updatedDlContentField);
 
-        restDlContentFieldMockMvc.perform(put(RESOURCE_API_DL_CONTENT_FIELDS)
+        restDlContentFieldMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(updateContentFieldDTO)))
                 .andExpect(status().isOk());
@@ -315,7 +315,7 @@ public class DlContentFieldResourceTest {
         DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
 
         // If the entity does not have an ID, it will be created instead of just being updated
-        restDlContentFieldMockMvc.perform(put(RESOURCE_API_DL_CONTENT_FIELDS)
+        restDlContentFieldMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldDTO)))
                 .andExpect(status().isCreated());
@@ -333,7 +333,7 @@ public class DlContentFieldResourceTest {
         int databaseSizeBeforeDelete = dlContentFieldRepository.findAll().size();
 
         // Delete the DlContentField
-        restDlContentFieldMockMvc.perform(delete(RESOURCE_API_DL_CONTENT_FIELDS + "/{id}", dlContentField.getId())
+        restDlContentFieldMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}", dlContentField.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

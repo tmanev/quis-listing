@@ -8,8 +8,8 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand logo" href="#/" ng-click="vm.collapseNavbar()">
-                <img class="logo-img" src="admin/content/images/logo-jhipster.png" alt="logo"/>
-                <span data-translate="global.title">Jhipster</span> <span class="navbar-version">v{{VERSION}}</span>
+                <img class="logo-img" src="admin/content/images/logo-ql.png" alt="logo"/>
+                <span data-translate="global.title">Quis Listing</span> <span class="navbar-version">v{{VERSION}}</span>
             </a>
         </div>
         <div class="navbar-collapse" uib-collapse="vm.isNavbarCollapsed" ng-switch="vm.isAuthenticated()">
@@ -54,19 +54,25 @@
                         <li ui-sref-active="active">
                             <a ui-sref="listing" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.dl.listing">Listing</span>
+                                <span data-translate="global.menu.dl.listings">Listings</span>
                             </a>
                         </li>
                         <li ui-sref-active="active">
                             <a ui-sref="dl-categories" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.dl.dlCategory">Dl Category</span>
+                                <span data-translate="global.menu.dl.dlCategories">Dl Categories</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active">
+                            <a ui-sref="dl-content-fields" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.dl.dlContentFields">Dl Content Fields</span>
                             </a>
                         </li>
                         <li ui-sref-active="active">
                             <a ui-sref="dl-location" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.dl.dlLocation">Dl Location (DEV)</span>
+                                <span data-translate="global.menu.dl.dlLocations">Dl Location (DEV)</span>
                             </a>
                         </li>
                         <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->

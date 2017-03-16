@@ -1,0 +1,157 @@
+<div>
+    <h2><span data-translate="quisListingApp.dlContentField.detail.title">Dl Content Field</span>
+        {{vm.dlContentField.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+
+    <form class="form-horizontal" name="editForm" role="form" novalidate ng-submit="vm.save()">
+        <div class="form-group" ng-show="vm.dlContentField.id">
+            <label class="col-sm-2 control-label" for="id" data-translate="global.field.id">ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="id" ng-model="vm.dlContentField.id" readonly/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.name" for="field_name">
+                Field name
+            </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" id="field_name"
+                       ng-model="vm.dlContentField.name"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.slug" for="field_slug">
+                Field slug
+            </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="slug" id="field_slug"
+                       ng-model="vm.dlContentField.slug"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.hideName"
+                   for="field_hide_name">
+                Hide name
+            </label>
+            <div class="col-sm-1">
+                <input type="checkbox" class="form-control" name="hide_name" id="field_hide_name"
+                       ng-model="vm.dlContentField.hideName"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.description"
+                   for="field_description">
+                Field description
+            </label>
+            <div class="col-sm-10">
+                <textarea class="form-control" name="description" id="field_description"
+                          ng-model="vm.dlContentField.description"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.type" for="field_type">
+                Field type
+            </label>
+            <div class="col-sm-10">
+                <select class="form-control" name="type" id="field_type"
+                        ng-options="contentType.key as contentType.value for contentType in vm.contentTypes"
+                        ng-model="vm.dlContentField.type"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.required"
+                   for="field_required">
+                Is this field required?
+            </label>
+            <div class="col-sm-1">
+                <input class="form-control" type="checkbox" name="required" id="field_required"
+                       ng-model="vm.dlContentField.required"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.order"
+                   for="field_can_be_ordered">
+                Can be ordered by this field?
+            </label>
+            <div class="col-sm-1">
+                <input type="checkbox" class="form-control" name="can_be_ordered" id="field_can_be_ordered"
+                       ng-model="vm.dlContentField.canBeOrdered"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.onExcerptPage"
+                   for="field_on_excerpt_page">
+                On excerpt page
+            </label>
+            <div class="col-sm-1">
+                <input type="checkbox" class="form-control" name="on_excerpt_page" id="field_on_excerpt_page"
+                       ng-model="vm.dlContentField.onExcerptPage"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.onListingPage"
+                   for="field_on_listing_page">
+                On listing page
+            </label>
+            <div class="col-sm-1">
+                <input type="checkbox" class="form-control" name="on_listing_page" id="field_on_listing_page"
+                       ng-model="vm.dlContentField.onListingPage"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.onMap"
+                   for="field_on_map">
+                In map marker window
+            </label>
+            <div class="col-sm-1">
+                <input type="checkbox" class="form-control" name="on_map" id="field_on_map"
+                       ng-model="vm.dlContentField.onMap"/>
+            </div>
+        </div>
+        <div class="btn-group">
+            <label class="btn btn-primary btn-xs"
+                   ng-repeat="activeLanguage in vm.activeLanguages track by activeLanguage.code"
+                   ng-model="vm.selectedLanguageCode"
+                   uib-btn-radio="activeLanguage.code"
+                   ng-change="vm.onLanguageChange('{{vm.selectedLanguageCode}}')">
+                {{activeLanguage.englishName}} ({{activeLanguage.count}})
+            </label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.categories">
+                Assigned categories
+            </label>
+            <div class="input-group col-sm-10">
+                <ui-select allow-clear ng-model="vm.selectedCategories"
+                           multiple
+                           theme="bootstrap"
+                           on-select="vm.onSelectCallback($item, $model)">
+                    <ui-select-match placeholder="All categories...">{{$item.term.name}}</ui-select-match>
+                    <ui-select-choices repeat="item as item in vm.dlCategories | filter: $select.search">
+                        <span ng-repeat="n in [] | range:item.depthLevel">—</span>
+                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+                <span class="input-group-btn">
+                  <button type="button" ng-click="vm.clearDlCategorySelection()" class="btn btn-default">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                </span>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="button"
+                    ui-sref="{{ vm.previousState }}"
+                    class="btn btn-default">
+                <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+            </button>
+            <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+                <span class="glyphicon glyphicon-save"></span>&nbsp;<span
+                    data-translate="entity.action.save">Save</span>
+            </button>
+        </div>
+    </form>
+
+</div>

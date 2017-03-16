@@ -21,10 +21,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_CONTENT_FIELDS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CONTENT_FIELDS;
 
 @RestController
-@RequestMapping(RESOURCE_API_DL_CONTENT_FIELDS)
+@RequestMapping(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
 public class DlContentFieldResource {
 
     private static final String ENTITY_NAME = "DlContentField";
@@ -45,7 +45,7 @@ public class DlContentFieldResource {
         }
 
         DlContentFieldDTO result = dlContentFieldService.save(dlContentFieldDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_DL_CONTENT_FIELDS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -67,7 +67,7 @@ public class DlContentFieldResource {
             throws URISyntaxException {
         log.debug("REST request to get a page of DlContentFieldDTO");
         Page<DlContentFieldDTO> page = dlContentFieldService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_CONTENT_FIELDS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_CONTENT_FIELDS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

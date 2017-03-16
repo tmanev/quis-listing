@@ -331,13 +331,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="categories" type="text">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="options" type="text">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="search_options" type="text">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="group_id" type="bigint" >
                 <constraints nullable="true"/>
@@ -528,6 +528,11 @@
                   file="config/liquibase/language_translations.csv"
                   separator=";"
                   tableName="ql_language_translation"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/dl-categories/dl-content-fields.csv"
+                  separator="¦"
+                  tableName="ql_dl_content_field"/>
 
         <loadData encoding="UTF-8"
                   file="config/liquibase/content-field-groups.csv"

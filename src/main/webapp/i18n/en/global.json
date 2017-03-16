@@ -1,6 +1,6 @@
 {
     "global": {
-        "title": "Jhipster",
+        "title": "Quis Listing",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
         "menu": {
             "home": "Home",
@@ -15,9 +15,10 @@
             },
             "dl": {
                 "main": "DL",
-                "listing": "Listings",
-                "dlCategory": "Dl Categories",
-                "dlLocation": "Dl Locations"
+                "listings": "Listings",
+                "dlCategories": "Dl Categories",
+                "dlLocations": "Dl Locations",
+                "dlContentFields": "Dl Content Fields"
             },
             "account": {
                 "main": "Account",
@@ -100,7 +101,9 @@
             "save": "Save",
             "view": "View",
             "add": "Add",
-            "deactivate": "Deactivate"
+            "deactivate": "Deactivate",
+            "config": "Configure",
+            "searchConfig": "Search Config."
         },
         "detail": {
             "field": "Field",
