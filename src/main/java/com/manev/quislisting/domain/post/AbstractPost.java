@@ -4,6 +4,8 @@ import com.manev.quislisting.domain.User;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -133,5 +135,24 @@ public abstract class AbstractPost {
 
     public void setPostMeta(Set<PostMeta> postMeta) {
         this.postMeta = postMeta;
+    }
+
+    public String getPostMetaValue(String key) {
+        if (this.getPostMeta() != null) {
+            Optional<PostMeta> first = this.getPostMeta().stream().filter(p -> key.equals(p.getKey()))
+                    .findFirst();
+            if (first.isPresent()) {
+                return first.get().getValue();
+            }
+        }
+
+        return null;
+    }
+
+    public void addPostMeta(PostMeta newPostMeta) {
+        if (this.postMeta == null) {
+            this.postMeta = new HashSet<>();
+        }
+        this.postMeta.add(newPostMeta);
     }
 }

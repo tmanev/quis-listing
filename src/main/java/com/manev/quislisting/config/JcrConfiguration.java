@@ -21,7 +21,6 @@ public class JcrConfiguration {
     @Bean
     public RepositoryConfig jcrRepoConfig() throws ConfigurationException, IOException {
         Resource resource = ctx.getResource("classpath:repository.xml");
-
         return RepositoryConfig.create(resource.getFile().getPath(), "./ql-repo");
     }
 
@@ -29,6 +28,5 @@ public class JcrConfiguration {
     public RepositoryImpl repository() throws RepositoryException, IOException {
         return RepositoryImpl.create(jcrRepoConfig());
     }
-
 
 }

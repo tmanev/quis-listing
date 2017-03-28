@@ -12,15 +12,5 @@ import java.util.Optional;
 public class DlListing extends AbstractPost {
     public static final String TYPE = "dl-listing";
 
-    public String getPostMetaValue(String key) {
-        if (this.getPostMeta() != null) {
-            Optional<PostMeta> first = this.getPostMeta().stream().filter(p -> key.equals(p.getKey()))
-                    .findFirst();
-            if (first.isPresent()) {
-                return first.get().getValue();
-            }
-        }
 
-        return null;
-    }
 }

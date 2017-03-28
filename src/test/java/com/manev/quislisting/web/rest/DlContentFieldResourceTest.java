@@ -203,7 +203,8 @@ public class DlContentFieldResourceTest {
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         // Get the DlContentField
-        restDlContentFieldMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}", dlContentField.getId()))
+        restDlContentFieldMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}",
+                dlContentField.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlContentField.getId().intValue()))
@@ -333,7 +334,8 @@ public class DlContentFieldResourceTest {
         int databaseSizeBeforeDelete = dlContentFieldRepository.findAll().size();
 
         // Delete the DlContentField
-        restDlContentFieldMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}", dlContentField.getId())
+        restDlContentFieldMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{id}",
+                dlContentField.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

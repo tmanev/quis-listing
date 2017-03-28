@@ -133,8 +133,8 @@ public class DlListingResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingResource navMenuResource = new DlListingResource(dlListingService);
-        this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(navMenuResource)
+        DlListingResource dlListingResource = new DlListingResource(dlListingService);
+        this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
     }

@@ -1,5 +1,6 @@
 package com.manev.quislisting.security;
 
+import com.manev.quislisting.domain.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
