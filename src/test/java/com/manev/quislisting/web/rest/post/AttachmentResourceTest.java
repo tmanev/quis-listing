@@ -159,7 +159,7 @@ public class AttachmentResourceTest {
 
         assertThat(attachment.getName()).isEqualTo("small-fish");
         assertThat(attachment.getTitle()).isEqualTo("small fish");
-        assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.BY_ADMIN.getValue());
+        assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.TEMP.getValue());
         assertThat(attachment.getMimeType()).isEqualTo("image/jpeg");
 
         assertThat(attachment.getPostMetaValue(QL_ATTACHED_FILE)).isEqualTo("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish.jpg");
@@ -280,7 +280,8 @@ public class AttachmentResourceTest {
         String contentType = Files.probeContentType(imageFile.toPath());
 
         MockMultipartFile multipartFile =
-                new MockMultipartFile("file", imageFile.getName(), contentType, new FileInputStream(imageFile));
+                new MockMultipartFile("files[]", imageFile.getName(), contentType, new FileInputStream(imageFile));
+
         this.restAttachmentMockMvc.perform(fileUpload(RESOURCE_API_ADMIN_ATTACHMENTS + "/upload")
                 .file(multipartFile))
                 .andExpect(status().isCreated());
