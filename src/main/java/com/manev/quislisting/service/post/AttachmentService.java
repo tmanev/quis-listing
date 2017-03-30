@@ -43,7 +43,7 @@ public class AttachmentService {
         this.userRepository = userRepository;
     }
 
-    public AttachmentDTO save(AttachmentDTO attachmentDTO) {
+    public AttachmentDTO saveAttachmentByFileUpload(AttachmentDTO attachmentDTO) {
         log.debug("Request to save AttachmentDTO : {}", attachmentDTO);
 
         Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
@@ -90,11 +90,11 @@ public class AttachmentService {
 
     }
 
-    public AttachmentDTO save(MultipartFile file) {
+    public AttachmentDTO saveAttachmentByFileUpload(MultipartFile file) {
         try {
             AttachmentDTO attachmentDTO = storageService.store(file);
             Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
-            attachment.setStatus(Attachment.Status.BY_ADMIN.getValue());
+            attachment.setStatus(Attachment.Status.TEMP.getValue());
             attachment.setCreated(attachmentDTO.getCreated());
             attachment.setModified(attachmentDTO.getModified());
 
@@ -109,6 +109,10 @@ public class AttachmentService {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    public AttachmentDTO save(AttachmentDTO attachmentDTO) {
         return null;
     }
 }

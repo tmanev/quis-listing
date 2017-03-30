@@ -1,6 +1,7 @@
 package com.manev.quislisting.web;
 
 import com.google.common.collect.Lists;
+import com.manev.quislisting.domain.AttachmentStreamResource;
 import com.manev.quislisting.service.dto.FileMeta;
 import com.manev.quislisting.service.storage.StorageService;
 import org.springframework.core.io.Resource;
@@ -34,12 +35,13 @@ public class ContentController {
         Integer year = Integer.valueOf(yearStr);
         Integer month = Integer.valueOf(monthStr);
 
-        Resource file = storageService.loadAsResource("/" + String.valueOf(year) + "/"
+        AttachmentStreamResource attachmentStreamResource = storageService.loadAsResource("/"
+                + String.valueOf(year) + "/"
                 + String.format("%02d", month) + "/" + filename);
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
+                .header(HttpHeaders.CONTENT_TYPE, attachmentStreamResource.getMimeType())
+                .body(attachmentStreamResource.getResource());
     }
 
     @PostMapping("/upload")

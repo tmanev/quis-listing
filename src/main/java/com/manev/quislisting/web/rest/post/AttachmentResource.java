@@ -53,8 +53,8 @@ public class AttachmentResource {
 //    }
 
     @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AttachmentDTO> handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException, RepositoryException, URISyntaxException {
-        AttachmentDTO result = attachmentService.save(file);
+    public ResponseEntity<AttachmentDTO> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) throws IOException, RepositoryException, URISyntaxException {
+        AttachmentDTO result = attachmentService.saveAttachmentByFileUpload(files[0]);
         return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_ATTACHMENTS + "/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);

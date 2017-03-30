@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.storage;
 
+import com.manev.quislisting.domain.AttachmentStreamResource;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.storage.components.StoreComponent;
 import com.manev.quislisting.service.util.ImageResizer2Util;
@@ -35,7 +36,7 @@ public class StorageService {
         this.storeComponent = storeComponent;
     }
 
-    public Resource loadAsResource(String filename) {
+    public AttachmentStreamResource loadAsResource(String filename) {
         try {
             return storeComponent.getResource(filename);
         } catch (RepositoryException e) {

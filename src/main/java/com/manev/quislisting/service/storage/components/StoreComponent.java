@@ -2,6 +2,7 @@ package com.manev.quislisting.service.storage.components;
 
 import com.github.slugify.Slugify;
 import com.manev.quislisting.config.JcrConfiguration;
+import com.manev.quislisting.domain.AttachmentStreamResource;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.util.SlugUtil;
@@ -168,24 +169,28 @@ public class StoreComponent {
         }
     }
 
-    public Resource getResource(String filename) throws RepositoryException, IOException {
-        InputStreamResource inputStreamResource = null;
+    public AttachmentStreamResource getResource(String absPath) throws RepositoryException, IOException {
+        AttachmentStreamResource attachmentStreamResource = null;
         Repository repository = jcrConfiguration.repository();
         Session session = repository.login(
                 new SimpleCredentials("admin", "admin".toCharArray()));
 
         try {
-            Node fileNode = session.getNode(filename);
+            Node fileNode = session.getNode(absPath);
             Node contentNode = fileNode.getNode(Node.JCR_CONTENT);
-            Property property = contentNode.getProperty(JcrConstants.JCR_DATA);
-            Binary binary = property.getBinary();
-            inputStreamResource = new InputStreamResource(binary.getStream());
+            Property jcrDataProperty = contentNode.getProperty(JcrConstants.JCR_DATA);
+            Property mimeType = contentNode.getProperty(JcrConstants.JCR_MIMETYPE);
+
+            Binary binary = jcrDataProperty.getBinary();
+            InputStreamResource inputStreamResource = new InputStreamResource(binary.getStream());
+            attachmentStreamResource = new AttachmentStreamResource(inputStreamResource, mimeType.getString(),
+                    fileNode.getName());
 
             session.save();
         } finally {
             session.logout();
         }
 
-        return inputStreamResource;
+        return attachmentStreamResource;
     }
 }
