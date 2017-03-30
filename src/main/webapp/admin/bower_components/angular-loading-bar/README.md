@@ -110,7 +110,7 @@ $http.get('/status', {
 
 // ignore a particular $http POST.  Note: POST and GET have different
 // method signatures:
-$http.post('/save', data, {
+$http.post(saveAttachmentByFileUpload, data, {
   ignoreLoadingBar: true
 });
 

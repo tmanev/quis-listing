@@ -39,7 +39,7 @@
   width: 100%;
   /* "turn off" link highlight */
   -webkit-tap-highlight-color: transparent;
-  /* disable callout, image save panel */
+  /* disable callout, image saveAttachmentByFileUpload panel */
   -webkit-touch-callout: none;
   /* disable cut copy paste */
   -webkit-user-select: none;

@@ -1,0 +1,99 @@
+<div>
+    <h2 data-translate="quisListingApp.attachment.home.title">Attachments</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <!--<div class="col-xs-4 no-padding-left">-->
+                <!--<button class="btn btn-primary" ui-sref="attachments.new">-->
+                    <!--<span class="glyphicon glyphicon-plus"></span>-->
+                    <!--<span class="hidden-xs-down" data-translate="quisListingApp.attachment.home.createLabel">-->
+                        <!--Create new Attachment-->
+                    <!--</span>-->
+                <!--</button>-->
+            <!--</div>-->
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="attachments.add">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs-down" data-translate="quisListingApp.attachment.home.addLabel">
+                        Add Attachment
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-4 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right">
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery"
+                               placeholder="{{ 'quisListingApp.attachment.home.search' | translate }}">
+                        <span class="input-group-btn width-min">
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+            <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="attachmentMetadata.file"><span data-translate="quisListingApp.attachment.thumbnail">Thumbnail</span>
+                    <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="title"><span data-translate="quisListingApp.attachment.title">Title</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="attachment in vm.attachments track by attachment.id">
+                <td><a ui-sref="attachment-detail({id:attachment.id})">{{attachment.id}}</a></td>
+                <td>{{attachment.attachmentMetadata.file}}</td>
+                <td>{{attachment.title}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                ui-sref="attachment-detail({id:attachment.id})"
+                                class="btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                        </button>
+                        <button type="submit"
+                                ui-sref="attachments.edit({id:attachment.id})"
+                                class="btn btn-primary btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                        </button>
+                        <button type="submit"
+                                ui-sref="attachments.deactivate({id:attachment.id})"
+                                class="btn btn-warning btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="hidden-sm-down" data-translate="entity.action.deactivate"></span>
+                        </button>
+                        <button type="submit"
+                                ui-sref="attachments.delete({id:attachment.id})"
+                                class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                            <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage"
+                        ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+
+</div>

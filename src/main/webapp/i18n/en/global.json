@@ -9,6 +9,10 @@
                 "main": "Entities",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
+            "media": {
+                "main": "Media",
+                "attachments": "Attachments"
+            },
             "qlml": {
                 "main": "QLML",
                 "languages": "Languages"
