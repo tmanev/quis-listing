@@ -29,6 +29,9 @@ spring:
             enabled: true
     thymeleaf:
         mode: XHTML
+    http:
+      multipart:
+        max-file-size: 10MB
 
 # ===================================================================
 # Quis Listing specific properties
