@@ -1,10 +1,14 @@
 package com.manev.quislisting.service.post.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
+import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
+import com.manev.quislisting.service.post.dto.Author;
+import com.manev.quislisting.service.post.dto.DlListingDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -58,10 +62,18 @@ public class AttachmentMapper {
                         AttachmentMetadata.class);
                 attachmentDTO.setAttachmentMetadata(attachmentMetadata);
             }
+
+            setAuthor(attachment, attachmentDTO);
         } catch (IOException e) {
             log.error("Error reading Json string to Obj", e);
         }
 
         return attachmentDTO;
+    }
+
+    private void setAuthor(Attachment attachment, AttachmentDTO attachmentDTO) {
+        User user = attachment.getUser();
+
+        attachmentDTO.setAuthor(new Author(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
     }
 }

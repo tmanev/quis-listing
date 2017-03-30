@@ -12,6 +12,7 @@ public class AttachmentDTO {
     private String mimeType;
     private String status;
     private AttachmentMetadata attachmentMetadata;
+    private Author author;
     private ZonedDateTime created;
     private ZonedDateTime modified;
 
@@ -61,6 +62,14 @@ public class AttachmentDTO {
 
     public void setAttachmentMetadata(AttachmentMetadata attachmentMetadata) {
         this.attachmentMetadata = attachmentMetadata;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public ZonedDateTime getCreated() {

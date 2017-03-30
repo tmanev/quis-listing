@@ -1,5 +1,6 @@
 package com.manev.quislisting.web.rest.post;
 
+import com.manev.quislisting.service.UploadService;
 import com.manev.quislisting.service.post.AttachmentService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -11,14 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -33,9 +29,11 @@ public class AttachmentResource {
 
     private final Logger log = LoggerFactory.getLogger(AttachmentResource.class);
     private final AttachmentService attachmentService;
+    private final UploadService uploadService;
 
-    public AttachmentResource(AttachmentService attachmentService) {
+    public AttachmentResource(AttachmentService attachmentService, UploadService uploadService) {
         this.attachmentService = attachmentService;
+        this.uploadService = uploadService;
     }
 
 //    @RequestMapping(method = RequestMethod.POST,
@@ -51,14 +49,6 @@ public class AttachmentResource {
 //                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
 //                .body(result);
 //    }
-
-    @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AttachmentDTO> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) throws IOException, RepositoryException, URISyntaxException {
-        AttachmentDTO result = attachmentService.saveAttachmentByFileUpload(files[0]);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_ATTACHMENTS + "/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
-    }
 
     @PutMapping
     public ResponseEntity<AttachmentDTO> updateDlListing(@RequestBody AttachmentDTO attachmentDTO) throws URISyntaxException {
@@ -91,7 +81,7 @@ public class AttachmentResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAttachment(@PathVariable Long id) {
         log.debug("REST request to delete AttachmentDTO : {}", id);
-        attachmentService.delete(id);
+        uploadService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

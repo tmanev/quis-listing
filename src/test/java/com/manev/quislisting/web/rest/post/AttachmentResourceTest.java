@@ -5,6 +5,7 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.config.JcrConfiguration;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.repository.post.AttachmentRepository;
+import com.manev.quislisting.service.UploadService;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.AttachmentService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
@@ -12,6 +13,7 @@ import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.storage.StorageService;
 import com.manev.quislisting.web.ContentController;
 import com.manev.quislisting.web.rest.TestUtil;
+import com.manev.quislisting.web.rest.user.UploadResource;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -52,6 +54,7 @@ import java.util.List;
 import static com.manev.quislisting.domain.post.discriminator.Attachment.QL_ATTACHED_FILE;
 import static com.manev.quislisting.domain.post.discriminator.Attachment.QL_ATTACHMENT_METADATA;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_ATTACHMENTS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -85,10 +88,14 @@ public class AttachmentResourceTest {
     private StorageService storageService;
 
     @Autowired
+    private UploadService uploadService;
+
+    @Autowired
     private JcrConfiguration jcrConfiguration;
 
     private MockMvc restAttachmentMockMvc;
-    private MockMvc contentControllerMockMvc;
+    //    private MockMvc contentControllerMockMvc;
+    private MockMvc restUploadResourceMockMvc;
 
     private File imageFile;
 
@@ -105,8 +112,12 @@ public class AttachmentResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        AttachmentResource attachmentResource = new AttachmentResource(attachmentService);
+        AttachmentResource attachmentResource = new AttachmentResource(attachmentService, uploadService);
         this.restAttachmentMockMvc = MockMvcBuilders.standaloneSetup(attachmentResource)
+                .setCustomArgumentResolvers(pageableArgumentResolver)
+                .setMessageConverters(jacksonMessageConverter).build();
+        UploadResource uploadResource = new UploadResource(uploadService, attachmentService);
+        this.restUploadResourceMockMvc = MockMvcBuilders.standaloneSetup(uploadResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
         setupSecurityContext();
@@ -282,9 +293,9 @@ public class AttachmentResourceTest {
         MockMultipartFile multipartFile =
                 new MockMultipartFile("files[]", imageFile.getName(), contentType, new FileInputStream(imageFile));
 
-        this.restAttachmentMockMvc.perform(fileUpload(RESOURCE_API_ADMIN_ATTACHMENTS + "/upload")
+        this.restUploadResourceMockMvc.perform(fileUpload(RESOURCE_API_USER_UPLOAD)
                 .file(multipartFile))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
         // test get call to verify the resource
         List<Attachment> all = attachmentRepository.findAll();
