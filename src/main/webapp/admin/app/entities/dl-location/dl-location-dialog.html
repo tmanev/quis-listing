@@ -1,0 +1,77 @@
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myDlLocationLabel"
+            data-translate="quisListingApp.dlLocation.home.createOrEditLabel">Create or edit a Dl Location</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.dlLocation.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   ng-model="vm.dlLocation.id" readonly/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlLocation.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                   ng-model="vm.dlLocation.term.name"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlLocation.slug" for="field_slug">Slug</label>
+            <input type="text" class="form-control" name="slug" id="field_slug"
+                   ng-model="vm.dlLocation.term.slug"
+            />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlLocation.description" for="field_description">Description</label>
+            <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
+                      ng-model="vm.dlLocation.description"
+            >
+            </textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlLocation.parent">Parent</label>
+            <div class="input-group">
+
+                <ui-select allow-clear ng-model="vm.dlLocation.parentId" on-select="vm.onSelectCallback($item, $model)"
+                           theme="bootstrap">
+                    <ui-select-match placeholder="Select or search a location in the list...">
+                        {{$select.selected.term.name}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="item.id as item in vm.dlLocations | filter: $select.search">
+                        <span ng-repeat="n in [] | range:item.depthLevel">—</span>
+                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+
+                <span class="input-group-btn">
+                  <button type="button" ng-click="vm.dlLocation.categories = undefined" class="btn btn-default">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                </span>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlLocation.count"
+                   for="field_count">Count</label>
+            <input type="text" class="form-control" name="count" id="field_count"
+                   ng-model="vm.dlLocation.count" readonly
+            >
+            </input>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+                data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

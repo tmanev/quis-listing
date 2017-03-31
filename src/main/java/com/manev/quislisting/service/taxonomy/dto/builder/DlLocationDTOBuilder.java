@@ -3,9 +3,6 @@ package com.manev.quislisting.service.taxonomy.dto.builder;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.TermDTO;
 
-/**
- * Created by tmanev on 2/7/2017.
- */
 public final class DlLocationDTOBuilder {
     private Long id;
     private TermDTO term;

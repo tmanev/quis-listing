@@ -7,11 +7,11 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 public final class DlLocationBuilder {
     private Long id;
     private Term term;
-    private DlLocation parent;
-    private Translation translation;
     private String taxonomy;
     private String description;
     private Long count = 0L;
+    private DlLocation parent;
+    private Translation translation;
 
     private DlLocationBuilder() {
     }
@@ -59,11 +59,11 @@ public final class DlLocationBuilder {
         DlLocation dlLocation = new DlLocation();
         dlLocation.setId(id);
         dlLocation.setTerm(term);
-        dlLocation.setParent(parent);
-        dlLocation.setTranslation(translation);
         dlLocation.setTaxonomy(taxonomy);
         dlLocation.setDescription(description);
         dlLocation.setCount(count);
+        dlLocation.setParent(parent);
+        dlLocation.setTranslation(translation);
         return dlLocation;
     }
 }

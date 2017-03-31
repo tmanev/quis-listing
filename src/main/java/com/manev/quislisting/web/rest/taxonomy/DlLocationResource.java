@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LOCATIONS;
@@ -63,10 +64,10 @@ public class DlLocationResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlLocationDTO>> getAllDlLocations(Pageable pageable)
+    public ResponseEntity<List<DlLocationDTO>> getAllDlLocations(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
             throws URISyntaxException {
         log.debug("REST request to get a page of DlLocationDTO");
-        Page<DlLocationDTO> page = dlLocationService.findAll(pageable);
+        Page<DlLocationDTO> page = dlLocationService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LOCATIONS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -64,9 +65,10 @@ public class DlLocationService {
         return dlLocationMapper.dlLocationToDlLocationDTO(dlLocation);
     }
 
-    public Page<DlLocationDTO> findAll(Pageable pageable) {
+    public Page<DlLocationDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all DlLocationDTO");
-        Page<DlLocation> result = dlLocationRepository.findAll(pageable);
+        String languageCode = allRequestParams.get("languageCode");
+        Page<DlLocation> result = dlLocationRepository.findAllByTranslation_languageCode(pageable, languageCode);
         List<DlLocationDTO> dlLocationDTOS = dlLocationMapper.dlLocationToDlLocationDtoFlat(result);
         return new PageImpl<>(dlLocationDTOS, pageable, result.getTotalElements());
     }

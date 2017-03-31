@@ -28,7 +28,6 @@ public class DlLocationMapper {
                         .withSlug(dlLocationDTO.getTerm().getSlug())
                         .build())
                 .withDescription(dlLocationDTO.getDescription())
-                .withCount(dlLocationDTO.getCount())
                 .withTranslation(
                         TranslationBuilder.aTranslation()
                                 .withLanguageCode(dlLocationDTO.getLanguageCode())

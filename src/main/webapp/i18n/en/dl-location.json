@@ -1,0 +1,26 @@
+{
+    "quisListingApp": {
+        "dlLocation" : {
+            "home": {
+                "title": "Dl Locations",
+                "createLabel": "Create a new Dl Location",
+                "createOrEditLabel": "Create or edit a Dl Location",
+                "search": "Search for Location"
+            },
+            "created": "A new Dl Location is created with identifier {{ param }}",
+            "updated": "A Dl Location is updated with identifier {{ param }}",
+            "deleted": "A Dl Location is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Dl Location {{ id }}?"
+            },
+            "detail": {
+                "title": "Dl Location"
+            },
+            "name": "Name",
+            "slug": "Slug",
+            "description": "Description",
+            "parent": "Parent",
+            "count": "Count"
+        }
+    }
+}
