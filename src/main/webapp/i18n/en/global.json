@@ -107,7 +107,8 @@
             "add": "Add",
             "deactivate": "Deactivate",
             "config": "Configure",
-            "searchConfig": "Search Config."
+            "searchConfig": "Search Config.",
+            "ok": "Ok"
         },
         "detail": {
             "field": "Field",
