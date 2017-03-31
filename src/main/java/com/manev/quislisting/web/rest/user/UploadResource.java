@@ -2,6 +2,9 @@ package com.manev.quislisting.web.rest.user;
 
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UploadService;
+import com.manev.quislisting.service.dto.AttachmentMetadata;
+import com.manev.quislisting.service.dto.FileMeta;
+import com.manev.quislisting.service.dto.FileUploadResponse;
 import com.manev.quislisting.service.post.AttachmentService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -19,14 +22,15 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.manev.quislisting.service.storage.StorageService.DL_THUMBNAIL;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 
 @RestController
 @RequestMapping(RESOURCE_API_USER_UPLOAD)
 public class UploadResource {
 
+    public static final String DELETE = "DELETE";
     private static final String ENTITY_NAME = "Attachment";
-
     private final Logger log = LoggerFactory.getLogger(UploadResource.class);
 
     private final UploadService uploadService;
@@ -38,13 +42,22 @@ public class UploadResource {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AttachmentDTO>> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) throws IOException, RepositoryException, URISyntaxException {
-        List<AttachmentDTO> attachmentDTOList = new ArrayList<>();
+    public ResponseEntity<FileUploadResponse> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) throws IOException, RepositoryException, URISyntaxException {
+        List<FileMeta> fileMetaList = new ArrayList<>();
+
         for (MultipartFile file : files) {
-            attachmentDTOList.add(uploadService.uploadFile(file));
+            AttachmentDTO attachmentDTO = uploadService.uploadFile(file);
+            AttachmentMetadata.ImageResizeMeta imageThumbnailResizeMeta = attachmentDTO.getAttachmentMetadata().getImageResizeMetaByName(DL_THUMBNAIL);
+
+            FileMeta fileMeta = new FileMeta(attachmentDTO.getName(), attachmentDTO.getAttachmentMetadata().getSize(),
+                    "/content/files" + attachmentDTO.getAttachmentMetadata().getFile(),
+                    "/content/files" + imageThumbnailResizeMeta.getDetail().getFile(),
+                    RESOURCE_API_USER_UPLOAD + "/" + attachmentDTO.getId(), DELETE);
+
+            fileMetaList.add(fileMeta);
         }
 
-        return ResponseEntity.ok(attachmentDTOList);
+        return ResponseEntity.ok(new FileUploadResponse(fileMetaList));
     }
 
     @DeleteMapping("/{id}")

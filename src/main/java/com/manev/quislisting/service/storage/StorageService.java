@@ -20,9 +20,9 @@ import java.util.Map;
 @Component
 public class StorageService {
 
-    private static final String DL_MEDIUM = "dl-medium";
-    private static final String DL_BIG = "dl-big";
-    private static final String DL_THUMBNAIL = "dl-thumbnail";
+    public static final String DL_MEDIUM = "dl-medium";
+    public static final String DL_BIG = "dl-big";
+    public static final String DL_THUMBNAIL = "dl-thumbnail";
     public static Map<String, String> DL_SCALE_IMAGE_SIZES = new HashMap<String, String>() {
         {
             put(DL_THUMBNAIL, "180x180");

@@ -10,7 +10,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.joda.time.DateTime;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,13 +45,14 @@ public class StoreComponent {
         try {
             ZonedDateTime currentDateTime = ZonedDateTime.now();
             Node fileNode = createFileNode(fileNameSlug, session);
-            createResourceNode(file.getContentType(), FilenameUtils.getExtension(fileNameSlug), inputWatermarked, session, fileNode, currentDateTime);
+            Node resourceNode = createResourceNode(file.getContentType(), FilenameUtils.getExtension(fileNameSlug), inputWatermarked, session, fileNode, currentDateTime);
             attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName(), file.getContentType(), currentDateTime);
 
             AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
             attachmentMetadata.setFile(fileNode.getPath());
             attachmentMetadata.setWidth(inputWatermarked.getWidth());
             attachmentMetadata.setHeight(inputWatermarked.getHeight());
+            attachmentMetadata.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
 
             List<AttachmentMetadata.ImageResizeMeta> resizedImagesMeta = storeResizedImages(fileNode.getName(), file.getContentType(), resizedImages, session, currentDateTime);
             attachmentMetadata.setImageResizeMetas(resizedImagesMeta);
@@ -77,7 +77,7 @@ public class StoreComponent {
             String fileName = FilenameUtils.getBaseName(fileNameSlug);
             String fileNameSlugResize = fileName + "-" + resizedImage.getWidth() + "x" + resizedImage.getHeight() + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));
             Node fileNode = createFileNode(fileNameSlugResize, session);
-            createResourceNode(contentType, extension, resizedImage, session, fileNode, currentDateTime);
+            Node resourceNode = createResourceNode(contentType, extension, resizedImage, session, fileNode, currentDateTime);
 
             AttachmentMetadata.ImageResizeMeta imageResizeMeta = new AttachmentMetadata.ImageResizeMeta();
             imageResizeMeta.setName(key);
@@ -86,6 +86,7 @@ public class StoreComponent {
             detail.setMimeType(contentType);
             detail.setWidth(resizedImage.getWidth());
             detail.setHeight(resizedImage.getHeight());
+            detail.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
             imageResizeMeta.setDetail(detail);
 
             resizeMetaList.add(imageResizeMeta);
@@ -104,7 +105,7 @@ public class StoreComponent {
         return attachmentDTO;
     }
 
-    private void createResourceNode(String mimeType, String extension, BufferedImage inputWatermarked, Session session, Node fileNode, ZonedDateTime currentDateTime) throws RepositoryException, IOException {
+    private Node createResourceNode(String mimeType, String extension, BufferedImage inputWatermarked, Session session, Node fileNode, ZonedDateTime currentDateTime) throws RepositoryException, IOException {
         Node resultNode = fileNode.addNode(JcrConstants.JCR_CONTENT, JcrConstants.NT_RESOURCE);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -114,6 +115,8 @@ public class StoreComponent {
         resultNode.setProperty(JcrConstants.JCR_DATA, binary);
         resultNode.setProperty(JcrConstants.JCR_MIMETYPE, mimeType);
         resultNode.setProperty(JcrConstants.JCR_LASTMODIFIED, currentDateTime.format(DateTimeFormatter.ISO_INSTANT));
+
+        return resultNode;
     }
 
 
@@ -170,7 +173,7 @@ public class StoreComponent {
     }
 
     public AttachmentStreamResource getResource(String absPath) throws RepositoryException, IOException {
-        AttachmentStreamResource attachmentStreamResource = null;
+        AttachmentStreamResource attachmentStreamResource;
         Repository repository = jcrConfiguration.repository();
         Session session = repository.login(
                 new SimpleCredentials("admin", "admin".toCharArray()));

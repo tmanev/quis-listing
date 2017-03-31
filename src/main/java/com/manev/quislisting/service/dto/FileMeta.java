@@ -5,13 +5,15 @@ public class FileMeta {
     private String name;
     private Long size;
     private String url;
+    private String thumbnailUrl;
     private String deleteUrl;
     private String deleteType;
 
-    public FileMeta(String name, Long size, String url, String deleteUrl, String deleteType) {
+    public FileMeta(String name, Long size, String url, String thumbnailUrl, String deleteUrl, String deleteType) {
         this.name = name;
         this.size = size;
         this.url = url;
+        this.thumbnailUrl = thumbnailUrl;
         this.deleteUrl = deleteUrl;
         this.deleteType = deleteType;
     }
@@ -38,6 +40,14 @@ public class FileMeta {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String getDeleteUrl() {

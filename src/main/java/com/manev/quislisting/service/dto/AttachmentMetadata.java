@@ -6,6 +6,7 @@ import java.util.List;
 public class AttachmentMetadata {
     private Integer width;
     private Integer height;
+    private Long size;
     private String file;
     private List<ImageResizeMeta> imageResizeMetas;
 
@@ -25,6 +26,14 @@ public class AttachmentMetadata {
         this.height = height;
     }
 
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
     public String getFile() {
         return file;
     }
@@ -39,6 +48,17 @@ public class AttachmentMetadata {
 
     public void setImageResizeMetas(List<ImageResizeMeta> imageResizeMetas) {
         this.imageResizeMetas = imageResizeMetas;
+    }
+
+    public ImageResizeMeta getImageResizeMetaByName(String name) {
+        if (imageResizeMetas != null) {
+            for (ImageResizeMeta imageResizeMeta : imageResizeMetas) {
+                if (name.equals(imageResizeMeta.getName())) {
+                    return imageResizeMeta;
+                }
+            }
+        }
+        return null;
     }
 
     public void addSize(ImageResizeMeta imageResizeMeta) {
@@ -73,6 +93,7 @@ public class AttachmentMetadata {
         private String file;
         private Integer width;
         private Integer height;
+        private Long size;
         private String mimeType;
 
         public String getFile() {
@@ -97,6 +118,14 @@ public class AttachmentMetadata {
 
         public void setHeight(Integer height) {
             this.height = height;
+        }
+
+        public Long getSize() {
+            return size;
+        }
+
+        public void setSize(Long size) {
+            this.size = size;
         }
 
         public String getMimeType() {
