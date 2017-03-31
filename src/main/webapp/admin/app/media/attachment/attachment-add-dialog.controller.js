@@ -37,15 +37,12 @@
         ])
     ;
 
-    AttachmentAddController.$inject = ['$scope', '$uibModalInstance', 'entity', 'Attachment', 'AuthServerProvider'];
+    AttachmentAddController.$inject = ['$scope', '$uibModalInstance', 'AuthServerProvider'];
 
-    function AttachmentAddController($scope, $uibModalInstance, entity, Attachment, AuthServerProvider) {
+    function AttachmentAddController($scope, $uibModalInstance, AuthServerProvider) {
         var vm = this;
 
-        vm.attachment = entity;
-
-        vm.clear = clear;
-        vm.add = add;
+        vm.ok = ok;
 
         vm.fileUploadOptions = {
             headers: {
@@ -55,25 +52,12 @@
             sequentialUploads: true
         };
 
-        function clear() {
-            $uibModalInstance.dismiss('cancel');
-        }
-
-        function add() {
+        function ok() {
             vm.isSaving = true;
-            if (vm.attachment.id !== null) {
-                Attachment.update(vm.attachment, onSaveSuccess, onSaveError);
-            }
-        }
-
-        function onSaveSuccess(result) {
-            $scope.$emit('quisListingApp:attachmentUpdate', result);
-            $uibModalInstance.close(result);
+            $scope.$emit('quisListingApp:attachmentUpdate');
+            $uibModalInstance.close();
             vm.isSaving = false;
         }
 
-        function onSaveError() {
-            vm.isSaving = false;
-        }
     }
 })();
