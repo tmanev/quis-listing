@@ -5,4 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface DlLocationRepository extends TermTaxonomyRepository<DlLocation> {
+    void deleteAllByParent(DlLocation parent);
+
 }

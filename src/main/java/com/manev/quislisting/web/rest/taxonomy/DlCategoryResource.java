@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CATEGORIES;
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LOCATIONS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LOCATIONS;
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_DL_CATEGORIES)
@@ -47,7 +47,7 @@ public class DlCategoryResource {
         }
 
         DlCategoryDTO result = dlCategoryService.save(dlCategoryDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_DL_LOCATIONS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + "/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -69,7 +69,7 @@ public class DlCategoryResource {
             throws URISyntaxException {
         log.debug("REST request to get a page of DlCategoryDTO");
         Page<DlCategoryDTO> page = dlCategoryService.findAll(pageable, allRequestParams);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_LOCATIONS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LOCATIONS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

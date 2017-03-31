@@ -52,19 +52,18 @@ public class DlCategoryResourceIntTest {
     private static final String DEFAULT_SLUG_2 = "DEFAULT_SLUG_2";
     private static final String DEFAULT_DESCRIPTION_2 = "DEFAULT_DESCRIPTION_2";
     private static final Long DEFAULT_COUNT_2 = 0L;
-    private static final String DEFAULT_LANGUAGE_CODE_2 = "en";
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_SLUG = "UPDATED_SLUG";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
     private static final Long UPDATED_COUNT = 0L;
-    private static final String UPDATED_LANGUAGE_CODE = "it";
 
     @Autowired
     private DlCategoryService dlCategoryService;
 
     @Autowired
     private DlCategoryRepository dlCategoryRepository;
+
     @Autowired
     private LanguageRepository languageRepository;
 
@@ -86,7 +85,10 @@ public class DlCategoryResourceIntTest {
 
     public static DlCategory createEntity() {
         return DlCategoryBuilder.aDlCategory()
-                .withTerm(TermBuilder.aTerm().withName(DEFAULT_NAME).withSlug(DEFAULT_SLUG).build())
+                .withTerm(TermBuilder.aTerm()
+                        .withName(DEFAULT_NAME)
+                        .withSlug(DEFAULT_SLUG)
+                        .build())
                 .withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -98,7 +100,10 @@ public class DlCategoryResourceIntTest {
 
     public static DlCategory createEntity2() {
         return DlCategoryBuilder.aDlCategory()
-                .withTerm(TermBuilder.aTerm().withName(DEFAULT_NAME_2).withSlug(DEFAULT_SLUG_2).build())
+                .withTerm(TermBuilder.aTerm()
+                        .withName(DEFAULT_NAME_2)
+                        .withSlug(DEFAULT_SLUG_2)
+                        .build())
                 .withDescription(DEFAULT_DESCRIPTION_2)
                 .withCount(DEFAULT_COUNT_2)
                 .withTranslation(TranslationBuilder.aTranslation()

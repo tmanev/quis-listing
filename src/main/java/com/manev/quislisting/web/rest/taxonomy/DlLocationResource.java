@@ -1,5 +1,6 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -20,10 +21,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LOCATIONS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LOCATIONS;
 
 @RestController
-@RequestMapping(RESOURCE_API_DL_LOCATIONS)
+@RequestMapping(RESOURCE_API_ADMIN_DL_LOCATIONS)
 public class DlLocationResource {
 
     private static final String ENTITY_NAME = "DlLocation";
@@ -44,7 +45,7 @@ public class DlLocationResource {
         }
 
         DlLocationDTO result = dlLocationService.save(dlLocationDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_DL_LOCATIONS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + "/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -66,7 +67,7 @@ public class DlLocationResource {
             throws URISyntaxException {
         log.debug("REST request to get a page of DlLocationDTO");
         Page<DlLocationDTO> page = dlLocationService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_LOCATIONS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LOCATIONS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -82,6 +83,12 @@ public class DlLocationResource {
         log.debug("REST request to delete DlLocationDTO : {}", id);
         dlLocationService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/active-languages")
+    public List<ActiveLanguageDTO> getActiveLanguages() {
+        log.debug("REST request to retrieve active languages for dlCategories : {}");
+        return dlLocationService.findAllActiveLanguages();
     }
 
 }
