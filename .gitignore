@@ -22,5 +22,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-ql-repo
-h2db
+ql-repo/
+h2db/
+data/
