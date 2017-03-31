@@ -29,7 +29,7 @@ import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 @RequestMapping(RESOURCE_API_USER_UPLOAD)
 public class UploadResource {
 
-    public static final String DELETE = "DELETE";
+    private static final String DELETE = "DELETE";
     private static final String ENTITY_NAME = "Attachment";
     private final Logger log = LoggerFactory.getLogger(UploadResource.class);
 

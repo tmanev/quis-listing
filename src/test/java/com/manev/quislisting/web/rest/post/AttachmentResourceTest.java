@@ -54,7 +54,6 @@ import java.util.List;
 import static com.manev.quislisting.domain.post.discriminator.Attachment.QL_ATTACHED_FILE;
 import static com.manev.quislisting.domain.post.discriminator.Attachment.QL_ATTACHMENT_METADATA;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_ATTACHMENTS;
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -170,7 +169,7 @@ public class AttachmentResourceTest {
 
         assertThat(attachment.getName()).isEqualTo("small-fish");
         assertThat(attachment.getTitle()).isEqualTo("small fish");
-        assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.TEMP.getValue());
+        assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.BY_ADMIN.getValue());
         assertThat(attachment.getMimeType()).isEqualTo("image/jpeg");
 
         assertThat(attachment.getPostMetaValue(QL_ATTACHED_FILE)).isEqualTo("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish.jpg");
@@ -293,7 +292,7 @@ public class AttachmentResourceTest {
         MockMultipartFile multipartFile =
                 new MockMultipartFile("files[]", imageFile.getName(), contentType, new FileInputStream(imageFile));
 
-        this.restUploadResourceMockMvc.perform(fileUpload(RESOURCE_API_USER_UPLOAD)
+        this.restAttachmentMockMvc.perform(fileUpload(RESOURCE_API_ADMIN_ATTACHMENTS + "/upload")
                 .file(multipartFile))
                 .andExpect(status().isOk());
 

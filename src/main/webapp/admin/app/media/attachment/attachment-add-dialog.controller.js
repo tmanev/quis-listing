@@ -48,7 +48,7 @@
             headers: {
                 'Authorization': 'Bearer ' + AuthServerProvider.getToken()
             },
-            url: '/api/user/upload',
+            url: '/api/admin/attachments/upload',
             sequentialUploads: true
         };
 

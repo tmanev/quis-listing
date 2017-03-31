@@ -32,15 +32,6 @@ public class AttachmentService {
         this.userRepository = userRepository;
     }
 
-//    public AttachmentDTO saveAttachmentByFileUpload(AttachmentDTO attachmentDTO) {
-//        log.debug("Request to save AttachmentDTO : {}", attachmentDTO);
-//
-//        Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
-//        attachment.setModified(ZonedDateTime.now());
-//        attachment = postRepository.save(attachment);
-//        return attachmentMapper.attachmentToAttachmentDTO(attachment);
-//    }
-
     public Page<AttachmentDTO> findAll(Pageable pageable) {
         log.debug("Request to get all AttachmentDTOs");
         Page<Attachment> result = postRepository.findAll(pageable);
@@ -59,17 +50,33 @@ public class AttachmentService {
         postRepository.delete(id);
     }
 
-    public AttachmentDTO saveAttachmentByFileUpload(AttachmentDTO attachmentDTO) {
-        Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
-        attachment.setStatus(Attachment.Status.TEMP.getValue());
-        attachment.setCreated(attachmentDTO.getCreated());
-        attachment.setModified(attachmentDTO.getModified());
+    public AttachmentDTO saveAttachmentAsTemp(AttachmentDTO attachmentDTO) {
+        Attachment attachment = getAttachment(attachmentDTO);
 
+        attachment.setStatus(Attachment.Status.TEMP.getValue());
         Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         attachment.setUser(oneByLogin.get());
 
         attachment = postRepository.save(attachment);
         return attachmentMapper.attachmentToAttachmentDTO(attachment);
+    }
+
+    public AttachmentDTO saveAttachmentByAdmin(AttachmentDTO attachmentDTO) {
+        Attachment attachment = getAttachment(attachmentDTO);
+
+        attachment.setStatus(Attachment.Status.BY_ADMIN.getValue());
+        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        attachment.setUser(oneByLogin.get());
+
+        attachment = postRepository.save(attachment);
+        return attachmentMapper.attachmentToAttachmentDTO(attachment);
+    }
+
+    private Attachment getAttachment(AttachmentDTO attachmentDTO) {
+        Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDTO);
+        attachment.setCreated(attachmentDTO.getCreated());
+        attachment.setModified(attachmentDTO.getModified());
+        return attachment;
     }
 
     public AttachmentDTO save(AttachmentDTO attachmentDTO) {

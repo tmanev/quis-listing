@@ -28,7 +28,18 @@ public class UploadService {
         AttachmentDTO savedAttachmentDTO = null;
         try {
             AttachmentDTO attachmentDTO = storageService.store(file);
-            savedAttachmentDTO = attachmentService.saveAttachmentByFileUpload(attachmentDTO);
+            savedAttachmentDTO = attachmentService.saveAttachmentAsTemp(attachmentDTO);
+        } catch (IOException | RepositoryException e) {
+            e.printStackTrace();
+        }
+        return savedAttachmentDTO;
+    }
+
+    public AttachmentDTO uploadFileByAdmin(MultipartFile file) {
+        AttachmentDTO savedAttachmentDTO = null;
+        try {
+            AttachmentDTO attachmentDTO = storageService.store(file);
+            savedAttachmentDTO = attachmentService.saveAttachmentByAdmin(attachmentDTO);
         } catch (IOException | RepositoryException e) {
             e.printStackTrace();
         }
