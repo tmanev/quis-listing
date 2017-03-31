@@ -49,9 +49,9 @@
 
         vm.fileUploadOptions = {
             headers: {
-              'Authorization': 'Bearer ' + AuthServerProvider.getToken()
+                'Authorization': 'Bearer ' + AuthServerProvider.getToken()
             },
-            url: '/api/admin/attachments/upload',
+            url: '/api/user/upload',
             sequentialUploads: true
         };
 

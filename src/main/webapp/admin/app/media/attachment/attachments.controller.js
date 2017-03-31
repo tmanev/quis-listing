@@ -6,9 +6,9 @@
         .controller('AttachmentsController', AttachmentsController)
     ;
 
-    AttachmentsController.$inject = ['$scope', '$state', 'Attachment', 'AttachmentSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    AttachmentsController.$inject = ['$scope', '$state', 'Attachment', 'AttachmentSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams', '$location'];
 
-    function AttachmentsController($scope, $state, Attachment, AttachmentSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function AttachmentsController($scope, $state, Attachment, AttachmentSearch, ParseLinks, AlertService, paginationConstants, pagingParams, location) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -21,6 +21,7 @@
         vm.loadAll = loadAll;
         vm.searchQuery = pagingParams.search;
         vm.currentSearch = pagingParams.search;
+        vm.baseUrl = location.protocol() + "://" + location.host() + ":" + location.port();
 
         loadAll();
 
