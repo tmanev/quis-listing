@@ -24,6 +24,7 @@
                 "title": "Add Attachment"
             },
             "title": "Title",
+            "status": "Status",
             "thumbnail": "Thumbnail"
         }
     }
