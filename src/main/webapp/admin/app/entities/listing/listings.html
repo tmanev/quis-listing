@@ -31,6 +31,16 @@
         </div>
     </div>
     <br/>
+    <div class="btn-group">
+        <label class="btn btn-primary btn-xs"
+               ng-repeat="activeLanguage in vm.activeLanguages track by activeLanguage.code"
+               ng-model="vm.selectedLanguageCode"
+               uib-btn-radio="activeLanguage.code"
+               ng-change="vm.onLanguageChange()">
+            {{activeLanguage.englishName}} ({{activeLanguage.count}})
+        </label>
+    </div>
+    <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>

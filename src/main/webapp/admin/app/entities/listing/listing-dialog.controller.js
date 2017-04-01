@@ -37,10 +37,13 @@
         ])
     ;
 
-    ListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Listing'];
+    ListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
+        'Listing', 'DlCategory'];
 
-    function ListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity, Listing) {
+    function ListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity, Listing, DlCategory) {
         var vm = this;
+        vm.predicate = 'id';
+        vm.reverse = true;
 
         vm.listing = entity;
         vm.clear = clear;
@@ -52,8 +55,40 @@
         vm.save = save;
 
         vm.loadUploadedFiles = loadUploadedFiles;
+        vm.loadCategories = loadCategories;
+        vm.parentId = null;
+
+        $scope.tinymceOptions = {
+            menubar: false,
+            plugins: 'code',
+            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
+        };
 
         loadUploadedFiles();
+        loadCategories();
+
+        function loadCategories() {
+            DlCategory.query({
+                sort: sort(),
+                languageCode: entity.languageCode
+            }, onSuccess, onError);
+
+            function sort() {
+                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
+                if (vm.predicate !== 'id') {
+                    result.push('id');
+                }
+                return result;
+            }
+            function onSuccess(data, headers) {
+                vm.totalItems = headers('X-Total-Count');
+                vm.queryCount = vm.totalItems;
+                vm.dlCategories = data;
+            }
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
 
         function loadUploadedFiles() {
             if (vm.listing.id !== null) {

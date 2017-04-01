@@ -30,13 +30,28 @@
             <label class="control-label" data-translate="quisListingApp.listing.description" for="field_description">Description</label>
             <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
                       ng-model="vm.listing.content"
+                      ui-tinymce="tinymceOptions"
             >
             </textarea>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.listing.categories" for="field_categories">Categories</label>
-            <div id="field_categories">
-                TODO
+            <label class="control-label" data-translate="quisListingApp.listing.categories" >Categories</label>
+            <div class="input-group">
+
+                <ui-select allow-clear ng-model="vm.parentId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
+                    <ui-select-match placeholder="Select or search a category in the list...">{{$select.selected.term.name}}</ui-select-match>
+                    <ui-select-choices repeat="item.id as item in vm.dlCategories | filter: $select.search">
+                        <span ng-repeat="n in [] | range:item.depthLevel">—</span>
+                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+
+                <span class="input-group-btn">
+                  <button type="button" ng-click="vm.parentId = undefined" class="btn btn-default">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                </span>
+
             </div>
         </div>
         <div class="form-group">

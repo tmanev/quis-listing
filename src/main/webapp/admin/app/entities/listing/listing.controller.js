@@ -5,23 +5,45 @@
         .module('quisListingApp')
         .controller('ListingController', ListingController);
 
-    ListingController.$inject = ['$scope', '$state', 'Listing', 'ListingSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ListingController.$inject = ['$scope', '$state', 'Listing', 'ListingSearch', 'ParseLinks', 'AlertService',
+        'paginationConstants', 'pagingParams', 'DataLanguageHub'];
 
-    function ListingController ($scope, $state, Listing, ListingSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ListingController ($scope, $state, Listing, ListingSearch, ParseLinks, AlertService,
+                                paginationConstants, pagingParams, DataLanguageHub) {
         var vm = this;
 
+        vm.dataLanguageHub = DataLanguageHub.get();
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
+        vm.searchQuery = pagingParams.search;
+        vm.currentSearch = pagingParams.search;
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+        vm.onLanguageChange = onLanguageChange;
 
+        vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
+        vm.activeLanguages = [
+            {code: "en", englishName: "English", count: 0}
+        ];
+
+        loadActiveLanguages();
         loadAll();
+
+        function loadActiveLanguages() {
+            Listing.activeLanguages({
+
+            }, onSuccess, onError);
+            function onSuccess(data, headers) {
+                vm.activeLanguages = data;
+            }
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
 
         function loadAll () {
             if (pagingParams.search) {
@@ -35,7 +57,8 @@
                 Listing.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
-                    sort: sort()
+                    sort: sort(),
+                    languageCode: vm.selectedLanguageCode
                 }, onSuccess, onError);
             }
             function sort() {
@@ -55,6 +78,11 @@
             function onError(error) {
                 AlertService.error(error.data.message);
             }
+        }
+
+        function onLanguageChange() {
+            loadAll();
+            vm.dataLanguageHub.selectedLanguageCode = vm.selectedLanguageCode;
         }
 
         function loadPage(page) {

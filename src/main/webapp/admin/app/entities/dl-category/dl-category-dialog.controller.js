@@ -20,14 +20,6 @@
         vm.predicate = 'id';
         vm.reverse = true;
 
-        vm.person = {};
-
-        vm.person.selectedValue = {};
-        vm.person.selectedSingle = 'Samantha';
-        vm.person.selectedSingleKey = '5';
-        // To run the demos with a preselected person object, uncomment the line below.
-        //vm.person.selected = vm.person.selectedValue;
-
         loadAll();
 
         vm.onSelectCallback = function ($item, $model) {
@@ -38,7 +30,6 @@
         };
 
         function loadAll () {
-
             DlCategory.query({
                 sort: sort(),
                 languageCode: entity.languageCode

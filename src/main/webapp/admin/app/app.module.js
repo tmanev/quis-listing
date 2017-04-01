@@ -4,6 +4,7 @@
     angular
         .module('quisListingApp', [
             'blueimp.fileupload',
+            'ui.tinymce',
             'ui.select',
             'ngSanitize',
             'ngStorage',
