@@ -2,11 +2,11 @@
     'use strict';
     angular
         .module('quisListingApp')
-        .factory('Listing', Listing);
+        .factory('DlListing', DlListing);
 
-    Listing.$inject = ['$resource', 'DateUtils'];
+    DlListing.$inject = ['$resource', 'DateUtils'];
 
-    function Listing ($resource, DateUtils) {
+    function DlListing ($resource, DateUtils) {
         var resourceUrl =  'api/admin/dl-listings/:id';
 
         return $resource(resourceUrl, {}, {

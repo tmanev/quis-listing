@@ -3,7 +3,7 @@
 
     angular
         .module('quisListingApp')
-        .controller('ListingDialogController', ListingDialogController)
+        .controller('DlListingDialogController', DlListingDialogController)
         .controller('FileDestroyController', [
             '$scope', '$http',
             function ($scope, $http) {
@@ -37,15 +37,15 @@
         ])
     ;
 
-    ListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
-        'Listing', 'DlCategory'];
+    DlListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
+        'DlListing', 'DlCategory'];
 
-    function ListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity, Listing, DlCategory) {
+    function DlListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity, DlListing, DlCategory) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
 
-        vm.listing = entity;
+        vm.dlListing = entity;
         vm.clear = clear;
         vm.fileUploadOptions = {
             url: '/api/admin/files'
@@ -91,7 +91,7 @@
         }
 
         function loadUploadedFiles() {
-            if (vm.listing.id !== null) {
+            if (vm.dlListing.id !== null) {
                 $scope.loadingFiles = true;
                 $http.get(url)
                     .then(
@@ -116,15 +116,15 @@
 
         function save() {
             vm.isSaving = true;
-            if (vm.listing.id !== null) {
-                Listing.update(vm.listing, onSaveSuccess, onSaveError);
+            if (vm.dlListing.id !== null) {
+                DlListing.update(vm.dlListing, onSaveSuccess, onSaveError);
             } else {
-                Listing.save(vm.listing, onSaveSuccess, onSaveError);
+                DlListing.save(vm.dlListing, onSaveSuccess, onSaveError);
             }
         }
 
         function onSaveSuccess(result) {
-            $scope.$emit('quisListingApp:listingUpdate', result);
+            $scope.$emit('quisListingApp:dlListingUpdate', result);
             $uibModalInstance.close(result);
             vm.isSaving = false;
         }

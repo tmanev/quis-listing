@@ -19,7 +19,7 @@
             },
             "dl": {
                 "main": "DL",
-                "listings": "Listings",
+                "dlListings": "Dl Listings",
                 "dlCategories": "Dl Categories",
                 "dlLocations": "Dl Locations",
                 "dlContentFields": "Dl Content Fields"

@@ -3,14 +3,14 @@
 
     angular
         .module('quisListingApp')
-        .controller('ListingDeleteController',ListingDeleteController);
+        .controller('DlListingDeleteController',DlListingDeleteController);
 
-    ListingDeleteController.$inject = ['$uibModalInstance', 'entity', 'Listing'];
+    DlListingDeleteController.$inject = ['$uibModalInstance', 'entity', 'DlListing'];
 
-    function ListingDeleteController($uibModalInstance, entity, Listing) {
+    function DlListingDeleteController($uibModalInstance, entity, DlListing) {
         var vm = this;
 
-        vm.listing = entity;
+        vm.dlListing = entity;
         vm.clear = clear;
         vm.confirmDelete = confirmDelete;
 

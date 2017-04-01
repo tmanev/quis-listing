@@ -3,12 +3,13 @@
 
     angular
         .module('quisListingApp')
-        .controller('ListingController', ListingController);
+        .controller('DlListingsController', DlListingsController);
 
-    ListingController.$inject = ['$scope', '$state', 'Listing', 'ListingSearch', 'ParseLinks', 'AlertService',
+    DlListingsController.$inject = ['$scope', '$state', 'DlListing', 'DlListingSearch', 'ParseLinks', 'AlertService',
         'paginationConstants', 'pagingParams', 'DataLanguageHub'];
 
-    function ListingController ($scope, $state, Listing, ListingSearch, ParseLinks, AlertService,
+
+    function DlListingsController ($scope, $state, DlListing, DlListingSearch, ParseLinks, AlertService,
                                 paginationConstants, pagingParams, DataLanguageHub) {
         var vm = this;
 
@@ -34,7 +35,7 @@
         loadAll();
 
         function loadActiveLanguages() {
-            Listing.activeLanguages({
+            DlListing.activeLanguages({
 
             }, onSuccess, onError);
             function onSuccess(data, headers) {
@@ -47,14 +48,14 @@
 
         function loadAll () {
             if (pagingParams.search) {
-                ListingSearch.query({
+                DlListingSearch.query({
                     query: pagingParams.search,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
             } else {
-                Listing.query({
+                DlListing.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort(),
@@ -72,7 +73,7 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.listings = data;
+                vm.dlListings = data;
                 vm.page = pagingParams.page;
             }
             function onError(error) {

@@ -1,0 +1,31 @@
+{
+    "quisListingApp": {
+        "dlListing" : {
+            "home": {
+                "title": "Dl Listings",
+                "createLabel": "Create a new Dl Listing",
+                "createOrEditLabel": "Create or edit a Dl Listing",
+                "search": "Search for Dl Listing"
+            },
+            "created": "A new Dl Listing is created with identifier {{ param }}",
+            "updated": "A Dl Listing is updated with identifier {{ param }}",
+            "deleted": "A Dl Listing is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Dl Listing {{ id }}?"
+            },
+            "detail": {
+                "title": "Dl Listing"
+            },
+            "title": "Title",
+            "expirationDate": "Expiration Date",
+            "status": "Status",
+            "views": "Views",
+            "description": "Description",
+            "author": "Author",
+            "categories": "Categories",
+            "contentFields": "Content fields",
+            "listingMedia": "Listing media",
+            "listingLocations": "Listing locations"
+        }
+    }
+}

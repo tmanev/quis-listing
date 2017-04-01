@@ -3,12 +3,12 @@
 
     angular
         .module('quisListingApp')
-        .factory('ListingSearch', ListingSearch);
+        .factory('DlListingSearch', DlListingSearch);
 
-    ListingSearch.$inject = ['$resource'];
+    DlListingSearch.$inject = ['$resource'];
 
-    function ListingSearch($resource) {
-        var resourceUrl =  'api/_search/listings/:id';
+    function DlListingSearch($resource) {
+        var resourceUrl =  'api/_search/dl-listings/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true}

@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('listing', {
+        .state('dl-listings', {
             parent: 'entity',
-            url: '/listing?page&sort&search',
+            url: '/dl-listings?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'quisListingApp.listing.home.title'
+                pageTitle: 'quisListingApp.dl-listing.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'admin/app/entities/listing/listings.html',
-                    controller: 'ListingController',
+                    templateUrl: 'admin/app/entities/dl-listing/dl-listings.html',
+                    controller: 'DlListingsController',
                     controllerAs: 'vm'
                 }
             },
@@ -45,37 +45,37 @@
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('listing');
+                    $translatePartialLoader.addPart('dl-listing');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('listing-detail', {
-            parent: 'listing',
-            url: '/listing/{id}',
+        .state('dl-listing-detail', {
+            parent: 'dl-listings',
+            url: '/dl-listings/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'quisListingApp.listing.detail.title'
+                pageTitle: 'quisListingApp.dlListing.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'admin/app/entities/listing/listing-detail.html',
-                    controller: 'ListingDetailController',
+                    templateUrl: 'admin/app/entities/dl-listing/dl-listing-detail.html',
+                    controller: 'DlListingDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('listing');
+                    $translatePartialLoader.addPart('dl-listing');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'Listing', function($stateParams, Listing) {
-                    return Listing.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'DlListing', function($stateParams, DlListing) {
+                    return DlListing.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'listing',
+                        name: $state.current.name || 'dl-listings',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -83,22 +83,22 @@
                 }]
             }
         })
-        .state('listing-detail.edit', {
-            parent: 'listing-detail',
+        .state('dl-listing-detail.edit', {
+            parent: 'dl-listing-detail',
             url: '/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/entities/listing/listing-dialog.html',
-                    controller: 'ListingDialogController',
+                    templateUrl: 'admin/app/entities/dl-listing/dl-listing-dialog.html',
+                    controller: 'DlListingDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Listing', function(Listing) {
-                            return Listing.get({id : $stateParams.id}).$promise;
+                        entity: ['DlListing', function(DlListing) {
+                            return DlListing.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -108,8 +108,8 @@
                 });
             }]
         })
-        .state('listing.new', {
-            parent: 'listing',
+        .state('dl-listings.new', {
+            parent: 'dl-listings',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
@@ -117,8 +117,8 @@
             params: {selectedLanguageCode: null},
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/entities/listing/listing-dialog.html',
-                    controller: 'ListingDialogController',
+                    templateUrl: 'admin/app/entities/dl-listing/dl-listing-dialog.html',
+                    controller: 'DlListingDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
@@ -135,56 +135,56 @@
                         }
                     }
                 }).result.then(function() {
-                    $state.go('listing', null, { reload: 'listing' });
+                    $state.go('dl-listings', null, { reload: 'dl-listings' });
                 }, function() {
-                    $state.go('listing');
+                    $state.go('dl-listings');
                 });
             }]
         })
-        .state('listing.edit', {
-            parent: 'listing',
+        .state('dl-listings.edit', {
+            parent: 'dl-listings',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/entities/listing/listing-dialog.html',
-                    controller: 'ListingDialogController',
+                    templateUrl: 'admin/app/entities/dl-listing/dl-listing-dialog.html',
+                    controller: 'DlListingDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Listing', function(Listing) {
-                            return Listing.get({id : $stateParams.id}).$promise;
+                        entity: ['DlListing', function(DlListing) {
+                            return DlListing.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('listing', null, { reload: 'listing' });
+                    $state.go('dl-listings', null, { reload: 'dl-listings' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
-        .state('listing.delete', {
-            parent: 'listing',
+        .state('dl-listings.delete', {
+            parent: 'dl-listings',
             url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'admin/app/entities/listing/listing-delete-dialog.html',
-                    controller: 'ListingDeleteController',
+                    templateUrl: 'admin/app/entities/dl-listing/dl-listing-delete-dialog.html',
+                    controller: 'DlListingDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
-                        entity: ['Listing', function(Listing) {
-                            return Listing.get({id : $stateParams.id}).$promise;
+                        entity: ['DlListing', function(DlListing) {
+                            return DlListing.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('listing', null, { reload: 'listing' });
+                    $state.go('dl-listings', null, { reload: 'dl-listings' });
                 }, function() {
                     $state.go('^');
                 });

@@ -1,20 +1,20 @@
 <div>
-    <h2 data-translate="quisListingApp.listing.home.title">Listings</h2>
+    <h2 data-translate="quisListingApp.dlListing.home.title">Dl Listings</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="listing.new({selectedLanguageCode: vm.selectedLanguageCode})" >
+                <button class="btn btn-primary" ui-sref="dl-listings.new({selectedLanguageCode: vm.selectedLanguageCode})" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs-down"  data-translate="quisListingApp.listing.home.createLabel">
-                        Create new Listing
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlListing.home.createLabel">
+                        Create new Dl Listing
                     </span>
                 </button>
             </div>
             <div class="col-xs-8 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.listing.home.search' | translate }}">
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.dlListing.home.search' | translate }}">
                         <span  class="input-group-btn width-min" >
                             <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
                                 <span class="glyphicon glyphicon-search"></span>
@@ -46,40 +46,40 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="title"><span data-translate="quisListingApp.listing.title">Title</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="expirationDate"><span data-translate="quisListingApp.listing.expirationDate">Expiration Date</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="quisListingApp.listing.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="author.login"><span data-translate="quisListingApp.listing.author">Author</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="views"><span data-translate="quisListingApp.listing.views">Views</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="title"><span data-translate="quisListingApp.dlListing.title">Title</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="expirationDate"><span data-translate="quisListingApp.dlListing.expirationDate">Expiration Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="quisListingApp.dlListing.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="author.login"><span data-translate="quisListingApp.dlListing.author">Author</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="views"><span data-translate="quisListingApp.dlListing.views">Views</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="listing in vm.listings track by listing.id">
-                    <td><a ui-sref="listing-detail({id:listing.id})">{{listing.id}}</a></td>
-                    <td>{{listing.title}}</td>
-                    <td>{{listing.expirationDate | date:'medium'}}</td>
-                    <td>{{listing.status}}</td>
+                <tr ng-repeat="dlListing in vm.dlListings track by dlListing.id">
+                    <td><a ui-sref="dl-listing-detail({id:dlListing.id})">{{dlListing.id}}</a></td>
+                    <td>{{dlListing.title}}</td>
+                    <td>{{dlListing.expirationDate | date:'medium'}}</td>
+                    <td>{{dlListing.status}}</td>
                     <td>
-                        <a ui-sref="author-detail({id:listing.author.login})">{{listing.author.login}}</a>
+                        <a ui-sref="author-detail({id:dlListing.author.login})">{{dlListing.author.login}}</a>
                     </td>
-                    <td>{{listing.views}}</td>
+                    <td>{{dlListing.views}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="listing-detail({id:listing.id})"
+                                    ui-sref="dl-listing-detail({id:dlListing.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
-                                    ui-sref="listing.edit({id:listing.id})"
+                                    ui-sref="dl-listings.edit({id:dlListing.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
-                                    ui-sref="listing.delete({id:listing.id})"
+                                    ui-sref="dl-listings.delete({id:dlListing.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                                 <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
