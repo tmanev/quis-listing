@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain.post;
 
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
 
 import javax.persistence.*;
@@ -26,6 +27,10 @@ public abstract class AbstractPost {
 
     @Column
     private String name;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "translation_id")
+    private Translation translation;
 
     @Column(name = "type", insertable = false, updatable = false)
     private String type;
@@ -154,5 +159,13 @@ public abstract class AbstractPost {
             this.postMeta = new HashSet<>();
         }
         this.postMeta.add(newPostMeta);
+    }
+
+    public Translation getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(Translation translation) {
+        this.translation = translation;
     }
 }

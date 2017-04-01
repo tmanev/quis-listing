@@ -2,6 +2,7 @@ package com.manev.quislisting.web.rest.post;
 
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LISTINGS;
@@ -62,10 +64,10 @@ public class DlListingResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable)
+    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
             throws URISyntaxException {
         log.debug("REST request to get a page of DlListingDTO");
-        Page<DlListingDTO> page = dlListingService.findAll(pageable);
+        Page<DlListingDTO> page = dlListingService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LISTINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -82,5 +84,11 @@ public class DlListingResource {
         log.debug("REST request to delete DlListingDTO : {}", id);
         dlListingService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/active-languages")
+    public List<ActiveLanguageDTO> getActiveLanguages() {
+        log.debug("REST request to retrieve active languages for dlCategories : {}");
+        return dlListingService.findAllActiveLanguages();
     }
 }

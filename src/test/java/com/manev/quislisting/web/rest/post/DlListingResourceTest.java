@@ -1,13 +1,17 @@
 package com.manev.quislisting.web.rest.post;
 
 import com.manev.QuisListingApp;
+import com.manev.quislisting.domain.TranslationBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.repository.post.PostRepository;
+import com.manev.quislisting.repository.post.DlListingRepository;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.post.DlListingService;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,10 +77,13 @@ public class DlListingResourceTest {
     private DlListingService dlListingService;
 
     @Autowired
-    private PostRepository<DlListing> postRepository;
+    private DlListingRepository dlListingRepository;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LanguageRepository languageRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -101,6 +108,10 @@ public class DlListingResourceTest {
                 .withCreated(DEFAULT_CREATED)
                 .withModified(DEFAULT_MODIFIED)
                 .withStatus(DEFAULT_STATUS)
+                .withTranslation(TranslationBuilder.aTranslation()
+                        .withLanguageCode("en")
+                        .withTranslationGroup(new TranslationGroup())
+                        .build())
                 .build();
     }
 
@@ -141,7 +152,7 @@ public class DlListingResourceTest {
 
     @Before
     public void initTest() {
-        postRepository.deleteAll();
+        dlListingRepository.deleteAll();
         user = userRepository.findOneByLogin("admin").get();
         dlListing = createEntity(em);
         dlListing.setPostMeta(createPostMeta(dlListing));
@@ -152,10 +163,10 @@ public class DlListingResourceTest {
     public void getAllDlListings() throws Exception {
         // Initialize the database
         dlListing.setUser(user);
-        postRepository.saveAndFlush(dlListing);
+        dlListingRepository.saveAndFlush(dlListing);
 
         // Get all the navMenus
-        restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "?sort=id,desc"))
+        restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "?sort=id,desc&languageCode=en"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlListing.getId().intValue())))
@@ -163,5 +174,30 @@ public class DlListingResourceTest {
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].status").value(hasItem(META_VALUE_LISTING_STATUS)));
+    }
+
+    @Test
+    @Transactional
+    public void getActiveLanguages() throws Exception {
+        // Initialize the database
+        dlListing.setUser(user);
+        dlListingRepository.saveAndFlush(dlListing);
+
+        Language lanEn = new Language().code("en").active(true).englishName("English");
+        Language lanBg = new Language().code("bg").active(true).englishName("Bulgarian");
+        Language lanRo = new Language().code("ro").active(true).englishName("Romanian");
+        Language lanRu = new Language().code("ru").active(true).englishName("Russian");
+        languageRepository.saveAndFlush(lanEn);
+        languageRepository.saveAndFlush(lanBg);
+        languageRepository.saveAndFlush(lanRo);
+        languageRepository.saveAndFlush(lanRu);
+
+        // Get active languages
+        restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "/active-languages"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
+                .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
+                .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 }

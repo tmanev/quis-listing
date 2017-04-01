@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain.post.discriminator.builder;
 
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
@@ -19,6 +20,7 @@ public final class DlListingBuilder {
     private Long commentCount = 0L;
     private User user;
     private Set<PostMeta> postMeta;
+    private Translation translation;
 
     private DlListingBuilder() {
     }
@@ -82,6 +84,11 @@ public final class DlListingBuilder {
         return this;
     }
 
+    public DlListingBuilder withTranslation(Translation translation) {
+        this.translation = translation;
+        return this;
+    }
+
     public DlListing build() {
         DlListing dlListing = new DlListing();
         dlListing.setId(id);
@@ -95,6 +102,7 @@ public final class DlListingBuilder {
         dlListing.setCommentCount(commentCount);
         dlListing.setUser(user);
         dlListing.setPostMeta(postMeta);
+        dlListing.setTranslation(translation);
         return dlListing;
     }
 }
