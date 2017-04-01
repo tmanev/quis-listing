@@ -114,6 +114,7 @@
             data: {
                 authorities: ['ROLE_USER']
             },
+            params: {selectedLanguageCode: null},
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
                     templateUrl: 'admin/app/entities/listing/listing-dialog.html',
@@ -128,7 +129,8 @@
                                 description: null,
                                 publicationDate: null,
                                 price: null,
-                                id: null
+                                id: null,
+                                languageCode: $stateParams.selectedLanguageCode
                             };
                         }
                     }
