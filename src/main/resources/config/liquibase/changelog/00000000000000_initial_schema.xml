@@ -169,6 +169,9 @@
             <column name="comment_count" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
+            <column name="translation_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
