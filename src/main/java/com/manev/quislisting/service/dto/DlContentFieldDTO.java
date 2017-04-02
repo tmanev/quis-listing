@@ -1,5 +1,9 @@
 package com.manev.quislisting.service.dto;
 
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+
+import java.util.List;
+
 public class DlContentFieldDTO {
 
     private Long id;
@@ -20,7 +24,7 @@ public class DlContentFieldDTO {
     private Boolean onSearchForm;
     private Boolean onMap;
     private Boolean onAdvancedSearchForm;
-    private String categories;
+    private List<DlCategoryDTO> dlCategories;
     private String options;
     private String searchOptions;
 
@@ -258,16 +262,16 @@ public class DlContentFieldDTO {
         return this;
     }
 
-    public String getCategories() {
-        return categories;
+    public List<DlCategoryDTO> getDlCategories() {
+        return dlCategories;
     }
 
-    public void setCategories(String categories) {
-        this.categories = categories;
+    public void setDlCategories(List<DlCategoryDTO> dlCategories) {
+        this.dlCategories = dlCategories;
     }
 
-    public DlContentFieldDTO categories(String categories) {
-        this.categories = categories;
+    public DlContentFieldDTO dlCategories(List<DlCategoryDTO> dlCategories) {
+        this.dlCategories = dlCategories;
         return this;
     }
 

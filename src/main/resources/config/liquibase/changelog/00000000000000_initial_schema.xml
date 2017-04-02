@@ -170,7 +170,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="translation_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="user_id" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
@@ -332,9 +332,6 @@
             </column>
             <column name="on_advanced_search_form" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
-            </column>
-            <column name="categories" type="text">
-                <constraints nullable="true"/>
             </column>
             <column name="options" type="text">
                 <constraints nullable="true"/>

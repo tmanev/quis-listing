@@ -1,8 +1,10 @@
 package com.manev.quislisting.domain;
 
 import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_content_field")
@@ -63,8 +65,13 @@ public class DlContentField {
     @Column
     private Boolean onAdvancedSearchForm;
 
-    @Column
-    private String categories;
+    @ManyToMany
+    @JoinTable(name = "ql_term_relationship",
+            joinColumns =
+            @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
+            inverseJoinColumns =
+            @JoinColumn(name = "object_id", referencedColumnName = "id"))
+    private Set<DlCategory> dlCategories;
 
     @Column
     private String options;
@@ -310,16 +317,16 @@ public class DlContentField {
         return this;
     }
 
-    public String getCategories() {
-        return categories;
+    public Set<DlCategory> getDlCategories() {
+        return dlCategories;
     }
 
-    public void setCategories(String categories) {
-        this.categories = categories;
+    public void setDlCategories(Set<DlCategory> dlCategories) {
+        this.dlCategories = dlCategories;
     }
 
-    public DlContentField categories(String categories) {
-        this.categories = categories;
+    public DlContentField dlCategories(Set<DlCategory> dlCategories) {
+        this.dlCategories = dlCategories;
         return this;
     }
 

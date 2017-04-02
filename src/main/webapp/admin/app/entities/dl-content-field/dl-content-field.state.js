@@ -159,7 +159,7 @@
                             onSearchForm: false,
                             onMap: false,
                             onAdvancedSearchForm: false,
-                            categories: null,
+                            dlCategories: null,
                             options: null,
                             searchOptions: null
                         };

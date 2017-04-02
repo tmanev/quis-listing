@@ -66,12 +66,11 @@
 
         function fillDlCategoriesSelection() {
             vm.selectedCategories = [];
-            if (vm.dlContentField.categories) {
+            if (vm.dlContentField.dlCategories) {
                 // make the parsing
-                var obj = JSON.parse(vm.dlContentField.categories);
-                var arrayLength = obj.length;
+                var arrayLength = vm.dlContentField.dlCategories.length;
                 for (var i = 0; i < arrayLength; i++) {
-                    var dlCategory = findDlCategory(obj[i].id);
+                    var dlCategory = findDlCategory(vm.dlContentField.dlCategories[i].id);
                     if (dlCategory) {
                         vm.selectedCategories.push(dlCategory)
                     }
@@ -83,28 +82,22 @@
             var arrayLength = vm.selectedCategories.length;
             clearDlCategoriesByLanguageCode(languageCode);
             if (arrayLength > 0) {
-                var objToParse = [];
-                for (var i = 0; i < arrayLength; i++) {
-                    var selectedDlCategory = vm.selectedCategories[i];
-                    var obj = {
-                        id: selectedDlCategory.id,
-                        languageCode: selectedDlCategory.languageCode
-                    };
-                    objToParse.push(obj);
+                if (vm.dlContentField.dlCategories == null){
+                    vm.dlContentField.dlCategories = [];
                 }
-                vm.dlContentField.categories = JSON.stringify(objToParse);
+                for (var i = 0; i < arrayLength; i++) {
+                    vm.dlContentField.dlCategories.push(vm.selectedCategories[i]);
+                }
             }
         }
 
         function clearDlCategoriesByLanguageCode(languageCode) {
-            if (vm.dlContentField.categories) {
-                var objDlCategories = JSON.parse(vm.dlContentField.categories);
-                for (var i = objDlCategories.length - 1; i >= 0; i--) {
-                    if (objDlCategories[i].languageCode === languageCode) {
-                        objDlCategories.splice(i, 1);
+            if (vm.dlContentField.dlCategories) {
+                for (var i = vm.dlContentField.dlCategories.length - 1; i >= 0; i--) {
+                    if (vm.dlContentField.dlCategories[i].languageCode === languageCode) {
+                        vm.dlContentField.dlCategories.splice(i, 1);
                     }
                 }
-                vm.dlContentField.categories = JSON.stringify(objDlCategories);
             }
         }
 
@@ -138,7 +131,7 @@
             console.log($item);
             console.log("Model:");
             console.log($model);
-            console.log(vm.dlContentField.categories);
+            console.log(vm.dlContentField.dlCategories);
         };
 
         function save() {
@@ -174,7 +167,7 @@
 
         function clearDlCategorySelection() {
             vm.selectedCategories = [];
-            vm.dlContentField.categories = null;
+            vm.dlContentField.dlCategories = null;
         }
     }
 })();

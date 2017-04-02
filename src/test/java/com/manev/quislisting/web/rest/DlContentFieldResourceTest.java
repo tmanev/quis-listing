@@ -2,10 +2,13 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.DlContentField;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
+import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldMapper;
+import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CONTENT_FIELDS;
@@ -48,7 +52,6 @@ public class DlContentFieldResourceTest {
     public static final boolean DEFAULT_ON_SEARCH_FORM = true;
     public static final boolean DEFAULT_ON_MAP = false;
     public static final boolean DEFAULT_ON_ADVANCED_SEARCH_FORM = true;
-    public static final String DEFAULT_CATEGORIES = "1;2";
     public static final String DEFAULT_OPTIONS = "DEFAULT_OPTIONS";
     public static final String DEFAULT_SEARCH_OPTIONS = "DEFAULT_SEARCH_OPTIONS";
 
@@ -69,7 +72,6 @@ public class DlContentFieldResourceTest {
     public static final boolean UPDATED_ON_SEARCH_FORM = false;
     public static final boolean UPDATED_ON_MAP = true;
     public static final boolean UPDATED_ON_ADVANCED_SEARCH_FORM = false;
-    public static final String UPDATED_CATEGORIES = "1;2;3;4";
     public static final String UPDATED_OPTIONS = "UPDATED_OPTIONS";
     public static final String UPDATED_SEARCH_OPTIONS = "UPDATED_SEARCH_OPTIONS";
 
@@ -78,6 +80,9 @@ public class DlContentFieldResourceTest {
 
     @Autowired
     private DlContentFieldRepository dlContentFieldRepository;
+
+    @Autowired
+    private DlCategoryRepository dlCategoryRepository;
 
     @Autowired
     private DlContentFieldMapper dlContentFieldMapper;
@@ -91,6 +96,8 @@ public class DlContentFieldResourceTest {
     private MockMvc restDlContentFieldMockMvc;
 
     private DlContentField dlContentField;
+    private DlCategory dlCategory;
+    private DlCategory dlCategory2;
 
     public static DlContentField createEntity() {
         return new DlContentField()
@@ -111,7 +118,6 @@ public class DlContentFieldResourceTest {
                 .onSearchForm(DEFAULT_ON_SEARCH_FORM)
                 .onMap(DEFAULT_ON_MAP)
                 .onAdvancedSearchForm(DEFAULT_ON_ADVANCED_SEARCH_FORM)
-                .categories(DEFAULT_CATEGORIES)
                 .options(DEFAULT_OPTIONS)
                 .searchOptions(DEFAULT_SEARCH_OPTIONS);
     }
@@ -130,12 +136,23 @@ public class DlContentFieldResourceTest {
     public void initTest() {
         dlContentFieldRepository.deleteAll();
         dlContentField = createEntity();
+
+        dlCategoryRepository.deleteAllByParent(null);
+        dlCategory = DlCategoryResourceIntTest.createEntity();
+        dlCategory2 = DlCategoryResourceIntTest.createEntity2();
     }
 
     @Test
     @Transactional
     public void createDlContentField() throws Exception {
         int databaseSizeBeforeCreate = dlContentFieldRepository.findAll().size();
+
+        DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
+        dlContentField.setDlCategories(new HashSet<DlCategory>() {
+            {
+                add(dlCategorySaved);
+            }
+        });
 
         // Create the DlContentField
         DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
@@ -167,7 +184,7 @@ public class DlContentFieldResourceTest {
         assertThat(dlContentFieldSaved.getOnSearchForm()).isEqualTo(DEFAULT_ON_SEARCH_FORM);
         assertThat(dlContentFieldSaved.getOnMap()).isEqualTo(DEFAULT_ON_MAP);
         assertThat(dlContentFieldSaved.getOnAdvancedSearchForm()).isEqualTo(DEFAULT_ON_ADVANCED_SEARCH_FORM);
-        assertThat(dlContentFieldSaved.getCategories()).isEqualTo(DEFAULT_CATEGORIES);
+        assertThat(dlContentFieldSaved.getDlCategories().stream().findFirst().get().getId()).isEqualTo(this.dlCategory.getId());
         assertThat(dlContentFieldSaved.getOptions()).isEqualTo(DEFAULT_OPTIONS);
         assertThat(dlContentFieldSaved.getSearchOptions()).isEqualTo(DEFAULT_SEARCH_OPTIONS);
 
@@ -200,6 +217,12 @@ public class DlContentFieldResourceTest {
     @Transactional
     public void getDlContentField() throws Exception {
         // Initialize the database
+        DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
+        dlContentField.setDlCategories(new HashSet<DlCategory>() {
+            {
+                add(dlCategorySaved);
+            }
+        });
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         // Get the DlContentField
@@ -225,7 +248,7 @@ public class DlContentFieldResourceTest {
                 .andExpect(jsonPath("$.onSearchForm").value(dlContentField.getOnSearchForm()))
                 .andExpect(jsonPath("$.onMap").value(dlContentField.getOnMap()))
                 .andExpect(jsonPath("$.onAdvancedSearchForm").value(dlContentField.getOnAdvancedSearchForm()))
-                .andExpect(jsonPath("$.categories").value(dlContentField.getCategories()))
+                .andExpect(jsonPath("$.dlCategories.[0].id").value(dlContentField.getDlCategories().stream().findFirst().get().getId()))
                 .andExpect(jsonPath("$.options").value(dlContentField.getOptions()))
                 .andExpect(jsonPath("$.searchOptions").value(dlContentField.getSearchOptions()))
         ;
@@ -243,6 +266,13 @@ public class DlContentFieldResourceTest {
     @Transactional
     public void updateDlContentField() throws Exception {
         // Initialize the database
+        DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
+        DlCategory dlCategory2Saved = dlCategoryRepository.saveAndFlush(dlCategory2);
+        dlContentField.setDlCategories(new HashSet<DlCategory>() {
+            {
+                add(dlCategorySaved);
+            }
+        });
         dlContentFieldRepository.saveAndFlush(dlContentField);
         int databaseSizeBeforeUpdate = dlContentFieldRepository.findAll().size();
 
@@ -266,7 +296,10 @@ public class DlContentFieldResourceTest {
                 .onSearchForm(UPDATED_ON_SEARCH_FORM)
                 .onMap(UPDATED_ON_MAP)
                 .onAdvancedSearchForm(UPDATED_ON_ADVANCED_SEARCH_FORM)
-                .categories(UPDATED_CATEGORIES)
+                .dlCategories(new HashSet<DlCategory>() {{
+                    add(dlCategorySaved);
+                    add(dlCategory2Saved);
+                }})
                 .options(UPDATED_OPTIONS)
                 .searchOptions(UPDATED_SEARCH_OPTIONS);
 
@@ -299,7 +332,7 @@ public class DlContentFieldResourceTest {
         assertThat(dlContentFieldSaved.getOnSearchForm()).isEqualTo(UPDATED_ON_SEARCH_FORM);
         assertThat(dlContentFieldSaved.getOnMap()).isEqualTo(UPDATED_ON_MAP);
         assertThat(dlContentFieldSaved.getOnAdvancedSearchForm()).isEqualTo(UPDATED_ON_ADVANCED_SEARCH_FORM);
-        assertThat(dlContentFieldSaved.getCategories()).isEqualTo(UPDATED_CATEGORIES);
+        assertThat(dlContentFieldSaved.getDlCategories().size()).isEqualTo(2);
         assertThat(dlContentFieldSaved.getOptions()).isEqualTo(UPDATED_OPTIONS);
         assertThat(dlContentFieldSaved.getSearchOptions()).isEqualTo(UPDATED_SEARCH_OPTIONS);
 
