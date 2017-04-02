@@ -1,12 +1,12 @@
 <div>
-    <h2 data-translate="quisListingApp.dlCategory.home.title">DL Categories</h2>
+    <h2 data-translate="quisListingApp.dlCategories.home.title">DL Categories</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="dl-categories.new({selectedLanguageCode: vm.selectedLanguageCode})" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlCategory.home.createLabel">
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlCategories.home.createLabel">
                         Create new DL Category
                     </span>
                 </button>
@@ -14,7 +14,7 @@
             <div class="col-xs-8 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.dlCategory.home.search' | translate }}">
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.dlCategories.home.search' | translate }}">
                         <span  class="input-group-btn width-min" >
                             <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
                                 <span class="glyphicon glyphicon-search"></span>
@@ -46,34 +46,34 @@
             <thead>
             <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                 <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="name"><span data-translate="quisListingApp.dlCategory.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="slug"><span data-translate="quisListingApp.dlCategory.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="count"><span data-translate="quisListingApp.dlCategory.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="name"><span data-translate="quisListingApp.dlCategories.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="slug"><span data-translate="quisListingApp.dlCategories.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="count"><span data-translate="quisListingApp.dlCategories.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="dlCategory in vm.dlCategoriesFlat track by dlCategory.id">
-                <td><a ui-sref="dl-category-detail({id:dlCategory.id})">{{dlCategory.id}}</a></td>
-                <td><span ng-repeat="n in [] | range:dlCategory.depthLevel">—</span> {{dlCategory.term.name}}</td>
-                <td>{{dlCategory.term.slug}}</td>
-                <td>{{dlCategory.count}}</td>
+            <tr ng-repeat="dlCategories in vm.dlCategoriesFlat track by dlCategories.id">
+                <td><a ui-sref="dl-category-detail({id:dlCategories.id})">{{dlCategories.id}}</a></td>
+                <td><span ng-repeat="n in [] | range:dlCategories.depthLevel">—</span> {{dlCategories.term.name}}</td>
+                <td>{{dlCategories.term.slug}}</td>
+                <td>{{dlCategories.count}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                ui-sref="dl-category-detail({id:dlCategory.id})"
+                                ui-sref="dl-category-detail({id:dlCategories.id})"
                                 class="btn btn-info btn-sm">
                             <span class="glyphicon glyphicon-eye-open"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                         </button>
                         <button type="submit"
-                                ui-sref="dl-categories.edit({id:dlCategory.id})"
+                                ui-sref="dl-categories.edit({id:dlCategories.id})"
                                 class="btn btn-primary btn-sm">
                             <span class="glyphicon glyphicon-pencil"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                         </button>
                         <button type="submit"
-                                ui-sref="dl-categories.delete({id:dlCategory.id})"
+                                ui-sref="dl-categories.delete({id:dlCategories.id})"
                                 class="btn btn-danger btn-sm">
                             <span class="glyphicon glyphicon-remove-circle"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.delete"></span>

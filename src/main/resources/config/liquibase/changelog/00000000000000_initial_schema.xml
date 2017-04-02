@@ -268,7 +268,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="term_order" type="int(11)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
         </createTable>
     </changeSet>

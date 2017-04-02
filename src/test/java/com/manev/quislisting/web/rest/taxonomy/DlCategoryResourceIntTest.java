@@ -41,8 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = QuisListingApp.class)
 public class DlCategoryResourceIntTest {
 
-    private static final String DEFAULT_NAME = "DEFAULT_NAME";
-    private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
+    public static final String DEFAULT_NAME = "DEFAULT_NAME";
+    public static final String DEFAULT_SLUG = "DEFAULT_SLUG";
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
     private static final Long DEFAULT_PARENT_ID = null;
     private static final Long DEFAULT_COUNT = 0L;

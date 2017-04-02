@@ -9,10 +9,13 @@ import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +91,9 @@ public class DlListingResourceTest {
     private LanguageRepository languageRepository;
 
     @Autowired
+    private DlCategoryRepository dlCategoryRepository;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -97,7 +105,7 @@ public class DlListingResourceTest {
     private MockMvc restDlListingMockMvc;
 
     private DlListing dlListing;
-
+    private DlCategory dlCategory;
     private User user;
 
     public static DlListing createEntity(EntityManager em) {
@@ -156,24 +164,35 @@ public class DlListingResourceTest {
         user = userRepository.findOneByLogin("admin").get();
         dlListing = createEntity(em);
         dlListing.setPostMeta(createPostMeta(dlListing));
+
+        dlCategoryRepository.deleteAllByParent(null);
+        dlCategory = DlCategoryResourceIntTest.createEntity();
     }
 
     @Test
     @Transactional
     public void getAllDlListings() throws Exception {
         // Initialize the database
+        dlCategoryRepository.saveAndFlush(dlCategory);
         dlListing.setUser(user);
+        dlListing.setDlCategories(new HashSet<DlCategory>() {{
+            add(dlCategory);
+        }});
         dlListingRepository.saveAndFlush(dlListing);
 
         // Get all the navMenus
-        restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "?sort=id,desc&languageCode=en"))
+        ResultActions resultActions = restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "?sort=id,desc&languageCode=en"));
+        resultActions.andDo(MockMvcResultHandlers.print());
+        resultActions
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlListing.getId().intValue())))
                 .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].status").value(hasItem(META_VALUE_LISTING_STATUS)));
+                .andExpect(jsonPath("$.[*].status").value(hasItem(META_VALUE_LISTING_STATUS)))
+                .andExpect(jsonPath("$.[*].dlCategories.[*].term.name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].dlCategories.[*].term.slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
     }
 
     @Test

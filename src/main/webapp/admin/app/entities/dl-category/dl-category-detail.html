@@ -1,24 +1,24 @@
 
 <div>
-    <h2><span data-translate="quisListingApp.dlCategory.detail.title">Dl Category</span> {{vm.dlCategory.id}}</h2>
+    <h2><span data-translate="quisListingApp.dlCategories.detail.title">Dl Category</span> {{vm.dlCategories.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row jh-entity-details">
-        <dt><span data-translate="quisListingApp.dlCategory.name">Name</span></dt>
+        <dt><span data-translate="quisListingApp.dlCategories.name">Name</span></dt>
         <dd>
-            <span>{{vm.dlCategory.term.name}}</span>
+            <span>{{vm.dlCategories.term.name}}</span>
         </dd>
-        <dt><span data-translate="quisListingApp.dlCategory.slug">Slug</span></dt>
+        <dt><span data-translate="quisListingApp.dlCategories.slug">Slug</span></dt>
         <dd>
-            <span>{{vm.dlCategory.term.slug}}</span>
+            <span>{{vm.dlCategories.term.slug}}</span>
         </dd>
-        <dt><span data-translate="quisListingApp.dlCategory.description">Description</span></dt>
+        <dt><span data-translate="quisListingApp.dlCategories.description">Description</span></dt>
         <dd>
-            <span>{{vm.dlCategory.description}}</span>
+            <span>{{vm.dlCategories.description}}</span>
         </dd>
-        <dt><span data-translate="quisListingApp.dlCategory.count">Count</span></dt>
+        <dt><span data-translate="quisListingApp.dlCategories.count">Count</span></dt>
         <dd>
-            <span>{{vm.dlCategory.count}}</span>
+            <span>{{vm.dlCategories.count}}</span>
         </dd>
     </dl>
 
@@ -28,7 +28,7 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-    <button type="button" ui-sref="dl-category-detail.edit({id:vm.dlCategory.id})" class="btn btn-primary">
+    <button type="button" ui-sref="dl-category-detail.edit({id:vm.dlCategories.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>

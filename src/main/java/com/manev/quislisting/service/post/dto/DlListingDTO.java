@@ -1,6 +1,10 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DlListingDTO {
 
@@ -12,6 +16,7 @@ public class DlListingDTO {
     private String status;
     private String views;
     private Author author;
+    private List<DlCategoryDTO> dlCategories;
     private ZonedDateTime created;
     private ZonedDateTime modified;
 
@@ -79,19 +84,36 @@ public class DlListingDTO {
         this.author = author;
     }
 
-    public void setCreated(ZonedDateTime created) {
-        this.created = created;
+    public List<DlCategoryDTO> getDlCategories() {
+        return dlCategories;
     }
 
-    public void setModified(ZonedDateTime modified) {
-        this.modified = modified;
+    public void setDlCategories(List<DlCategoryDTO> dlCategories) {
+        this.dlCategories = dlCategories;
+    }
+
+    public void addDlCategoryDto(DlCategoryDTO dlCategoryDTO) {
+        if (dlCategories == null) {
+            dlCategories = new ArrayList<>();
+        }
+        dlCategories.add(dlCategoryDTO);
     }
 
     public ZonedDateTime getCreated() {
         return created;
     }
 
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
+    }
+
     public ZonedDateTime getModified() {
         return modified;
     }
+
+    public void setModified(ZonedDateTime modified) {
+        this.modified = modified;
+    }
+
+
 }

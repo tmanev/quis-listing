@@ -3,16 +3,27 @@ package com.manev.quislisting.service.post.mapper;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.post.dto.Author;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 public class DlListingMapper {
 
     private final Logger log = LoggerFactory.getLogger(DlListingMapper.class);
+
+
+    private DlCategoryMapper dlCategoryMapper;
+
+    public DlListingMapper(DlCategoryMapper dlCategoryMapper) {
+        this.dlCategoryMapper = dlCategoryMapper;
+    }
 
     public DlListing dlListingDTOToDlListing(DlListingDTO dlListingDTO) {
 //        return DlListingBuilder.aDlListing()
@@ -36,6 +47,13 @@ public class DlListingMapper {
         dlListingDTO.setViews(dlListing.getPostMetaValue(PostMeta.META_KEY_POST_VIEWS_COUNT));
 
         setExpirationDate(dlListing, dlListingDTO);
+
+        Set<DlCategory> dlCategories = dlListing.getDlCategories();
+        if (dlCategories!=null && !dlCategories.isEmpty()) {
+            for (DlCategory dlCategory : dlCategories) {
+                dlListingDTO.addDlCategoryDto(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
+            }
+        }
 
         // TODO set images
         // TODO set content fields
