@@ -1,12 +1,12 @@
 <div>
-    <h2 data-translate="quisListingApp.dlCategories.home.title">DL Categories</h2>
+    <h2 data-translate="quisListingApp.dlCategory.home.title">DL Categories</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="dl-categories.new({selectedLanguageCode: vm.selectedLanguageCode})" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlCategories.home.createLabel">
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlCategory.home.createLabel">
                         Create new DL Category
                     </span>
                 </button>
@@ -46,9 +46,9 @@
             <thead>
             <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                 <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="name"><span data-translate="quisListingApp.dlCategories.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="slug"><span data-translate="quisListingApp.dlCategories.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="count"><span data-translate="quisListingApp.dlCategories.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="name"><span data-translate="quisListingApp.dlCategory.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="slug"><span data-translate="quisListingApp.dlCategory.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="count"><span data-translate="quisListingApp.dlCategory.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>

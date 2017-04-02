@@ -4,7 +4,7 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myDlCategoryLabel" data-translate="quisListingApp.dlCategories.home.createOrEditLabel">Create or edit a Dl Category</h4>
+        <h4 class="modal-title" id="myDlCategoryLabel" data-translate="quisListingApp.dlCategory.home.createOrEditLabel">Create or edit a Dl Category</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
@@ -14,18 +14,18 @@
                     ng-model="vm.dlCategories.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlCategories.name" for="field_name">Name</label>
+            <label class="control-label" data-translate="quisListingApp.dlCategory.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
                     ng-model="vm.dlCategories.term.name" />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlCategories.slug" for="field_slug">Slug</label>
+            <label class="control-label" data-translate="quisListingApp.dlCategory.slug" for="field_slug">Slug</label>
             <input type="text" class="form-control" name="slug" id="field_slug"
                    ng-model="vm.dlCategories.term.slug"
             />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlCategories.description" for="field_description">Description</label>
+            <label class="control-label" data-translate="quisListingApp.dlCategory.description" for="field_description">Description</label>
             <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
                       ng-model="vm.dlCategories.description"
             >
@@ -33,7 +33,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlCategories.parent">Parent</label>
+            <label class="control-label" data-translate="quisListingApp.dlCategory.parent">Parent</label>
             <div class="input-group">
 
                 <ui-select allow-clear ng-model="vm.dlCategories.parentId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
@@ -54,7 +54,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlCategories.count" for="field_count">Count</label>
+            <label class="control-label" data-translate="quisListingApp.dlCategory.count" for="field_count">Count</label>
             <input type="text" class="form-control" name="count" id="field_count"
                     ng-model="vm.dlCategories.count" readonly
                     >
