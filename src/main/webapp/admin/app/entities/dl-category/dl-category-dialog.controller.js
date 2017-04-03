@@ -20,6 +20,10 @@
         vm.predicate = 'id';
         vm.reverse = true;
 
+        vm.dlCategory = entity;
+        vm.clear = clear;
+        vm.save = save;
+
         loadAll();
 
         vm.onSelectCallback = function ($item, $model) {
@@ -51,10 +55,6 @@
                 AlertService.error(error.data.message);
             }
         }
-
-        vm.dlCategory = entity;
-        vm.clear = clear;
-        vm.save = save;
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
