@@ -57,6 +57,18 @@
         vm.loadUploadedFiles = loadUploadedFiles;
         vm.loadCategories = loadCategories;
         vm.parentId = null;
+        vm.dlContentFields = [
+            {
+                name: "Phone",
+                type: "string",
+                value: ""
+            },
+            {
+                name: "Hair",
+                type: "select",
+                value: ""
+            }
+        ];
 
         $scope.tinymceOptions = {
             menubar: false,
@@ -80,11 +92,13 @@
                 }
                 return result;
             }
+
             function onSuccess(data, headers) {
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
                 vm.dlCategories = data;
             }
+
             function onError(error) {
                 AlertService.error(error.data.message);
             }

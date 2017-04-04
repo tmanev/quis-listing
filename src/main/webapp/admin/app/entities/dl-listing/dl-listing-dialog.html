@@ -58,7 +58,20 @@
             <label class="control-label" data-translate="quisListingApp.dlListing.contentFields"
                    for="field_content_fields">Content fields</label>
             <div id="field_content_fields">
-                TODO
+                <fieldset data-ng-repeat="dlContentField in vm.dlContentFields">
+                    <div ng-if="dlContentField.type == 'string' ">
+                        <label>{{dlContentField.name}}</label>
+                        <input type="text" ng-model="dlContentField.value" name="" placeholder="{{dlContentField.name}}">
+                    </div>
+                    <div ng-if="dlContentField.type == 'select' ">
+                        <label>{{dlContentField.name}}</label>
+                        <select>
+                            <option>Mobile</option>
+                            <option>Office</option>
+                            <option>Home</option>
+                        </select>
+                    </div>
+                </fieldset>
             </div>
         </div>
         <div class="form-group">

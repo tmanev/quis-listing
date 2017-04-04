@@ -8,12 +8,110 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.dlCategories.id">
+        <div class="form-group" ng-show="vm.dlContentField.id">
             <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
                    ng-model="vm.dlContentField.id" readonly/>
         </div>
+        <div ng-if="vm.dlContentField.type == 'string'">
+            <div class="form-group">
+                <label for="string_max_length" data-translate="quisListingApp.dlContentField.string.maxLength">Max
+                    length</label>
+                <input type="text" class="form-control" id="string_max_length" name="string_max_length"
+                       ng-model="vm.dlContentFieldOption.maxLength"/>
+            </div>
+            <div class="form-group">
+                <label for="string_regex" data-translate="quisListingApp.dlContentField.string.regex">Regex</label>
+                <input type="text" class="form-control" id="string_regex" name="string_regex"
+                       ng-model="vm.dlContentFieldOption.regex"/>
+            </div>
+        </div>
+        <div ng-if="vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox'">
 
+            <div class="form-inline" ng-repeat="selectionItem in vm.dlContentFieldOption.selectionItems">
+                <div class="form-group">
+                    <input type="text" class="form-control" ng-model="selectionItem.value"/>
+                    <button type="button" class="btn btn-danger" ng-click="vm.selectDeleteItem(selectionItem)">
+                        <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
+                            data-translate="entity.action.delete">Delete</span>
+                    </button>
+                    <label>Key: {{selectionItem.key}}</label>
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <button type="button" class="btn btn-default" ng-click="vm.selectAddItem()">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;<span
+                        data-translate="entity.action.add">Add</span>
+                </button>
+            </div>
+        </div>
+        <div ng-if="vm.dlContentField.type == 'number'">
+            <div class="form-group">
+                <label data-translate="quisListingApp.dlContentField.number.isIntegerOrDecimal">Is Integer or
+                    Decimal</label>
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="vm.dlContentFieldOption.isInteger" uib-btn-radio="'true'"
+                           data-translate="quisListingApp.dlContentField.number.integer">Integer</label>
+                    <label class="btn btn-primary" ng-model="vm.dlContentFieldOption.isInteger" uib-btn-radio="'false'"
+                           data-translate="quisListingApp.dlContentField.number.decimal">Decimal</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="number_decimal_separator"
+                       data-translate="quisListingApp.dlContentField.number.decimalSeparator">Decimal separator</label>
+                <input type="text" class="form-control" id="number_decimal_separator" name="number_decimal_separator"
+                       ng-model="vm.dlContentFieldOption.decimalSeparator"/>
+            </div>
+            <div class="form-group">
+                <label for="number_thousands_separator"
+                       data-translate="quisListingApp.dlContentField.number.thousandsSeparator">Thousands separator</label>
+                <input type="text" class="form-control" id="number_thousands_separator"
+                       name="number_thousands_separator"
+                       ng-model="vm.dlContentFieldOption.thousandsSeparator"/>
+            </div>
+            <div class="form-group">
+                <label for="number_min" data-translate="quisListingApp.dlContentField.number.min">Min</label>
+                <input type="text" class="form-control" id="number_min" name="number_min"
+                       ng-model="vm.dlContentFieldOption.min"/>
+            </div>
+            <div class="form-group">
+                <label for="number_max" data-translate="quisListingApp.dlContentField.number.max">Max</label>
+                <input type="text" class="form-control" id="number_max" name="number_max"
+                       ng-model="vm.dlContentFieldOption.max"/>
+            </div>
+        </div>
+        <div ng-if="vm.dlContentField.type == 'website'">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.dlContentFieldOption.isBlank">
+                    <span data-translate="quisListingApp.dlContentField.website.isBlank">Open link in new window</span>
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.dlContentFieldOption.isNoFollow">
+                    <span data-translate="quisListingApp.dlContentField.website.isNoFollow">Add nofollow attribute</span>
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.dlContentFieldOption.useLinkText">
+                    <span data-translate="quisListingApp.dlContentField.website.useLinkText">Enable link text field</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="website_default_link_text" data-translate="quisListingApp.dlContentField.website.defaultLinkText">Default link text</label>
+                <input type="text" class="form-control" id="website_default_link_text" name="website_default_link_text"
+                       ng-model="vm.dlContentFieldOption.defaultLinkText"/>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.dlContentFieldOption.useDefaultLinkText">
+                    <span data-translate="quisListingApp.dlContentField.website.defaultLinkText">Use default link text when empty</span>
+                </label>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

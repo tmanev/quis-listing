@@ -32,7 +32,30 @@
             "onExcerptPage": "On excerpt page",
             "onListingPage": "On listing page",
             "onMap": "In map marker window",
-            "categories": "Assigned categories"
+            "categories": "Assigned categories",
+            "string" : {
+                "maxLength" : "Max length",
+                "regex" : "Regex"
+            },
+            "select" : {
+
+            },
+            "number" : {
+                "isIntegerOrDecimal" : "Is Integer or Decimal",
+                "integer" : "Integer",
+                "decimal" : "Decimal",
+                "decimalSeparator" : "Decimal separator",
+                "thousandsSeparator" : "Thousands separator",
+                "min" : "Min",
+                "max" : "Max"
+            },
+            "website" : {
+                "isBlank" : "Open link in new window",
+                "isNoFollow": "Add nofollow attribute",
+                "useLinkText": "Enable link text field",
+                "defaultLinkText" : "Default link text",
+                "useDefaultLinkText": "Use default link text when empty"
+            }
         }
     }
 }
