@@ -50,7 +50,7 @@
                     }
                 } else if (vm.dlContentField.type == 'number') {
                     vm.dlContentFieldOption = {
-                        isInteger: 'true',
+                        isInteger: true,
                         decimalSeparator: ',',
                         thousandsSeparator: '',
                         min: '',

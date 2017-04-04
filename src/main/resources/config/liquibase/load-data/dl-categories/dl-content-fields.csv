@@ -7,10 +7,10 @@ id¦core_field¦order_num¦name¦slug¦description¦type¦icon_image¦required¦
 6¦0¦6¦Phone¦phone¦¦string¦w2dc-fa-phone¦0¦1¦0¦0¦0¦1¦1¦0¦1¦0¦"{""maxLength"":25, ""regex"":""""}"¦¦null
 7¦0¦7¦Website¦website¦¦website¦w2dc-fa-globe¦0¦1¦0¦0¦0¦0¦1¦0¦1¦0¦"{""isBlank"":true,""isNoFollow"":true,""useLinkText"":true,""defaultLinkText"":"""",""useDefaultLinkText"":false}"¦¦null
 19¦0¦0¦Additional information¦additional_information¦¦checkbox¦¦0¦1¦1¦0¦0¦0¦1¦1¦0¦1¦"{""selectionItems"":[{""key"":1,""value"":""4x4""},{""key"":2,""value"":""ABS""},{""key"":3,""value"":""Airbag""},{""key"":4,""value"":""Alarm""}]}"¦¦null
-20¦0¦0¦Age¦age¦¦number¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""isInteger"":""true"",""decimalSeparator"":"","",""thousandsSeparator"":"""",""min"":""17"",""max"":""99""}"¦¦null
-21¦0¦0¦Height¦height¦¦number¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"a:5:{s:10:""is_integer"";s:1:""1"";s:17:""decimal_separator"";s:1:"","";s:19:""thousands_separator"";s:0:"""";s:3:""min"";s:1:""0"";s:3:""max"";s:0:"""";}"¦"a:4:{s:4:""mode"";s:12:""exact_number"";s:15:""min_max_options"";N;s:17:""slider_step_1_min"";s:1:""0"";s:17:""slider_step_1_max"";s:3:""100"";}"¦null
-22¦0¦0¦Weight¦weight¦¦number¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"a:5:{s:10:""is_integer"";s:1:""1"";s:17:""decimal_separator"";s:1:"","";s:19:""thousands_separator"";s:0:"""";s:3:""min"";s:1:""0"";s:3:""max"";s:0:"""";}"¦¦null
+20¦0¦0¦Age¦age¦¦number¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""isInteger"":true,""decimalSeparator"":"","",""thousandsSeparator"":"""",""min"":""17"",""max"":""99""}"¦¦null
+21¦0¦0¦Height¦height¦¦number¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""isInteger"":true,""decimalSeparator"":"","",""thousands_separator"":"""",""min"":""0"",""max"":""0""}"¦"a:4:{s:4:""mode"";s:12:""exact_number"";s:15:""min_max_options"";N;s:17:""slider_step_1_min"";s:1:""0"";s:17:""slider_step_1_max"";s:3:""100"";}"¦null
+22¦0¦0¦Weight¦weight¦¦number¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""isInteger"":true,""decimalSeparator"":"","",""thousandsSeparator"":"""",""min"":""0"",""max"":""""}"¦¦null
 23¦0¦0¦Hair¦hair¦¦select¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""selectionItems"":[{""key"":1, ""value"":""Blond""},{""key"":2, ""value"":""Brown""},{""key"":3, ""value"":""Black""},{""key"":4, ""value"":""Red""}]}"¦¦null
-24¦0¦0¦Eyes¦eyes¦¦select¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"a:1:{s:15:""selection_items"";a:6:{i:1;s:5:""Black"";i:2;s:5:""Brown"";i:3;s:5:""Green"";i:4;s:4:""Blue"";i:5;s:5:""Hazel"";i:6;s:4:""Gray"";}}"¦¦null
-25¦0¦0¦Price¦price¦¦number¦w2dc-fa-money¦1¦1¦1¦0¦0¦1¦1¦0¦0¦0¦"a:5:{s:10:""is_integer"";s:1:""1"";s:17:""decimal_separator"";s:1:"","";s:19:""thousands_separator"";s:0:"""";s:3:""min"";s:1:""0"";s:3:""max"";s:0:"""";}"¦¦null
-27¦0¦0¦Currency¦currency¦¦select¦¦1¦1¦1¦0¦0¦1¦1¦0¦0¦0¦"a:1:{s:15:""selection_items"";a:2:{i:1;s:3:""EUR"";i:2;s:3:""BGN"";}}"¦¦null
+24¦0¦0¦Eyes¦eyes¦¦select¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""selectionItems"":[{""key"":1,""value"":""Black""},{""key"":2,""value"":""Brown""},{""key"":3,""value"":""Green""},{""key"":4,""value"":""Blue""},{""key"":5,""value"":""Hazel""},{""key"":6,""value"":""Gray""}]}"¦¦null
+25¦0¦0¦Price¦price¦¦number¦w2dc-fa-money¦1¦1¦1¦0¦0¦1¦1¦0¦0¦0¦"{""isInteger"":true,""decimalSeparator"":"","",""thousandsSeparator"":"""",""min"":""0"",""max"":""""}"¦¦null
+27¦0¦0¦Currency¦currency¦¦select¦¦1¦1¦1¦0¦0¦1¦1¦0¦0¦0¦"{""selectionItems"":[{""key"":1,""value"":""EUR""},{""key"":2,""value"":""BGN""}]}"¦¦null
