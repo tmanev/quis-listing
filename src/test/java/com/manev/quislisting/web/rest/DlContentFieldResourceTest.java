@@ -262,9 +262,9 @@ public class DlContentFieldResourceTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    @Transactional
-    public void updateDlContentField() throws Exception {
+        @Test
+        @Transactional
+        public void updateDlContentField() throws Exception {
         // Initialize the database
         DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
         DlCategory dlCategory2Saved = dlCategoryRepository.saveAndFlush(dlCategory2);

@@ -548,4 +548,17 @@
                   separator=";"
                   tableName="ql_postmeta"/>
     </changeSet>
+    <changeSet id="00000000000008" author="sanevskis">
+        <createTable tableName="ql_config">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="key" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
