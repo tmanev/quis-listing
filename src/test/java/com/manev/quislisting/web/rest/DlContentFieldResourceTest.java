@@ -342,7 +342,7 @@ public class DlContentFieldResourceTest {
 
     @Test
     @Transactional
-    public void updateNonExistingCategory() throws Exception {
+    public void updateNonExistingDlContentField() throws Exception {
         int databaseSizeBeforeUpdate = dlContentFieldRepository.findAll().size();
 
         // Create the DTO
