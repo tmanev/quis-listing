@@ -13,6 +13,7 @@ public final class Constants {
     public static final String RESOURCE_API_ADMIN_DL_CATEGORIES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-categories";
     public static final String RESOURCE_API_ADMIN_DL_LOCATIONS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-locations";
     public static final String RESOURCE_API_ADMIN_LANGUAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/languages";
+    public static final String RESOURCE_API_ADMIN_EMAIL_NOTIFICATION = RESOURCE_API_BASE+RESOURCE_ADMIN+ "/email-notification";
 
     private static final String RESOURCE_USER = "/user";
     public static final String RESOURCE_API_USER_UPLOAD = RESOURCE_API_BASE + RESOURCE_USER + "/upload";
