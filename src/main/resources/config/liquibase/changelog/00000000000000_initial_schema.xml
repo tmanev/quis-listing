@@ -548,6 +548,23 @@
                   separator=";"
                   tableName="ql_postmeta"/>
     </changeSet>
+    <changeSet id="00000000000007" author="adri">
+        <createTable tableName="ql_email_notification">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="string_id" type="bigint" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
     <changeSet id="00000000000008" author="sanevskis">
         <createTable tableName="ql_config">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
@@ -561,4 +578,5 @@
             </column>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>
