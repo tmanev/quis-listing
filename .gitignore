@@ -17,11 +17,11 @@ target/
 
 ### NetBeans ###
 nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
+/build
+/nbbuild
+/dist
+/nbdist/
 .nb-gradle/
-ql-repo/
-h2db/
-data/
+/ql-repo
+/h2db
+/data
