@@ -33,6 +33,7 @@ import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 /**
  * Created by adri on 4/5/2017.
  */
+@RestController
 @RequestMapping(RESOURCE_API_ADMIN_EMAIL_NOTIFICATION)
 public class EmailNotificationResource {
 

@@ -578,5 +578,11 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="00000000000009" author="adri">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/ql-settings/email-notifications.csv"
+                  separator=";"
+                  tableName="ql_email_notification"/>
+    </changeSet>
 
 </databaseChangeLog>

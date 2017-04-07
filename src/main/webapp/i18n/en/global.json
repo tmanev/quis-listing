@@ -17,6 +17,10 @@
                 "main": "QLML",
                 "languages": "Languages"
             },
+            "qlSettings": {
+                "main": "Ql Settings",
+                "emailNotifications": "Email Notifications"
+            },
             "dl": {
                 "main": "DL",
                 "dlListings": "Dl Listings",
