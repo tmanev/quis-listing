@@ -52,7 +52,155 @@
             }
         })
 
-        ;
-    }
+
+
+
+    .state('email-notifications.delete', {
+                parent: 'email-notifications',
+                url: '/{id}/delete',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/ql-settings/email-notification/email-notification-delete-dialog.html',
+                        controller: 'EmailNotificationDeleteController',
+                        controllerAs: 'vm',
+                        size: 'md',
+                        resolve: {
+                            entity: ['EmailNotification', function(EmailNotification) {
+                                return EmailNotification.get({id : $stateParams.id}).$promise;
+                            }]
+                        }
+                    }).result.then(function() {
+                        $state.go('email-notifications', null, { reload: 'email-notifications' });
+                    }, function() {
+                        $state.go('^');
+                    });
+                }]
+            })
+
+
+             .state('email-notification-detail', {
+                        parent: 'email-notifications',
+                        url: '/email-notifications/{id}',
+                        data: {
+                            authorities: ['ROLE_USER'],
+                            pageTitle: 'quisListingApp.emailNotification.detail.title'
+                        },
+                        views: {
+                            'content@': {
+                                templateUrl: 'admin/app/ql-settings/email-notification/email-notification-detail.html',
+                                controller: 'EmailNotificationDetailController',
+                                controllerAs: 'vm'
+                            }
+                        },
+                        resolve: {
+                            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                                $translatePartialLoader.addPart('email-notification');
+                                return $translate.refresh();
+                            }],
+                            entity: ['$stateParams', 'EmailNotification', function($stateParams, EmailNotification) {
+                                return EmailNotification.get({id : $stateParams.id}).$promise;
+                            }],
+                            previousState: ["$state", function ($state) {
+                                var currentStateData = {
+                                    name: $state.current.name || 'email-notifications',
+                                    params: $state.params,
+                                    url: $state.href($state.current.name, $state.params)
+                                };
+                                return currentStateData;
+                            }]
+                        }
+                    })
+
+                     .state('email-notifications.edit', {
+                                parent: 'email-notifications',
+                                url: '/{id}/edit',
+                                data: {
+                                    authorities: ['ROLE_USER']
+                                },
+                                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                                    $uibModal.open({
+                                        templateUrl: 'admin/app/ql-settings/email-notification/email-notification-dialog.html',
+                                        controller: 'EmailNotificationDialogController',
+                                        controllerAs: 'vm',
+                                        backdrop: 'static',
+                                        size: 'lg',
+                                        resolve: {
+                                            entity: ['EmailNotification', function(EmailNotification) {
+                                                return EmailNotification.get({id : $stateParams.id}).$promise;
+                                            }]
+                                        }
+                                    }).result.then(function() {
+                                        $state.go('email-notifications', null, { reload: 'email-notifications' });
+                                    }, function() {
+                                        $state.go('^');
+                                    });
+                                }]
+                            })
+
+                            .state('email-notification-detail.edit', {
+                                        parent: 'email-notification-detail',
+                                        url: '/detail/edit',
+                                        data: {
+                                            authorities: ['ROLE_USER']
+                                        },
+                                        onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                                            $uibModal.open({
+                                                templateUrl: 'admin/app/ql-settings/email-notification/email-notification-dialog.html',
+                                                controller: 'EmailNotificationDialogController',
+                                                controllerAs: 'vm',
+                                                backdrop: 'static',
+                                                size: 'lg',
+                                                resolve: {
+                                                    entity: ['EmailNotification', function(EmailNotification) {
+                                                        return EmailNotification.get({id : $stateParams.id}).$promise;
+                                                    }]
+                                                }
+                                            }).result.then(function() {
+                                                $state.go('^', {}, { reload: false });
+                                            }, function() {
+                                                $state.go('^');
+                                            });
+                                        }]
+                                    })
+
+                                    .state('email-notifications.new', {
+                                                parent: 'email-notifications',
+                                                url: '/new',
+                                                data: {
+                                                    authorities: ['ROLE_USER']
+                                                },
+                                                params: {selectedLanguageCode: null},
+                                                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                                                    $uibModal.open({
+                                                        templateUrl: 'admin/app/ql-settings/email-notification/email-notification-dialog.html',
+                                                        controller: 'EmailNotificationDialogController',
+                                                        controllerAs: 'vm',
+                                                        backdrop: 'static',
+                                                        size: 'lg',
+                                                        resolve: {
+                                                            entity: function () {
+                                                                return {
+                                                                    id: null,
+                                                                    name: null,
+                                                                    text: null
+
+                                                                };
+                                                            }
+                                                        }
+                                                    }).result.then(function() {
+                                                        $state.go('email-notifications', null, { reload: 'email-notifications' });
+                                                    }, function() {
+                                                        $state.go('email-notifications');
+                                                    });
+                                                }]
+                                            })
+
+
+
+            ;
+            }
 
 })();
