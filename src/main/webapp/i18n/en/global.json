@@ -19,7 +19,8 @@
             },
             "qlSettings": {
                 "main": "Ql Settings",
-                "emailNotifications": "Email Notifications"
+                "emailNotifications": "Email Notifications",
+                "qlConfigurations": "Ql Configurations"
             },
             "dl": {
                 "main": "DL",

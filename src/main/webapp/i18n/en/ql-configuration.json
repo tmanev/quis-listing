@@ -1,0 +1,25 @@
+{
+    "quisListingApp": {
+        "qlConfiguration" : {
+            "home": {
+                "title": "Ql Configurations",
+                "createLabel": "Create a new Ql Configuration",
+                "createOrEditLabel": "Create or edit a Ql Configuration",
+                "search": "Search for Ql Configuration"
+            },
+            "created": "A new Ql Configuration is created with identifier {{ param }}",
+            "updated": "A Ql Configuration is updated with identifier {{ param }}",
+            "deleted": "A Ql Configuration is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Ql Configuration {{ id }}?"
+            },
+            "detail": {
+                "title": "Ql Configuration"
+            },
+            "key" : "Key",
+            "value" : "Value"
+
+
+        }
+    }
+}
