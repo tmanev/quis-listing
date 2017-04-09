@@ -67,41 +67,30 @@
                         <label class="control-label">
                             {{dlContentField.name}}</label>
                         <select class="form-control" ng-model="dlContentField.value">
-                            <option ng-repeat="selectionItem in dlContentField.optionsModel.selectionItems" value="{{selectionItem.key}}">{{selectionItem.value}}</option>
+                            <option ng-repeat="selectionItem in dlContentField.dlContentFieldItems" value="{{selectionItem.id}}">{{selectionItem.value}}</option>
                         </select>
+                    </div>
+                    <div class="form-group" ng-if="dlContentField.type == 'checkbox' ">
+                        <label class="control-label" >
+                            {{dlContentField.name}}</label>
+                        <div class="checkbox" ng-repeat="selectionItem in dlContentField.dlContentFieldItems" ng-model="dlContentField.value">
+                            <label>
+                                <input type="checkbox" value="{{selectionItem.id}}">
+                                {{selectionItem.value}}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="dlContentField.type == 'number' ">
+                        <label class="control-label" >
+                            {{dlContentField.name}}</label>
+                        <input type="text" class="form-control" ng-model="dlContentField.value" />
                     </div>
                 </fieldset>
             </div>
         </div>
+
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlListing.listingMedia" for="field_listing_media">Listing
-                media</label>
-            <div id="field_listing_media">
-                TODO
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlListing.listingLocations"
-                   for="field_listing_media">Listing locations</label>
-            <div id="field_listing_locations">
-                TODO
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlListing.expirationDate"
-                   for="field_expirationDate">Expiration Date</label>
-            <div class="input-group">
-                <input id="field_expirationDate" type="text" class="form-control" name="expirationDate"
-                       uib-datepicker-popup="{{dateformat}}" ng-model="vm.dlListing.expirationDate"
-                       is-open="vm.datePickerOpenStatus.expirationDate"
-                />
-                <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('expirationDate')"><i
-                                class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-            </div>
-        </div>
-        <div class="form-group">
+
             <div id="fileupload" data-file-upload="vm.fileUploadOptions"
                  data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
                 <div class="row fileupload-buttonbar">
@@ -142,16 +131,16 @@
                         </td>
                         <td>
                             <p class="name" data-ng-switch data-on="!!file.url">
-                        <span data-ng-switch-when="true" data-ng-switch data-on="!!file.thumbnailUrl">
-                            <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" download="{{file.name}}" data-gallery>{{file.name}}</a>
-                            <a data-ng-switch-default data-ng-href="{{file.url}}" title="{{file.name}}" download="{{file.name}}">{{file.name}}</a>
-                        </span>
+                                <span data-ng-switch-when="true" data-ng-switch data-on="!!file.thumbnailUrl">
+                                    <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" download="{{file.name}}" data-gallery>{{file.name}}</a>
+                                    <a data-ng-switch-default data-ng-href="{{file.url}}" title="{{file.name}}" download="{{file.name}}">{{file.name}}</a>
+                                </span>
                                 <span data-ng-switch-default>{{file.name}}</span>
                             </p>
                             <strong data-ng-show="file.error" class="error text-danger">{{file.error}}</strong>
                         </td>
                         <td>
-                            <p class="imageResizeMeta">{{file.imageResizeMeta | formatFileSize}}</p>
+                            <p class="size">{{file.size | formatFileSize}}</p>
                             <div class="progress progress-striped active fade" data-ng-class="{pending: 'in'}[file.$state()]" data-file-upload-progress="file.$progress()"><div class="progress-bar progress-bar-success" data-ng-style="{width: num + '%'}"></div></div>
                         </td>
                         <td>
@@ -163,7 +152,7 @@
                                 <i class="glyphicon glyphicon-ban-circle"></i>
                                 <span>Cancel</span>
                             </button>
-                            <button type="button" class="btn btn-danger destroy" data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
+                            <button data-ng-controller="FileDestroyController" type="button" class="btn btn-danger destroy" data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
                                 <i class="glyphicon glyphicon-trash"></i>
                                 <span>Delete</span>
                             </button>
@@ -171,7 +160,31 @@
                     </tr>
                 </table>
             </div>
+
         </div>
+
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlListing.listingLocations"
+                   for="field_listing_media">Listing locations</label>
+            <div id="field_listing_locations">
+                TODO
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlListing.expirationDate"
+                   for="field_expirationDate">Expiration Date</label>
+            <div class="input-group">
+                <input id="field_expirationDate" type="text" class="form-control" name="expirationDate"
+                       uib-datepicker-popup="{{dateformat}}" ng-model="vm.dlListing.expirationDate"
+                       is-open="vm.datePickerOpenStatus.expirationDate"
+                />
+                <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('expirationDate')"><i
+                                class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+            </div>
+        </div>
+
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.dlListing.author"
                    for="field_author">Author</label>

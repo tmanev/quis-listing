@@ -38,10 +38,10 @@
     ;
 
     DlListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
-        'DlListing', 'DlCategory', 'DlContentField'];
+        'DlListing', 'DlCategory', 'DlContentField', 'AuthServerProvider'];
 
     function DlListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity,
-                                       DlListing, DlCategory, DlContentField) {
+                                       DlListing, DlCategory, DlContentField, AuthServerProvider) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
@@ -49,7 +49,11 @@
         vm.dlListing = entity;
         vm.clear = clear;
         vm.fileUploadOptions = {
-            url: '/api/admin/files'
+            headers: {
+                'Authorization': 'Bearer ' + AuthServerProvider.getToken()
+            },
+            url: '/api/admin/attachments/upload',
+            sequentialUploads: true
         };
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
@@ -59,18 +63,8 @@
         vm.loadCategories = loadCategories;
         vm.loadDlContentFields = loadDlContentFields;
         vm.parentId = null;
-        // vm.dlContentFields = [
-        //     {
-        //         name: "Phone",
-        //         type: "string",
-        //         value: ""
-        //     },
-        //     {
-        //         name: "Hair",
-        //         type: "select",
-        //         value: ""
-        //     }
-        // ];
+
+
 
         $scope.tinymceOptions = {
             menubar: false,
@@ -143,6 +137,11 @@
 
                 for (var i = 0; i < data.length; i++) {
                     var dlContentField = data[i];
+
+                    // if (dlContentField.type == 'select') {
+                    //     var emptyObj = {id:-1, value: "- Select " + dlContentField.name + " -"};
+                    //     dlContentField.dlContentFieldItems.unshift(emptyObj);
+                    // }
                     if (dlContentField.options) {
                         dlContentField.optionsModel = JSON.parse(dlContentField.options);
                     }
