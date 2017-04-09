@@ -1,5 +1,6 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
 import com.manev.quislisting.service.taxonomy.NavMenuService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -20,10 +21,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_NAV_MENUS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_NAV_MENUS;
 
 @RestController
-@RequestMapping(RESOURCE_API_NAV_MENUS)
+@RequestMapping(RESOURCE_API_ADMIN_NAV_MENUS)
 public class NavMenuResource {
 
     private static final String ENTITY_NAME = "NavMenu";
@@ -37,23 +38,23 @@ public class NavMenuResource {
 
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<NavMenuDTO> createPostCategory(@RequestBody NavMenuDTO navMenuDTO) throws URISyntaxException {
+    public ResponseEntity<NavMenuDTO> createNavMenu(@RequestBody NavMenuDTO navMenuDTO) throws URISyntaxException {
         log.debug("REST request to save PostCategoryDTO : {}", navMenuDTO);
         if (navMenuDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
         }
 
         NavMenuDTO result = navMenuService.save(navMenuDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_NAV_MENUS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_NAV_MENUS + "/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
     @PutMapping
-    public ResponseEntity<NavMenuDTO> updateAuthor(@RequestBody NavMenuDTO navMenuDTO) throws URISyntaxException {
+    public ResponseEntity<NavMenuDTO> updateNavMenu(@RequestBody NavMenuDTO navMenuDTO) throws URISyntaxException {
         log.debug("REST request to update NavMenuDTO : {}", navMenuDTO);
         if (navMenuDTO.getId() == null) {
-            return createPostCategory(navMenuDTO);
+            return createNavMenu(navMenuDTO);
         }
         NavMenuDTO result = navMenuService.save(navMenuDTO);
         return ResponseEntity.ok()
@@ -62,26 +63,32 @@ public class NavMenuResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<NavMenuDTO>> getAllAuthors(Pageable pageable)
+    public ResponseEntity<List<NavMenuDTO>> getAllNavMenus(Pageable pageable)
             throws URISyntaxException {
         log.debug("REST request to get a page of NavMenuDTO");
         Page<NavMenuDTO> page = navMenuService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_NAV_MENUS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_NAV_MENUS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NavMenuDTO> getAuthor(@PathVariable Long id) {
+    public ResponseEntity<NavMenuDTO> getNavMenu(@PathVariable Long id) {
         log.debug("REST request to get NavMenuDTO : {}", id);
         NavMenuDTO navMenuDTO = navMenuService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(navMenuDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNavMenu(@PathVariable Long id) {
         log.debug("REST request to delete NavMenuDTO : {}", id);
         navMenuService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/active-languages")
+    public List<ActiveLanguageDTO> getActiveLanguages() {
+        log.debug("REST request to retrieve active languages for dlCategories : {}");
+        return navMenuService.findAllActiveLanguages();
     }
 
 }

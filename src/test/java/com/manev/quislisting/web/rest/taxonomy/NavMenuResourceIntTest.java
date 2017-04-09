@@ -3,9 +3,11 @@ package com.manev.quislisting.web.rest.taxonomy;
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.NavMenuBuilder;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.taxonomy.NavMenuService;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
@@ -28,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_NAV_MENUS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_NAV_MENUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,7 +54,7 @@ public class NavMenuResourceIntTest {
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_SLUG = "UPDATED_SLUG";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    private static final Long UPDATED_COUNT = 1L;
+    private static final Long UPDATED_COUNT = 0L;
 
     @Autowired
     private NavMenuService navMenuService;
@@ -62,6 +64,9 @@ public class NavMenuResourceIntTest {
 
     @Autowired
     private NavMenuMapper navMenuMapper;
+
+    @Autowired
+    private LanguageRepository languageRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -129,7 +134,7 @@ public class NavMenuResourceIntTest {
         // Create the NavMenu
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu);
 
-        restNavMenuMockMvc.perform(post(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(post(RESOURCE_API_ADMIN_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isCreated());
@@ -156,7 +161,7 @@ public class NavMenuResourceIntTest {
         NavMenuDTO existingNavMenuDTO = navMenuMapper.navMenuToNavMenuDTO(existingNavMenu);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restNavMenuMockMvc.perform(post(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(post(RESOURCE_API_ADMIN_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingNavMenuDTO)))
                 .andExpect(status().isBadRequest());
@@ -173,7 +178,7 @@ public class NavMenuResourceIntTest {
         navMenuRepository.saveAndFlush(navMenu);
 
         // Get all the navMenus
-        restNavMenuMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "?sort=id,desc"))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(navMenu.getId().intValue())))
@@ -190,7 +195,7 @@ public class NavMenuResourceIntTest {
         navMenuRepository.saveAndFlush(navMenu);
 
         // Get the NavMenu
-        restNavMenuMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "/{id}", navMenu.getId()))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/{id}", navMenu.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(navMenu.getId().intValue()))
@@ -204,7 +209,7 @@ public class NavMenuResourceIntTest {
     @Transactional
     public void getNonExistingNavMenu() throws Exception {
         // Get the navMenu
-        restNavMenuMockMvc.perform(get(RESOURCE_API_NAV_MENUS + "/{id}", Long.MAX_VALUE))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -225,7 +230,7 @@ public class NavMenuResourceIntTest {
         updatedNavMenu.setCount(UPDATED_COUNT);
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(updatedNavMenu);
 
-        restNavMenuMockMvc.perform(put(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(put(RESOURCE_API_ADMIN_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isOk());
@@ -250,7 +255,7 @@ public class NavMenuResourceIntTest {
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restNavMenuMockMvc.perform(put(RESOURCE_API_NAV_MENUS)
+        restNavMenuMockMvc.perform(put(RESOURCE_API_ADMIN_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isCreated());
@@ -268,12 +273,36 @@ public class NavMenuResourceIntTest {
         int databaseSizeBeforeDelete = navMenuRepository.findAll().size();
 
         // Get the navMenu
-        restNavMenuMockMvc.perform(delete(RESOURCE_API_NAV_MENUS + "/{id}", navMenu.getId())
+        restNavMenuMockMvc.perform(delete(RESOURCE_API_ADMIN_NAV_MENUS + "/{id}", navMenu.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         // Validate the database is empty
         List<NavMenu> navMenuList = navMenuRepository.findAll();
         assertThat(navMenuList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void getActiveLanguages() throws Exception {
+        // Initialize the database
+        navMenuRepository.saveAndFlush(navMenu);
+
+        Language lanEn = new Language().code("en").active(true).englishName("English");
+        Language lanBg = new Language().code("bg").active(true).englishName("Bulgarian");
+        Language lanRo = new Language().code("ro").active(true).englishName("Romanian");
+        Language lanRu = new Language().code("ru").active(true).englishName("Russian");
+        languageRepository.saveAndFlush(lanEn);
+        languageRepository.saveAndFlush(lanBg);
+        languageRepository.saveAndFlush(lanRo);
+        languageRepository.saveAndFlush(lanRu);
+
+        // Get active languages
+        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/active-languages"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
+                .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
+                .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 }

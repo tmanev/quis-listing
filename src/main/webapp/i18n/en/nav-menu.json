@@ -1,0 +1,26 @@
+{
+    "quisListingApp": {
+        "navMenu" : {
+            "home": {
+                "title": "Navigation Menus",
+                "createLabel": "Create a new Navigation Menu",
+                "createOrEditLabel": "Create or edit a Navigation Menu",
+                "search": "Search for Navigation Menu"
+            },
+            "created": "A new Navigation Menu is created with identifier {{ param }}",
+            "updated": "A Navigation Menu is updated with identifier {{ param }}",
+            "deleted": "A Navigation Menu is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Navigation Menu {{ id }}?"
+            },
+            "detail": {
+                "title": "Navigation Menu"
+            },
+            "name": "Name",
+            "slug": "Slug",
+            "description": "Description",
+            "parent": "Parent",
+            "count": "Count"
+        }
+    }
+}

@@ -27,7 +27,6 @@ public class NavMenuMapper {
                         .withSlug(navMenuDTO.getTerm().getSlug())
                         .build())
                 .withDescription(navMenuDTO.getDescription())
-                .withCount(navMenuDTO.getCount())
                 .withTranslation(
                         TranslationBuilder.aTranslation()
                                 .withLanguageCode(navMenuDTO.getLanguageCode())

@@ -1,10 +1,14 @@
 package com.manev.quislisting.service.taxonomy;
 
 import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 import com.manev.quislisting.repository.TranslationGroupRepository;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
+import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import com.manev.quislisting.service.taxonomy.mapper.NavMenuMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,12 +33,17 @@ public class NavMenuService {
     private TranslationGroupRepository translationGroupRepository;
 
     private NavMenuMapper navMenuMapper;
+    private ActiveLanguageMapper activeLanguageMapper;
+
+    private LanguageRepository languageRepository;
 
     public NavMenuService(NavMenuRepository navMenuRepository, NavMenuMapper navMenuMapper,
-                          TranslationGroupRepository translationGroupRepository) {
+                          TranslationGroupRepository translationGroupRepository, ActiveLanguageMapper activeLanguageMapper, LanguageRepository languageRepository) {
         this.navMenuRepository = navMenuRepository;
         this.navMenuMapper = navMenuMapper;
         this.translationGroupRepository = translationGroupRepository;
+        this.activeLanguageMapper = activeLanguageMapper;
+        this.languageRepository = languageRepository;
     }
 
     public NavMenuDTO save(NavMenuDTO navMenuDTO) {
@@ -74,4 +84,16 @@ public class NavMenuService {
         navMenuRepository.delete(id);
     }
 
+    public List<ActiveLanguageDTO> findAllActiveLanguages() {
+        log.debug("Request to retrieve all active languages");
+        List<ActiveLanguageDTO> result = new ArrayList<>();
+
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        for (Language language : allByActive) {
+            Long count = navMenuRepository.countByTranslation_languageCode(language.getCode());
+            result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
+        }
+
+        return result;
+    }
 }

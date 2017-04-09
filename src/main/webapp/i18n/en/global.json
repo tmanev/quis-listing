@@ -17,6 +17,10 @@
                 "main": "QLML",
                 "languages": "Languages"
             },
+            "qlAppearance" : {
+                "main": "Ql Appearance",
+                "navMenus": "Navigation Menus"
+            },
             "qlSettings": {
                 "main": "Ql Settings",
                 "emailNotifications": "Email Notifications",

@@ -6,12 +6,12 @@ import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 
 public final class NavMenuBuilder {
     private Long id;
-    private NavMenu parent;
     private Term term;
-    private Translation translation;
     private String taxonomy;
     private String description;
     private Long count = 0L;
+    private NavMenu parent;
+    private Translation translation;
 
     private NavMenuBuilder() {
     }
@@ -58,12 +58,12 @@ public final class NavMenuBuilder {
     public NavMenu build() {
         NavMenu navMenu = new NavMenu();
         navMenu.setId(id);
-        navMenu.setParent(parent);
         navMenu.setTerm(term);
-        navMenu.setTranslation(translation);
         navMenu.setTaxonomy(taxonomy);
         navMenu.setDescription(description);
         navMenu.setCount(count);
+        navMenu.setParent(parent);
+        navMenu.setTranslation(translation);
         return navMenu;
     }
 }
