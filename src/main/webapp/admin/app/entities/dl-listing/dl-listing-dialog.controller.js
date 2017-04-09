@@ -38,9 +38,10 @@
     ;
 
     DlListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
-        'DlListing', 'DlCategory'];
+        'DlListing', 'DlCategory', 'DlContentField'];
 
-    function DlListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity, DlListing, DlCategory) {
+    function DlListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity,
+                                       DlListing, DlCategory, DlContentField) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
@@ -56,19 +57,20 @@
 
         vm.loadUploadedFiles = loadUploadedFiles;
         vm.loadCategories = loadCategories;
+        vm.loadDlContentFields = loadDlContentFields;
         vm.parentId = null;
-        vm.dlContentFields = [
-            {
-                name: "Phone",
-                type: "string",
-                value: ""
-            },
-            {
-                name: "Hair",
-                type: "select",
-                value: ""
-            }
-        ];
+        // vm.dlContentFields = [
+        //     {
+        //         name: "Phone",
+        //         type: "string",
+        //         value: ""
+        //     },
+        //     {
+        //         name: "Hair",
+        //         type: "select",
+        //         value: ""
+        //     }
+        // ];
 
         $scope.tinymceOptions = {
             menubar: false,
@@ -78,6 +80,7 @@
 
         loadUploadedFiles();
         loadCategories();
+        loadDlContentFields();
 
         function loadCategories() {
             DlCategory.query({
@@ -94,8 +97,9 @@
             }
 
             function onSuccess(data, headers) {
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
+                vm.dlCategoryTotalItems = headers('X-Total-Count');
+                vm.dlCategoryQueryCount = vm.dlCategoryTotalItems;
+
                 vm.dlCategories = data;
             }
 
@@ -117,6 +121,38 @@
                             $scope.loadingFiles = false;
                         }
                     );
+            }
+        }
+
+        function loadDlContentFields() {
+            DlContentField.query({
+                sort: sort()
+            }, onSuccess, onError);
+
+            function sort() {
+                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
+                if (vm.predicate !== 'id') {
+                    result.push('id');
+                }
+                return result;
+            }
+
+            function onSuccess(data, headers) {
+                vm.dlContentFieldTotalItems = headers('X-Total-Count');
+                vm.dlContentFieldQueryCount = vm.dlCategoryTotalItems;
+
+                for (var i = 0; i < data.length; i++) {
+                    var dlContentField = data[i];
+                    if (dlContentField.options) {
+                        dlContentField.optionsModel = JSON.parse(dlContentField.options);
+                    }
+                }
+
+                vm.dlContentFields = data;
+            }
+
+            function onError(error) {
+                AlertService.error(error.data.message);
             }
         }
 

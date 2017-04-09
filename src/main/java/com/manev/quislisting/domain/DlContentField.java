@@ -83,6 +83,9 @@ public class DlContentField {
     @JoinColumn(name = "string_id")
     private QlString qlString;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="dlContentField")
+    public Set<DlContentFieldItem> dlContentFieldItems;
+
     public Long getId() {
         return id;
     }
@@ -366,6 +369,19 @@ public class DlContentField {
 
     public DlContentField qlString(QlString qlString) {
         this.qlString = qlString;
+        return this;
+    }
+
+    public Set<DlContentFieldItem> getDlContentFieldItems() {
+        return dlContentFieldItems;
+    }
+
+    public void setDlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
+        this.dlContentFieldItems = dlContentFieldItems;
+    }
+
+    public DlContentField dlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
+        this.dlContentFieldItems = dlContentFieldItems;
         return this;
     }
 }

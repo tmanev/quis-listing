@@ -23,14 +23,14 @@
 
         initDlContentFieldOptionModel();
 
-        function selectDeleteItem(selectionItem) {
-            vm.dlContentFieldOption.selectionItems.splice(vm.dlContentFieldOption.selectionItems.indexOf(selectionItem), 1);
+        function selectDeleteItem(dlContentFieldItem) {
+            vm.dlContentField.dlContentFieldItems.splice(vm.dlContentField.dlContentFieldItems.indexOf(dlContentFieldItem), 1);
         }
 
         function selectAddItem() {
-            var nextId = ++vm.idReferenceCounter;
-            vm.dlContentFieldOption.selectionItems.push({
-                key: nextId,
+            // var nextId = ++vm.idReferenceCounter;
+            vm.dlContentField.dlContentFieldItems.push({
+                id: null,
                 value: ''
             });
         }
@@ -43,10 +43,6 @@
                     vm.dlContentFieldOption = {
                         maxLength: 25,
                         regex: ''
-                    }
-                } else if (vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox') {
-                    vm.dlContentFieldOption = {
-                        selectionItems: []
                     }
                 } else if (vm.dlContentField.type == 'number') {
                     vm.dlContentFieldOption = {
@@ -64,16 +60,24 @@
                         defaultLinkText: '',
                         useDefaultLinkText: false
                     }
+                } else if (vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox') {
+                    vm.dlContentFieldOption = {}
                 }
             }
 
-            if (vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox') {
-                for (var i = 0; i < vm.dlContentFieldOption.selectionItems.length; i++) {
-                    if (vm.dlContentFieldOption.selectionItems[i].key > vm.idReferenceCounter) {
-                        vm.idReferenceCounter = vm.dlContentFieldOption.selectionItems[i].key;
-                    }
-                }
+            if (vm.dlContentField.dlContentFieldItems === undefined ||
+                vm.dlContentField.dlContentFieldItems === null) {
+                vm.dlContentField.dlContentFieldItems = [];
             }
+
+
+            // if (vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox') {
+            //     for (var i = 0; i < vm.dlContentFieldOption.selectionItems.length; i++) {
+            //         if (vm.dlContentFieldOption.selectionItems[i].key > vm.idReferenceCounter) {
+            //             vm.idReferenceCounter = vm.dlContentFieldOption.selectionItems[i].key;
+            //         }
+            //     }
+            // }
         }
 
         $timeout(function () {

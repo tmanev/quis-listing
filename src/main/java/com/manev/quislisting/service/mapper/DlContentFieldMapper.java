@@ -1,8 +1,10 @@
 package com.manev.quislisting.service.mapper;
 
 import com.manev.quislisting.domain.DlContentField;
+import com.manev.quislisting.domain.DlContentFieldItem;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
+import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import org.springframework.stereotype.Component;
@@ -16,13 +18,15 @@ import java.util.Set;
 public class DlContentFieldMapper {
 
     private DlCategoryMapper dlCategoryMapper;
+    private DlContentFieldItemMapper dlContentFieldItemMapper;
 
-    public DlContentFieldMapper(DlCategoryMapper dlCategoryMapper) {
+    public DlContentFieldMapper(DlCategoryMapper dlCategoryMapper, DlContentFieldItemMapper dlContentFieldItemMapper) {
         this.dlCategoryMapper = dlCategoryMapper;
+        this.dlContentFieldItemMapper = dlContentFieldItemMapper;
     }
 
-    public DlContentField dlContentFieldDTOToDlContentField(DlContentFieldDTO dlContentFieldDTO) {
-        return new DlContentField()
+    public DlContentField dlContentFieldDTOToDlContentField(DlContentField dlContentField, DlContentFieldDTO dlContentFieldDTO) {
+        return dlContentField
                 .id(dlContentFieldDTO.getId())
                 .coreField(dlContentFieldDTO.getCoreField())
                 .orderNum(dlContentFieldDTO.getOrderNum())
@@ -43,8 +47,10 @@ public class DlContentFieldMapper {
                 .onAdvancedSearchForm(dlContentFieldDTO.getOnAdvancedSearchForm())
                 .dlCategories(getDlCategories(dlContentFieldDTO.getDlCategories()))
                 .options(dlContentFieldDTO.getOptions())
-                .searchOptions(dlContentFieldDTO.getSearchOptions());
+                .searchOptions(dlContentFieldDTO.getSearchOptions())
+                ;
     }
+
 
     public DlContentFieldDTO dlContentFieldToDlContentFieldDTO(DlContentField dlContentField) {
         return new DlContentFieldDTO()
@@ -68,7 +74,12 @@ public class DlContentFieldMapper {
                 .onAdvancedSearchForm(dlContentField.getOnAdvancedSearchForm())
                 .options(dlContentField.getOptions())
                 .searchOptions(dlContentField.getSearchOptions())
-                .dlCategories(getDlCategoriesDTO(dlContentField.getDlCategories()));
+                .dlCategories(getDlCategoriesDTO(dlContentField.getDlCategories()))
+                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems()));
+    }
+
+    public DlContentField dlContentFieldDTOToDlContentField(DlContentFieldDTO dlContentFieldDTO) {
+        return dlContentFieldDTOToDlContentField(new DlContentField(), dlContentFieldDTO);
     }
 
     private Set<DlCategory> getDlCategories(List<DlCategoryDTO> dlCategoryDTOList) {
@@ -92,4 +103,29 @@ public class DlContentFieldMapper {
         }
         return null;
     }
+
+//    private Set<DlContentFieldItem> getDlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItemDTOS) {
+//        if (dlContentFieldItemDTOS != null && !dlContentFieldItemDTOS.isEmpty()) {
+//            Set<DlContentFieldItem> result = new HashSet<>();
+//            for (DlContentFieldItemDTO dlContentFieldItem : dlContentFieldItemDTOS) {
+//                result.add(dlContentFieldItemMapper.dlContentFieldItemDTOToDlContentFieldItem(dlContentFieldItem));
+//            }
+//            return result;
+//        }
+//        return null;
+//    }
+
+    private List<DlContentFieldItemDTO> getDlContentFieldsDTO(Set<DlContentFieldItem> dlContentFieldItems) {
+        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+            List<DlContentFieldItemDTO> result = new ArrayList<>();
+            for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
+                result.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem));
+            }
+            return result;
+        }
+        return null;
+    }
+
+
+
 }

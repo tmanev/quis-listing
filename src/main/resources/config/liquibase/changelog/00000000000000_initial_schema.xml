@@ -590,5 +590,27 @@
                   separator=";"
                   tableName="ql_config"/>
     </changeSet>
+    <changeSet id="00000000000011" author="tmanev">
+        <createTable tableName="ql_dl_content_field_item">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="dl_content_field_id" type="bigint" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="string_id" type="bigint" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="00000000000012" author="tmanev">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/dl-categories/dl-content-field-items.csv"
+                  separator="¦"
+                  tableName="ql_dl_content_field_item"/>
+    </changeSet>
 
 </databaseChangeLog>

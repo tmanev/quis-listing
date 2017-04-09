@@ -28,14 +28,14 @@
         </div>
         <div ng-if="vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox'">
 
-            <div class="form-inline" ng-repeat="selectionItem in vm.dlContentFieldOption.selectionItems">
+            <div class="form-inline" ng-repeat="dlContentFieldItem in vm.dlContentField.dlContentFieldItems">
                 <div class="form-group">
-                    <input type="text" class="form-control" ng-model="selectionItem.value"/>
-                    <button type="button" class="btn btn-danger" ng-click="vm.selectDeleteItem(selectionItem)">
+                    <input type="text" class="form-control" ng-model="dlContentFieldItem.value"/>
+                    <button type="button" class="btn btn-danger" ng-click="vm.selectDeleteItem(dlContentFieldItem)">
                         <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
                             data-translate="entity.action.delete">Delete</span>
                     </button>
-                    <label>Key: {{selectionItem.key}}</label>
+                    <label>Id: {{dlContentFieldItem.id}}</label>
                 </div>
             </div>
             <br/>

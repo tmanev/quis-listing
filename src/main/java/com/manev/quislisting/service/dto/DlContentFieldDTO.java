@@ -27,6 +27,7 @@ public class DlContentFieldDTO {
     private List<DlCategoryDTO> dlCategories;
     private String options;
     private String searchOptions;
+    private List<DlContentFieldItemDTO> dlContentFieldItems;
 
     public Long getId() {
         return id;
@@ -301,4 +302,16 @@ public class DlContentFieldDTO {
         return this;
     }
 
+    public List<DlContentFieldItemDTO> getDlContentFieldItems() {
+        return dlContentFieldItems;
+    }
+
+    public void setDlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItems) {
+        this.dlContentFieldItems = dlContentFieldItems;
+    }
+
+    public DlContentFieldDTO dlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItems) {
+        this.dlContentFieldItems = dlContentFieldItems;
+        return this;
+    }
 }

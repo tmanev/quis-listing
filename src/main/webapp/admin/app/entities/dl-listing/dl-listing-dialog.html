@@ -54,21 +54,20 @@
 
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlListing.contentFields"
-                   for="field_content_fields">Content fields</label>
-            <div id="field_content_fields">
+        <div class="panel panel-default">
+            <div class="panel-heading" data-translate="quisListingApp.dlListing.contentFields">Content fields</div>
+            <div class="panel-body">
                 <fieldset data-ng-repeat="dlContentField in vm.dlContentFields">
-                    <div ng-if="dlContentField.type == 'string' ">
-                        <label>{{dlContentField.name}}</label>
-                        <input type="text" ng-model="dlContentField.value" name="" placeholder="{{dlContentField.name}}">
+                    <div class="form-group" ng-if="dlContentField.type == 'string' " >
+                        <label class="control-label" >
+                            {{dlContentField.name}}</label>
+                        <input type="text" class="form-control" ng-model="dlContentField.value" />
                     </div>
-                    <div ng-if="dlContentField.type == 'select' ">
-                        <label>{{dlContentField.name}}</label>
-                        <select>
-                            <option>Mobile</option>
-                            <option>Office</option>
-                            <option>Home</option>
+                    <div class="form-group" ng-if="dlContentField.type == 'select' ">
+                        <label class="control-label">
+                            {{dlContentField.name}}</label>
+                        <select class="form-control" ng-model="dlContentField.value">
+                            <option ng-repeat="selectionItem in dlContentField.optionsModel.selectionItems" value="{{selectionItem.key}}">{{selectionItem.value}}</option>
                         </select>
                     </div>
                 </fieldset>
