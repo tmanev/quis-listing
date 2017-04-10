@@ -144,7 +144,7 @@ with the **close** class, or add a new Gallery widget with a different **id**
 to your webpage:
 
 ```html
-<!-- The Gallery as inline carousel, can be positioned anywhere on the page -->
+<!-- The Gallery as inline carousel, can be positioned anywhere on the qlPage -->
 <div id="blueimp-gallery-carousel" class="blueimp-gallery blueimp-gallery-carousel">
     <div class="slides"></div>
     <h3 class="title"></h3>
@@ -263,9 +263,9 @@ var options = {
     emulateTouchEvents: true,
     // Stop touch events from bubbling up to ancestor elements of the Gallery:
     stopTouchEventsPropagation: false,
-    // Hide the page scrollbars:
+    // Hide the qlPage scrollbars:
     hidePageScrollbars: true,
-    // Stops any touches on the container from scrolling the page:
+    // Stops any touches on the container from scrolling the qlPage:
     disableScroll: true,
     // Carousel mode (shortcut for carousel specific options):
     carousel: false,

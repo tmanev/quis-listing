@@ -70,7 +70,7 @@ If you add the ng-model directive to same the element as ui-tinymce then the tex
 
 _The ui-tinymce directive stores the configuration options as specified in the [TinyMCE documentation](http://www.tinymce.com/wiki.php/Configuration) and expects the model value to be a html string or raw text, depending on whether `raw` is `true` (default value is `false`)._
 
-**Note:** Make sure you using scopes correctly by following [this wiki page](https://github.com/angular/angular.js/wiki/Understanding-Scopes). If you are having issues with your model not updating, make sure you have a '.' in your model.
+**Note:** Make sure you using scopes correctly by following [this wiki qlPage](https://github.com/angular/angular.js/wiki/Understanding-Scopes). If you are having issues with your model not updating, make sure you have a '.' in your model.
 
 > This issue with primitives can be easily avoided by following the "best practice" of always have a '.' in your ng-models – watch 3 minutes worth. Misko demonstrates the primitive binding issue with ng-switch.
 

@@ -1,6 +1,6 @@
 # JSON 3 #
 
-![JSON 3 Logo](http://bestiejs.github.io/json3/page/logo.png)
+![JSON 3 Logo](http://bestiejs.github.io/json3/qlPage/logo.png)
 
 [![Build Status](https://secure.travis-ci.org/bestiejs/json3.png?branch=gh-pages)](http://travis-ci.org/bestiejs/json3)
 

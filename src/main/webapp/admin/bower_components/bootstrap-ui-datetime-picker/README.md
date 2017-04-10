@@ -195,7 +195,7 @@ app.controller('MyController', function() {
 If you do find a bug, can you please create a plunkr to replicate the error before raising an issue.  Attach the plunkr as a link to the issue so i can replicate the error and work out a solution. 
 
 ## Pull Requests
-If you submit a PR, please test your changes against the demo page to make sure no functionality has been broken. 
+If you submit a PR, please test your changes against the demo qlPage to make sure no functionality has been broken.
 
 ## Support
 This was developed using angular-ui bootstrap Version: 1.2.0 - 2016-04-07.  If you have a bug, please check what version of angular-ui you are using.  If you are using a version prior to this, then please upgrade if you can and try it. If the problem persists, please let me know.  I do have a day job but will try to get back to you asap.  If you can fix the bug, then let me know how, or even better, submit a pull request.

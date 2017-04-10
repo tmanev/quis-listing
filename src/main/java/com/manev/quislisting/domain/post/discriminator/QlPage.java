@@ -6,7 +6,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = Page.TYPE)
-public class Page extends AbstractPost {
+@DiscriminatorValue(value = QlPage.TYPE)
+public class QlPage extends AbstractPost {
     public static final String TYPE = "page";
 }

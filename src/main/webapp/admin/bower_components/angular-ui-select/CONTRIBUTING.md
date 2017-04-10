@@ -30,7 +30,7 @@ We are excited to have you working on the project and cordially request that you
  
  We will be insisting on a minimal reproduce scenario in order to save maintainers time and ultimately be able to fix more bugs. Interestingly, from our experience users often find coding problems themselves while preparing a minimal plunk. We understand that sometimes it might be hard to extract essentials bits of code from a larger code-base but we really need to isolate the problem before we can fix it.
  
- The best part is that you don't need to create plunks from scratch - you can use one from our [demo page](http://plnkr.co/edit/a3KlK8dKH3wwiiksDSn2?p=preview).
+ The best part is that you don't need to create plunks from scratch - you can use one from our [demo qlPage](http://plnkr.co/edit/a3KlK8dKH3wwiiksDSn2?p=preview).
  
  Unfortunately we are not able to investigate / fix bugs without a minimal reproduce scenario using http://plnkr.co/, so if we don't hear back from you we are going to close an issue that don't have enough info to be reproduced.
  
@@ -40,7 +40,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * All features or bug fixes **must pass all tests** (run `gulp` to jshint, build and test).
 * All public API methods **must be documented** with ngdoc, an extended version of jsdoc (we added
   support for markdown and templating via @ngdoc tag). To see how we document our APIs, please check
-  out the existing ngdocs and see [this wiki page][ngDocs].
+  out the existing ngdocs and see [this wiki qlPage][ngDocs].
 
 ## <a name="commit"></a> Git Commit Guidelines
 
