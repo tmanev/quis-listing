@@ -110,10 +110,10 @@ angular.module('infinite-scroll', [])
       if checkInterval
         $interval.cancel checkInterval
 
-    # infinite-scroll-distance specifies how close to the bottom of the qlPage
+    # infinite-scroll-distance specifies how close to the bottom of the page
     # the window is allowed to be before we trigger a new scroll. The value
     # provided is multiplied by the container height; for example, to load
-    # more when the bottom of the qlPage is less than 3 container heights away,
+    # more when the bottom of the page is less than 3 container heights away,
     # specify a value of 3. Defaults to 0.
     handleInfiniteScrollDistance = (v) ->
       scrollDistance = parseFloat(v) or 0

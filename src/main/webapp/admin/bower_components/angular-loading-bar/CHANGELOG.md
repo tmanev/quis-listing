@@ -62,7 +62,7 @@ Fixes for Angular 1.3 breaking changes:
 
 ## 0.4.0
 - Initial load percentage is now configurable ([#47](https://github.com/chieffancypants/angular-loading-bar/issues/47))
-- Peg graphic reworked so the loadingbar does not require CSS changes when not at the very top of the qlPage ([#42](https://github.com/chieffancypants/angular-loading-bar/issues/42), [#45](https://github.com/chieffancypants/angular-loading-bar/issues/45), [#10](https://github.com/chieffancypants/angular-loading-bar/issues/10))
+- Peg graphic reworked so the loadingbar does not require CSS changes when not at the very top of the page ([#42](https://github.com/chieffancypants/angular-loading-bar/issues/42), [#45](https://github.com/chieffancypants/angular-loading-bar/issues/45), [#10](https://github.com/chieffancypants/angular-loading-bar/issues/10))
 - z-index of spinner increased to work with Bootstrap 3 z-indexes ([#53](https://github.com/chieffancypants/angular-loading-bar/issues/53))
 
 ## 0.3.0

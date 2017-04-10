@@ -20,7 +20,7 @@ AngularJS-native version of [Select2](http://ivaynberg.github.io/select2/) and [
 - No jQuery required (except for old browsers)
 - Small code base: 4.57KB min/gzipped vs 20KB for select2
 
-For the roadmap, check [issue #3](https://github.com/angular-ui/ui-select/issues/3) and the [Wiki qlPage](https://github.com/angular-ui/ui-select/wiki/Roadmap).
+For the roadmap, check [issue #3](https://github.com/angular-ui/ui-select/issues/3) and the [Wiki page](https://github.com/angular-ui/ui-select/wiki/Roadmap).
 
 ## Installation Methods
 

@@ -155,7 +155,7 @@ angular.module('myApp', ['cfp.loadingBar'])
 
 cfpLoadingBar.start();
 // will insert the loading bar into the DOM, and display its progress at 1%.
-// It will automatically call `inc()` repeatedly to give the illusion that the qlPage load is progressing.
+// It will automatically call `inc()` repeatedly to give the illusion that the page load is progressing.
 
 cfpLoadingBar.inc();
 // increments the loading bar by a random amount.

@@ -10,4 +10,4 @@ likely to be closed without merging.
 
 #### Related issues:
 Please review the [issues](https://github.com/chieffancypants/angular-loading-bar/issues)
-qlPage, and link any issues that are addressed or related to this PR.
+page, and link any issues that are addressed or related to this PR.

@@ -22,16 +22,16 @@ ngInfinite Scroll follows [semantic versioning](http://semver.org/) and uses the
  * Versions with an even minor version (1.0.0, 1.4.0, 2.2.0, etc.) are stable releases
  * Versions with an odd minor version (1.1.0, 1.3.0, 2.1.0, etc.) are development releases
 
-The [download qlPage](http://sroze.github.com/ngInfiniteScroll/#download) allows you to pick among various versions and specify which releases are stable (not including pre-release builds).
+The [download page](http://sroze.github.com/ngInfiniteScroll/#download) allows you to pick among various versions and specify which releases are stable (not including pre-release builds).
 
 Getting Started
 ---------------
 
- * Download ngInfiniteScroll from [the download qlPage on the ngInfiniteScroll web site](http://sroze.github.com/ngInfiniteScroll/#download) or install it with:
+ * Download ngInfiniteScroll from [the download page on the ngInfiniteScroll web site](http://sroze.github.com/ngInfiniteScroll/#download) or install it with:
    * [Bower](http://bower.io/) via `bower install ngInfiniteScroll`
    * [NPM](https://www.npmjs.com) via `npm install --save ng-infinite-scroll`
    * [Nuget](https://www.nuget.org) via `PM> Install-Package ng-infinite-scroll`
- * Include the script tag on your qlPage after the AngularJS script tag (ngInfiniteScroll *doesn't* require jQuery)
+ * Include the script tag on your page after the AngularJS script tag (ngInfiniteScroll *doesn't* require jQuery)
 
         <script type='text/javascript' src='path/to/angular.min.js'></script>
         <script type='text/javascript' src='path/to/ng-infinite-scroll.min.js'></script>
