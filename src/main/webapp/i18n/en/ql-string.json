@@ -1,0 +1,17 @@
+{
+    "quisListingApp": {
+        "qlString" : {
+            "home": {
+                "title": "Ql String",
+
+                "search": "Search for Ql String"
+            },
+
+            "name": "Name",
+            "status": "Status",
+            "value": "Value",
+            "languageCode": "Language code",
+            "context": "Context"
+        }
+    }
+}

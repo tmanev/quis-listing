@@ -15,7 +15,8 @@
             },
             "qlml": {
                 "main": "QLML",
-                "languages": "Languages"
+                "languages": "Languages",
+                "qlStrings": "Ql Strings"
             },
             "qlAppearance" : {
                 "main": "Ql Appearance",
