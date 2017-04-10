@@ -25,7 +25,7 @@
             "categories": "Categories",
             "contentFields": "Content fields",
             "listingMedia": "Listing media",
-            "listingLocations": "Listing locations"
+            "location": "Location"
         }
     }
 }

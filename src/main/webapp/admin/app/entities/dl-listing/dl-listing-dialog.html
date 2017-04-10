@@ -38,7 +38,7 @@
             <label class="control-label" data-translate="quisListingApp.dlListing.categories" >Categories</label>
             <div class="input-group">
 
-                <ui-select allow-clear ng-model="vm.parentId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
+                <ui-select allow-clear ng-model="vm.dlCategoryId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
                     <ui-select-match placeholder="Select or search a category in the list...">{{$select.selected.term.name}}</ui-select-match>
                     <ui-select-choices repeat="item.id as item in vm.dlCategories | filter: $select.search">
                         <span ng-repeat="n in [] | range:item.depthLevel">—</span>
@@ -47,7 +47,7 @@
                 </ui-select>
 
                 <span class="input-group-btn">
-                  <button type="button" ng-click="vm.parentId = undefined" class="btn btn-default">
+                  <button type="button" ng-click="vm.dlCategoryId = undefined" class="btn btn-default">
                     <span class="glyphicon glyphicon-trash"></span>
                   </button>
                 </span>
@@ -164,12 +164,26 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.dlListing.listingLocations"
-                   for="field_listing_media">Listing locations</label>
-            <div id="field_listing_locations">
-                TODO
+            <label class="control-label" data-translate="quisListingApp.dlListing.location">Location</label>
+            <div class="input-group">
+
+                <ui-select allow-clear ng-model="vm.dlLocationId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
+                    <ui-select-match placeholder="Select or search a location in the list...">{{$select.selected.term.name}}</ui-select-match>
+                    <ui-select-choices repeat="item.id as item in vm.dlLocations | filter: $select.search">
+                        <span ng-repeat="n in [] | range:item.depthLevel">—</span>
+                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+
+                <span class="input-group-btn">
+                  <button type="button" ng-click="vm.dlLocationId = undefined" class="btn btn-default">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                </span>
+
             </div>
         </div>
+
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.dlListing.expirationDate"
                    for="field_expirationDate">Expiration Date</label>

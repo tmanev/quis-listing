@@ -38,10 +38,10 @@
     ;
 
     DlListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
-        'DlListing', 'DlCategory', 'DlContentField', 'AuthServerProvider'];
+        'DlListing', 'DlCategory', 'DlContentField', 'DlLocation', 'AuthServerProvider'];
 
     function DlListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity,
-                                       DlListing, DlCategory, DlContentField, AuthServerProvider) {
+                                       DlListing, DlCategory, DlContentField, DlLocation, AuthServerProvider) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
@@ -62,9 +62,7 @@
         vm.loadUploadedFiles = loadUploadedFiles;
         vm.loadCategories = loadCategories;
         vm.loadDlContentFields = loadDlContentFields;
-        vm.parentId = null;
-
-
+        vm.loadDlLocations = loadDlLocations;
 
         $scope.tinymceOptions = {
             menubar: false,
@@ -75,6 +73,7 @@
         loadUploadedFiles();
         loadCategories();
         loadDlContentFields();
+        loadDlLocations();
 
         function loadCategories() {
             DlCategory.query({
@@ -95,6 +94,32 @@
                 vm.dlCategoryQueryCount = vm.dlCategoryTotalItems;
 
                 vm.dlCategories = data;
+            }
+
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
+
+        function loadDlLocations() {
+            DlLocation.query({
+                sort: sort(),
+                languageCode: entity.languageCode
+            }, onSuccess, onError);
+
+            function sort() {
+                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
+                if (vm.predicate !== 'id') {
+                    result.push('id');
+                }
+                return result;
+            }
+
+            function onSuccess(data, headers) {
+                vm.dlLocationTotalItems = headers('X-Total-Count');
+                vm.dlLocationQueryCount = vm.dlLocationTotalItems;
+
+                vm.dlLocations = data;
             }
 
             function onError(error) {
