@@ -1,9 +1,9 @@
 package com.manev.quislisting.service.post.mapper;
 
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.service.post.dto.QlPageDTO;
-import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class QlPageMapper {
 
     private final Logger log = LoggerFactory.getLogger(QlPageMapper.class);
-
 
 
     public QlPage pageDTOtoPage(QlPageDTO qlPageDTO) {
@@ -24,6 +23,10 @@ public class QlPageMapper {
         qlPage.setName(qlPageDTO.getName());
         qlPage.setStatus(qlPageDTO.getStatus());
         qlPage.setTitle(qlPageDTO.getTitle());
+        qlPage.setTranslation(
+                TranslationBuilder.aTranslation()
+                        .withLanguageCode(qlPageDTO.getLanguageCode())
+                        .build());
 
         return qlPage;
     }
@@ -38,13 +41,10 @@ public class QlPageMapper {
         qlPageDTO.setModified(qlPage.getModified());
         qlPageDTO.setStatus(qlPage.getStatus());
         qlPageDTO.setViews(qlPage.getPostMetaValue(PostMeta.META_KEY_POST_VIEWS_COUNT));
-
-
+        qlPageDTO.setLanguageCode(qlPage.getTranslation() != null ? qlPage.getTranslation().getLanguageCode() : null);
 
         return qlPageDTO;
     }
-
-
 
 
 }

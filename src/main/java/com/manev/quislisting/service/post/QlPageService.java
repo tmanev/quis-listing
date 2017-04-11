@@ -1,8 +1,10 @@
 package com.manev.quislisting.service.post;
 
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.PageRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +38,16 @@ public class QlPageService {
     private PageRepository pageRepository;
     private LanguageRepository languageRepository;
     private UserRepository userRepository;
+    private TranslationGroupRepository translationGroupRepository;
 
     private QlPageMapper qlPageMapper;
     private ActiveLanguageMapper activeLanguageMapper;
 
-    public QlPageService(PageRepository pageRepository, LanguageRepository languageRepository, UserRepository userRepository, QlPageMapper qlPageMapper, ActiveLanguageMapper activeLanguageMapper) {
+    public QlPageService(PageRepository pageRepository, LanguageRepository languageRepository, UserRepository userRepository, TranslationGroupRepository translationGroupRepository, QlPageMapper qlPageMapper, ActiveLanguageMapper activeLanguageMapper) {
         this.pageRepository = pageRepository;
         this.languageRepository = languageRepository;
         this.userRepository = userRepository;
+        this.translationGroupRepository = translationGroupRepository;
         this.qlPageMapper = qlPageMapper;
         this.activeLanguageMapper = activeLanguageMapper;
     }
@@ -53,6 +58,20 @@ public class QlPageService {
         QlPage page = qlPageMapper.pageDTOtoPage(qlPageDTO);
         Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         page.setUser(oneByLogin.get());
+
+        page.setUser(oneByLogin.get());
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
+        if (page.getId() == null) {
+            page.setCreated(currentDateTime);
+        }
+        page.setModified(currentDateTime);
+
+        if (qlPageDTO.getTrGroupId() != null) {
+            page.getTranslation().setTranslationGroup(translationGroupRepository.findOne(qlPageDTO.getTrGroupId()));
+        } else {
+            page.getTranslation().setTranslationGroup(new TranslationGroup());
+        }
+
         page = pageRepository.save(page);
         return qlPageMapper.pageToPageDTO(page);
     }

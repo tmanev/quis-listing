@@ -10,7 +10,7 @@
     function stateConfig($stateProvider) {
         $stateProvider
         .state('nav-menus', {
-            parent: 'entity',
+            parent: 'ql-appearance',
             url: '/nav-menus?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],

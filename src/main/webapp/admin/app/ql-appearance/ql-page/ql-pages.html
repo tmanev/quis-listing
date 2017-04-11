@@ -1,0 +1,92 @@
+<div>
+    <h2 data-translate="quisListingApp.qlPage.home.title">Ql Pages</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="ql-pages.new({selectedLanguageCode: vm.selectedLanguageCode})" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.qlPage.home.createLabel">
+                        Create new Ql Page
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.qlPage.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="btn-group">
+        <label class="btn btn-primary btn-xs"
+               ng-repeat="activeLanguage in vm.activeLanguages track by activeLanguage.code"
+               ng-model="vm.selectedLanguageCode"
+               uib-btn-radio="activeLanguage.code"
+               ng-change="vm.onLanguageChange()">
+            {{activeLanguage.englishName}} ({{activeLanguage.count}})
+        </label>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="title"><span data-translate="quisListingApp.qlPage.title">Title</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="quisListingApp.qlPage.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="quisListingApp.qlPage.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="qlPage in vm.qlPages track by qlPage.id">
+                    <td><a ui-sref="ql-page-detail({id:qlPage.id})">{{qlPage.id}}</a></td>
+                    <td>{{qlPage.title}}</td>
+                    <td>{{qlPage.name}}</td>
+                    <td>{{qlPage.status}}</td>
+
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="ql-page-detail({id:qlPage.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="ql-pages.edit({id:qlPage.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="ql-pages.delete({id:qlPage.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count qlPage="vm.qlPage" total="vm.queryCount" items-per-qlPage="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-qlPage="vm.itemsPerPage" ng-model="vm.qlPage" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

@@ -18,6 +18,8 @@ public class QlPageDTO {
     private Author author;
     private ZonedDateTime created;
     private ZonedDateTime modified;
+    private String languageCode;
+    private Long trGroupId;
 
     public Long getId() {
         return id;
@@ -100,4 +102,19 @@ public class QlPageDTO {
     }
 
 
+    public Long getTrGroupId() {
+        return trGroupId;
+    }
+
+    public void setTrGroupId(Long trGroupId) {
+        this.trGroupId = trGroupId;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 }

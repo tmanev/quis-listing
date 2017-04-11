@@ -1,0 +1,27 @@
+{
+    "quisListingApp": {
+        "qlPage" : {
+            "home": {
+                "title": "Ql Pages",
+                "createLabel": "Create a new Ql Page",
+                "createOrEditLabel": "Create or edit a Ql Page",
+                "search": "Search for Ql Page"
+            },
+            "created": "A new Ql Page is created with identifier {{ param }}",
+            "updated": "A Ql Page is updated with identifier {{ param }}",
+            "deleted": "A Ql Page is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Ql Page {{ id }}?"
+            },
+            "detail": {
+                "title": "Ql Page"
+            },
+            "title": "Title",
+            "content": "Content",
+            "status": "Status",
+            "author": "Author",
+            "name": "Name"
+
+        }
+    }
+}

@@ -20,7 +20,8 @@
             },
             "qlAppearance" : {
                 "main": "Ql Appearance",
-                "navMenus": "Navigation Menus"
+                "navMenus": "Navigation Menus",
+                "qlPages": "Ql Pages"
             },
             "qlSettings": {
                 "main": "Ql Settings",
