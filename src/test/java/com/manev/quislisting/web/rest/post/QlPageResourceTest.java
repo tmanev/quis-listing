@@ -244,10 +244,10 @@ public class QlPageResourceTest {
         List<QlPage> qlPageTrList = pageRepository.findAll();
         assertThat(qlPageTrList).hasSize(databaseSizeBeforeCreate + 1);
         QlPage qlPageSaved = qlPageTrList.get(qlPageTrList.size() - 1);
-        assertThat(qlPageSaved.getModified()).isEqualTo(DEFAULT_MODIFIED);
         assertThat(qlPageSaved.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(qlPageSaved.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(qlPageSaved.getContent()).isEqualTo(DEFAULT_CONTENT);
+//        assertThat(qlPageSaved.getModified()).isEqualTo(DEFAULT_MODIFIED);
 //        assertThat(qlPageSaved.getCreated()).isEqualTo(DEFAULT_CREATED);
     }
 
