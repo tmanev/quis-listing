@@ -49,18 +49,20 @@ public class NavMenuService {
     public NavMenuDTO save(NavMenuDTO navMenuDTO) {
         log.debug("Request to save NavMenuDTO : {}", navMenuDTO);
 
-        NavMenu navMenu = navMenuMapper.navMenuDTOToNavMenu(navMenuDTO);
+        NavMenu navMenu;
+        if (navMenuDTO.getId()!=null) {
+            NavMenu existingNavMenu = navMenuRepository.findOne(navMenuDTO.getId());
+            navMenu = navMenuMapper.navMenuDTOToNavMenu(existingNavMenu, navMenuDTO);
+        } else {
+            navMenu = navMenuMapper.navMenuDTOToNavMenu(navMenuDTO);
+        }
+
         if (navMenuDTO.getTrGroupId() != null) {
             navMenu.getTranslation().setTranslationGroup(translationGroupRepository.findOne(navMenuDTO.getTrGroupId()));
         } else {
             navMenu.getTranslation().setTranslationGroup(new TranslationGroup());
         }
-        if (navMenuDTO.getParentId() != null) {
-            navMenu.setParent(navMenuRepository.findOne(navMenuDTO.getParentId()));
-        }
-        if (navMenuDTO.getParentId() != null) {
-            navMenu.setParent(navMenuRepository.findOne(navMenuDTO.getParentId()));
-        }
+
         navMenu = navMenuRepository.save(navMenu);
         return navMenuMapper.navMenuToNavMenuDTO(navMenu);
     }

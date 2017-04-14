@@ -10,7 +10,6 @@ public final class NavMenuBuilder {
     private String taxonomy;
     private String description;
     private Long count = 0L;
-    private NavMenu parent;
     private Translation translation;
 
     private NavMenuBuilder() {
@@ -22,11 +21,6 @@ public final class NavMenuBuilder {
 
     public NavMenuBuilder withId(Long id) {
         this.id = id;
-        return this;
-    }
-
-    public NavMenuBuilder withParent(NavMenu parent) {
-        this.parent = parent;
         return this;
     }
 
@@ -62,7 +56,6 @@ public final class NavMenuBuilder {
         navMenu.setTaxonomy(taxonomy);
         navMenu.setDescription(description);
         navMenu.setCount(count);
-        navMenu.setParent(parent);
         navMenu.setTranslation(translation);
         return navMenu;
     }

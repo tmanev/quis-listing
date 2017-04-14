@@ -3,19 +3,13 @@
 
     angular
         .module('quisListingApp')
-        .controller('NavMenuDialogController', NavMenuDialogController)
-        .filter('range', function() {
-            return function(input, total) {
-                total = parseInt(total);
-                for (var i=0; i<total; i++)
-                    input.push(i);
-                return input;
-            };
-        });
+        .controller('NavMenuDialogController', NavMenuDialogController);
 
-    NavMenuDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'NavMenu', 'AlertService'];
+    NavMenuDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'NavMenu',
+        'QlPage', 'AlertService'];
 
-    function NavMenuDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, NavMenu, AlertService) {
+    function NavMenuDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, NavMenu,
+                                      QlPage, AlertService) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
@@ -24,35 +18,43 @@
         vm.clear = clear;
         vm.save = save;
 
-        loadAll();
+        vm.loadQlPages = loadQlPages;
+        vm.addMenuItem = addMenuItem;
+        vm.removeMenuItem = removeMenuItem;
 
-        vm.onSelectCallback = function ($item, $model) {
-            console.log("Item:");
-            console.log($item);
-            console.log("Model:");
-            console.log($model);
-        };
+        loadQlPages();
 
-        function loadAll () {
-            NavMenu.query({
-                sort: sort(),
+        function loadQlPages () {
+            QlPage.query({
                 languageCode: entity.languageCode
             }, onSuccess, onError);
 
-            function sort() {
-                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
-                }
-                return result;
-            }
             function onSuccess(data, headers) {
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.navMenus = data;
+                vm.qlPages = data;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
+            }
+        }
+
+        function addMenuItem(post) {
+            var navMenuItem = {};
+            navMenuItem.id = null;
+            navMenuItem.title = post.title;
+            navMenuItem.name = '';
+            navMenuItem.order = vm.navMenu.navMenuItemDTOs.length + 1;
+            navMenuItem.refItem = {};
+            navMenuItem.refItem.id = post.id;
+            navMenuItem.refItem.title = post.title;
+            navMenuItem.refItem.name = post.name;
+
+            vm.navMenu.navMenuItemDTOs.push(navMenuItem);
+        }
+
+        function removeMenuItem(menuItem) {
+            var index = vm.navMenu.navMenuItemDTOs.indexOf(menuItem);
+            if (index > -1) {
+                vm.navMenu.navMenuItemDTOs.splice(index, 1);
             }
         }
 

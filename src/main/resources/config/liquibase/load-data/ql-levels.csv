@@ -1,0 +1,7 @@
+id;name;slug;type
+1;Top Header Menu;top-header-menu;menu-level
+2;Header Menu;header-menu;menu-level
+3;Footer Menu;footer-menu;menu-level
+4;Country;dl-country;dl-location-level
+5;State;dl-state;dl-location-level
+6;City;dl-city;dl-location-level

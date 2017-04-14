@@ -1,0 +1,4 @@
+id;title;content;name;type;status;created;modified;mime_type;comment_count;translation_id;user_id;ref_post_id
+1;Title 01;Content 01;title-01;dl-listing;draft;2013-08-05 18:19:03;2013-08-05 18:19:03;;0;7;1;null
+2;Home;;;nav-menu-item;publish;2013-08-05 18:19:03;2013-08-05 18:19:03;;0;8;1;3
+3;Home;[home-page];home;page;publish;2013-08-05 18:19:03;2013-08-05 18:19:03;;0;9;1;null

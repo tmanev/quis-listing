@@ -226,7 +226,6 @@ public class NavMenuResourceIntTest {
         updatedNavMenu.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
 
         updatedNavMenu.setDescription(UPDATED_DESCRIPTION);
-        updatedNavMenu.setParent(parent);
         updatedNavMenu.setCount(UPDATED_COUNT);
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(updatedNavMenu);
 
@@ -242,7 +241,6 @@ public class NavMenuResourceIntTest {
         assertThat(testNavMenu.getTerm().getName()).isEqualTo(UPDATED_NAME);
         assertThat(testNavMenu.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
         assertThat(testNavMenu.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testNavMenu.getParent().getId()).isEqualTo(parent.getId());
         assertThat(testNavMenu.getCount()).isEqualTo(UPDATED_COUNT);
     }
 

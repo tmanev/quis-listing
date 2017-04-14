@@ -166,14 +166,24 @@
             <column name="mime_type" type="varchar(100)" defaultValue="">
                 <constraints nullable="false" />
             </column>
+
             <column name="comment_count" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
+            </column>
+            <column name="post_order" type="int" defaultValue="0" remarks="This column represents order of posts in most cases positions of nav-menu-item">
+                <constraints nullable="true"/>
             </column>
             <column name="translation_id" type="bigint">
                 <constraints nullable="true"/>
             </column>
             <column name="user_id" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ref_post_id" type="bigint" remarks="Column is meant to refer to related post. Usual usage nav-menu-item to reference post">
+                <constraints nullable="true"/>
             </column>
         </createTable>
 
@@ -480,75 +490,7 @@
 
     </changeSet>
 
-    <changeSet id="00000000000006" author="tmanev">
-        <comment>Loading of simple data</comment>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/users.csv"
-                  separator=";"
-                  tableName="ql_user">
-            <column name="activated" type="boolean"/>
-            <column name="created_date" type="timestamp"/>
-        </loadData>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/authorities.csv"
-                  separator=";"
-                  tableName="ql_authority"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/users_authorities.csv"
-                  separator=";"
-                  tableName="ql_user_authority"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-categories/terms.csv"
-                  separator=";"
-                  tableName="ql_term"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-categories/term-taxonomies.csv"
-                  separator=";"
-                  tableName="ql_term_taxonomy"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-categories/translations.csv"
-                  separator=";"
-                  tableName="ql_translation"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-categories/translation_groups.csv"
-                  separator=";"
-                  tableName="ql_translation_group"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/languages.csv"
-                  separator=";"
-                  tableName="ql_language"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/language_translations.csv"
-                  separator=";"
-                  tableName="ql_language_translation"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-categories/dl-content-fields.csv"
-                  separator="¦"
-                  tableName="ql_dl_content_field"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/content-field-groups.csv"
-                  separator=";"
-                  tableName="ql_dl_content_fields_group"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/posts.csv"
-                  separator=";"
-                  tableName="ql_post"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/postmetas.csv"
-                  separator=";"
-                  tableName="ql_postmeta"/>
-    </changeSet>
-    <changeSet id="00000000000007" author="adri">
+    <changeSet id="00000000000006" author="adri">
         <createTable tableName="ql_email_notification">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -565,7 +507,7 @@
 
         </createTable>
     </changeSet>
-    <changeSet id="00000000000008" author="sanevskis">
+    <changeSet id="00000000000007" author="sanevskis">
         <createTable tableName="ql_config">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -578,19 +520,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="00000000000009" author="adri">
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-settings/email-notifications.csv"
-                  separator=";"
-                  tableName="ql_email_notification"/>
-    </changeSet>
-    <changeSet id="00000000000010" author="sanevskis">
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-settings/ql-configurations.csv"
-                  separator=";"
-                  tableName="ql_config"/>
-    </changeSet>
-    <changeSet id="00000000000011" author="tmanev">
+
+    <changeSet id="00000000000008" author="tmanev">
         <createTable tableName="ql_dl_content_field_item">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -606,11 +537,90 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="00000000000012" author="tmanev">
+
+    <changeSet id="00000000000009" author="tmanev">
+        <comment>Loading of simple data</comment>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-categories/dl-content-field-items.csv"
+                  file="config/liquibase/load-data/users.csv"
+                  separator=";"
+                  tableName="ql_user">
+            <column name="activated" type="boolean"/>
+            <column name="created_date" type="timestamp"/>
+        </loadData>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/authorities.csv"
+                  separator=";"
+                  tableName="ql_authority"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/users_authorities.csv"
+                  separator=";"
+                  tableName="ql_user_authority"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/terms.csv"
+                  separator=";"
+                  tableName="ql_term"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/term-taxonomies.csv"
+                  separator=";"
+                  tableName="ql_term_taxonomy"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/translations.csv"
+                  separator=";"
+                  tableName="ql_translation"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/translation_groups.csv"
+                  separator=";"
+                  tableName="ql_translation_group"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/languages.csv"
+                  separator=";"
+                  tableName="ql_language"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/language_translations.csv"
+                  separator=";"
+                  tableName="ql_language_translation"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/dl-content-fields.csv"
+                  separator="¦"
+                  tableName="ql_dl_content_field"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/content-field-groups.csv"
+                  separator=";"
+                  tableName="ql_dl_content_fields_group"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/posts.csv"
+                  separator=";"
+                  tableName="ql_post"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/postmetas.csv"
+                  separator=";"
+                  tableName="ql_postmeta"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/dl-content-field-items.csv"
                   separator="¦"
                   tableName="ql_dl_content_field_item"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/email-notifications.csv"
+                  separator=";"
+                  tableName="ql_email_notification"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/ql-configurations.csv"
+                  separator=";"
+                  tableName="ql_config"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/term-relationships.csv"
+                  separator=";"
+                  tableName="ql_term_relationship"/>
     </changeSet>
 
 </databaseChangeLog>

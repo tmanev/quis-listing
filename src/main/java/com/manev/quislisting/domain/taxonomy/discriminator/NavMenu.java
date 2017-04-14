@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain.taxonomy.discriminator;
 
+import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 
 import javax.persistence.*;
@@ -10,26 +11,19 @@ import java.util.Set;
 public class NavMenu extends TermTaxonomy {
     public static final String TAXONOMY = "nav-menu";
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = true, updatable = true)
-    private NavMenu parent;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "ql_term_relationship",
+            joinColumns =
+            @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
+            inverseJoinColumns =
+            @JoinColumn(name = "object_id", referencedColumnName = "id"))
+    private Set<NavMenuItem> navMenuItems;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DlCategory> children;
-
-    public NavMenu getParent() {
-        return parent;
+    public Set<NavMenuItem> getNavMenuItems() {
+        return navMenuItems;
     }
 
-    public void setParent(NavMenu parent) {
-        this.parent = parent;
-    }
-
-    public Set<DlCategory> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<DlCategory> children) {
-        this.children = children;
+    public void setNavMenuItems(Set<NavMenuItem> navMenuItems) {
+        this.navMenuItems = navMenuItems;
     }
 }

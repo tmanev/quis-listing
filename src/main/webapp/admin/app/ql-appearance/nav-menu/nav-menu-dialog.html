@@ -4,68 +4,77 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myNavMenuLabel" data-translate="quisListingApp.navMenu.home.createOrEditLabel">Create or edit a Navigation Menu</h4>
+        <h4 class="modal-title" id="myNavMenuLabel" data-translate="quisListingApp.navMenu.home.createOrEditLabel">
+            Create or edit a Navigation Menu</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.navMenu.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.navMenu.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.navMenu.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                    ng-model="vm.navMenu.term.name" />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.navMenu.slug" for="field_slug">Slug</label>
-            <input type="text" class="form-control" name="slug" id="field_slug"
-                   ng-model="vm.navMenu.term.slug"
-            />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.navMenu.description" for="field_description">Description</label>
-            <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
-                      ng-model="vm.navMenu.description"
-            >
-            </textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.navMenu.parent">Parent</label>
-            <div class="input-group">
-
-                <ui-select allow-clear ng-model="vm.navMenu.parentId" on-select="vm.onSelectCallback($item, $model)" theme="bootstrap">
-                    <ui-select-match placeholder="Select or search a navigation menu in the list...">{{$select.selected.term.name}}</ui-select-match>
-                    <ui-select-choices repeat="item.id as item in vm.navMenus | filter: $select.search">
-                        <span ng-repeat="n in [] | range:item.depthLevel">—</span>
-                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
-
-                <span class="input-group-btn">
-                  <button type="button" ng-click="vm.navMenu.parentId = undefined" class="btn btn-default">
-                    <span class="glyphicon glyphicon-trash"></span>
-                  </button>
-                </span>
-
+        <div class="row">
+            <div class="col-md-4">
+                <uib-accordion>
+                    <div uib-accordion-group class="panel-default" heading="Pages" is-open="true">
+                        <ul class="list-group">
+                            <li class="list-group-item" ng-repeat="page in vm.qlPages">
+                                {{page.title}}
+                                <span class="badge" style="background-color: #f1f1f1;">
+                                    <a href ng-click="vm.addMenuItem(page)">Add</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </uib-accordion>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label" data-translate="quisListingApp.navMenu.count" for="field_count">Count</label>
-            <input type="text" class="form-control" name="count" id="field_count"
-                    ng-model="vm.navMenu.count" readonly
-                    >
-            </input>
+            <div class="col-md-8">
+                <div class="form-horizontal">
+                    <div class="form-group" ng-show="vm.navMenu.id">
+                        <label class="control-label col-sm-2" for="id" data-translate="global.field.id">ID</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="id" name="id"
+                                   ng-model="vm.navMenu.id" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" data-translate="quisListingApp.navMenu.name"
+                               for="field_name">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="name" id="field_name"
+                                   ng-model="vm.navMenu.term.name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Menu Items</div>
+                    <div class="panel-body">
+                        <uib-accordion>
+                            <div uib-accordion-group class="panel-default" heading="{{navMenuItem.refItem.title}}"
+                                 is-open="false"
+                                 ng-repeat="navMenuItem in vm.navMenu.navMenuItemDTOs">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2">Nav. Label</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Navigation Label"
+                                                   ng-model="navMenuItem.title"/>
+                                        </div>
+                                        <button ng-click="vm.removeMenuItem(navMenuItem)"
+                                                class="btn btn-danger btn-sm col-sm-1">
+                                            <span class="glyphicon glyphicon-remove-circle"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </uib-accordion>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
+                data-translate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary" >
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
         </button>
     </div>
