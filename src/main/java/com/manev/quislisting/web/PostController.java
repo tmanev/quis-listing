@@ -32,11 +32,17 @@ public class PostController extends BaseController {
         AbstractPost post = postRepository.findOneByName(name);
 
         modelMap.addAttribute("title", post.getTitle());
-        modelMap.addAttribute("content", post.getContent());
+
 
         if (post instanceof QlPage) {
             // handle page
-            modelMap.addAttribute("view", "client/post");
+            String content = post.getContent();
+            if (content.equals("[contact-form]")) {
+                modelMap.addAttribute("view", "client/contacts");
+            } else {
+                modelMap.addAttribute("content", content);
+                modelMap.addAttribute("view", "client/post");
+            }
         } else if (post instanceof DlListing) {
             // handle listing
             modelMap.addAttribute("view", "client/dl-listing");
