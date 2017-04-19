@@ -14,6 +14,8 @@ spring:
         port: 25
         username:
         password:
+#    thymeleaf:
+#        cache: false
 
 liquibase:
     contexts: dev

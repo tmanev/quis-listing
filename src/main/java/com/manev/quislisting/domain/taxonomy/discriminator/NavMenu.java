@@ -17,6 +17,7 @@ public class NavMenu extends TermTaxonomy {
             @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
             inverseJoinColumns =
             @JoinColumn(name = "object_id", referencedColumnName = "id"))
+    @OrderBy("postOrder ASC")
     private Set<NavMenuItem> navMenuItems;
 
     public Set<NavMenuItem> getNavMenuItems() {

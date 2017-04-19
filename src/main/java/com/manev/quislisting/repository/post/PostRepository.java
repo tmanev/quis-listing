@@ -9,4 +9,6 @@ public interface PostRepository<T extends AbstractPost> extends JpaRepository<T,
     Page<T> findAllByTranslation_languageCode(Pageable pageable, String languageCode);
 
     Long countByTranslation_languageCode(String languageCode);
+
+    T findOneByName(String name);
 }

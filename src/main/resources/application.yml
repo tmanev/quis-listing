@@ -27,8 +27,13 @@ spring:
     mvc:
         favicon:
             enabled: true
-    thymeleaf:
-        mode: XHTML
+#    thymeleaf:
+#        prefix: /templates/
+#        suffix: .html
+#        mode: HTML5
+#        encoding: UTF-8
+#        template-resolver-order: 1
+
     http:
       multipart:
         max-file-size: 10MB

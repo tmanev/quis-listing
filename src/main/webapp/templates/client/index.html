@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
-    <title>Hello Quis Listing!</title>
+    <title th:text="${title}">Home</title>
+
+    <link rel="stylesheet" th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"/>
 </head>
 <body>
-<div>
-    Top Menu
-</div>
-<div>
-    Top Header Menu
-</div>
 
-Welcome to QUIS LISTING :-)
+<div th:replace="client/fragments/header :: header">Header goes here!</div>
 
-<div>
-    Footer Menu
+<div th:replace="${view} :: content">Content goes here!</div>
+<div sec:authorize="isAuthenticated()">
+    This content is only shown to authenticated users.
 </div>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    This content is only shown to administrators.
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+    This content is only shown to users.
+</div>
+Logged user: <span sec:authentication="name">Bob</span>
+<!--Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>-->
 
+<div th:replace="client/fragments/footer :: footer">Footer goes here!</div>
+
+<script th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
 </body>
 </html>

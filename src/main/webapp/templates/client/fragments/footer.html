@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Footer</title>
-</head>
-
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
-
 <div th:fragment="footer">
-    Copyright Quis Listing
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li th:each="navMenuItem : ${footerMenus}">
+                        <a th:href="@{${navMenuItem.refPost.name}}" th:text="${navMenuItem.title}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
-
 </body>
-
 </html>
-
-
-
-

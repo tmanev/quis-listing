@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+
+<head>
+    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../../resources/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar navbar-inverse navbar-static-top" role="navigation" th:fragment="header">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">
+                <img style="width: 24px; display: inline;" alt="Quis Listing" th:src="@{/resources/images/logo-ql.png}" /><span style="margin-left: 5px;">Quis Listing</span></a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li th:each="navMenuItem : ${topHeaderMenus}">
+                    <a th:href="@{${navMenuItem.refPost.name}}" th:text="${navMenuItem.title}"></a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li sec:authorize="!isAuthenticated()"><a href="/sign-in" th:href="@{/sign-in}">Log In</a></li>
+                <li sec:authorize="isAuthenticated()">
+                    <a href="/sign-out" th:href="@{/sign-out}">Log Out</a>
+                </li>
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</div>
+</body>
+</html>
