@@ -163,10 +163,6 @@
                 for (var i = 0; i < data.length; i++) {
                     var dlContentField = data[i];
 
-                    // if (dlContentField.type == 'select') {
-                    //     var emptyObj = {id:-1, value: "- Select " + dlContentField.name + " -"};
-                    //     dlContentField.dlContentFieldItems.unshift(emptyObj);
-                    // }
                     if (dlContentField.options) {
                         dlContentField.optionsModel = JSON.parse(dlContentField.options);
                     }

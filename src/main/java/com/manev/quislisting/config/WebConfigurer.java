@@ -30,7 +30,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     private Environment env;
 
     @Autowired
-    private QuisListingProperties jHipsterProperties;
+    private QuisListingProperties quisListingProperties;
 
     /**
      * Customize the Servlet engine: Mime types, the document root, the cache.
@@ -100,7 +100,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = jHipsterProperties.getCors();
+        CorsConfiguration config = quisListingProperties.getCors();
         if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
             log.debug("Registering CORS filter");
             source.registerCorsConfiguration("/api/**", config);
