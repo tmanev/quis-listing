@@ -281,6 +281,15 @@
                 <constraints nullable="true" />
             </column>
         </createTable>
+
+        <createTable tableName="ql_post_relationship">
+            <column name="object_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="post_id" type="bigint" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
     </changeSet>
 
     <changeSet id="00000000000004" author="tmanev">
@@ -311,7 +320,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="icon_image" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="required" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>

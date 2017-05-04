@@ -2,8 +2,7 @@ package com.manev.quislisting.domain.post.discriminator;
 
 import com.manev.quislisting.domain.post.AbstractPost;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue(value = Attachment.TYPE)
@@ -14,6 +13,10 @@ public class Attachment extends AbstractPost {
     public static final String QL_ATTACHMENT_METADATA = "ql-attachment-metadata";
     private String mimeType;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Status status;
+
     public String getMimeType() {
         return mimeType;
     }
@@ -22,18 +25,16 @@ public class Attachment extends AbstractPost {
         this.mimeType = mimeType;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public enum Status {
-        BY_ADMIN("by-admin"),
-        TEMP("temp");
-
-        private final String value;
-
-        Status(final String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
+        BY_ADMIN,
+        TEMP;
     }
 }

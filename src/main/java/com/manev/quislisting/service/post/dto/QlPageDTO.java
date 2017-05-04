@@ -1,10 +1,8 @@
 package com.manev.quislisting.service.post.dto;
 
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import com.manev.quislisting.domain.post.discriminator.QlPage;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class QlPageDTO {
 
@@ -13,7 +11,7 @@ public class QlPageDTO {
     private String content;
     private String name;
     private String expirationDate;
-    private String status;
+    private QlPage.Status status;
     private String views;
     private Author author;
     private ZonedDateTime created;
@@ -61,11 +59,11 @@ public class QlPageDTO {
         this.expirationDate = expirationDate;
     }
 
-    public String getStatus() {
+    public QlPage.Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(QlPage.Status status) {
         this.status = status;
     }
 

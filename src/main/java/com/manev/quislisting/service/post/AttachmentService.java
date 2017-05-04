@@ -53,7 +53,7 @@ public class AttachmentService {
     public AttachmentDTO saveAttachmentAsTemp(AttachmentDTO attachmentDTO) {
         Attachment attachment = getAttachment(attachmentDTO);
 
-        attachment.setStatus(Attachment.Status.TEMP.getValue());
+        attachment.setStatus(Attachment.Status.TEMP);
         Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         attachment.setUser(oneByLogin.get());
 
@@ -64,7 +64,7 @@ public class AttachmentService {
     public AttachmentDTO saveAttachmentByAdmin(AttachmentDTO attachmentDTO) {
         Attachment attachment = getAttachment(attachmentDTO);
 
-        attachment.setStatus(Attachment.Status.BY_ADMIN.getValue());
+        attachment.setStatus(Attachment.Status.BY_ADMIN);
         Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
         attachment.setUser(oneByLogin.get());
 

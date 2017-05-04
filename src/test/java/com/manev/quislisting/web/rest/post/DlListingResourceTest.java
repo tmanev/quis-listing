@@ -1,6 +1,8 @@
 package com.manev.quislisting.web.rest.post;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.QuisListingApp;
+import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
@@ -10,12 +12,22 @@ import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
+import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.post.dto.DlListingField;
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
+import com.manev.quislisting.service.util.SlugUtil;
+import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
+import com.manev.quislisting.web.rest.taxonomy.DlLocationResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +37,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -34,13 +53,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static com.manev.quislisting.domain.post.PostMeta.*;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LISTINGS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -49,10 +68,11 @@ public class DlListingResourceTest {
 
     private static final String DEFAULT_TITLE = "DEFAULT_TITLE";
     private static final String DEFAULT_CONTENT = "DEFAULT_CONTENT";
-    private static final String DEFAULT_NAME = "DEFAULT_NAME";
+    private static final String DEFAULT_NAME = "default_title";
+    private static final String DEFAULT_LANGUAGE_CODE = "en";
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
     private static final ZonedDateTime DEFAULT_MODIFIED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
-    private static final String DEFAULT_STATUS = "DEFAULT_STATUS";
+    private static final DlListing.Status DEFAULT_STATUS = DlListing.Status.UNFINISHED;
 
     private static final String META_VALUE_EXPIRATION_DATE = "1486908703";
 
@@ -94,6 +114,12 @@ public class DlListingResourceTest {
     private DlCategoryRepository dlCategoryRepository;
 
     @Autowired
+    private DlLocationRepository dlLocationRepository;
+
+    @Autowired
+    private DlContentFieldRepository dlContentFieldRepository;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -106,6 +132,7 @@ public class DlListingResourceTest {
 
     private DlListing dlListing;
     private DlCategory dlCategory;
+    private DlLocation dlLocation;
     private User user;
 
     public static DlListing createEntity(EntityManager em) {
@@ -156,17 +183,65 @@ public class DlListingResourceTest {
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
+        setupSecurityContext();
     }
 
     @Before
     public void initTest() {
         dlListingRepository.deleteAll();
+
+        // setup user in security
         user = userRepository.findOneByLogin("admin").get();
+
+        // setup dlListing
         dlListing = createEntity(em);
         dlListing.setPostMeta(createPostMeta(dlListing));
 
+        // setup dl category availability
         dlCategoryRepository.deleteAllByParent(null);
         dlCategory = DlCategoryResourceIntTest.createEntity();
+
+        // setup dl location availability
+        dlLocationRepository.deleteAllByParent(null);
+        dlLocation = DlLocationResourceIntTest.createEntity();
+
+
+    }
+
+    private List<DlContentField> createContentFieldsForCategory(DlCategory dlCategory) {
+        List<DlContentField> dlContentFields = new ArrayList<>();
+
+        Set<DlCategory> dlCategories = new HashSet<>();
+        dlCategories.add(dlCategory);
+
+        dlContentFields.add(createNumberContentField("Height", 1, dlCategories));
+        dlContentFields.add(createNumberContentField("Phone", 2, dlCategories));
+
+        return dlContentFields;
+    }
+
+    private DlContentField createNumberContentField(String name, Integer orderNum, Set<DlCategory> dlCategories) {
+        DlContentField numberDlContentField = new DlContentField();
+        numberDlContentField.setCoreField(Boolean.FALSE);
+        numberDlContentField.setOrderNum(orderNum);
+        numberDlContentField.setName(name);
+        numberDlContentField.setSlug(SlugUtil.getFileNameSlug(name));
+        numberDlContentField.setDescription("Some description");
+        numberDlContentField.setType("number");
+        numberDlContentField.setRequired(Boolean.TRUE);
+        numberDlContentField.hasConfiguration(Boolean.FALSE);
+        numberDlContentField.hasSearchConfiguration(Boolean.FALSE);
+        numberDlContentField.canBeOrdered(Boolean.FALSE);
+        numberDlContentField.hideName(Boolean.FALSE);
+        numberDlContentField.onExcerptPage(Boolean.FALSE);
+        numberDlContentField.onListingPage(Boolean.FALSE);
+        numberDlContentField.onSearchForm(Boolean.FALSE);
+        numberDlContentField.onAdvancedSearchForm(Boolean.FALSE);
+        numberDlContentField.onMap(Boolean.FALSE);
+        numberDlContentField.options("");
+        numberDlContentField.searchOptions("");
+        numberDlContentField.setDlCategories(dlCategories);
+        return numberDlContentField;
     }
 
     @Test
@@ -190,9 +265,116 @@ public class DlListingResourceTest {
                 .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].status").value(hasItem(META_VALUE_LISTING_STATUS)))
+                .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
                 .andExpect(jsonPath("$.[*].dlCategories.[*].term.name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].dlCategories.[*].term.slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
+    }
+
+    @Test
+    @Transactional
+    public void createDlListing() throws Exception {
+        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+
+        DlListingDTO dlListingDTO = new DlListingDTO();
+        dlListingDTO.setTitle(DEFAULT_TITLE);
+        dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+
+        restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
+                .andExpect(status().isCreated());
+
+        // Validate the DlListing in the database
+        List<DlListing> dlListingList = dlListingRepository.findAll();
+        assertThat(dlListingList).hasSize(databaseSizeBeforeCreate + 1);
+
+        DlListing dlListingSaved = dlListingList.get(dlListingList.size() - 1);
+        assertThat(dlListingSaved.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(dlListingSaved.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.UNFINISHED);
+        assertThat(dlListingSaved.getTranslation().getLanguageCode()).isEqualTo(DEFAULT_LANGUAGE_CODE);
+    }
+
+    @Test
+    @Transactional
+    public void updateDlListingIntoPublishStatus() throws Exception {
+        // initialize categories and location
+        dlCategoryRepository.saveAndFlush(dlCategory);
+        dlLocationRepository.saveAndFlush(dlLocation);
+
+        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+
+        DlListingDTO dlListingDTO = new DlListingDTO();
+        dlListingDTO.setTitle(DEFAULT_TITLE);
+        dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        DlListingDTO createdDlListingDTO = new ObjectMapper().readValue(contentAsString,
+                DlListingDTO.class);
+
+        // making updates to the dlListing so at the end object is updated and published
+        createdDlListingDTO.setContent(DEFAULT_CONTENT);
+
+        // set category
+        DlCategoryDTO dlCategoryDTO = new DlCategoryDTO();
+        dlCategoryDTO.setId(dlCategory.getId());
+        createdDlListingDTO.setDlCategories(Collections.singletonList(dlCategoryDTO));
+
+        // set location
+        DlLocationDTO dlLocationDTO = new DlLocationDTO();
+        dlLocationDTO.setId(dlLocation.getId());
+        createdDlListingDTO.setDlLocations(Collections.singletonList(dlLocationDTO));
+
+        // set content fields
+        List<DlContentField> contentFieldsForCategory = createContentFieldsForCategory(dlCategory);
+        List<DlContentField> savedDlContentFieldsForCategory = dlContentFieldRepository.save(contentFieldsForCategory);
+
+        // create logic to save values in metadata of the dlListing
+        DlListingField dlListingFieldHeight = new DlListingField(SlugUtil.metaContentFieldId(findDlContentFieldByName("Height",
+                savedDlContentFieldsForCategory).getId()), "180");
+        createdDlListingDTO.addDlListingField(dlListingFieldHeight);
+        DlListingField dlListingFieldPhone = new DlListingField(SlugUtil.metaContentFieldId(findDlContentFieldByName("Phone",
+                savedDlContentFieldsForCategory).getId()), "+123 456 555");
+        createdDlListingDTO.addDlListingField(dlListingFieldPhone);
+
+        // set attachment is not part of this test
+
+        // make the put request for updating the listing
+        restDlListingMockMvc.perform(put(RESOURCE_API_ADMIN_DL_LISTINGS)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(createdDlListingDTO)))
+                .andExpect(status().isOk());
+
+        // make da asserts
+        List<DlListing> dlListingList = dlListingRepository.findAll();
+        assertThat(dlListingList).hasSize(databaseSizeBeforeCreate + 1);
+
+        DlListing dlListingSaved = dlListingList.get(dlListingList.size() - 1);
+        assertThat(dlListingSaved.getTitle()).isEqualTo(DEFAULT_TITLE);
+        assertThat(dlListingSaved.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(dlListingSaved.getContent()).isEqualTo(DEFAULT_CONTENT);
+        assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.UNFINISHED);
+        assertThat(dlListingSaved.getTranslation().getLanguageCode()).isEqualTo(DEFAULT_LANGUAGE_CODE);
+        assertThat(dlListingSaved.getDlCategories().iterator().next().getId()).isEqualTo(dlCategory.getId());
+        assertThat(dlListingSaved.getDlLocations().iterator().next().getId()).isEqualTo(dlLocation.getId());
+
+        assertThat(dlListingSaved.getPostMetaValue(dlListingFieldHeight.getFieldId())).isEqualTo("180");
+        assertThat(dlListingSaved.getPostMetaValue(dlListingFieldPhone.getFieldId())).isEqualTo("+123 456 555");
+    }
+
+    private DlContentField findDlContentFieldByName(String name, List<DlContentField> dlContentFields) {
+        for (DlContentField dlContentField : dlContentFields) {
+            if (dlContentField.getName().equals(name)) {
+                return dlContentField;
+            }
+        }
+        return null;
     }
 
     @Test
@@ -218,5 +400,15 @@ public class DlListingResourceTest {
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
                 .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
+    }
+
+    private void setupSecurityContext() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User("admin",
+                "admin",
+                grantedAuthorities);
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null));
     }
 }

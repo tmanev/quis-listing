@@ -10,16 +10,17 @@ import java.util.Set;
 @DiscriminatorValue(value = NavMenuItem.TYPE)
 public class NavMenuItem extends AbstractPost {
     public static final String TYPE = "nav-menu-item";
-
     @Column
     private Integer postOrder;
-
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "navMenuItems")
     private Set<NavMenu> navMenus;
-
     @OneToOne
     @JoinColumn(name = "ref_post_id", updatable = false)
     private AbstractPost refPost;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Status status;
 
     public Integer getPostOrder() {
         return postOrder;
@@ -43,5 +44,18 @@ public class NavMenuItem extends AbstractPost {
 
     public void setRefPost(AbstractPost refPost) {
         this.refPost = refPost;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public enum Status {
+        PUBLISH,
+        DRAFT
     }
 }

@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 
 import java.time.ZonedDateTime;
@@ -10,7 +11,7 @@ public class AttachmentDTO {
     private String title;
     private String name;
     private String mimeType;
-    private String status;
+    private Attachment.Status status;
     private AttachmentMetadata attachmentMetadata;
     private Author author;
     private ZonedDateTime created;
@@ -48,11 +49,11 @@ public class AttachmentDTO {
         this.mimeType = mimeType;
     }
 
-    public String getStatus() {
+    public Attachment.Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Attachment.Status status) {
         this.status = status;
     }
 

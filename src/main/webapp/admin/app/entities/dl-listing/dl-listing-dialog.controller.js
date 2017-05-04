@@ -187,15 +187,20 @@
         function save() {
             vm.isSaving = true;
             if (vm.dlListing.id !== null) {
-                DlListing.update(vm.dlListing, onSaveSuccess, onSaveError);
+                DlListing.update(vm.dlListing, onSaveSuccessUpdate, onSaveError);
             } else {
-                DlListing.save(vm.dlListing, onSaveSuccess, onSaveError);
+                DlListing.save(vm.dlListing, onSaveSuccessCreate, onSaveError);
             }
         }
 
-        function onSaveSuccess(result) {
+        function onSaveSuccessUpdate(result) {
             $scope.$emit('quisListingApp:dlListingUpdate', result);
             $uibModalInstance.close(result);
+            vm.isSaving = false;
+        }
+
+        function onSaveSuccessCreate(result) {
+            $scope.$emit('quisListingApp:dlListingUpdate', result);
             vm.isSaving = false;
         }
 

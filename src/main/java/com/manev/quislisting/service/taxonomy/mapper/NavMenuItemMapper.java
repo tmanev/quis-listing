@@ -32,7 +32,7 @@ public class NavMenuItemMapper {
         navMenuItem.setTitle(navMenuItemDTO.getTitle());
         navMenuItem.setName(navMenuDTO.getTerm().getSlug() + "-" + String.valueOf(navMenuItemDTO.getRefItem().getId()) + "-" + navMenuItemDTO.getOrder());
         navMenuItem.setContent("");
-        navMenuItem.setStatus("menu-active");
+        navMenuItem.setStatus(NavMenuItem.Status.PUBLISH);
         navMenuItem.setCommentCount(0L);
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         navMenuItem.setCreated(currentDateTime);

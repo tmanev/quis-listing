@@ -169,7 +169,7 @@ public class AttachmentResourceTest {
 
         assertThat(attachment.getName()).isEqualTo("small-fish");
         assertThat(attachment.getTitle()).isEqualTo("small fish");
-        assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.BY_ADMIN.getValue());
+        assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.BY_ADMIN);
         assertThat(attachment.getMimeType()).isEqualTo("image/jpeg");
 
         assertThat(attachment.getPostMetaValue(QL_ATTACHED_FILE)).isEqualTo("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish.jpg");

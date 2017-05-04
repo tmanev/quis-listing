@@ -14,7 +14,7 @@ public final class DlListingBuilder {
     private String content;
     private String name;
     private String type;
-    private String status;
+    private DlListing.Status status;
     private ZonedDateTime created;
     private ZonedDateTime modified;
     private Long commentCount = 0L;
@@ -54,7 +54,7 @@ public final class DlListingBuilder {
         return this;
     }
 
-    public DlListingBuilder withStatus(String status) {
+    public DlListingBuilder withStatus(DlListing.Status status) {
         this.status = status;
         return this;
     }

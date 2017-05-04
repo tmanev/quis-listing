@@ -62,11 +62,11 @@ public class QlPageResourceTest {
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
     private static final ZonedDateTime DEFAULT_MODIFIED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
-    private static final String DEFAULT_STATUS = "DEFAULT_STATUS";
+    private static final QlPage.Status DEFAULT_STATUS = QlPage.Status.PUBLISH;
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String UPDATED_TITLE = "UPDATED_TITLE";
-    private static final String UPDATED_STATUS = "UPDATED_STATUS";
+    private static final QlPage.Status UPDATED_STATUS = QlPage.Status.DRAFT;
     private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
     private static final ZonedDateTime UPDATED_MODIFIED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
     private static final String UPDATED_CONTENT = "UPDATED_CONTENT";
@@ -197,7 +197,7 @@ public class QlPageResourceTest {
                 .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)));
+                .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
             //    .andExpect(jsonPath("$.[*].dlCategories.[*].term.name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
             //    .andExpect(jsonPath("$.[*].dlCategories.[*].term.slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
     }
