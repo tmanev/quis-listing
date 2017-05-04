@@ -1,7 +1,11 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
 
 import java.time.ZonedDateTime;
 
@@ -14,7 +18,13 @@ public class AttachmentDTO {
     private Attachment.Status status;
     private AttachmentMetadata attachmentMetadata;
     private Author author;
+
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private ZonedDateTime created;
+
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private ZonedDateTime modified;
 
     public Long getId() {

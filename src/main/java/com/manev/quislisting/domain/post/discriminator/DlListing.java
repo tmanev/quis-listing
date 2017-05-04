@@ -63,6 +63,13 @@ public class DlListing extends AbstractPost {
         this.attachments = attachments;
     }
 
+    public void addAttachment(Attachment attachment) {
+        if (attachments == null) {
+            attachments = new HashSet<>();
+        }
+        attachments.add(attachment);
+    }
+
     public Status getStatus() {
         return status;
     }

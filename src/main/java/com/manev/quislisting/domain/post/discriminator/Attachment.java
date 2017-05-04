@@ -34,6 +34,7 @@ public class Attachment extends AbstractPost {
     }
 
     public enum Status {
+        LISTING,
         BY_ADMIN,
         TEMP;
     }

@@ -2,6 +2,7 @@ package com.manev.quislisting.service.post.mapper;
 
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
+import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
@@ -23,10 +24,12 @@ public class DlListingMapper {
 
     private DlCategoryMapper dlCategoryMapper;
     private DlLocationMapper dlLocationMapper;
+    private AttachmentMapper attachmentMapper;
 
-    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper) {
+    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper) {
         this.dlCategoryMapper = dlCategoryMapper;
         this.dlLocationMapper = dlLocationMapper;
+        this.attachmentMapper = attachmentMapper;
     }
 
     public DlListingDTO dlListingToDlListingDTO(DlListing dlListing) {
@@ -53,6 +56,13 @@ public class DlListingMapper {
         if (dlLocations != null && !dlLocations.isEmpty()) {
             for (DlLocation dlLocation : dlLocations) {
                 dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation));
+            }
+        }
+
+        Set<Attachment> attachments = dlListing.getAttachments();
+        if (attachments != null && !attachments.isEmpty()) {
+            for (Attachment attachment : attachments) {
+                dlListingDTO.addAttachmentDto(attachmentMapper.attachmentToAttachmentDTO(attachment));
             }
         }
 

@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
+import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
@@ -14,9 +15,12 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
+import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
+import com.manev.quislisting.service.storage.StorageService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
@@ -28,7 +32,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.jcr.RepositoryException;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -47,8 +54,11 @@ public class DlListingService {
 
     private DlListingMapper dlListingMapper;
     private ActiveLanguageMapper activeLanguageMapper;
+    private AttachmentMapper attachmentMapper;
+    
+    private StorageService storageService;
 
-    public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository, LanguageRepository languageRepository, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, DlListingMapper dlListingMapper, ActiveLanguageMapper activeLanguageMapper) {
+    public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository, LanguageRepository languageRepository, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, DlListingMapper dlListingMapper, ActiveLanguageMapper activeLanguageMapper, AttachmentMapper attachmentMapper, StorageService storageService) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.languageRepository = languageRepository;
@@ -56,6 +66,8 @@ public class DlListingService {
         this.dlLocationRepository = dlLocationRepository;
         this.dlListingMapper = dlListingMapper;
         this.activeLanguageMapper = activeLanguageMapper;
+        this.attachmentMapper = attachmentMapper;
+        this.storageService = storageService;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -168,5 +180,22 @@ public class DlListingService {
         dlListing.setStatus(DlListing.Status.PUBLISH);
         dlListingRepository.save(dlListing);
         return true;
+    }
+
+    public DlListingDTO uploadFile(MultipartFile[] files, Long id) throws IOException, RepositoryException {
+        DlListing dlListing = dlListingRepository.findOne(id);
+
+        for (MultipartFile file : files) {
+            AttachmentDTO attachmentDto = storageService.store(file);
+            Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
+            attachment.setStatus(Attachment.Status.LISTING);
+            Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+            attachment.setUser(oneByLogin.get());
+
+            dlListing.addAttachment(attachment);
+        }
+
+        DlListing result = dlListingRepository.save(dlListing);
+        return dlListingMapper.dlListingToDlListingDTO(result);
     }
 }

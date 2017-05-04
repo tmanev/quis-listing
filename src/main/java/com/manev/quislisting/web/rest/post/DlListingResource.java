@@ -15,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.jcr.RepositoryException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -69,6 +72,15 @@ public class DlListingResource {
                 .body(result);
     }
 
+    @PostMapping(value = "/{id}/upload", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DlListingDTO> handleFileUpload(@RequestParam("files[]") MultipartFile[] files, @PathVariable Long id) throws IOException, RepositoryException, URISyntaxException {
+        DlListingDTO result = dlListingService.uploadFile(files, id);
+
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
     @PutMapping
     public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
         log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
@@ -77,7 +89,7 @@ public class DlListingResource {
         }
         DlListingDTO result = dlListingService.save(dlListingDTO);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 

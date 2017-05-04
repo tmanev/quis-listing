@@ -12,10 +12,10 @@ import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.storage.StorageService;
 import com.manev.quislisting.web.ContentController;
+import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.user.UploadResource;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,12 +41,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jcr.*;
-import java.io.File;
+import javax.jcr.Repository;
+import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class AttachmentResourceTest {
+public class AttachmentResourceTest extends GenericResourceTest {
 
     public static final String TITLE = "small fish";
     public static final String TITLE_UPDATED = "small fish updated";
@@ -96,17 +95,8 @@ public class AttachmentResourceTest {
     //    private MockMvc contentControllerMockMvc;
     private MockMvc restUploadResourceMockMvc;
 
-    private File imageFile;
-
-    private List<Attachment> attachmentsToBeDeletedFromJcrInAfter;
-
     private String yearStr;
     private String monthOfYearStr;
-
-    public static File createFile() throws URISyntaxException {
-        URL resource = AttachmentResourceTest.class.getResource("/images/small fish.jpg");
-        return new File(resource.toURI());
-    }
 
     @Before
     public void setup() {
@@ -125,41 +115,9 @@ public class AttachmentResourceTest {
     @Before
     public void initTest() throws URISyntaxException {
         attachmentRepository.deleteAll();
-        this.imageFile = createFile();
-        this.attachmentsToBeDeletedFromJcrInAfter = new ArrayList<>();
         DateTime dateTime = new DateTime();
         this.yearStr = String.valueOf(dateTime.getYear());
         this.monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
-    }
-
-    @After
-    public void clearJcrRepoSaves() throws IOException, RepositoryException {
-        for (Attachment attachment : attachmentsToBeDeletedFromJcrInAfter) {
-            List<String> filePaths = new ArrayList<>();
-
-            filePaths.add(attachment.getPostMetaValue(QL_ATTACHED_FILE));
-            String attachmentMetaStr = attachment.getPostMetaValue(QL_ATTACHMENT_METADATA);
-            AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetaStr, AttachmentMetadata.class);
-            List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
-            for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
-                filePaths.add(imageResizeMeta.getDetail().getFile());
-            }
-
-            Repository repository = jcrConfiguration.repository();
-            Session session = repository.login(
-                    new SimpleCredentials("admin", "admin".toCharArray()));
-            try {
-                for (String filePath : filePaths) {
-                    if (session.itemExists(filePath)) {
-                        Node node = session.getNode(filePath);
-                        node.remove();
-                    }
-                }
-                session.save();
-            } finally {
-                session.logout();
-            }
-        }
     }
 
     @Test

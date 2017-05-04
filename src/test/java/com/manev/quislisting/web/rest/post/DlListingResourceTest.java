@@ -8,6 +8,7 @@ import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.PostMeta;
+import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
 import com.manev.quislisting.domain.qlml.Language;
@@ -15,6 +16,7 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.UserRepository;
+import com.manev.quislisting.repository.post.AttachmentRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
@@ -25,6 +27,7 @@ import com.manev.quislisting.service.post.dto.DlListingField;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.util.SlugUtil;
+import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import com.manev.quislisting.web.rest.taxonomy.DlLocationResourceIntTest;
@@ -37,6 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,7 +56,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -65,7 +73,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlListingResourceTest {
+public class DlListingResourceTest extends GenericResourceTest {
 
     private static final String DEFAULT_TITLE = "DEFAULT_TITLE";
     private static final String DEFAULT_CONTENT = "DEFAULT_CONTENT";
@@ -119,6 +127,9 @@ public class DlListingResourceTest {
 
     @Autowired
     private DlContentFieldRepository dlContentFieldRepository;
+
+    @Autowired
+    private AttachmentRepository attachmentRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -383,6 +394,10 @@ public class DlListingResourceTest {
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated())
                 .andReturn();
+        // make da asserts
+        List<DlListing> dlListingList = dlListingRepository.findAll();
+        assertThat(dlListingList).hasSize(databaseSizeBeforeCreate + 1);
+
         String contentAsString = mvcResult.getResponse().getContentAsString();
 
         DlListingDTO createdDlListingDTO = new ObjectMapper().readValue(contentAsString,
@@ -396,6 +411,56 @@ public class DlListingResourceTest {
 
         DlListing publishedDlListing = dlListingRepository.findOne(createdDlListingDTO.getId());
         assertThat(publishedDlListing.getStatus()).isEqualTo(DlListing.Status.PUBLISH);
+    }
+
+    @Test
+    @Transactional
+    public void uploadAttachment() throws Exception {
+        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+
+        DlListingDTO dlListingDTO = new DlListingDTO();
+        dlListingDTO.setTitle(DEFAULT_TITLE);
+        dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        // make da asserts
+        List<DlListing> dlListingList = dlListingRepository.findAll();
+        assertThat(dlListingList).hasSize(databaseSizeBeforeCreate + 1);
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        DlListingDTO createdDlListingDTO = new ObjectMapper().readValue(contentAsString,
+                DlListingDTO.class);
+
+        // make the upload
+        DlListingDTO updatedDlListingDTO = doFileUpload(createdDlListingDTO.getId());
+        assertThat(updatedDlListingDTO.getAttachments()).hasSize(1);
+    }
+
+    private DlListingDTO doFileUpload(Long id) throws Exception {
+        String contentType = Files.probeContentType(imageFile.toPath());
+
+        MockMultipartFile multipartFile =
+                new MockMultipartFile("files[]", imageFile.getName(), contentType, new FileInputStream(imageFile));
+
+        ResultActions resultActions = this.restDlListingMockMvc.perform(fileUpload(RESOURCE_API_ADMIN_DL_LISTINGS + "/" + id + "/upload")
+                .file(multipartFile))
+                .andExpect(status().isOk());
+        // test get call to verify the resource
+        List<Attachment> all = attachmentRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        Attachment attachment = all.get(0);
+        attachmentsToBeDeletedFromJcrInAfter.add(attachment);
+
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        return new ObjectMapper().readValue(contentAsString,
+                DlListingDTO.class);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.manev.quislisting.service.post.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
@@ -26,6 +25,7 @@ public class DlListingDTO {
     private List<DlCategoryDTO> dlCategories;
     private List<DlLocationDTO> dlLocations;
     private List<DlListingField> dlListingFields;
+    private List<AttachmentDTO> attachments;
 
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
     @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
@@ -168,5 +168,20 @@ public class DlListingDTO {
             dlListingFields = new ArrayList<>();
         }
         dlListingFields.add(dlListingField);
+    }
+
+    public List<AttachmentDTO> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentDTO> attachments) {
+        this.attachments = attachments;
+    }
+
+    public void addAttachmentDto(AttachmentDTO attachmentDTO) {
+        if (attachments == null) {
+            attachments = new ArrayList<>();
+        }
+        attachments.add(attachmentDTO);
     }
 }
