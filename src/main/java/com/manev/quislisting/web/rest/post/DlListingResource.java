@@ -51,6 +51,24 @@ public class DlListingResource {
                 .body(result);
     }
 
+    @RequestMapping(path = "/publish", method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO) {
+        log.debug("REST request to publish DlListingDTO : {}", dlListingDTO);
+        if (dlListingDTO.getId() == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
+        }
+
+        DlListingDTO result = dlListingService.save(dlListingDTO);
+        if (!dlListingService.publish(result)) {
+            // return errors
+        }
+
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))
+                .body(result);
+    }
+
     @PutMapping
     public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
         log.debug("REST request to update DlListingDTO : {}", dlListingDTO);

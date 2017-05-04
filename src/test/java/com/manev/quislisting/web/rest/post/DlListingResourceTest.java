@@ -52,6 +52,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -297,7 +298,7 @@ public class DlListingResourceTest {
 
     @Test
     @Transactional
-    public void updateDlListingIntoPublishStatus() throws Exception {
+    public void updateDlListing() throws Exception {
         // initialize categories and location
         dlCategoryRepository.saveAndFlush(dlCategory);
         dlLocationRepository.saveAndFlush(dlLocation);
@@ -368,13 +369,33 @@ public class DlListingResourceTest {
         assertThat(dlListingSaved.getPostMetaValue(dlListingFieldPhone.getFieldId())).isEqualTo("+123 456 555");
     }
 
-    private DlContentField findDlContentFieldByName(String name, List<DlContentField> dlContentFields) {
-        for (DlContentField dlContentField : dlContentFields) {
-            if (dlContentField.getName().equals(name)) {
-                return dlContentField;
-            }
-        }
-        return null;
+    @Test
+    @Transactional
+    public void publishDlListing() throws Exception {
+        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+
+        DlListingDTO dlListingDTO = new DlListingDTO();
+        dlListingDTO.setTitle(DEFAULT_TITLE);
+        dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        DlListingDTO createdDlListingDTO = new ObjectMapper().readValue(contentAsString,
+                DlListingDTO.class);
+
+        // make the put request for updating the listing
+        restDlListingMockMvc.perform(put(RESOURCE_API_ADMIN_DL_LISTINGS + "/publish")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(createdDlListingDTO)))
+                .andExpect(status().isOk());
+
+        DlListing publishedDlListing = dlListingRepository.findOne(createdDlListingDTO.getId());
+        assertThat(publishedDlListing.getStatus()).isEqualTo(DlListing.Status.PUBLISH);
     }
 
     @Test
@@ -410,5 +431,14 @@ public class DlListingResourceTest {
                 "admin",
                 grantedAuthorities);
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null));
+    }
+
+    private DlContentField findDlContentFieldByName(String name, List<DlContentField> dlContentFields) {
+        for (DlContentField dlContentField : dlContentFields) {
+            if (dlContentField.getName().equals(name)) {
+                return dlContentField;
+            }
+        }
+        return null;
     }
 }

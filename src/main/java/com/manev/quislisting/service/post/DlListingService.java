@@ -162,4 +162,11 @@ public class DlListingService {
 
         return result;
     }
+
+    public boolean publish(DlListingDTO dlListingDTO) {
+        DlListing dlListing = dlListingRepository.findOne(dlListingDTO.getId());
+        dlListing.setStatus(DlListing.Status.PUBLISH);
+        dlListingRepository.save(dlListing);
+        return true;
+    }
 }
