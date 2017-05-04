@@ -415,7 +415,7 @@ public class DlListingResourceTest extends GenericResourceTest {
 
     @Test
     @Transactional
-    public void uploadAttachment() throws Exception {
+    public void uploadAttachmentToDlListing() throws Exception {
         int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
 
         DlListingDTO dlListingDTO = new DlListingDTO();

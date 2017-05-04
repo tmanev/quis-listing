@@ -70,7 +70,7 @@
             toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
         };
 
-        loadUploadedFiles();
+        // loadUploadedFiles();
         loadCategories();
         loadDlContentFields();
         loadDlLocations();
@@ -201,6 +201,7 @@
 
         function onSaveSuccessCreate(result) {
             $scope.$emit('quisListingApp:dlListingUpdate', result);
+            vm.dlListing = result;
             vm.isSaving = false;
         }
 

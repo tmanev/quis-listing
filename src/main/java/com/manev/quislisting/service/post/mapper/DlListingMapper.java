@@ -42,6 +42,7 @@ public class DlListingMapper {
         dlListingDTO.setModified(dlListing.getModified());
         dlListingDTO.setStatus(dlListing.getStatus());
         dlListingDTO.setViews(dlListing.getPostMetaValue(PostMeta.META_KEY_POST_VIEWS_COUNT));
+        dlListingDTO.setLanguageCode(dlListing.getTranslation().getLanguageCode());
 
         setExpirationDate(dlListing, dlListingDTO);
 
