@@ -49,7 +49,8 @@
                 <label class="control-label" data-translate="quisListingApp.dlListing.categories">Categories</label>
                 <div class="input-group">
 
-                    <ui-select allow-clear ng-model="vm.dlCategoryId" on-select="vm.onSelectCallback($item, $model)"
+                    <ui-select allow-clear ng-model="vm.selectedDlCategoryId"
+                               on-select="vm.onSelectCallback($item, $model)"
                                theme="bootstrap">
                         <ui-select-match placeholder="Select or search a category in the list...">
                             {{$select.selected.term.name}}
@@ -199,7 +200,8 @@
                 <label class="control-label" data-translate="quisListingApp.dlListing.location">Location</label>
                 <div class="input-group">
 
-                    <ui-select allow-clear ng-model="vm.dlLocationId" on-select="vm.onSelectCallback($item, $model)"
+                    <ui-select allow-clear ng-model="vm.selectedDlLocationId"
+                               on-select="vm.onDlLocationSelectCallback($item, $model)"
                                theme="bootstrap">
                         <ui-select-match placeholder="Select or search a location in the list...">
                             {{$select.selected.term.name}}

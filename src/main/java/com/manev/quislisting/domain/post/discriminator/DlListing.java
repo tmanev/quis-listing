@@ -3,6 +3,7 @@ package com.manev.quislisting.domain.post.discriminator;
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,19 +13,23 @@ import java.util.Set;
 @DiscriminatorValue(value = DlListing.TYPE)
 public class DlListing extends AbstractPost {
     public static final String TYPE = "dl-listing";
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ql_term_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", nullable = false, updatable = false),
             inverseJoinColumns =
             @JoinColumn(name = "object_id", nullable = false, updatable = false))
+    @Where(clause = "taxonomy='" + DlCategory.TAXONOMY + "'")
     private Set<DlCategory> dlCategories = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ql_term_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", nullable = false, updatable = false),
             inverseJoinColumns =
             @JoinColumn(name = "object_id", nullable = false, updatable = false))
+    @Where(clause = "taxonomy='" + DlLocation.TAXONOMY + "'")
     private Set<DlLocation> dlLocations;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

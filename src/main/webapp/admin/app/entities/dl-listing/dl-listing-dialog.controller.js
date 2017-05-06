@@ -47,6 +47,16 @@
         vm.reverse = true;
 
         vm.dlListing = entity;
+        vm.selectedDlCategoryId = null;
+        if (vm.dlListing.dlCategories && vm.dlListing.dlCategories.length > 0) {
+            vm.selectedDlCategoryId = vm.dlListing.dlCategories[0].id;
+        }
+
+        vm.selectedDlLocationId = null;
+        if (vm.dlListing.dlLocations && vm.dlListing.dlLocations.length > 0) {
+            vm.selectedDlLocationId = vm.dlListing.dlLocations[0].id;
+        }
+
         vm.clear = clear;
         vm.fileUploadOptions = {
             headers: {
@@ -58,6 +68,28 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+
+        vm.onDlCategorySelectCallback = function ($item, $model) {
+            console.log("Item:");
+            console.log($item);
+            console.log("Model:");
+            console.log($model);
+            if (vm.dlListing.dlCategories == null) {
+                vm.dlListing.dlCategories = [];
+            }
+            vm.dlListing.dlCategories[0] = JSON.parse(angular.toJson($item));
+        };
+
+        vm.onDlLocationSelectCallback = function ($item, $model) {
+            console.log("Item:");
+            console.log($item);
+            console.log("Model:");
+            console.log($model);
+            if (vm.dlListing.dlLocations == null) {
+                vm.dlListing.dlLocations = [];
+            }
+            vm.dlListing.dlLocations[0] = JSON.parse(angular.toJson($item));
+        };
 
         vm.loadUploadedFiles = loadUploadedFiles;
         vm.loadCategories = loadCategories;
@@ -186,6 +218,7 @@
 
         function save() {
             vm.isSaving = true;
+
             if (vm.dlListing.id !== null) {
                 DlListing.update(vm.dlListing, onSaveSuccessUpdate, onSaveError);
             } else {
