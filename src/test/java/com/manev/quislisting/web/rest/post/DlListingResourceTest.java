@@ -56,10 +56,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.io.File;
 import java.io.FileInputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -348,11 +345,13 @@ public class DlListingResourceTest extends GenericResourceTest {
         List<DlContentField> savedDlContentFieldsForCategory = dlContentFieldRepository.save(contentFieldsForCategory);
 
         // create logic to save values in metadata of the dlListing
-        DlListingField dlListingFieldHeight = new DlListingField(SlugUtil.metaContentFieldId(findDlContentFieldByName("Height",
-                savedDlContentFieldsForCategory).getId()), "180");
+        Long heightContentFieldId = findDlContentFieldByName("Height",
+                savedDlContentFieldsForCategory).getId();
+        DlListingField dlListingFieldHeight = new DlListingField(heightContentFieldId, "180");
         createdDlListingDTO.addDlListingField(dlListingFieldHeight);
-        DlListingField dlListingFieldPhone = new DlListingField(SlugUtil.metaContentFieldId(findDlContentFieldByName("Phone",
-                savedDlContentFieldsForCategory).getId()), "+123 456 555");
+        Long phoneContentFieldId = findDlContentFieldByName("Phone",
+                savedDlContentFieldsForCategory).getId();
+        DlListingField dlListingFieldPhone = new DlListingField(phoneContentFieldId, "+123 456 555");
         createdDlListingDTO.addDlListingField(dlListingFieldPhone);
 
         // set attachment is not part of this test
@@ -376,8 +375,8 @@ public class DlListingResourceTest extends GenericResourceTest {
         assertThat(dlListingSaved.getDlCategories().iterator().next().getId()).isEqualTo(dlCategory.getId());
         assertThat(dlListingSaved.getDlLocations().iterator().next().getId()).isEqualTo(dlLocation.getId());
 
-        assertThat(dlListingSaved.getPostMetaValue(dlListingFieldHeight.getFieldId())).isEqualTo("180");
-        assertThat(dlListingSaved.getPostMetaValue(dlListingFieldPhone.getFieldId())).isEqualTo("+123 456 555");
+        assertThat(dlListingSaved.getPostMetaValue(SlugUtil.metaContentFieldId(dlListingFieldHeight.getId()))).isEqualTo("180");
+        assertThat(dlListingSaved.getPostMetaValue(SlugUtil.metaContentFieldId(dlListingFieldPhone.getId()))).isEqualTo("+123 456 555");
     }
 
     @Test

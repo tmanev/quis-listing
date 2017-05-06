@@ -90,10 +90,9 @@
                         <div class="form-group" ng-if="dlContentField.type == 'checkbox' ">
                             <label class="control-label">
                                 {{dlContentField.name}}</label>
-                            <div class="checkbox" ng-repeat="selectionItem in dlContentField.dlContentFieldItems"
-                                 ng-model="dlContentField.value">
+                            <div class="checkbox" ng-repeat="selectionItem in dlContentField.dlContentFieldItems">
                                 <label>
-                                    <input type="checkbox" value="{{selectionItem.id}}">
+                                    <input type="checkbox" value="{{selectionItem.id}}" ng-model="dlContentField.value[selectionItem.id]">
                                     {{selectionItem.value}}
                                 </label>
                             </div>

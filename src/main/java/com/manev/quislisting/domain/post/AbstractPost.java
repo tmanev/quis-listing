@@ -48,7 +48,7 @@ public abstract class AbstractPost {
     private Long commentCount = 0L;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false, updatable=false)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "abstractPost", fetch = FetchType.EAGER)
@@ -158,7 +158,21 @@ public abstract class AbstractPost {
         if (this.postMeta == null) {
             this.postMeta = new HashSet<>();
         }
-        this.postMeta.add(newPostMeta);
+        PostMeta postMetaExists = findPostMetaByKey(newPostMeta.getKey());
+        if (postMetaExists != null) {
+            postMetaExists.setValue(newPostMeta.getValue());
+        } else {
+            this.postMeta.add(newPostMeta);
+        }
+    }
+
+    private PostMeta findPostMetaByKey(String key) {
+        for (PostMeta meta : postMeta) {
+            if (meta.getKey().equals(key)) {
+                return meta;
+            }
+        }
+        return null;
     }
 
     public Translation getTranslation() {

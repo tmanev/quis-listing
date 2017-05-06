@@ -2,23 +2,23 @@ package com.manev.quislisting.service.post.dto;
 
 public class DlListingField {
 
-    private String fieldId;
+    private Long id;
     private String value;
 
     public DlListingField() {
     }
 
-    public DlListingField(String fieldId, String value) {
-        this.fieldId = fieldId;
+    public DlListingField(Long id, String value) {
+        this.id = id;
         this.value = value;
     }
 
-    public String getFieldId() {
-        return fieldId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFieldId(String fieldId) {
-        this.fieldId = fieldId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getValue() {

@@ -71,7 +71,8 @@ public class DlListingMapper {
         if (postMeta != null) {
             for (PostMeta meta : postMeta) {
                 if (meta.getKey().startsWith("content_field_")) {
-                    dlListingDTO.addDlListingField(new DlListingField(meta.getKey(), meta.getValue()));
+                    String contentFieldId = meta.getKey().split("content_field_")[1];
+                    dlListingDTO.addDlListingField(new DlListingField(Long.valueOf(contentFieldId), meta.getValue()));
                 }
             }
         }

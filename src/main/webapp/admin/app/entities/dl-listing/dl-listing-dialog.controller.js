@@ -198,9 +198,28 @@
                     if (dlContentField.options) {
                         dlContentField.optionsModel = JSON.parse(dlContentField.options);
                     }
+
+                    dlContentField.value = getValueFromContentField(dlContentField, vm.dlListing.dlListingFields);
                 }
 
                 vm.dlContentFields = data;
+            }
+
+            function getValueFromContentField(dlContentField, dlListingFields) {
+                if (dlListingFields) {
+                    for (let dlListingField of dlListingFields) {
+                        if (dlListingField.id == dlContentField.id) {
+                            if (dlContentField.type == 'checkbox') {
+                                if (dlListingField.value) {
+                                    return JSON.parse(dlListingField.value);
+                                }
+                            } else {
+                                return dlListingField.value;
+                            }
+                        }
+                    }
+                }
+                return null;
             }
 
             function onError(error) {
@@ -218,6 +237,23 @@
 
         function save() {
             vm.isSaving = true;
+
+            let dlListingFields = [];
+            for (let dlContentField of vm.dlContentFields) {
+                let value;
+                if (dlContentField.type == 'checkbox') {
+                    value = JSON.stringify(dlContentField.value);
+                } else {
+                    value = dlContentField.value;
+                }
+                let listingField = {
+                    id: dlContentField.id,
+                    value: value
+                };
+                dlListingFields.push(listingField)
+            }
+
+            vm.dlListing.dlListingFields = dlListingFields;
 
             if (vm.dlListing.id !== null) {
                 DlListing.update(vm.dlListing, onSaveSuccessUpdate, onSaveError);

@@ -113,7 +113,8 @@ public class DlListingService {
         List<DlListingField> dlListingFields = dlListingDTO.getDlListingFields();
         if (dlListingFields != null) {
             for (DlListingField dlListingField : dlListingFields) {
-                dlListingForSaving.addPostMeta(new PostMeta(dlListingForSaving, dlListingField.getFieldId(),
+                String fieldId = SlugUtil.metaContentFieldId(dlListingField.getId());
+                dlListingForSaving.addPostMeta(new PostMeta(dlListingForSaving, fieldId,
                         dlListingField.getValue()));
             }
         }
