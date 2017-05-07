@@ -25,6 +25,7 @@ import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
+import com.manev.quislisting.service.util.AttachmentUtil;
 import com.manev.quislisting.service.util.SlugUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public class DlListingService {
     private DlListingMapper dlListingMapper;
     private ActiveLanguageMapper activeLanguageMapper;
     private AttachmentMapper attachmentMapper;
-    
+
     private StorageService storageService;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository, LanguageRepository languageRepository, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, DlListingMapper dlListingMapper, ActiveLanguageMapper activeLanguageMapper, AttachmentMapper attachmentMapper, StorageService storageService) {
@@ -162,6 +163,21 @@ public class DlListingService {
         dlListingRepository.delete(id);
     }
 
+    public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException, RepositoryException {
+        log.debug("Request to delete attachment with id : {}, from DlCategoryDTO : {}", attachmentId, id);
+        DlListing dlListing = dlListingRepository.findOne(id);
+        Attachment attachment = dlListing.removeAttachment(attachmentId);
+        dlListing.setModified(ZonedDateTime.now());
+        DlListing result = dlListingRepository.save(dlListing);
+
+        if (attachment != null) {
+            List<String> filePaths = AttachmentUtil.getFilePaths(attachment);
+            storageService.delete(filePaths);
+        }
+
+        return dlListingMapper.dlListingToDlListingDTO(result);
+    }
+
     public List<ActiveLanguageDTO> findAllActiveLanguages() {
         log.debug("Request to retrieve all active languages");
 
@@ -183,12 +199,13 @@ public class DlListingService {
         return true;
     }
 
-    public DlListingDTO uploadFile(MultipartFile[] files, Long id) throws IOException, RepositoryException {
+    public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException, RepositoryException {
         DlListing dlListing = dlListingRepository.findOne(id);
 
-        for (MultipartFile file : files) {
+        for (MultipartFile file : fileMap.values()) {
             AttachmentDTO attachmentDto = storageService.store(file);
             Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
+
             attachment.setStatus(Attachment.Status.LISTING);
             Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
             attachment.setUser(oneByLogin.get());
@@ -199,4 +216,5 @@ public class DlListingService {
         DlListing result = dlListingRepository.save(dlListing);
         return dlListingMapper.dlListingToDlListingDTO(result);
     }
+
 }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -75,6 +76,20 @@ public class DlListing extends AbstractPost {
         attachments.add(attachment);
     }
 
+    public Attachment removeAttachment(Long attachmentId) {
+        if (attachments != null) {
+            Iterator<Attachment> iter = attachments.iterator();
+            while (iter.hasNext()) {
+                Attachment attachment = iter.next();
+                if (attachment.getId().equals(attachmentId)) {
+                    iter.remove();
+                    return attachment;
+                }
+            }
+        }
+        return null;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -82,6 +97,7 @@ public class DlListing extends AbstractPost {
     public void setStatus(Status status) {
         this.status = status;
     }
+
 
     public enum Status {
         UNFINISHED,

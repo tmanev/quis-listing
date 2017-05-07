@@ -41,10 +41,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jcr.Repository;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
+import javax.jcr.*;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -56,6 +55,7 @@ import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_ATTACH
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -113,11 +113,20 @@ public class AttachmentResourceTest extends GenericResourceTest {
     }
 
     @Before
-    public void initTest() throws URISyntaxException {
+    public void initTest() throws URISyntaxException, IOException, RepositoryException {
         attachmentRepository.deleteAll();
         DateTime dateTime = new DateTime();
         this.yearStr = String.valueOf(dateTime.getYear());
         this.monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
+        List<String> filePathsToDelete = new ArrayList<>();
+        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish.jpg");
+        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish-180x133.jpg");
+        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish-300x222.jpg");
+        try {
+            storageService.delete(filePathsToDelete);
+        }catch (PathNotFoundException ex) {
+
+        }
     }
 
     @Test
@@ -179,7 +188,6 @@ public class AttachmentResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.attachmentMetadata.imageResizeMetas.[1].name").value("dl-medium"))
                 .andExpect(jsonPath("$.attachmentMetadata.imageResizeMetas.[1].detail.file").value(String.format("/%s/%s/small-fish-300x222.jpg", yearStr, monthOfYearStr)))
         ;
-
     }
 
     @Test

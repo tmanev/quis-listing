@@ -41,6 +41,10 @@
                     copy.publicationDate = DateUtils.convertLocalDateToServer(copy.publicationDate);
                     return angular.toJson(copy);
                 }
+            },
+            'deleteAttachment' : {
+                method: 'DELETE',
+                url: resourceUrl + '/attachments/:attachmentId'
             }
         });
     }

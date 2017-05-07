@@ -4,45 +4,17 @@
     angular
         .module('quisListingApp')
         .controller('DlListingDialogController', DlListingDialogController)
-        .controller('FileDestroyController', [
-            '$scope', '$http',
-            function ($scope, $http) {
-                var file = $scope.file,
-                    state;
-                if (file.url) {
-                    file.$state = function () {
-                        return state;
-                    };
-                    file.$destroy = function () {
-                        state = 'pending';
-                        return $http({
-                            url: file.deleteUrl,
-                            method: file.deleteType
-                        }).then(
-                            function () {
-                                state = 'resolved';
-                                $scope.clear(file);
-                            },
-                            function () {
-                                state = 'rejected';
-                            }
-                        );
-                    };
-                } else if (!file.$cancel && !file._index) {
-                    file.$cancel = function () {
-                        $scope.clear(file);
-                    };
-                }
-            }
-        ])
     ;
 
     DlListingDialogController.$inject = ['$http', '$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity',
-        'DlListing', 'DlCategory', 'DlContentField', 'DlLocation', 'AuthServerProvider'];
+        'DlListing', 'DlCategory', 'DlContentField', 'DlLocation', 'AuthServerProvider', 'Upload', 'AlertService',
+        '$location', '$window'];
 
     function DlListingDialogController($http, $timeout, $scope, $stateParams, $uibModalInstance, entity,
-                                       DlListing, DlCategory, DlContentField, DlLocation, AuthServerProvider) {
+                                       DlListing, DlCategory, DlContentField, DlLocation, AuthServerProvider, Upload, AlertService,
+                                       location, $window) {
         var vm = this;
+        vm.baseUrl = location.protocol() + "://" + location.host() + ":" + location.port();
         vm.predicate = 'id';
         vm.reverse = true;
 
@@ -56,18 +28,65 @@
         if (vm.dlListing.dlLocations && vm.dlListing.dlLocations.length > 0) {
             vm.selectedDlLocationId = vm.dlListing.dlLocations[0].id;
         }
+        vm.upload = upload;
+        vm.deleteAttachment = deleteAttachment;
+        vm.log = "";
 
         vm.clear = clear;
-        vm.fileUploadOptions = {
-            headers: {
-                'Authorization': 'Bearer ' + AuthServerProvider.getToken()
-            },
-            url: '/api/admin/attachments/upload',
-            sequentialUploads: true
-        };
+
+        $scope.$watch('vm.uploadFiles', function () {
+            vm.upload(vm.uploadFiles);
+        });
+
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+
+        function deleteAttachment(attachmentId) {
+
+            var confirm = $window.confirm("Confirm deletion of image!");
+            if (confirm == true) {
+                let data = {id: vm.dlListing.id, attachmentId: attachmentId};
+                DlListing.deleteAttachment(data, onDeleteSuccess, onDeleteError);
+            }
+
+            function onDeleteSuccess(result) {
+                vm.dlListing.attachments = result.attachments;
+            }
+
+            function onDeleteError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
+
+        function upload(uploadFiles) {
+            if (uploadFiles && uploadFiles.length) {
+                Upload.upload({
+                    url: '/api/admin/dl-listings/' + vm.dlListing.id + '/upload',
+                    data: {
+                        files: uploadFiles
+                    }
+                }).then(function (resp) {
+                    $timeout(function () {
+                        vm.log = 'file: ' +
+                            resp.config.data.files[0].name +
+                            ', Response: ' + JSON.stringify(resp.data) +
+                            '\n' + vm.log;
+
+                        vm.dlListing.attachments = resp.data.attachments;
+                    });
+                }, function (response) {
+                    if (response.status > 0) {
+                        AlertService.error(response.data.message);
+                    }
+                }, function (evt) {
+                    var progressPercentage = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                    vm.log = 'progress: ' + progressPercentage +
+                        '% ' + evt.config.data.files[0].name + '\n' +
+                        vm.log;
+                });
+            }
+        };
 
         vm.onDlCategorySelectCallback = function ($item, $model) {
             console.log("Item:");

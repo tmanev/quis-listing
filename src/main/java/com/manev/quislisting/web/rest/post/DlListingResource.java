@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -73,8 +74,11 @@ public class DlListingResource {
     }
 
     @PostMapping(value = "/{id}/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlListingDTO> handleFileUpload(@RequestParam("files[]") MultipartFile[] files, @PathVariable Long id) throws IOException, RepositoryException, URISyntaxException {
-        DlListingDTO result = dlListingService.uploadFile(files, id);
+    public ResponseEntity<DlListingDTO> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException, RepositoryException, URISyntaxException {
+
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+
+        DlListingDTO result = dlListingService.uploadFile(fileMap, id);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
@@ -114,6 +118,15 @@ public class DlListingResource {
         log.debug("REST request to delete DlListingDTO : {}", id);
         dlListingService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @DeleteMapping("/{id}/attachments/{attachmentId}")
+    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) throws IOException, RepositoryException {
+        log.debug("REST request to delete attachment with id : {} in DlListingDTO : {}", attachmentId, id);
+        DlListingDTO result = dlListingService.deleteDlListingAttachment(id, attachmentId);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     @GetMapping("/active-languages")

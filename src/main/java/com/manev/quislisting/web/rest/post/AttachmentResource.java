@@ -35,7 +35,7 @@ import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 @RequestMapping(RESOURCE_API_ADMIN_ATTACHMENTS)
 public class AttachmentResource {
 
-    private static final String ENTITY_NAME = "Attachment";
+    public static final String ENTITY_NAME = "Attachment";
     private static final String DELETE = "DELETE";
 
     private final Logger log = LoggerFactory.getLogger(AttachmentResource.class);

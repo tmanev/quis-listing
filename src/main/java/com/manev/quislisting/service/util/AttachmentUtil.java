@@ -1,8 +1,11 @@
 package com.manev.quislisting.service.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,21 @@ public class AttachmentUtil {
         filePaths.add(attachmentMetadata.getFile());
         for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
             filePaths.add(imageResizeMeta.getDetail().getFile());
+        }
+        return filePaths;
+    }
+
+    public static List<String> getFilePaths(Attachment attachment) throws IOException {
+        String attachmentMetadataStr = attachment.getPostMetaValue(Attachment.QL_ATTACHMENT_METADATA);
+        List<String> filePaths = new ArrayList<>();
+        if (attachmentMetadataStr != null) {
+            AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetadataStr,
+                    AttachmentMetadata.class);
+            filePaths.add(attachmentMetadata.getFile());
+            List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
+            for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
+                filePaths.add(imageResizeMeta.getDetail().getFile());
+            }
         }
         return filePaths;
     }

@@ -22,6 +22,7 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
@@ -438,6 +439,21 @@ public class DlListingResourceTest extends GenericResourceTest {
         // make the upload
         DlListingDTO updatedDlListingDTO = doFileUpload(createdDlListingDTO.getId());
         assertThat(updatedDlListingDTO.getAttachments()).hasSize(1);
+        AttachmentDTO attachmentDTO = updatedDlListingDTO.getAttachments().get(0);
+
+        // test removal of attachments
+        MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_LISTINGS + "/" + createdDlListingDTO.getId() + "/attachments/" + attachmentDTO.getId())
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn();
+        String contentAsStringFromDelete = mvcResultDelete.getResponse().getContentAsString();
+        DlListingDTO deletedAttachmentDlListingDTO = new ObjectMapper().readValue(contentAsStringFromDelete,
+                DlListingDTO.class);
+        assertThat(deletedAttachmentDlListingDTO.getAttachments()).isNull();
+
+        // verify it also in database
+        DlListing updatedDlListing = dlListingRepository.findOne(deletedAttachmentDlListingDTO.getId());
+        assertThat(updatedDlListing.getAttachments()).isEmpty();
     }
 
     private DlListingDTO doFileUpload(Long id) throws Exception {
@@ -450,9 +466,10 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .file(multipartFile))
                 .andExpect(status().isOk());
         // test get call to verify the resource
-        List<Attachment> all = attachmentRepository.findAll();
-        assertThat(all.size()).isEqualTo(1);
-        Attachment attachment = all.get(0);
+        DlListing updatedDlListing = dlListingRepository.findOne(id);
+        Set<Attachment> attachments = updatedDlListing.getAttachments();
+        assertThat(attachments.size()).isEqualTo(1);
+        Attachment attachment = attachments.iterator().next();
         attachmentsToBeDeletedFromJcrInAfter.add(attachment);
 
         MvcResult mvcResult = resultActions.andReturn();
