@@ -19,8 +19,8 @@
             views: {
                 'content@': {
                     templateUrl: 'admin/app/qlml/ql-string/ql-strings.html',
-                    controller: 'QlStringController',
-                    controllerAs: 'vm'
+                                                          controller: 'QlStringController',
+                                                          controllerAs: 'vm'
                 }
             },
             params: {
@@ -51,6 +51,31 @@
                 }]
             }
         })
+        .state('ql-string-translate', {
+                    parent: 'ql-strings',
+                    url: '/{id}/translate',
+                    data: {
+                        authorities: ['ROLE_USER']
+                    },
+                    onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                        $uibModal.open({
+                            templateUrl: 'admin/app/qlml/ql-string/ql-string-translate.html',
+                            controller: 'QlStringTranslateController',
+                            controllerAs: 'vm',
+                            backdrop: 'static',
+                            size: 'lg',
+                            resolve: {
+                                entity: ['QlString', function(QlString) {
+                                    return QlString.get({id : $stateParams.id}).$promise;
+                                }]
+                            }
+                        }).result.then(function() {
+                            $state.go('ql-strings', {}, { reload: 'ql-strings' });
+                        }, function() {
+                            $state.go('^');
+                        });
+                    }]
+                })
 
 
 

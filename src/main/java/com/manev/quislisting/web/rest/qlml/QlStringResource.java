@@ -1,8 +1,10 @@
 package com.manev.quislisting.web.rest.qlml;
 
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.service.dto.EmailNotificationDTO;
 import com.manev.quislisting.service.qlml.QlStringService;
+import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,32 @@ public class QlStringResource {
         QlString qlString=qlStringService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(qlString));
     }
+
+    @PostMapping
+    public ResponseEntity<QlString> createQlString(@RequestBody QlString qlString) throws URISyntaxException {
+        log.debug("REST request to save QlString : {}", qlString);
+        if (qlString.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new qlString cannot already have an ID")).body(null);
+        }
+        QlString result = qlStringService.save(qlString);
+        return ResponseEntity.created(new URI("/api/ql-string/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    @PutMapping
+    public ResponseEntity<QlString> updateQlString (@RequestBody QlString qlString) throws URISyntaxException{
+        log.debug("REST request to update QlString : {}", qlString);
+        if(qlString.getId()==null){
+            return  createQlString(qlString);
+        }
+        QlString result = qlStringService.save(qlString);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, qlString.getId().toString()))
+                .body(result);
+    }
+
+
 
 
 

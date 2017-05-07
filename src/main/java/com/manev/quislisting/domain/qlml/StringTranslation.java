@@ -11,9 +11,11 @@ public class StringTranslation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "string_id", nullable = false)
-    private QlString string;
+//    @ManyToOne
+//    @JoinColumn(name = "string_id", nullable = false)
+//    private QlString qlString;
+//    @Column
+//    private Long stringId;
 
     @Column
     private String languageCode;
@@ -35,13 +37,22 @@ public class StringTranslation {
         this.id = id;
     }
 
-    public QlString getString() {
-        return string;
-    }
+//    public QlString getQlString() {
+//        return qlString;
+//    }
+//
+//    public void setQlString(QlString qlString) {
+//        this.qlString = qlString;
+//    }
 
-    public void setString(QlString string) {
-        this.string = string;
-    }
+
+//    public Long getStringId() {
+//        return stringId;
+//    }
+//
+//    public void setStringId(Long stringId) {
+//        this.stringId = stringId;
+//    }
 
     public String getLanguageCode() {
         return languageCode;

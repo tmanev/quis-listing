@@ -3,6 +3,7 @@ package com.manev.quislisting.service.qlml;
 import com.manev.quislisting.domain.EmailNotification;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.QlStringRepository;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -21,8 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_LANGUAGES;
 
@@ -41,6 +44,16 @@ public class QlStringService {
         this.qlStringRepository = qlStringRepository;
     }
 
+    public QlString save(QlString qlString) {
+        log.debug("Request to save QlString : {}", qlString);
+        Set<StringTranslation> stringTranslations = qlString.getStringTranslation();
+        for (StringTranslation stringTranslation : stringTranslations) {
+//            stringTranslation.setQlString(qlString);
+            stringTranslation.setTranslationDate(ZonedDateTime.now());
+        }
+        QlString result = qlStringRepository.save(qlString);
+        return result;
+    }
 
     @Transactional (readOnly = true)
     public Page<QlString> findAll (Pageable pageable, Map<String, String> allRequestParams){
@@ -57,6 +70,9 @@ public class QlStringService {
         QlString qlString = qlStringRepository.findOne(id);
         return qlString;
     }
+
+
+
 
 
 
