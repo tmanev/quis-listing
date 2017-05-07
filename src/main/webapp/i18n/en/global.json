@@ -119,7 +119,8 @@
             "deactivate": "Deactivate",
             "config": "Configure",
             "searchConfig": "Search Config.",
-            "ok": "Ok"
+            "ok": "Ok",
+            "translate": "Translate"
         },
         "detail": {
             "field": "Field",

@@ -11,7 +11,8 @@
             "status": "Status",
             "value": "Value",
             "languageCode": "Language code",
-            "context": "Context"
+            "context": "Context",
+            "translate": "Translate"
         }
     }
 }
