@@ -1,5 +1,7 @@
 package com.manev.quislisting.domain.qlml;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
@@ -11,11 +13,10 @@ public class StringTranslation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "string_id", nullable = false)
-//    private QlString qlString;
-//    @Column
-//    private Long stringId;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "string_id", nullable = false)
+    private QlString qlString;
 
     @Column
     private String languageCode;
@@ -37,22 +38,13 @@ public class StringTranslation {
         this.id = id;
     }
 
-//    public QlString getQlString() {
-//        return qlString;
-//    }
-//
-//    public void setQlString(QlString qlString) {
-//        this.qlString = qlString;
-//    }
+    public QlString getQlString() {
+        return qlString;
+    }
 
-
-//    public Long getStringId() {
-//        return stringId;
-//    }
-//
-//    public void setStringId(Long stringId) {
-//        this.stringId = stringId;
-//    }
+    public void setQlString(QlString qlString) {
+        this.qlString = qlString;
+    }
 
     public String getLanguageCode() {
         return languageCode;

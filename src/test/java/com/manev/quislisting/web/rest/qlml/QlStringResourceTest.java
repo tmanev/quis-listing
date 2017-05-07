@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class QlStringTest {
+public class QlStringResourceTest {
 
 
     private static final String DEFAULT_LCODE = "en";
@@ -73,9 +73,7 @@ public class QlStringTest {
         qlString.setStatus(DEFAULT_STATUS);
 
         return qlString;
-
     }
-
 
     @Before
     public void setup() {
@@ -93,13 +91,6 @@ public class QlStringTest {
         qlString = createEntity();
     }
 
-    //
-//
-//    @Before
-//    public void initTest(){
-//        emailNotificationRepository.deleteAll();
-//        emailNotification=createEntity();
-//    }
     @Test
     @Transactional
     public void getQlString() throws Exception {
@@ -123,7 +114,6 @@ public class QlStringTest {
         restQlStringMockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
-
 
     @Test
     @Transactional
@@ -150,6 +140,8 @@ public class QlStringTest {
 
         assertThat(stringTranslationSavedSet).hasSize(3);
         assertThat(containsTranslation("telefon", "mk", stringTranslationSavedSet)).isTrue();
+        assertThat(containsTranslation("Telefon", "de", stringTranslationSavedSet)).isTrue();
+        assertThat(containsTranslation("téléphone", "fr", stringTranslationSavedSet)).isTrue();
     }
 
     private StringTranslation createStringTranslation(String value, String languageCode) {
@@ -169,32 +161,5 @@ public class QlStringTest {
         }
         return false;
     }
-
-
-//
-//        List<EmailNotification> all = emailNotificationRepository.findAll();
-//        assertThat(all).hasSize(databaseSizeBeforeUpdate);
-//        EmailNotification emailNotificationSaved = emailNotificationRepository.findOne(updateEmailNotification.getId());
-//        assertThat(emailNotificationSaved.getName()).isNotEqualTo(UPDATE_DEFAULT_NAME);
-//        assertThat(emailNotificationSaved.getText()).isNotEqualTo(UPDATE_DIFAULT_TEXT);
-//
-//    }
-//
-//    @Test
-//    @Transactional
-//    public  void updateNoneExistingEmailNotification() throws Exception{
-//
-//        int databaseSizeBeforeUpdate = emailNotificationRepository.findAll().size();
-//        EmailNotificationDTO emailNotificationDTO = emailNotificationMapper.emailNotificationToEmailNotificationDTO(emailNotification);
-//        restEmailNotificationMockMvc.perform(put(RESOURCE_API_ADMIN_EMAIL_NOTIFICATION)
-//                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-//                .content(TestUtil.convertObjectToJsonBytes(emailNotificationDTO)))
-//                .andExpect(status().isCreated());
-//
-//        List<EmailNotification>all =emailNotificationRepository.findAll();
-//        assertThat(all).hasSize(databaseSizeBeforeUpdate +1);
-//
-//    }
-
 
 }

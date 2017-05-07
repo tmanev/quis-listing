@@ -1,14 +1,16 @@
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('quisListingApp')
         .controller('QlStringTranslateController', QlStringTranslateController)
-        ;
+    ;
 
-    QlStringTranslateController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Language', 'AlertService'];
+    QlStringTranslateController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Language',
+        'AlertService', 'QlString'];
 
-    function QlStringTranslateController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Language, AlertService) {
+    function QlStringTranslateController($timeout, $scope, $stateParams, $uibModalInstance, entity, Language,
+                                         AlertService, QlString) {
         var vm = this;
 
         vm.qlString = entity;
@@ -26,7 +28,7 @@
             function onSuccess(data) {
                 vm.languages = data;
 
-                for (var i = 0; i<vm.languages.length; i++) {
+                for (var i = 0; i < vm.languages.length; i++) {
                     addLanguageTranslationIfNeeded(vm.languages[i]);
                 }
             }
@@ -40,15 +42,17 @@
                     var translation = {
                         languageCode: language.code,
                         englishName: language.englishName,
-                        value: ""
+                        value: "",
+                        status: false
                     };
                     vm.qlString.stringTranslation.push(translation);
                 }
             }
 
-            function languageExist(stringTranslation, languageCode) {
-                for (var i = 0; i<stringTranslation.length; i++) {
-                    if (stringTranslation[i].languageCode == languageCode) {
+            function languageExist(stringTranslation, language) {
+                for (var i = 0; i < stringTranslation.length; i++) {
+                    if (stringTranslation[i].languageCode == language.code) {
+                        stringTranslation[i].englishName = language.englishName;
                         return true;
                     }
                 }
@@ -60,39 +64,28 @@
             }
         }
 
-        $timeout(function (){
+        $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
         });
 
-        function clear () {
+        function clear() {
             $uibModalInstance.dismiss('cancel');
         }
 
-//        function save () {
-//            vm.isSaving = true;
-//            if (vm.language.id !== null) {
-//                Language.update(vm.language, onSaveSuccess, onSaveError);
-//            } else {
-//                Language.save(vm.language, onSaveSuccess, onSaveError);
-//            }
-//        }
+        function save() {
+            vm.isSaving = true;
+            if (vm.qlString.id !== null) {
+                QlString.update(vm.qlString, onSaveSuccess, onSaveError);
+            }
+        }
 
-         function save () {
-                    vm.isSaving = true;
-                    if (vm.qlString.id !== null) {
-                        QlString.update(vm.qlString, onSaveSuccess, onSaveError);
-                    } else {
-                        QlString.save(vm.qlString, onSaveSuccess, onSaveError);
-                    }
-                }
-
-        function onSaveSuccess (result) {
+        function onSaveSuccess(result) {
             $scope.$emit('quisListingApp:QlStringUpdate', result);
             $uibModalInstance.close(result);
             vm.isSaving = false;
         }
 
-        function onSaveError () {
+        function onSaveError() {
             vm.isSaving = false;
         }
 

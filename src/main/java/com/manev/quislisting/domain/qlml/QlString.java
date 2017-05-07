@@ -25,9 +25,7 @@ public class QlString {
     @Column
     private Integer status;
 
-//    @OneToMany(mappedBy = "qlString", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OneToMany(orphanRemoval=true)
-    @JoinColumn(name="STRING_ID") // join column is in table for Order
+    @OneToMany(mappedBy = "qlString", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<StringTranslation> stringTranslation;
 
     public Long getId() {
