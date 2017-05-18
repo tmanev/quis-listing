@@ -1,33 +1,46 @@
 Contacts = {
     init: function () {
         Vue.use(window.vuelidate.default);
-        const {required, minLength, between} = window.validators;
+        const {required, minLength, between, email} = window.validators;
 
 
         var contactApp = new Vue({
             el: '#contactApp',
             data: {
-                message: 'Hello Vue!',
-                text: '',
-                name: '',
-                age: 0
+                contact: {
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: ''
+                }
             },
             validations: {
-                text: {
-                    required: true,
-                    minLength: minLength(5)
-                },
-                name: {
-                    required: true,
-                    minLength: minLength(4)
-                },
-                age: {
-                    between: between(20, 30)
+                contact:{
+                    name: {
+                        required: required
+                    },
+                    email: {
+                        required: required,
+                        email: email
+                    }
                 }
             },
             methods : {
                 onSubmit: function () {
-                    console.log("Skopsko i se e mozno");
+                    if (this.$v.contact.$invalid) {
+                        console.log("Please fill the required fields!");
+                        // show notification
+
+                        this.$v.contact.$touch();
+                    } else {
+                        var payload = this.contact;
+                        this.$http({url: '/api/contacts', body: payload, method: 'POST'}).then(function (response) {
+                            console.log('Success!:', response.data);
+                        }, function (response) {
+                            console.log('Error!:', response.data);
+                        });
+                        console.log("Skopsko i se e mozno");
+                    }
                 }
             }
         });
