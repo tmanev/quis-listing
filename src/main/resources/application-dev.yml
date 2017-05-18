@@ -10,10 +10,14 @@ spring:
         database: H2
         show-sql: true
     mail:
-        host: localhost
-        port: 25
-        username:
-        password:
+        host: smtp.gmail.com
+        port: 587
+        username: manevonjira@gmail.com
+        password: mypassword
+        properties:
+            mail.smtp.auth: true
+            mail.smtp.starttls.enable: true
+
 #    thymeleaf:
 #        cache: false
 
