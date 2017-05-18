@@ -3,12 +3,12 @@
 
     angular
         .module('quisListingApp')
-        .controller('EmailNotificationsController', EmailNotificationsController)
+        .controller('EmailTemplatesController', EmailTemplatesController)
         ;
 
-    EmailNotificationsController.$inject = ['$scope', '$state', 'EmailNotification', 'EmailNotificationSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    EmailTemplatesController.$inject = ['$scope', '$state', 'EmailTemplate', 'EmailTemplateSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function EmailNotificationsController ($scope, $state, EmailNotification, EmailNotificationSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function EmailTemplatesController ($scope, $state, EmailTemplate, EmailTemplateSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -26,14 +26,14 @@
 
         function loadAll () {
             if (pagingParams.search) {
-                EmailNotificationSearch.query({
+                EmailTemplateSearch.query({
                     query: pagingParams.search,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
             } else {
-                EmailNotification.query({
+                EmailTemplate.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
@@ -50,7 +50,7 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.emailNotifications = data;
+                vm.emailTemplates = data;
                 vm.page = pagingParams.page;
             }
             function onError(error) {

@@ -2,12 +2,12 @@
     'use strict';
     angular
         .module('quisListingApp')
-        .factory('EmailNotification', EmailNotification);
+        .factory('EmailTemplate', EmailTemplate);
 
-    EmailNotification.$inject = ['$resource'];
+    EmailTemplate.$inject = ['$resource'];
 
-    function EmailNotification ($resource) {
-        var resourceUrl =  'api/admin/email-notifications/:id';
+    function EmailTemplate ($resource) {
+        var resourceUrl =  'api/admin/email-templates/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},

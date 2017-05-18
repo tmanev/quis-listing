@@ -3,14 +3,14 @@
 
     angular
         .module('quisListingApp')
-        .controller('EmailNotificationDeleteController',EmailNotificationDeleteController);
+        .controller('EmailTemplateDeleteController',EmailTemplateDeleteController);
 
-    EmailNotificationDeleteController.$inject = ['$uibModalInstance', 'entity', 'EmailNotification'];
+    EmailTemplateDeleteController.$inject = ['$uibModalInstance', 'entity', 'EmailTemplate'];
 
-    function EmailNotificationDeleteController($uibModalInstance, entity, EmailNotification) {
+    function EmailTemplateDeleteController($uibModalInstance, entity, EmailTemplate) {
         var vm = this;
 
-        vm.emailNotification = entity;
+        vm.emailTemplate = entity;
         vm.clear = clear;
         vm.confirmDelete = confirmDelete;
 
@@ -19,7 +19,7 @@
         }
 
         function confirmDelete (id) {
-            EmailNotification.delete({id: id},
+            EmailTemplate.delete({id: id},
                 function () {
                     $uibModalInstance.close(true);
                 });

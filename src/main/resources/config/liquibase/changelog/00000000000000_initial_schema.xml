@@ -500,7 +500,7 @@
     </changeSet>
 
     <changeSet id="00000000000006" author="adri">
-        <createTable tableName="ql_email_notification">
+        <createTable tableName="ql_email_template">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -619,9 +619,9 @@
                   separator="¦"
                   tableName="ql_dl_content_field_item"/>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/email-notifications.csv"
+                  file="config/liquibase/load-data/email-templates.csv"
                   separator=";"
-                  tableName="ql_email_notification"/>
+                  tableName="ql_email_template"/>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/ql-configurations.csv"
                   separator=";"

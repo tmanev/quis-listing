@@ -1,8 +1,6 @@
 package com.manev.quislisting.web.rest.qlml;
 
-import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.QlString;
-import com.manev.quislisting.service.dto.EmailNotificationDTO;
 import com.manev.quislisting.service.qlml.QlStringService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;

@@ -3,7 +3,7 @@
 
     angular
         .module('quisListingApp')
-        .controller('EmailNotificationDialogController', EmailNotificationDialogController)
+        .controller('EmailTemplateDialogController', EmailTemplateDialogController)
         .filter('range', function() {
             return function(input, total) {
                 total = parseInt(total);
@@ -13,21 +13,16 @@
             };
         });
 
-    EmailNotificationDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'EmailNotification', 'AlertService'];
+    EmailTemplateDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'EmailTemplate', 'AlertService'];
 
-    function EmailNotificationDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, EmailNotification, AlertService) {
+    function EmailTemplateDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, EmailTemplate, AlertService) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
 
-        vm.emailNotification = entity;
+        vm.emailTemplate = entity;
         vm.clear = clear;
         vm.save = save;
-
-
-
-
-
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -39,15 +34,15 @@
 
         function save () {
             vm.isSaving = true;
-            if (vm.emailNotification.id !== null) {
-                EmailNotification.update(vm.emailNotification, onSaveSuccess, onSaveError);
+            if (vm.emailTemplate.id !== null) {
+                EmailTemplate.update(vm.emailTemplate, onSaveSuccess, onSaveError);
             } else {
-                EmailNotification.save(vm.emailNotification, onSaveSuccess, onSaveError);
+                EmailTemplate.save(vm.emailTemplate, onSaveSuccess, onSaveError);
             }
         }
 
         function onSaveSuccess (result) {
-            $scope.$emit('quisListingApp:emailNotificationUpdate', result);
+            $scope.$emit('quisListingApp:emailTemplateUpdate', result);
             $uibModalInstance.close(result);
             vm.isSaving = false;
         }

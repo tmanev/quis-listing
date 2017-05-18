@@ -1,13 +1,13 @@
 <div>
-    <h2 data-translate="quisListingApp.emailNotification.home.title">Email Notifications</h2>
+    <h2 data-translate="quisListingApp.emailTemplate.home.title">Email Templates</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="email-notifications.new" >
+                <button class="btn btn-primary" ui-sref="email-templates.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs-down"  data-translate="quisListingApp.emailNotification.home.createLabel">
-                        Create new Email Notification
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.emailTemplate.home.createLabel">
+                        Create new Email Template
                     </span>
                 </button>
             </div>
@@ -15,7 +15,7 @@
             <div class="col-xs-4 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.emailNotification.home.search' | translate }}">
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.emailTemplate.home.search' | translate }}">
                         <span  class="input-group-btn width-min" >
                             <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
                                 <span class="glyphicon glyphicon-search"></span>
@@ -37,33 +37,33 @@
             <thead>
             <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                 <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="name"><span data-translate="quisListingApp.emailNotification.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="text"><span data-translate="quisListingApp.emailNotification.text"> Text</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="name"><span data-translate="quisListingApp.emailTemplate.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="text"><span data-translate="quisListingApp.emailTemplate.text"> Text</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="emailNotification in vm.emailNotifications track by emailNotification.id">
-                <td><a ui-sref="email-notification-detail({id:emailNotification.id})">{{emailNotification.id}}</a></td>
-                <td>{{emailNotification.name}}</td>
-                <td>{{emailNotification.text}}</td>
+            <tr ng-repeat="emailTemplate in vm.emailTemplates track by emailTemplate.id">
+                <td><a ui-sref="email-template-detail({id:emailTemplate.id})">{{emailTemplate.id}}</a></td>
+                <td>{{emailTemplate.name}}</td>
+                <td>{{emailTemplate.text}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                ui-sref="email-notification-detail({id:emailNotification.id})"
+                                ui-sref="email-template-detail({id:emailTemplate.id})"
                                 class="btn btn-info btn-sm">
                             <span class="glyphicon glyphicon-eye-open"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                         </button>
                         <button type="submit"
-                                ui-sref="email-notifications.edit({id:emailNotification.id})"
+                                ui-sref="email-templates.edit({id:emailTemplate.id})"
                                 class="btn btn-primary btn-sm">
                             <span class="glyphicon glyphicon-pencil"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                         </button>
 
                         <button type="submit"
-                                ui-sref="email-notifications.delete({id:emailNotification.id})"
+                                ui-sref="email-templates.delete({id:emailTemplate.id})"
                                 class="btn btn-danger btn-sm">
                             <span class="glyphicon glyphicon-remove-circle"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.delete"></span>

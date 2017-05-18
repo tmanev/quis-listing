@@ -1,11 +1,9 @@
 package com.manev.quislisting.web.rest.qlml;
 
 import com.manev.QuisListingApp;
-import com.manev.quislisting.domain.EmailNotification;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.qlml.QlStringRepository;
-import com.manev.quislisting.service.dto.EmailNotificationDTO;
 import com.manev.quislisting.service.qlml.QlStringService;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
@@ -23,10 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_EMAIL_NOTIFICATION;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_STRINGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

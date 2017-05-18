@@ -1,27 +1,12 @@
-package com.manev.quislisting.domain;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+package com.manev.quislisting.service.dto;
 
 /**
- * Created by adri on 4/4/2017.
+ * Created by adri on 4/5/2017.
  */
-@Entity
-@Table(name = "ql_email_notification")
-public class EmailNotification {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+public class EmailTemplateDTO {
     private Long id;
-
-    @Column
     private String name;
-
-    @Column
     private String text;
-
 
     public Long getId() {
         return id;
@@ -31,7 +16,6 @@ public class EmailNotification {
         this.id = id;
     }
 
-
     public String getName() {
         return name;
     }
@@ -40,7 +24,6 @@ public class EmailNotification {
         this.name = name;
     }
 
-
     public String getText() {
         return text;
     }
@@ -48,8 +31,4 @@ public class EmailNotification {
     public void setText(String text) {
         this.text = text;
     }
-
-
-
-
 }

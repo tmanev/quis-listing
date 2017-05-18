@@ -25,7 +25,7 @@
             },
             "qlSettings": {
                 "main": "Ql Settings",
-                "emailNotifications": "Email Notifications",
+                "emailTemplates": "Email Templates",
                 "qlConfigurations": "Ql Configurations"
             },
             "dl": {

@@ -16,7 +16,7 @@ public final class Constants {
     public static final String RESOURCE_API_ADMIN_NAV_MENUS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/nav-menus";
     public static final String RESOURCE_API_ADMIN_LANGUAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/languages";
     public static final String RESOURCE_API_ADMIN_QL_CONFIG = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-configurations";
-    public static final String RESOURCE_API_ADMIN_EMAIL_NOTIFICATION = RESOURCE_API_BASE + RESOURCE_ADMIN + "/email-notifications";
+    public static final String RESOURCE_API_ADMIN_EMAIL_TEMPLATE = RESOURCE_API_BASE + RESOURCE_ADMIN + "/email-templates";
     public static final String RESOURCE_API_ADMIN_QL_STRINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-strings";
     public static final String RESOURCE_API_ADMIN_QL_PAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-pages";
 
