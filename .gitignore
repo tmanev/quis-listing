@@ -22,6 +22,8 @@ nbproject/private/
 /dist
 /nbdist/
 .nb-gradle/
+
 /ql-repo
 /h2db
 /data
+/node_modules
