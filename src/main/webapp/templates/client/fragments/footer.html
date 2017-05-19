@@ -8,7 +8,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li th:each="navMenuItem : ${footerMenus}">
+                    <li th:each="navMenuItem : ${baseModel.footerMenus}">
                         <a th:href="@{${navMenuItem.refPost.name}}" th:text="${navMenuItem.title}"></a>
                     </li>
                 </ul>

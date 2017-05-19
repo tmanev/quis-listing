@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.post.NavMenuItemRepository;
 import com.manev.quislisting.repository.post.PostRepository;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,14 +20,14 @@ public class HomeController extends BaseController {
 
     private PostRepository<AbstractPost> postRepository;
 
-    public HomeController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository, PostRepository<AbstractPost> postRepository) {
-        super(navMenuRepository, qlConfigRepository);
+    public HomeController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+                          PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository);
         this.postRepository = postRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(final ModelMap model) throws IOException {
-        loadMenus(model);
         AbstractPost post = postRepository.findOneByName("/");
 
         model.addAttribute("title", post.getTitle());

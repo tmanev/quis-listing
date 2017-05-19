@@ -1,6 +1,7 @@
 package com.manev.quislisting.web;
 
 import com.manev.quislisting.repository.QlConfigRepository;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.web.rest.vm.LoginVM;
@@ -35,16 +36,16 @@ public class SignInController extends BaseController {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public SignInController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository, TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
-        super(navMenuRepository, qlConfigRepository);
+    public SignInController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+                            TokenProvider tokenProvider, AuthenticationManager authenticationManager,
+                            LanguageRepository languageRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository);
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(final ModelMap model) throws IOException {
-        loadMenus(model);
-
         model.addAttribute("title", "Sign In");
         model.addAttribute("view", "client/signin");
         return "client/index";
