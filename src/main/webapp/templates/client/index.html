@@ -10,6 +10,9 @@
     <link href="../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
           rel="stylesheet"/>
+    <link href="../../resources/vendor/animate.css/animate.min.css"
+          th:href="@{/resources/vendor/animate.css/animate.min.css}"
+          rel="stylesheet"/>
 </head>
 <body>
 
@@ -30,9 +33,20 @@ Logged user: <span sec:authentication="name">Bob</span>
 
 <div th:replace="client/fragments/footer :: footer">Footer goes here!</div>
 
+<script src="../../resources/vendor/vue/vue.min.js"
+        th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+<script src="../../resources/vendor/vuelidate/vuelidate.min.js"
+        th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+<script src="../../resources/vendor/vuelidate/validators.min.js"
+        th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+<script src="../../resources/vendor/vue-resource/vue-resource.min.js"
+        th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
 <script src="../../resources/vendor/jquery/jquery-3.2.1.min.js"
         th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
 <script src="../../resources/vendor/bootstrap/js/bootstrap.min.js"
         th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script src="../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+        th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
 </body>
 </html>

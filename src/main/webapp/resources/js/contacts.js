@@ -26,7 +26,7 @@ Contacts = {
                 }
             },
             methods : {
-                onSubmit: function () {
+                onSubmit: function (event) {
                     if (this.$v.contact.$invalid) {
                         console.log("Please fill the required fields!");
                         // show notification
@@ -34,12 +34,32 @@ Contacts = {
                         this.$v.contact.$touch();
                     } else {
                         var payload = this.contact;
+                        var $btn = $('#sendButton').button('loading');
                         this.$http({url: '/api/contacts', body: payload, method: 'POST'}).then(function (response) {
                             console.log('Success!:', response.data);
+                            this.contact = {
+                              name: '',
+                                email: '',
+                                subject: '',
+                                message: ''
+                            };
+                            this.$v.contact.$reset();
+                            $.notify({
+                                message: response.headers.get('X-qlService-alert')
+                            },{
+                                type: 'success'
+                            });
+                            $btn.button('reset');
                         }, function (response) {
                             console.log('Error!:', response.data);
+                            $.notify({
+                                message: response.data
+                            },{
+                                type: 'danger'
+                            });
+                            $btn.button('reset');
                         });
-                        console.log("Skopsko i se e mozno");
+
                     }
                 }
             }
