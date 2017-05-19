@@ -620,7 +620,7 @@
                   tableName="ql_dl_content_field_item"/>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/email-templates.csv"
-                  separator=";"
+                  separator="¦"
                   tableName="ql_email_template"/>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/ql-configurations.csv"
