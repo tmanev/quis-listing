@@ -6,10 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
+import java.util.Locale;
 
 @Configuration
 public class ThymeleafConfiguration {
@@ -44,4 +48,13 @@ public class ThymeleafConfiguration {
         thymeleafViewResolver.setTemplateEngine(templateEngine());
         return thymeleafViewResolver;
     }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+        cookieLocaleResolver.setCookieName("QuisListingLocaleCookie");
+        cookieLocaleResolver.setDefaultLocale(Locale.US);
+        return cookieLocaleResolver;
+    }
+
 }

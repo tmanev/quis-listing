@@ -30,7 +30,13 @@
 </div>
 Logged user: <span sec:authentication="name">Bob</span>
 <!--Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>-->
-
+<h1 th:text="#{greeting}"></h1>
+<span th:text="#{lang.change}"></span>:
+<select id="locales">
+    <option value=""></option>
+    <option value="en" th:text="#{lang.eng}"></option>
+    <option value="fr" th:text="#{lang.fr}"></option>
+</select>
 <div th:replace="client/fragments/footer :: footer">Footer goes here!</div>
 
 <script src="../../resources/vendor/vue/vue.min.js"
@@ -47,6 +53,17 @@ Logged user: <span sec:authentication="name">Bob</span>
         th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
 <script src="../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
         th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#locales").change(function () {
+            var selectedOption = $('#locales').val();
+            if (selectedOption != ''){
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
