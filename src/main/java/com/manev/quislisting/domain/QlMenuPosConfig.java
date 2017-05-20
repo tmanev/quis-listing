@@ -2,9 +2,18 @@ package com.manev.quislisting.domain;
 
 public class QlMenuPosConfig {
 
+    private String languageCode;
     private Long topMenuRefId;
     private Long topHeaderMenuRefId;
     private Long footerMenuRefId;
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 
     public Long getTopMenuRefId() {
         return topMenuRefId;

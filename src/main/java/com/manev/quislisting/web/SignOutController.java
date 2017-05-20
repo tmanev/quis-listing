@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +26,8 @@ public class SignOutController extends BaseController {
 
     public SignOutController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                              TokenProvider tokenProvider, AuthenticationManager authenticationManager,
-                             LanguageRepository languageRepository) {
-        super(navMenuRepository, qlConfigRepository, languageRepository);
+                             LanguageRepository languageRepository, LocaleResolver localeResolver) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, localeResolver);
     }
 
     @RequestMapping(method = RequestMethod.GET)
