@@ -46,6 +46,7 @@ public class ThymeleafConfiguration {
     public ThymeleafViewResolver thymeleafViewResolver() {
         ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
         thymeleafViewResolver.setTemplateEngine(templateEngine());
+        thymeleafViewResolver.setCharacterEncoding(CharEncoding.UTF_8);
         return thymeleafViewResolver;
     }
 
@@ -53,7 +54,7 @@ public class ThymeleafConfiguration {
     public LocaleResolver localeResolver() {
         CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
         cookieLocaleResolver.setCookieName("QuisListingLocaleCookie");
-        cookieLocaleResolver.setDefaultLocale(Locale.US);
+        cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
         return cookieLocaleResolver;
     }
 
