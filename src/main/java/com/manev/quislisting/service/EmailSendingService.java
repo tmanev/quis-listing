@@ -77,7 +77,8 @@ public class EmailSendingService {
             }
         }
 
-        throw new QlServiceException("No translatated value found");
+        // if nothing is founded return default value from qlString
+        return qlString.getValue();
     }
 
 }
