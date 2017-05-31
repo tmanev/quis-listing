@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class NavMenuResourceIntTest {
 
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
-    private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
+    private static final String DEFAULT_SLUG = "default_name";
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
     private static final Long DEFAULT_PARENT_ID = null;
     private static final Long DEFAULT_COUNT = 0L;
@@ -52,7 +52,7 @@ public class NavMenuResourceIntTest {
     private static final Long DEFAULT_COUNT_2 = 0L;
 
     private static final String UPDATED_NAME = "UPDATED_NAME";
-    private static final String UPDATED_SLUG = "UPDATED_SLUG";
+    private static final String UPDATED_SLUG = "updated_name";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
     private static final Long UPDATED_COUNT = 0L;
 
@@ -178,7 +178,7 @@ public class NavMenuResourceIntTest {
         navMenuRepository.saveAndFlush(navMenu);
 
         // Get all the navMenus
-        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "?sort=id,desc"))
+        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "?sort=id,desc&languageCode=en"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(navMenu.getId().intValue())))
