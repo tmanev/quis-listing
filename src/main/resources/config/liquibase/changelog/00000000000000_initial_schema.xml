@@ -631,6 +631,16 @@
                   file="config/liquibase/load-data/term-relationships.csv"
                   separator=";"
                   tableName="ql_term_relationship"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/ql-strings.csv"
+                  separator="¦"
+                  quotchar="'"
+                  tableName="ql_string"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/ql-string-translations.csv"
+                  separator="¦"
+                  quotchar="'"
+                  tableName="ql_string_translation"/>
     </changeSet>
 
 </databaseChangeLog>

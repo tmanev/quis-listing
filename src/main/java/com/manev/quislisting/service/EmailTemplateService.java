@@ -37,7 +37,15 @@ public class EmailTemplateService {
     public EmailTemplateDTO save(EmailTemplateDTO emailTemplateDTO) {
         log.debug("Request to save EmailTemplateDTO : {}", emailTemplateDTO);
 
-        EmailTemplate emailTemplate = emailTemplateMapper.emailTemplateDTOToEmailTemplate(emailTemplateDTO);
+        EmailTemplate emailTemplate;
+        if (emailTemplateDTO.getId()==null) {
+            emailTemplate = emailTemplateMapper.emailTemplateDTOToEmailTemplate(emailTemplateDTO);
+        } else {
+            emailTemplate = emailTemplateRepository.findOne(emailTemplateDTO.getId());
+            emailTemplate.setName(emailTemplateDTO.getName());
+            emailTemplate.setText(emailTemplateDTO.getText());
+        }
+
         EmailTemplate emailTemplateSaved = emailTemplateRepository.save(emailTemplate);
         saveQlString(emailTemplateSaved, emailTemplateDTO.getQlString());
 

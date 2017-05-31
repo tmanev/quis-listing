@@ -2,16 +2,20 @@ package com.manev.quislisting.service;
 
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.service.dto.ContactDTO;
+import com.manev.quislisting.service.exception.QlServiceException;
 import com.manev.quislisting.service.util.StringAndClassLoaderResourceResolver;
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.LocaleResolver;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.TemplateResolver;
+
+import java.util.Set;
 
 @Service
 public class EmailSendingService {
@@ -22,14 +26,12 @@ public class EmailSendingService {
 
     private EmailTemplateRepository emailTemplateRepository;
 
-    private LocaleResolver localeResolver;
 
     public EmailSendingService(MailService mailService, QlConfigRepository qlConfigRepository,
-                               EmailTemplateRepository emailTemplateRepository, LocaleResolver localeResolver) {
+                               EmailTemplateRepository emailTemplateRepository) {
         this.mailService = mailService;
         this.qlConfigRepository = qlConfigRepository;
         this.emailTemplateRepository = emailTemplateRepository;
-        this.localeResolver = localeResolver;
 
         TemplateResolver resolver = new TemplateResolver();
         resolver.setResourceResolver(new StringAndClassLoaderResourceResolver());
@@ -42,7 +44,7 @@ public class EmailSendingService {
         this.springTemplateEngine.setTemplateResolver(resolver);
     }
 
-    public void sendContactUs(ContactDTO contactDTO) {
+    public void sendContactUs(ContactDTO contactDTO, String language) {
         QlConfig adminEmailConfig = qlConfigRepository.findOneByKey("admin_email");
         if (adminEmailConfig == null) {
             throw new RuntimeException("Admin email not configured");
@@ -54,15 +56,28 @@ public class EmailSendingService {
             throw new RuntimeException("Email template not configured");
         }
 
-        IContext context = new StringAndClassLoaderResourceResolver.StringContext(contactUsEmailTemplate.getText());
+        IContext context = new StringAndClassLoaderResourceResolver.StringContext(getValueByLanguage(language, contactUsEmailTemplate.getQlString()));
         context.getVariables().put("name", contactDTO.getName());
         context.getVariables().put("email", contactDTO.getEmail());
         context.getVariables().put("subject", contactDTO.getSubject());
         context.getVariables().put("message", contactDTO.getMessage().replaceAll("(\r\n|\n)", "<br />"));
-        context.getVariables().put("sendBy", "This e-mail was sent from a contact form on Quis Listing (http://quislisting.com)");
         String actual = springTemplateEngine.process("redundant", context);
 
         mailService.sendEmail(adminEmailConfig.getValue(), contactDTO.getSubject(), actual, false, true);
+    }
+
+    private String getValueByLanguage(String languageCode, QlString qlString) {
+        if (qlString.getLanguageCode().equals(languageCode)) {
+            return qlString.getValue();
+        }
+        Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
+        for (StringTranslation translation : stringTranslation) {
+            if (translation.getLanguageCode().equals(languageCode)) {
+                return translation.getValue();
+            }
+        }
+
+        throw new QlServiceException("No translatated value found");
     }
 
 }

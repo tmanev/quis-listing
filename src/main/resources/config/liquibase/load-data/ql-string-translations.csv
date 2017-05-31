@@ -1,0 +1,35 @@
+id¦string_id¦language_code¦status¦value¦translation_date
+1¦1¦bg¦0¦'<div>
+	<b>От:</b>
+	<span th:text="${name}">John Doe</span>&nbsp;&#x3C;<span th:text="${email}">john.doe@gmail.com</span>&#x3E;
+	<br />
+	<b>Тема:</b> <span th:text="${subject}">A question about your content</span>
+	<br />
+	<br />
+	<b>Съобщение:</b>
+	<br />
+	<span th:utext="${message}"></span>
+</div>
+<br />
+<div>
+	<span>--</span>
+	<br/>
+	<em>Този имейл бе изпратен от контактна форма на Quis Listing (http://quislisting.com)</em>
+</div>'¦2017-05-31 11:40:25.505
+2¦1¦ro¦0¦'<div>
+	<b>De la:</b>
+	<span th:text="${name}">John Doe</span>&nbsp;&#x3C;<span th:text="${email}">john.doe@gmail.com</span>&#x3E;
+	<br />
+	<b>Subiect:</b> <span th:text="${subject}">A question about your content</span>
+	<br />
+	<br />
+	<b>Conținutul mesajului:</b>
+	<br />
+	<span th:utext="${message}"></span>
+</div>
+<br />
+<div>
+	<span>--</span>
+	<br/>
+	<em>Acest e-mail a fost trimis de la un formular de contact pe Quis Listing (http://quislisting.com)</em>
+</div>'¦2017-05-31 11:40:25.505
