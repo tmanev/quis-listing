@@ -10,18 +10,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailTemplateMapper {
 
-    public EmailTemplate emailTemplateDTOToEmailTemplate(EmailTemplateDTO emailTemplateDTO){
+    public EmailTemplate emailTemplateDTOToEmailTemplate(EmailTemplateDTO emailTemplateDTO) {
         EmailTemplate emailTemplate = new EmailTemplate();
         emailTemplate.setId(emailTemplateDTO.getId());
         emailTemplate.setName(emailTemplateDTO.getName());
         emailTemplate.setText(emailTemplateDTO.getText());
+        // qlString is mapped later on
         return emailTemplate;
     }
-    public EmailTemplateDTO emailTemplateToEmailTemplateDTO(EmailTemplate emailTemplate){
+
+    public EmailTemplateDTO emailTemplateToEmailTemplateDTO(EmailTemplate emailTemplate) {
         EmailTemplateDTO emailTemplateDTO = new EmailTemplateDTO();
         emailTemplateDTO.setId(emailTemplate.getId());
         emailTemplateDTO.setName(emailTemplate.getName());
         emailTemplateDTO.setText(emailTemplate.getText());
+        emailTemplateDTO.setQlString(emailTemplate.getQlString());
         return emailTemplateDTO;
     }
 }

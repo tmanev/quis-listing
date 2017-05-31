@@ -1,4 +1,20 @@
 id¦name¦text¦string_id
 1¦listing-added¦Some text example¦null
 2¦listing-expiring¦Listing expiring description¦null
-3¦contact-us¦<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head><title>Concat Us</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head><body><div><b>From:</b> <span th:text="${name}">John Doe</span>&nbsp;	&#x3C;<span th:text="${email}">john.doe@gmail.com</span>&#x3E;<br /><b>Subject:</b> <span th:text="${subject}">A question about your content</span><br /><br /><b>Message Body:</b><br /><span th:utext="${message}"></span></div><br /><div><span>--</span><br/><em th:text="${sendBy}">This e-mail was sent from a contact form on Quis Listing (http://quislisting.com)</em></div></body></html>¦null
+3¦contact-us¦'<div>
+	<b>From:</b>
+	<span th:text="${name}">John Doe</span>&nbsp;&#x3C;<span th:text="${email}">john.doe@gmail.com</span>&#x3E;
+	<br />
+	<b>Subject:</b> <span th:text="${subject}">A question about your content</span>
+	<br />
+	<br />
+	<b>Message Body:</b>
+	<br />
+	<span th:utext="${message}"></span>
+</div>
+<br />
+<div>
+	<span>--</span>
+	<br/>
+	<em th:text="${sendBy}">This e-mail was sent from a contact form on Quis Listing (http://quislisting.com)</em>
+</div>'¦null

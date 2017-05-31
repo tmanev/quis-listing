@@ -1,6 +1,7 @@
 package com.manev.quislisting.domain.qlml;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -114,6 +115,10 @@ public class QlString {
         return this;
     }
 
-    public void addValue() {
+    public void addStringTranslation(StringTranslation stringTranslation) {
+        if (this.stringTranslation == null) {
+            this.stringTranslation = new HashSet<>();
+        }
+        this.stringTranslation.add(stringTranslation);
     }
 }

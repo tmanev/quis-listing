@@ -2,6 +2,8 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.EmailTemplate;
+import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.service.EmailTemplateService;
 import com.manev.quislisting.service.dto.EmailTemplateDTO;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_EMAIL_TEMPLATE;
@@ -37,8 +40,10 @@ public class EmailTemplateResourceTest {
 
     public static final String DEFAULT_NAME = "Default_Name";
     public static final String DEFAULT_TEXT = "Default_Text";
+    public static final String DEFAULT_TEXT_BG = "Default_Text_BG";
     public static final String UPDATE_DEFAULT_NAME = "Update_Default_Name";
     public static final String UPDATE_DEFAULT_TEXT = "Update_DefaultText";
+    public static final String UPDATE_DEFAULT_TEXT_BG = "Update_Default_Text_BG";
 
     @Autowired
     private EmailTemplateRepository emailTemplateRepository;
@@ -82,6 +87,8 @@ public class EmailTemplateResourceTest {
     public void createEmailTemplate() throws Exception {
         int databaseSizeBeforeCrate = emailTemplateRepository.findAll().size();
 
+        setDefautQlString(emailTemplate);
+
         EmailTemplateDTO emailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplate);
         restEmailNotificationMockMvc.perform(post(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -102,16 +109,41 @@ public class EmailTemplateResourceTest {
     @Transactional
     public void getEmailNotification() throws Exception {
         EmailTemplate emailTemplateSaved = emailTemplateRepository.saveAndFlush(emailTemplate);
-        emailTemplateRepository.saveAndFlush(emailTemplate);
+        setDefautQlString(emailTemplateSaved);
+        emailTemplateRepository.saveAndFlush(emailTemplateSaved);
 
         restEmailNotificationMockMvc.perform(get(RESOURCE_API_ADMIN_EMAIL_TEMPLATE + "/{id}",
-                emailTemplate.getId()))
+                emailTemplateSaved.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.id").value(emailTemplate.getId()))
-                .andExpect(jsonPath("$.name").value(emailTemplate.getName()))
-                .andExpect(jsonPath("$.text").value(emailTemplate.getText()));
+                .andExpect(jsonPath("$.id").value(emailTemplateSaved.getId()))
+                .andExpect(jsonPath("$.name").value(emailTemplateSaved.getName()))
+                .andExpect(jsonPath("$.text").value(emailTemplateSaved.getText()))
+                .andExpect(jsonPath("$.qlString.value").value(emailTemplateSaved.getQlString().getValue()))
+                .andExpect(jsonPath("$.qlString.stringTranslation[0].value")
+                        .value(emailTemplateSaved.getQlString().getStringTranslation().iterator().next().getValue()));
 
+
+    }
+
+    private void setDefautQlString(EmailTemplate emailTemplateSaved) {
+        QlString qlString = new QlString();
+        qlString.setValue(DEFAULT_TEXT);
+        qlString.setLanguageCode("en");
+        qlString.setName("email-template-#" + emailTemplate.getId());
+        qlString.setContext(EmailTemplateService.CONTEXT);
+        qlString.setStatus(0);
+
+        StringTranslation stringTranslationBG = new StringTranslation();
+        stringTranslationBG.setLanguageCode("bg");
+        stringTranslationBG.setValue(DEFAULT_TEXT_BG);
+        stringTranslationBG.setQlString(qlString);
+        stringTranslationBG.setStatus(Boolean.FALSE);
+        stringTranslationBG.setTranslationDate(ZonedDateTime.now());
+
+        qlString.addStringTranslation(stringTranslationBG);
+
+        emailTemplateSaved.setQlString(qlString);
     }
 
     @Test
@@ -124,12 +156,15 @@ public class EmailTemplateResourceTest {
     @Test
     @Transactional
     public void updateEmailNotification() throws Exception {
+        setDefautQlString(emailTemplate);
         emailTemplateRepository.saveAndFlush(emailTemplate);
         int databaseSizeBeforeUpdate = emailTemplateRepository.findAll().size();
 
         EmailTemplate updateEmailTemplate = emailTemplateRepository.findOne(this.emailTemplate.getId());
         updateEmailTemplate.setText(UPDATE_DEFAULT_TEXT);
         updateEmailTemplate.setName(UPDATE_DEFAULT_NAME);
+        updateEmailTemplate.getQlString().setValue(UPDATE_DEFAULT_TEXT);
+        updateEmailTemplate.getQlString().getStringTranslation().iterator().next().setValue(UPDATE_DEFAULT_TEXT_BG);
 
         EmailTemplateDTO updateEmailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(updateEmailTemplate);
         restEmailNotificationMockMvc.perform(put(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
@@ -145,12 +180,13 @@ public class EmailTemplateResourceTest {
 
         // verify also that qlString is created
         assertThat(emailTemplateSaved.getQlString().getValue()).isEqualTo(UPDATE_DEFAULT_TEXT);
+        assertThat(emailTemplateSaved.getQlString().getStringTranslation().iterator().next().getValue()).isEqualTo(UPDATE_DEFAULT_TEXT_BG);
     }
 
     @Test
     @Transactional
     public void updateNoneExistingEmailNotification() throws Exception {
-
+        setDefautQlString(emailTemplate);
         int databaseSizeBeforeUpdate = emailTemplateRepository.findAll().size();
         EmailTemplateDTO emailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplate);
         restEmailNotificationMockMvc.perform(put(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)

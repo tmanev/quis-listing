@@ -621,6 +621,7 @@
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/email-templates.csv"
                   separator="¦"
+                  quotchar="'"
                   tableName="ql_email_template"/>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/ql-configurations.csv"

@@ -2,6 +2,7 @@ package com.manev.quislisting.service;
 
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.service.dto.EmailTemplateDTO;
 import com.manev.quislisting.service.mapper.EmailTemplateMapper;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
+import java.util.Set;
+
 /**
  * Created by adri on 4/4/2017.
  */
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class EmailTemplateService {
 
+    public static final String CONTEXT = "email-template";
     private final Logger log = LoggerFactory.getLogger(EmailTemplateService.class);
 
     private EmailTemplateRepository emailTemplateRepository;
@@ -34,7 +39,7 @@ public class EmailTemplateService {
 
         EmailTemplate emailTemplate = emailTemplateMapper.emailTemplateDTOToEmailTemplate(emailTemplateDTO);
         EmailTemplate emailTemplateSaved = emailTemplateRepository.save(emailTemplate);
-        saveQlString(emailTemplateSaved);
+        saveQlString(emailTemplateSaved, emailTemplateDTO.getQlString());
 
         return emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplateSaved);
     }
@@ -56,23 +61,59 @@ public class EmailTemplateService {
         emailTemplateRepository.delete(id);
     }
 
-    private EmailTemplate saveQlString(EmailTemplate emailTemplate) {
+    private EmailTemplate saveQlString(EmailTemplate emailTemplate, QlString qlString) {
         if (emailTemplate.getQlString() == null) {
             emailTemplate.setQlString(new QlString()
-                    .languageCode("en")
-                    .context("email-template")
+                    .languageCode(qlString.getLanguageCode())
+                    .context(CONTEXT)
                     .name("email-template-#" + emailTemplate.getId())
-                    .value(emailTemplate.getText())
+                    .value(qlString.getValue())
                     .status(0));
+            // store and translations
+            Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
+            for (StringTranslation translation : stringTranslation) {
+                StringTranslation translationToBeSaved = new StringTranslation();
+                translationToBeSaved.setLanguageCode(translation.getLanguageCode());
+                translationToBeSaved.setQlString(emailTemplate.getQlString());
+                translationToBeSaved.setStatus(Boolean.FALSE);
+                translationToBeSaved.setValue(translation.getValue());
+                translationToBeSaved.setTranslationDate(ZonedDateTime.now());
+                emailTemplate.getQlString().addStringTranslation(translationToBeSaved);
+            }
         } else {
-            QlString qlString = emailTemplate.getQlString();
-            if (!qlString.getValue().equals(emailTemplate.getName())) {
-                qlString.setValue(emailTemplate.getText());
-                qlString.setStatus(0);
+            QlString existingQlString = emailTemplate.getQlString();
+            existingQlString.setValue(qlString.getValue());
+
+            Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
+            for (StringTranslation translation : stringTranslation) {
+                StringTranslation stringTranslationByLanguageCode = findStringTranslationByLanguageCode(translation.getLanguageCode(), existingQlString.getStringTranslation());
+                if (stringTranslationByLanguageCode == null) {
+                    // create
+                    StringTranslation newTranslaton = new StringTranslation();
+                    newTranslaton.setLanguageCode(translation.getLanguageCode());
+                    newTranslaton.setValue(translation.getValue());
+                    newTranslaton.setStatus(Boolean.FALSE);
+                    newTranslaton.setQlString(existingQlString);
+                    newTranslaton.setTranslationDate(ZonedDateTime.now());
+                } else {
+                    // update
+                    stringTranslationByLanguageCode.setValue(translation.getValue());
+                    stringTranslationByLanguageCode.setTranslationDate(ZonedDateTime.now());
+                }
             }
         }
         emailTemplate = emailTemplateRepository.save(emailTemplate);
         return emailTemplate;
+    }
+
+    private StringTranslation findStringTranslationByLanguageCode(String languageCode, Set<StringTranslation> stringTranslations) {
+        for (StringTranslation stringTranslation : stringTranslations) {
+            if (stringTranslation.getLanguageCode().equals(languageCode)) {
+                return stringTranslation;
+            }
+        }
+
+        return null;
     }
 }
 

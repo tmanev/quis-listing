@@ -38,7 +38,6 @@
             <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                 <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="name"><span data-translate="quisListingApp.emailTemplate.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="text"><span data-translate="quisListingApp.emailTemplate.text"> Text</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
@@ -46,7 +45,6 @@
             <tr ng-repeat="emailTemplate in vm.emailTemplates track by emailTemplate.id">
                 <td><a ui-sref="email-template-detail({id:emailTemplate.id})">{{emailTemplate.id}}</a></td>
                 <td>{{emailTemplate.name}}</td>
-                <td>{{emailTemplate.text}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

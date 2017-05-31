@@ -8,6 +8,7 @@ import com.manev.quislisting.service.dto.ContactDTO;
 import com.manev.quislisting.service.util.StringAndClassLoaderResourceResolver;
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.LocaleResolver;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.TemplateResolver;
@@ -21,10 +22,14 @@ public class EmailSendingService {
 
     private EmailTemplateRepository emailTemplateRepository;
 
-    public EmailSendingService(MailService mailService, QlConfigRepository qlConfigRepository, EmailTemplateRepository emailTemplateRepository) {
+    private LocaleResolver localeResolver;
+
+    public EmailSendingService(MailService mailService, QlConfigRepository qlConfigRepository,
+                               EmailTemplateRepository emailTemplateRepository, LocaleResolver localeResolver) {
         this.mailService = mailService;
         this.qlConfigRepository = qlConfigRepository;
         this.emailTemplateRepository = emailTemplateRepository;
+        this.localeResolver = localeResolver;
 
         TemplateResolver resolver = new TemplateResolver();
         resolver.setResourceResolver(new StringAndClassLoaderResourceResolver());
@@ -43,6 +48,7 @@ public class EmailSendingService {
             throw new RuntimeException("Admin email not configured");
         }
 
+        // try and find the template by the selected language
         EmailTemplate contactUsEmailTemplate = emailTemplateRepository.findOneByName("contact-us");
         if (contactUsEmailTemplate == null) {
             throw new RuntimeException("Email template not configured");
