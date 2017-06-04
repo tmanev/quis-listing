@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -49,28 +51,39 @@ public class NavMenuService {
     public NavMenuDTO save(NavMenuDTO navMenuDTO) {
         log.debug("Request to save NavMenuDTO : {}", navMenuDTO);
 
+        TranslationGroup translationGroup;
+        if (navMenuDTO.getTranslationGroupId() != null) {
+            translationGroup = translationGroupRepository.findOne(navMenuDTO.getTranslationGroupId());
+        } else {
+            translationGroup = new TranslationGroup();
+        }
+
         NavMenu navMenu;
-        if (navMenuDTO.getId()!=null) {
+        if (navMenuDTO.getId() != null) {
             NavMenu existingNavMenu = navMenuRepository.findOne(navMenuDTO.getId());
             navMenu = navMenuMapper.navMenuDTOToNavMenu(existingNavMenu, navMenuDTO);
         } else {
+            // new NavMenuItem
             navMenu = navMenuMapper.navMenuDTOToNavMenu(navMenuDTO);
+            navMenu.setTranslation(
+                    TranslationBuilder.aTranslation()
+                            .withLanguageCode(navMenuDTO.getLanguageCode())
+                            .withTranslationGroup(translationGroup)
+                            .withSourceLanguageCode(navMenuDTO.getSourceLanguageCode())
+                            .build());
         }
 
-        if (navMenuDTO.getTrGroupId() != null) {
-            navMenu.getTranslation().setTranslationGroup(translationGroupRepository.findOne(navMenuDTO.getTrGroupId()));
-        } else {
-            navMenu.getTranslation().setTranslationGroup(new TranslationGroup());
-        }
-
+        List<Language> allByActive = languageRepository.findAllByActive(true);
         navMenu = navMenuRepository.save(navMenu);
-        return navMenuMapper.navMenuToNavMenuDTO(navMenu);
+        return navMenuMapper.navMenuToNavMenuDTO(navMenu, allByActive);
     }
 
-    public Page<NavMenuDTO> findAll(Pageable pageable) {
+    public Page<NavMenuDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all NavMenuDTO");
-        Page<NavMenu> result = navMenuRepository.findAll(pageable);
-        List<NavMenuDTO> navMenuDTOS = navMenuMapper.navMenuToNavMenuDtoFlat(result);
+        String languageCode = allRequestParams.get("languageCode");
+        Page<NavMenu> result = navMenuRepository.findAllByTranslation_languageCode(pageable, languageCode);
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        List<NavMenuDTO> navMenuDTOS = navMenuMapper.navMenuToNavMenuDtoFlat(result, allByActive);
         return new PageImpl<>(navMenuDTOS, pageable, result.getTotalElements());
     }
 
@@ -78,7 +91,8 @@ public class NavMenuService {
     public NavMenuDTO findOne(Long id) {
         log.debug("Request to get NavMenuDTO : {}", id);
         NavMenu result = navMenuRepository.findOne(id);
-        return result != null ? navMenuMapper.navMenuToNavMenuDTO(result) : null;
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        return result != null ? navMenuMapper.navMenuToNavMenuDTO(result, allByActive) : null;
     }
 
     public void delete(Long id) {

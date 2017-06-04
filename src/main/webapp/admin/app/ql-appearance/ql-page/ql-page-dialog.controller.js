@@ -54,6 +54,9 @@
             menubar: false,
             plugins: 'code',
             toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
+            force_br_newlines : false,
+            force_p_newlines : false,
+            forced_root_block : ''
         };
 
         $timeout(function () {

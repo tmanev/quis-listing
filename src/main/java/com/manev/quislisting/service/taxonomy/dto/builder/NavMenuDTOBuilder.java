@@ -6,17 +6,16 @@ import com.manev.quislisting.service.taxonomy.dto.TermDTO;
 
 import java.util.List;
 
-/**
- * Created by tmanev on 2/7/2017.
- */
 public final class NavMenuDTOBuilder {
     private Long id;
     private TermDTO term;
     private Long parentId;
     private String description;
     private Long count;
-    private String languageId;
+    private String languageCode;
     private List<NavMenuItemDTO> navMenuItemDTOList;
+    private String sourceLanguageCode;
+    private Long translationGroupId;
 
     private NavMenuDTOBuilder() {
     }
@@ -50,8 +49,8 @@ public final class NavMenuDTOBuilder {
         return this;
     }
 
-    public NavMenuDTOBuilder withLanguageId(String languageId) {
-        this.languageId = languageId;
+    public NavMenuDTOBuilder withLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
         return this;
     }
 
@@ -67,8 +66,20 @@ public final class NavMenuDTOBuilder {
         navMenuDTO.setParentId(parentId);
         navMenuDTO.setDescription(description);
         navMenuDTO.setCount(count);
-        navMenuDTO.setLanguageCode(languageId);
+        navMenuDTO.setLanguageCode(languageCode);
         navMenuDTO.setNavMenuItemDTOs(navMenuItemDTOList);
+        navMenuDTO.setSourceLanguageCode(sourceLanguageCode);
+        navMenuDTO.setTranslationGroupId(translationGroupId);
         return navMenuDTO;
+    }
+
+    public NavMenuDTOBuilder withSourceLanguageCode(String sourceLanguageCode) {
+        this.sourceLanguageCode = sourceLanguageCode;
+        return this;
+    }
+
+    public NavMenuDTOBuilder withTranslationGroupId(Long translationGroupId) {
+        this.translationGroupId = translationGroupId;
+        return this;
     }
 }

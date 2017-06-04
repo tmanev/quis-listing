@@ -49,6 +49,7 @@
                     <th jh-sort-by="title"><span data-translate="quisListingApp.qlPage.title">Title</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="name"><span data-translate="quisListingApp.qlPage.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="quisListingApp.qlPage.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="translations"><span data-translate="quisListingApp.qlPage.translations">Translations</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -58,6 +59,15 @@
                     <td>{{qlPage.title}}</td>
                     <td>{{qlPage.name}}</td>
                     <td>{{qlPage.status}}</td>
+                    <td>
+                        <button ng-repeat="translation in qlPage.translations"
+                                type="submit"
+                                ui-sref="ql-pages.new({selectedLanguageCode: translation.languageCode, sourceLanguageCode: translation.sourceLanguageCode, translationGroupId: qlPage.translationGroupId})"
+                                class="btn btn-default btn-sm">
+                            <span ng-class="{'glyphicon glyphicon-plus': translation.id==null, 'glyphicon glyphicon-pencil': translation.id!=null}"></span>
+                            <span class="hidden-sm-down">{{translation.languageCode}}</span>
+                        </button>
+                    </td>
 
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

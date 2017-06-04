@@ -29,7 +29,7 @@ public class BaseController {
 
     protected LanguageRepository languageRepository;
 
-    private LocaleResolver localeResolver;
+    protected LocaleResolver localeResolver;
 
     public BaseController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                           LanguageRepository languageRepository, LocaleResolver localeResolver) {
@@ -54,10 +54,17 @@ public class BaseController {
 
         QlMenuPosConfig qlMenuPosByLanguageCode = findQlMenuPosByLanguageCode(language, qlMenuPosConfig.getQlMenuPosConfigs());
         if (qlMenuPosByLanguageCode != null) {
-            NavMenu topHeaderMenu = navMenuRepository.findOne(qlMenuPosByLanguageCode.getTopHeaderMenuRefId());
-            NavMenu footerMenu = navMenuRepository.findOne(qlMenuPosByLanguageCode.getFooterMenuRefId());
-            baseModel.setTopHeaderMenus(topHeaderMenu.getNavMenuItems());
-            baseModel.setFooterMenus(footerMenu.getNavMenuItems());
+            Long topHeaderMenuRefId = qlMenuPosByLanguageCode.getTopHeaderMenuRefId();
+            if (topHeaderMenuRefId!=null) {
+                NavMenu topHeaderMenu = navMenuRepository.findOne(topHeaderMenuRefId);
+                baseModel.setTopHeaderMenus(topHeaderMenu.getNavMenuItems());
+            }
+
+            Long footerMenuRefId = qlMenuPosByLanguageCode.getFooterMenuRefId();
+            if (footerMenuRefId!=null) {
+                NavMenu footerMenu = navMenuRepository.findOne(footerMenuRefId);
+                baseModel.setFooterMenus(footerMenu.getNavMenuItems());
+            }
         }
 
         List<Language> allByActive = languageRepository.findAllByActive(true);

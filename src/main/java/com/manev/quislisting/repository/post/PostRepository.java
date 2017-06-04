@@ -1,5 +1,6 @@
 package com.manev.quislisting.repository.post;
 
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.post.AbstractPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,6 @@ public interface PostRepository<T extends AbstractPost> extends JpaRepository<T,
     Long countByTranslation_languageCode(String languageCode);
 
     T findOneByName(String name);
+
+    T findOneByTranslation(Translation translationForLanguage);
 }

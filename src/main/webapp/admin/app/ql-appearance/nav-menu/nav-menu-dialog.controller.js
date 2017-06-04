@@ -38,6 +38,9 @@
         }
 
         function addMenuItem(post) {
+            if (!vm.navMenu.navMenuItemDTOs){
+                vm.navMenu.navMenuItemDTOs = [];
+            }
             var navMenuItem = {};
             navMenuItem.id = null;
             navMenuItem.title = post.title;

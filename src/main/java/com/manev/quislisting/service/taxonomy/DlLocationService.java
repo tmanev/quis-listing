@@ -53,8 +53,8 @@ public class DlLocationService {
         log.debug("Request to save DlLocationDTO : {}", dlLocationDTO);
 
         DlLocation dlLocation = dlLocationMapper.dlLocationDTOTodlLocation(dlLocationDTO);
-        if (dlLocationDTO.getTrGroupId() != null) {
-            dlLocation.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlLocationDTO.getTrGroupId()));
+        if (dlLocationDTO.getTranslationGroupId() != null) {
+            dlLocation.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlLocationDTO.getTranslationGroupId()));
         } else {
             dlLocation.getTranslation().setTranslationGroup(new TranslationGroup());
         }

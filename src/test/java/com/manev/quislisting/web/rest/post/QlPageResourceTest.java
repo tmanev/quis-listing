@@ -6,16 +6,12 @@ import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.PageRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.post.QlPageService;
 import com.manev.quislisting.service.post.dto.QlPageDTO;
 import com.manev.quislisting.service.post.mapper.QlPageMapper;
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,10 +40,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CATEGORIES;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_PAGES;
-import static com.manev.quislisting.web.rest.DlContentFieldResourceTest.UPDATED_NAME;
-import static com.manev.quislisting.web.rest.DlContentFieldResourceTest.UPDATED_SLUG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -209,14 +202,10 @@ public class QlPageResourceTest {
         qlPage.setUser(user);
         pageRepository.saveAndFlush(qlPage);
 
-        Language lanEn = new Language().code("en").active(true).englishName("English");
-        Language lanBg = new Language().code("bg").active(true).englishName("Bulgarian");
-        Language lanRo = new Language().code("ro").active(true).englishName("Romanian");
-        Language lanRu = new Language().code("ru").active(true).englishName("Russian");
-        languageRepository.saveAndFlush(lanEn);
-        languageRepository.saveAndFlush(lanBg);
-        languageRepository.saveAndFlush(lanRo);
-        languageRepository.saveAndFlush(lanRu);
+        List<Language> activeLanguages = createActiveLanguages();
+        for (Language activeLanguage : activeLanguages) {
+            languageRepository.saveAndFlush(activeLanguage);
+        }
 
         // Get active languages
         restQlPageMockMvc.perform(get(RESOURCE_API_ADMIN_QL_PAGES + "/active-languages"))
@@ -227,13 +216,24 @@ public class QlPageResourceTest {
                 .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 
+    private List<Language> createActiveLanguages() {
+        List<Language> result = new ArrayList<>();
+
+        result.add(new Language().code("en").active(true).englishName("English"));
+        result.add(new Language().code("bg").active(true).englishName("Bulgarian"));
+        result.add(new Language().code("ro").active(true).englishName("Romanian"));
+        result.add(new Language().code("ru").active(true).englishName("Russian"));
+
+        return result;
+    }
+
     @Test
     @Transactional
     public void createQlPage() throws Exception {
         int databaseSizeBeforeCreate = pageRepository.findAll().size();
 
         // Create the DlCategory
-        QlPageDTO qlPageDTO = qlPageMapper.pageToPageDTO(qlPage);
+        QlPageDTO qlPageDTO = qlPageMapper.pageToPageDTO(qlPage, createActiveLanguages());
 
         restQlPageMockMvc.perform(post(RESOURCE_API_ADMIN_QL_PAGES)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -305,7 +305,7 @@ public class QlPageResourceTest {
         updatedQlPage.setCreated(UPDATED_CREATED);
         updatedQlPage.setModified(UPDATED_MODIFIED);
 
-        QlPageDTO qlPageDTO = qlPageMapper.pageToPageDTO(updatedQlPage);
+        QlPageDTO qlPageDTO = qlPageMapper.pageToPageDTO(updatedQlPage, createActiveLanguages());
 
         restQlPageMockMvc.perform(put(RESOURCE_API_ADMIN_QL_PAGES)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -328,8 +328,8 @@ public class QlPageResourceTest {
     public void updateNonExistingQlPage() throws Exception {
         int databaseSizeBeforeUpdate = pageRepository.findAll().size();
 
-        // Create the DlCategory
-        QlPageDTO qlPageDTO = qlPageMapper.pageToPageDTO(qlPage);
+        // Create the QlPage
+        QlPageDTO qlPageDTO = qlPageMapper.pageToPageDTO(qlPage, createActiveLanguages());
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restQlPageMockMvc.perform(put(RESOURCE_API_ADMIN_QL_PAGES)
@@ -337,14 +337,14 @@ public class QlPageResourceTest {
                 .content(TestUtil.convertObjectToJsonBytes(qlPageDTO)))
                 .andExpect(status().isCreated());
 
-        // Validate the DlCategory in the database
+        // Validate the QlPage in the database
         List<QlPage> qlPageList = pageRepository.findAll();
         assertThat(qlPageList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
     @Transactional
-    public void deleteDlCategory() throws Exception {
+    public void deleteQlPage() throws Exception {
         qlPage.setUser(user);
         // Initialize the database
         pageRepository.saveAndFlush(qlPage);

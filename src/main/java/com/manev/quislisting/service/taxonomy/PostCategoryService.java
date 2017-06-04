@@ -37,8 +37,8 @@ public class PostCategoryService {
         log.debug("Request to save PostCategory : {}", postCategoryDTO);
 
         PostCategory postCategory = postCategoryMapper.postCategoryDTOToPostCategory(postCategoryDTO);
-        if (postCategoryDTO.getTrGroupId() != null) {
-            postCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(postCategoryDTO.getTrGroupId()));
+        if (postCategoryDTO.getTranslationGroupId() != null) {
+            postCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(postCategoryDTO.getTranslationGroupId()));
         } else {
             postCategory.getTranslation().setTranslationGroup(new TranslationGroup());
         }

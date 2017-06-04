@@ -20,8 +20,8 @@
             "content": "Content",
             "status": "Status",
             "author": "Author",
-            "name": "Name"
-
+            "name": "Name",
+            "translations": "Translations"
         }
     }
 }

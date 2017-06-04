@@ -27,6 +27,8 @@ public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
+    private static final String SERVER_PORT = "9092";
+
     @Autowired
     private Environment env;
 
@@ -39,7 +41,7 @@ public class DatabaseConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
     public Server h2TCPServer() throws SQLException {
-        return Server.createTcpServer("-tcp", "-tcpAllowOthers");
+        return Server.createTcpServer("-tcpPort" , SERVER_PORT, "-tcp", "-tcpAllowOthers", "-webAllowOthers", "-pgAllowOthers");
     }
 
     @Bean

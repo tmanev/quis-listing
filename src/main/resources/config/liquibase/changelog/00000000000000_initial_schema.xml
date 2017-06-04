@@ -608,7 +608,8 @@
 
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/posts.csv"
-                  separator=";"
+                  separator="¦"
+                  quotchar="'"
                   tableName="ql_post"/>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/postmetas.csv"

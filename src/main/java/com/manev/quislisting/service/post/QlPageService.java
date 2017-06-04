@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.post;
 
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
@@ -10,8 +11,6 @@ import com.manev.quislisting.repository.post.PageRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.post.dto.QlPageDTO;
-//import com.manev.quislisting.service.post.mapper.QlPageMapper;
-//import com.manev.quislisting.service.post.mapper.QlPageMapper;
 import com.manev.quislisting.service.post.mapper.QlPageMapper;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
@@ -27,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+//import com.manev.quislisting.service.post.mapper.QlPageMapper;
+//import com.manev.quislisting.service.post.mapper.QlPageMapper;
 
 
 @Service
@@ -55,39 +57,52 @@ public class QlPageService {
     public QlPageDTO save(QlPageDTO qlPageDTO) {
         log.debug("Request to save QlPageDTO : {}", qlPageDTO);
 
-        QlPage page = qlPageMapper.pageDTOtoPage(qlPageDTO);
-        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        page.setUser(oneByLogin.get());
-
-        page.setUser(oneByLogin.get());
-        ZonedDateTime currentDateTime = ZonedDateTime.now();
-        if (page.getId() == null) {
-            page.setCreated(currentDateTime);
-        }
-        page.setModified(currentDateTime);
-
-        if (qlPageDTO.getTrGroupId() != null) {
-            page.getTranslation().setTranslationGroup(translationGroupRepository.findOne(qlPageDTO.getTrGroupId()));
+        TranslationGroup translationGroup;
+        if (qlPageDTO.getTranslationGroupId() != null) {
+            translationGroup = translationGroupRepository.findOne(qlPageDTO.getTranslationGroupId());
         } else {
-            page.getTranslation().setTranslationGroup(new TranslationGroup());
+            translationGroup = new TranslationGroup();
+        }
+
+        QlPage page;
+        if (qlPageDTO.getId() == null) {
+            page = qlPageMapper.pageDTOtoPage(qlPageDTO);
+            Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+            page.setUser(oneByLogin.get());
+            ZonedDateTime currentDateTime = ZonedDateTime.now();
+            page.setCreated(currentDateTime);
+            page.setModified(currentDateTime);
+            page.setTranslation(
+                    TranslationBuilder.aTranslation()
+                            .withLanguageCode(qlPageDTO.getLanguageCode())
+                            .withTranslationGroup(translationGroup)
+                            .withSourceLanguageCode(qlPageDTO.getSourceLanguageCode())
+                            .build());
+        } else {
+            QlPage existingQlPage = pageRepository.findOne(qlPageDTO.getId());
+            page = qlPageMapper.pageDTOtoPage(existingQlPage, qlPageDTO);
+            page.setModified(ZonedDateTime.now());
         }
 
         page = pageRepository.save(page);
-        return qlPageMapper.pageToPageDTO(page);
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        return qlPageMapper.pageToPageDTO(page, allByActive);
     }
 
     public Page<QlPageDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all QlPageDTO");
         String languageCode = allRequestParams.get("languageCode");
+        List<Language> allByActive = languageRepository.findAllByActive(true);
         Page<QlPage> result = pageRepository.findAllByTranslation_languageCode(pageable, languageCode);
-        return result.map(qlPageMapper::pageToPageDTO);
+        return result.map(qlPage -> qlPageMapper.pageToPageDTO(qlPage, allByActive));
     }
 
     @Transactional(readOnly = true)
     public QlPageDTO findOne(Long id) {
         log.debug("Request to get QlPageDTO: {}", id);
         QlPage result = pageRepository.findOne(id);
-        return result != null ? qlPageMapper.pageToPageDTO(result) : null;
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        return result != null ? qlPageMapper.pageToPageDTO(result, allByActive) : null;
     }
 
     public void delete(Long id) {

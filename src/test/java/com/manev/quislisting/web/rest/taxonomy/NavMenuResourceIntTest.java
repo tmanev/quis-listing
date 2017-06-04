@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_NAV_MENUS;
@@ -132,7 +133,7 @@ public class NavMenuResourceIntTest {
         int databaseSizeBeforeCreate = navMenuRepository.findAll().size();
 
         // Create the NavMenu
-        NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu);
+        NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu, createActiveLanguages());
 
         restNavMenuMockMvc.perform(post(RESOURCE_API_ADMIN_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -156,9 +157,9 @@ public class NavMenuResourceIntTest {
         int databaseSizeBeforeCreate = navMenuRepository.findAll().size();
 
         // Create the NavMenu with an existing ID
-        NavMenu existingNavMenu = new NavMenu();
+        NavMenu existingNavMenu = navMenu;
         existingNavMenu.setId(1L);
-        NavMenuDTO existingNavMenuDTO = navMenuMapper.navMenuToNavMenuDTO(existingNavMenu);
+        NavMenuDTO existingNavMenuDTO = navMenuMapper.navMenuToNavMenuDTO(existingNavMenu, createActiveLanguages());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restNavMenuMockMvc.perform(post(RESOURCE_API_ADMIN_NAV_MENUS)
@@ -227,7 +228,7 @@ public class NavMenuResourceIntTest {
 
         updatedNavMenu.setDescription(UPDATED_DESCRIPTION);
         updatedNavMenu.setCount(UPDATED_COUNT);
-        NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(updatedNavMenu);
+        NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(updatedNavMenu, createActiveLanguages());
 
         restNavMenuMockMvc.perform(put(RESOURCE_API_ADMIN_NAV_MENUS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -250,7 +251,7 @@ public class NavMenuResourceIntTest {
         int databaseSizeBeforeUpdate = navMenuRepository.findAll().size();
 
         // Create the NavMenu
-        NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu);
+        NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu, createActiveLanguages());
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restNavMenuMockMvc.perform(put(RESOURCE_API_ADMIN_NAV_MENUS)
@@ -286,14 +287,10 @@ public class NavMenuResourceIntTest {
         // Initialize the database
         navMenuRepository.saveAndFlush(navMenu);
 
-        Language lanEn = new Language().code("en").active(true).englishName("English");
-        Language lanBg = new Language().code("bg").active(true).englishName("Bulgarian");
-        Language lanRo = new Language().code("ro").active(true).englishName("Romanian");
-        Language lanRu = new Language().code("ru").active(true).englishName("Russian");
-        languageRepository.saveAndFlush(lanEn);
-        languageRepository.saveAndFlush(lanBg);
-        languageRepository.saveAndFlush(lanRo);
-        languageRepository.saveAndFlush(lanRu);
+        List<Language> activeLanguages = createActiveLanguages();
+        for (Language activeLanguage : activeLanguages) {
+            languageRepository.saveAndFlush(activeLanguage);
+        }
 
         // Get active languages
         restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/active-languages"))
@@ -302,5 +299,16 @@ public class NavMenuResourceIntTest {
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
                 .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
+    }
+
+    private List<Language> createActiveLanguages() {
+        List<Language> result = new ArrayList<>();
+
+        result.add(new Language().code("en").active(true).englishName("English"));
+        result.add(new Language().code("bg").active(true).englishName("Bulgarian"));
+        result.add(new Language().code("ro").active(true).englishName("Romanian"));
+        result.add(new Language().code("ru").active(true).englishName("Russian"));
+
+        return result;
     }
 }

@@ -52,8 +52,8 @@ public class DlCategoryService {
         log.debug("Request to save DlCategoryDTO : {}", dlCategoryDTO);
 
         DlCategory dlCategory = dlCategoryMapper.dlCategoryDTOTodlCategory(dlCategoryDTO);
-        if (dlCategoryDTO.getTrGroupId() != null) {
-            dlCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlCategoryDTO.getTrGroupId()));
+        if (dlCategoryDTO.getTranslationGroupId() != null) {
+            dlCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlCategoryDTO.getTranslationGroupId()));
         } else {
             dlCategory.getTranslation().setTranslationGroup(new TranslationGroup());
         }

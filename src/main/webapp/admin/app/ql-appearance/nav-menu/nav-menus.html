@@ -49,6 +49,7 @@
                 <th jh-sort-by="name"><span data-translate="quisListingApp.navMenu.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="slug"><span data-translate="quisListingApp.navMenu.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="count"><span data-translate="quisListingApp.navMenu.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="count"><span data-translate="quisListingApp.navMenu.translations">Translations</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
@@ -58,6 +59,15 @@
                 <td><span ng-repeat="n in [] | range:navMenu.depthLevel">—</span> {{navMenu.term.name}}</td>
                 <td>{{navMenu.term.slug}}</td>
                 <td>{{navMenu.count}}</td>
+                <td>
+                    <button ng-repeat="translation in navMenu.translations"
+                            type="submit"
+                            ui-sref="nav-menus.new({selectedLanguageCode: translation.languageCode, sourceLanguageCode: translation.sourceLanguageCode, translationGroupId: navMenu.translationGroupId})"
+                            class="btn btn-default btn-sm">
+                        <span ng-class="{'glyphicon glyphicon-plus': translation.id==null, 'glyphicon glyphicon-pencil': translation.id!=null}"></span>
+                        <span class="hidden-sm-down">{{translation.languageCode}}</span>
+                    </button>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

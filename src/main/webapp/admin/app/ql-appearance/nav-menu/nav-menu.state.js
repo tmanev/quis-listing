@@ -117,7 +117,7 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            params: {selectedLanguageCode: null},
+            params: {selectedLanguageCode: null, sourceLanguageCode: null, translationGroupId: null},
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
                     templateUrl: 'admin/app/ql-appearance/nav-menu/nav-menu-dialog.html',
@@ -134,7 +134,9 @@
                                 description: "",
                                 parentId: null,
                                 count: null,
-                                languageCode: $stateParams.selectedLanguageCode
+                                languageCode: $stateParams.selectedLanguageCode,
+                                sourceLanguageCode: $stateParams.sourceLanguageCode,
+                                translationGroupId: $stateParams.translationGroupId
                             };
                         }
                     }

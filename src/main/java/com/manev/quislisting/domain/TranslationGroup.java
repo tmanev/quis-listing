@@ -1,6 +1,9 @@
 package com.manev.quislisting.domain;
 
 import javax.persistence.*;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "ql_translation_group")
@@ -9,6 +12,9 @@ public class TranslationGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @OneToMany(cascade = ALL, mappedBy = "translationGroup")
+    private Set<Translation> translations;
 
     public TranslationGroup() {
         // default constructor
@@ -24,5 +30,13 @@ public class TranslationGroup {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<Translation> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(Set<Translation> translations) {
+        this.translations = translations;
     }
 }

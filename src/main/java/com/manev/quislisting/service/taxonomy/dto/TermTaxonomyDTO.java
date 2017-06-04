@@ -1,5 +1,10 @@
 package com.manev.quislisting.service.taxonomy.dto;
 
+import com.manev.quislisting.service.post.dto.TranslationDTO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class TermTaxonomyDTO {
     private Long id;
     private TermDTO term;
@@ -7,7 +12,9 @@ public abstract class TermTaxonomyDTO {
     private String description;
     private Long count;
     private String languageCode;
-    private Long trGroupId;
+    private String sourceLanguageCode;
+    private Long translationGroupId;
+    private List<TranslationDTO> translations;
 
     private int depthLevel;
 
@@ -71,11 +78,34 @@ public abstract class TermTaxonomyDTO {
         return depthLevel;
     }
 
-    public Long getTrGroupId() {
-        return trGroupId;
+    public Long getTranslationGroupId() {
+        return translationGroupId;
     }
 
-    public void setTrGroupId(Long trGroupId) {
-        this.trGroupId = trGroupId;
+    public void setTranslationGroupId(Long translationGroupId) {
+        this.translationGroupId = translationGroupId;
+    }
+
+    public String getSourceLanguageCode() {
+        return sourceLanguageCode;
+    }
+
+    public void setSourceLanguageCode(String sourceLanguageCode) {
+        this.sourceLanguageCode = sourceLanguageCode;
+    }
+
+    public List<TranslationDTO> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<TranslationDTO> translations) {
+        this.translations = translations;
+    }
+
+    public void addTranslationDTO(TranslationDTO translationDTO) {
+        if (translations == null) {
+            translations = new ArrayList<>();
+        }
+        translations.add(translationDTO);
     }
 }
