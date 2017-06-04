@@ -2,6 +2,7 @@ package com.manev.quislisting.web;
 
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,8 +27,9 @@ public class SignOutController extends BaseController {
 
     public SignOutController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                              TokenProvider tokenProvider, AuthenticationManager authenticationManager,
-                             LanguageRepository languageRepository, LocaleResolver localeResolver) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, localeResolver);
+                             LanguageRepository languageRepository, LocaleResolver localeResolver,
+                             LanguageTranslationRepository languageTranslationRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
     }
 
     @RequestMapping(method = RequestMethod.GET)

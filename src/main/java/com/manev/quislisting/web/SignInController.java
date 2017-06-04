@@ -2,6 +2,7 @@ package com.manev.quislisting.web;
 
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.web.rest.vm.LoginVM;
@@ -39,8 +40,9 @@ public class SignInController extends BaseController {
 
     public SignInController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                             TokenProvider tokenProvider, AuthenticationManager authenticationManager,
-                            LanguageRepository languageRepository, LocaleResolver localeResolver) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, localeResolver);
+                            LanguageRepository languageRepository, LocaleResolver localeResolver,
+                            LanguageTranslationRepository languageTranslationRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
     }

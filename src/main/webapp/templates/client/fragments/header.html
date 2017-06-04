@@ -32,18 +32,26 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Language <span class="caret"></span></a>
+                       aria-expanded="false"
+                       th:text="#{fragment.header.language}">Language <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li th:each="language : ${baseModel.activeLanguages}">
-                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${language.code}"
-                               th:text="${language.englishName}">Action</a>
+                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${language.languageCode}">
+                                <span th:text="${language.translatedName}">English</span>
+
+                                <span th:if="${!language.languageCode.equals(language.displayLanguageCode)}"
+                                             th:text="' (' + ${language.englishName} + ')'">English Translated</span>
+                            </a>
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="!isAuthenticated()"><a href="/sign-in" th:href="@{/sign-in}">Log In</a></li>
-                <li sec:authorize="!isAuthenticated()"><a href="/sign-up" th:href="@{/sign-up}">Sign Up</a></li>
+                <li sec:authorize="!isAuthenticated()"><a href="/sign-in" th:href="@{/sign-in}"
+                                                          th:text="#{fragment.header.login}">Log In</a></li>
+                <li sec:authorize="!isAuthenticated()"><a href="/sign-up" th:href="@{/sign-up}"
+                                                          th:text="#{fragment.header.signup}">Sign Up</a></li>
                 <li sec:authorize="isAuthenticated()">
-                    <a href="/sign-out" th:href="@{/sign-out}">Log Out</a>
+                    <a href="/sign-out" th:href="@{/sign-out}"
+                       th:text="#{fragment.header.logout}">Log Out</a>
                 </li>
             </ul>
         </div>
@@ -51,8 +59,8 @@
     </div>
     <script type="text/javascript">
         function changeLanguage(event) {
-            let langCode = $(event.target).attr('ql-data');
-            if (langCode != '') {
+            let langCode = $(event.currentTarget).attr('ql-data');
+            if (langCode != '' || langCode != 'undefined') {
                 window.location.replace('?lang=' + langCode);
             }
         }

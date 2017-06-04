@@ -7,8 +7,8 @@ import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
-import com.manev.quislisting.web.rest.ContactResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -35,8 +34,9 @@ public class PostController extends BaseController {
 
     public PostController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
-                          LocaleResolver localeResolver) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, localeResolver);
+                          LocaleResolver localeResolver,
+                          LanguageTranslationRepository languageTranslationRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
         this.postRepository = postRepository;
     }
 

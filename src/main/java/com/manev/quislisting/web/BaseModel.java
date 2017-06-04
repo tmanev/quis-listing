@@ -2,6 +2,7 @@ package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.web.model.ActiveLanguageBean;
 
 import java.util.List;
 import java.util.Set;
@@ -10,7 +11,7 @@ public class BaseModel {
 
     private Set<NavMenuItem> topHeaderMenus;
     private Set<NavMenuItem> footerMenus;
-    private List<Language> activeLanguages;
+    private List<ActiveLanguageBean> activeLanguages;
 
     public Set<NavMenuItem> getTopHeaderMenus() {
         return topHeaderMenus;
@@ -38,15 +39,15 @@ public class BaseModel {
         return this;
     }
 
-    public List<Language> getActiveLanguages() {
+    public List<ActiveLanguageBean> getActiveLanguages() {
         return activeLanguages;
     }
 
-    public void setActiveLanguages(List<Language> activeLanguages) {
+    public void setActiveLanguages(List<ActiveLanguageBean> activeLanguages) {
         this.activeLanguages = activeLanguages;
     }
 
-    public BaseModel activeLanugages(List<Language> activeLanguages) {
+    public BaseModel activeLanugages(List<ActiveLanguageBean> activeLanguages) {
         this.activeLanguages = activeLanguages;
         return this;
     }

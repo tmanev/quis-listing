@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,8 +22,9 @@ public class HomeController extends BaseController {
 
     public HomeController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
-                          LocaleResolver localeResolver) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, localeResolver);
+                          LocaleResolver localeResolver,
+                          LanguageTranslationRepository languageTranslationRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
         this.postRepository = postRepository;
     }
 

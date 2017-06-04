@@ -5,10 +5,13 @@ import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.QlMenuConfig;
 import com.manev.quislisting.domain.QlMenuPosConfig;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.domain.qlml.LanguageTranslation;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.web.model.ActiveLanguageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,14 +32,15 @@ public class BaseController {
     protected QlConfigRepository qlConfigRepository;
 
     protected LanguageRepository languageRepository;
-
     protected LocaleResolver localeResolver;
+    private LanguageTranslationRepository languageTranslationRepository;
 
     public BaseController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
-                          LanguageRepository languageRepository, LocaleResolver localeResolver) {
+                          LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository, LocaleResolver localeResolver) {
         this.navMenuRepository = navMenuRepository;
         this.qlConfigRepository = qlConfigRepository;
         this.languageRepository = languageRepository;
+        this.languageTranslationRepository = languageTranslationRepository;
         this.localeResolver = localeResolver;
     }
 
@@ -55,22 +60,77 @@ public class BaseController {
         QlMenuPosConfig qlMenuPosByLanguageCode = findQlMenuPosByLanguageCode(language, qlMenuPosConfig.getQlMenuPosConfigs());
         if (qlMenuPosByLanguageCode != null) {
             Long topHeaderMenuRefId = qlMenuPosByLanguageCode.getTopHeaderMenuRefId();
-            if (topHeaderMenuRefId!=null) {
+            if (topHeaderMenuRefId != null) {
                 NavMenu topHeaderMenu = navMenuRepository.findOne(topHeaderMenuRefId);
                 baseModel.setTopHeaderMenus(topHeaderMenu.getNavMenuItems());
             }
 
             Long footerMenuRefId = qlMenuPosByLanguageCode.getFooterMenuRefId();
-            if (footerMenuRefId!=null) {
+            if (footerMenuRefId != null) {
                 NavMenu footerMenu = navMenuRepository.findOne(footerMenuRefId);
                 baseModel.setFooterMenus(footerMenu.getNavMenuItems());
             }
         }
 
-        List<Language> allByActive = languageRepository.findAllByActive(true);
+        List<Language> activeLanguages = languageRepository.findAllByActive(true);
 
-        return baseModel
-                .activeLanugages(allByActive);
+        if (!language.equals("en")) {
+            // needs translation
+            // find translations for active languages
+            List<LanguageTranslation> languageTranslations = languageTranslationRepository.
+                    findAllByLanguageCodeInAndDisplayLanguageCode(getLanguageCodes(activeLanguages), language);
+            List<ActiveLanguageBean> activeLanguageBeans = makeActiveLanguagesForTranslations(activeLanguages, languageTranslations);
+            baseModel.activeLanugages(activeLanguageBeans);
+        } else {
+            baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
+        }
+
+        return baseModel;
+    }
+
+    private List<ActiveLanguageBean> makeActiveLanguageBeansNoTranslation(List<Language> activeLanguages) {
+        List<ActiveLanguageBean> activeLanguageBeans = new ArrayList<>();
+
+        for (Language activeLanguage : activeLanguages) {
+            ActiveLanguageBean activeLanguageBean = new ActiveLanguageBean();
+            activeLanguageBean.setId(activeLanguage.getId());
+            activeLanguageBean.setLanguageCode(activeLanguage.getCode());
+            activeLanguageBean.setDisplayLanguageCode(activeLanguage.getCode());
+            activeLanguageBean.setEnglishName(activeLanguage.getEnglishName());
+            activeLanguageBean.setTranslatedName(activeLanguage.getEnglishName());
+            activeLanguageBeans.add(activeLanguageBean);
+        }
+        return activeLanguageBeans;
+    }
+
+    private List<ActiveLanguageBean> makeActiveLanguagesForTranslations(List<Language> activeLanguages, List<LanguageTranslation> languageTranslations) {
+        List<ActiveLanguageBean> activeLanguageBeans = new ArrayList<>();
+
+        for (Language activeLanguage : activeLanguages) {
+            for (LanguageTranslation languageTranslation : languageTranslations) {
+                if (activeLanguage.getCode().equals(languageTranslation.getLanguageCode())) {
+                    ActiveLanguageBean activeLanguageBean = new ActiveLanguageBean();
+                    activeLanguageBean.setId(activeLanguage.getId());
+                    activeLanguageBean.setLanguageCode(activeLanguage.getCode());
+                    activeLanguageBean.setDisplayLanguageCode(languageTranslation.getDisplayLanguageCode());
+                    activeLanguageBean.setEnglishName(activeLanguage.getEnglishName());
+                    activeLanguageBean.setTranslatedName(languageTranslation.getName());
+                    activeLanguageBeans.add(activeLanguageBean);
+                }
+            }
+        }
+
+        return activeLanguageBeans;
+    }
+
+    private List<String> getLanguageCodes(List<Language> languages) {
+        List<String> result = new ArrayList<>();
+
+        for (Language language : languages) {
+            result.add(language.getCode());
+        }
+
+        return result;
     }
 
     private QlMenuPosConfig findQlMenuPosByLanguageCode(String languageCode, List<QlMenuPosConfig> qlMenuPosConfigs) {
