@@ -2,9 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 
 <head>
-    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="../../../resources/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">Contacts</title>
+
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
 </head>
 <body>
 
@@ -13,7 +19,9 @@
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="/">
-                <img style="width: 24px; display: inline;" alt="Quis Listing" th:src="@{/resources/images/logo-ql.png}" /><span style="margin-left: 5px;">Quis Listing</span></a>
+                <img style="width: 24px; display: inline;" alt="Quis Listing"
+                     src="../../../resources/images/logo-ql.png"
+                     th:src="@{/resources/images/logo-ql.png}"/><span style="margin-left: 5px;">Quis Listing</span></a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -23,10 +31,12 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Language <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Language <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li th:each="language : ${baseModel.activeLanguages}">
-                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${language.code}" th:text="${language.englishName}">Action</a>
+                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${language.code}"
+                               th:text="${language.englishName}">Action</a>
                         </li>
                     </ul>
                 </li>
@@ -42,11 +52,16 @@
     <script type="text/javascript">
         function changeLanguage(event) {
             let langCode = $(event.target).attr('ql-data');
-            if (langCode != ''){
+            if (langCode != '') {
                 window.location.replace('?lang=' + langCode);
             }
         }
     </script>
 </div>
+<!-- JavaScript libraries used to be able to open the html page itself in browser -->
+<script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"
+        th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap/js/bootstrap.min.js"
+        th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
 </body>
 </html>
