@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Sign Up</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <link href="../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
+</head>
+
+<body>
+
+<div th:fragment="content" class="row">
+    <form class="form-horizontal col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" action="/sign-up"
+          method="post" th:action="@{/sign-up}" name="signUpVM">
+        <fieldset>
+            <legend th:text="#{page.signup.form.legend}">Sign Up</legend>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="inputEmail"
+                           th:placeholder="#{page.signup.form.input.placeholder.email_address}"
+                           placeholder="Email address" name="email"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="inputFirstname"
+                           th:placeholder="#{page.signup.form.input.placeholder.first_name}"
+                           placeholder="First name" name="firstname"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="inputLastname"
+                           th:placeholder="#{page.signup.form.input.placeholder.last_name}"
+                           placeholder="Last name" name="lastname" autocomplete="nope"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input type="password" class="form-control" id="inputPassword"
+                           th:placeholder="#{page.signup.form.input.placeholder.password}"
+                           placeholder="Password" name="password" autocomplete="new-password"/>
+                </div>
+            </div>
+            <div class="form-group" th:if="${termsAndConditionsPage!=null and siteName!=null}">
+                <div class="col-md-12">
+                    <p>
+                        <span th:text="#{page.signup.form.terms_and_conditions(${siteName})}">
+                            By clicking Sign up or Continue with, I agree to {0}
+                        </span>
+                        <a th:href="${termsAndConditionsPage.name}" th:text="${termsAndConditionsPage.title}"></a>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="updates" checked="checked"/>
+                            <span th:text="#{page.signup.form.checkbox.recieve_updates(${siteName})}">
+                                I’d like to receive coupons, promotions, surveys, and updates via email about Quis Listing.
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-8">
+                    <button type="submit" class="btn btn-primary btn-block" th:text="#{page.signup.form.button.signup}">
+                        Sign up
+                    </button>
+                </div>
+            </div>
+            <hr/>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <span th:text="#{page.signup.form.span.already_have_an_account}">Already have an account?</span>
+                    <a class="" href="/sign-in" th:href="@{/sign-in}"
+                       th:text="#{page.signup.form.button.login}">Log in
+                    </a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+</body>
+</html>
