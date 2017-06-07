@@ -38,6 +38,9 @@
             <column name="activated" type="boolean" valueBoolean="false">
                 <constraints nullable="false" />
             </column>
+            <column name="updates" type="boolean" valueBoolean="true" defaultValue="true">
+                <constraints nullable="false" />
+            </column>
             <column name="lang_key" type="varchar(5)"/>
             <column name="activation_key" type="varchar(20)"/>
             <column name="reset_key" type="varchar(20)"/>
