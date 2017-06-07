@@ -15,36 +15,43 @@
 <body>
 
 <div th:fragment="content" class="row">
-    <form class="form-horizontal col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" action="/sign-up"
-          method="post" th:action="@{/sign-up}" name="signUpVM">
+    <form class="form-horizontal col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3"
+          action="#"
+          th:action="@{/sign-up}"
+          th:object="${signUpUserBean}"
+          method="post">
         <fieldset>
             <legend th:text="#{page.signup.form.legend}">Sign Up</legend>
             <div class="form-group">
                 <div class="col-md-12">
-                    <input type="text" class="form-control" id="inputEmail"
+                    <input type="text" class="form-control"
                            th:placeholder="#{page.signup.form.input.placeholder.email_address}"
-                           placeholder="Email address" name="email"/>
+                           placeholder="Email address"
+                           th:field="*{email}"/>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-12">
                     <input type="text" class="form-control" id="inputFirstname"
                            th:placeholder="#{page.signup.form.input.placeholder.first_name}"
-                           placeholder="First name" name="firstname"/>
+                           placeholder="First name" name="firstName"
+                           th:field="*{firstName}"/>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-12">
                     <input type="text" class="form-control" id="inputLastname"
                            th:placeholder="#{page.signup.form.input.placeholder.last_name}"
-                           placeholder="Last name" name="lastname" autocomplete="nope"/>
+                           placeholder="Last name" name="lastName" autocomplete="nope"
+                           th:field="*{lastName}"/>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-12">
                     <input type="password" class="form-control" id="inputPassword"
                            th:placeholder="#{page.signup.form.input.placeholder.password}"
-                           placeholder="Password" name="password" autocomplete="new-password"/>
+                           placeholder="Password" name="password" autocomplete="new-password"
+                           th:field="*{password}" />
                 </div>
             </div>
             <div class="form-group" th:if="${termsAndConditionsPage!=null and siteName!=null}">
@@ -61,7 +68,7 @@
                 <div class="col-md-12">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="updates" checked="checked"/>
+                            <input type="checkbox" name="updates" checked="checked" th:field="*{updates}" />
                             <span th:text="#{page.signup.form.checkbox.recieve_updates(${siteName})}">
                                 I’d like to receive coupons, promotions, surveys, and updates via email about Quis Listing.
                             </span>
