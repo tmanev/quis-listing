@@ -4,51 +4,59 @@
 <head>
     <title>Sign In</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
-    <link href="../../../resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}" />
+    <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet" media="screen"
+          th:href="@{/resources/css/bootstrap.min.css}"/>
+    <link href="../../../resources/css/core.css" rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}"/>
 </head>
 
 <body>
 
-<div th:fragment="content" class="row">
-    <form class="form-horizontal col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" action="/sign-in" method="post" th:action="@{/sign-in}" name="loginVM">
-        <fieldset>
-            <legend th:text="#{page.signin.form.legend}">Please Sign In</legend>
-            <div class="form-group">
-                <label for="inputEmail" class="col-lg-2 control-label" th:text="#{page.signin.form.label.email}">Email</label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="inputEmail" placeholder="Email" name="username" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputPassword" class="col-lg-2 control-label" th:text="#{page.signin.form.label.password}">Password</label>
-                <div class="col-lg-10">
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="rememberMe" />
-                            <span th:text="#{page.signin.form.label.remember_me}">Remember me</span>
-                        </label>
+<div th:fragment="content" class="container-fluid">
+    <div class="row">
+        <form class="form-horizontal col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" action="/sign-in" method="post"
+              th:action="@{/sign-in}" name="loginVM">
+            <fieldset>
+                <legend th:text="#{page.signin.form.legend}">Please Sign In</legend>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label" th:text="#{page.signin.form.label.email}">Email</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" id="inputEmail" placeholder="Email" name="username"/>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10">
-                    <button type="submit" class="btn btn-default" th:text="#{page.signin.form.button.signin}">Sign in</button>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-lg-2 control-label"
+                           th:text="#{page.signin.form.label.password}">Password</label>
+                    <div class="col-lg-10">
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+                               name="password"/>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10">
-                    <p th:text="#{page.signin.form.p.new_here}">New here?</p>
-                    <a href="signup" th:href="@{/signup}" th:text="#{page.signin.form.link.signup}">Sign Up</a>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="rememberMe"/>
+                                <span th:text="#{page.signin.form.label.remember_me}">Remember me</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-    </form>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        <button type="submit" class="btn btn-default" th:text="#{page.signin.form.button.signin}">Sign
+                            in
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        <p th:text="#{page.signin.form.p.new_here}">New here?</p>
+                        <a href="signup" th:href="@{/signup}" th:text="#{page.signin.form.link.signup}">Sign Up</a>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>
 
 </body>
