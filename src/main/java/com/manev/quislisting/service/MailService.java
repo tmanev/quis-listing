@@ -38,6 +38,7 @@ public class MailService {
     private static final String BASE_URL = "baseUrl";
     private static final String BASE_NAME = "baseName";
     private static final String SUBJECT = "subject";
+    private static final String ACTIVATION_TEXT = "activationText";
     private final Logger log = LoggerFactory.getLogger(MailService.class);
     private final QuisListingProperties quisListingProperties;
 
@@ -113,12 +114,14 @@ public class MailService {
 
         Locale locale = Locale.forLanguageTag(user.getLangKey());
         String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
+        String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
         Context context = new StringAndClassLoaderResourceResolver
                 .StringContext(getValueByLanguage(user.getLangKey(), activationEmailTemplate.getQlString()));
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
         context.setVariable(BASE_NAME, siteNameConfig.getValue());
         context.setVariable(SUBJECT, subject);
+        context.setVariable(ACTIVATION_TEXT, activationText);
         String content = springTemplateEngine.process("redundant", context);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
