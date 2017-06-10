@@ -18,19 +18,19 @@
 
 <div th:replace="client/fragments/header :: header">Header goes here!</div>
 
-<div th:replace="${view} :: content">Content goes here!</div>
-<div sec:authorize="isAuthenticated()">
-    This content is only shown to authenticated users.
-</div>
-<div sec:authorize="hasRole('ROLE_ADMIN')">
-    This content is only shown to administrators.
-</div>
-<div sec:authorize="hasRole('ROLE_USER')">
-    This content is only shown to users.
-</div>
-Logged user: <span sec:authentication="name">Bob</span>
+<div th:replace="${view} :: content" >Content goes here!</div>
+<!--<div sec:authorize="isAuthenticated()">-->
+    <!--This content is only shown to authenticated users.-->
+<!--</div>-->
+<!--<div sec:authorize="hasRole('ROLE_ADMIN')">-->
+    <!--This content is only shown to administrators.-->
+<!--</div>-->
+<!--<div sec:authorize="hasRole('ROLE_USER')">-->
+    <!--This content is only shown to users.-->
+<!--</div>-->
+<!--Logged user: <span sec:authentication="name">Bob</span>-->
 <!--Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>-->
-<h1 th:text="#{greeting}"></h1>
+<!--<h1 th:text="#{greeting}"></h1>-->
 <div th:replace="client/fragments/footer :: footer">Footer goes here!</div>
 
 <script src="../../resources/vendor/vue/vue.min.js"
