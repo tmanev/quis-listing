@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public class SignUpController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String signUp(@ModelAttribute SignUpUserBean signUpUserBean, final ModelMap model, HttpServletRequest request) {
+    public String signUp(@Valid @ModelAttribute SignUpUserBean signUpUserBean, final ModelMap model, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
         setSignUpPageInModel(model, locale);
 
