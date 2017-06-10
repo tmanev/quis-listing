@@ -6,7 +6,7 @@ public class SignUpUserBean {
     private String firstName;
     private String lastName;
     private String password;
-    private Boolean updates;
+    private Boolean updates = Boolean.TRUE;
 
     public String getEmail() {
         return email;
