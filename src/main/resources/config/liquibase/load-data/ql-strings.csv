@@ -19,15 +19,15 @@ id¦language_code¦context¦name¦value¦type¦status
 2¦en¦email-template¦email-template-#4¦'<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="${subject}">QuisListing account activation</title>
+        <title th:text="${subject}">{0} account activation</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
         <p>
             Dear <span th:text="${user.firstName}"></span>
         </p>
-        <p>
-            Your Quis Listing account has been created, please click on the URL below to activate it:
+        <p th:text="${activationText}">
+            Your {0} account has been created, please click on the URL below to activate it:
         </p>
         <p>
             <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}">Activation Link</a>
