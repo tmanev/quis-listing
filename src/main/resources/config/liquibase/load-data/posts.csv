@@ -74,3 +74,9 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 
 36¦Anunțurile mele¦[my-listings]¦anunțurile-mele¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦42¦1¦null¦null
 37¦Anunțurile mele¦¦anunțurile-mele-12-4¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦36¦4
+
+
+
+38¦Account Successfully Activated¦[activation-link-page]¦account/activate¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦43¦1¦null¦null
+39¦Профилът бе активиран успешно¦[activation-link-page]¦сметка/активиране¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦44¦1¦null¦null
+40¦Contul a fost activat cu succes¦[activation-link-page]¦cont/activate¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦45¦1¦null¦null
