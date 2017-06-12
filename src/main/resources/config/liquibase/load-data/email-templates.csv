@@ -32,7 +32,7 @@ id¦name¦text¦string_id
             Your Quis Listing account has been created, please click on the URL below to activate it:
         </p>
         <p>
-            <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}">Activation Link</a>
+            <a th:href="@{|${baseUrl}/${activatePage}?key=${user.activationKey}|}">Activation Link</a>
         </p>
         <p>
             <span>Regards, </span>

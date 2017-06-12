@@ -47,7 +47,7 @@ id¦string_id¦language_code¦status¦value¦translation_date
             Вашият профил {0} е създаден, моля използвайте линка по-долу, за да я активирате:
         </p>
         <p>
-            <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}">Линк за активиране</a>
+           <a th:href="@{|${baseUrl}/${activatePage}?key=${user.activationKey}|}">Линк за активиране</a>
         </p>
         <p>
             <span>С уважение, </span>
@@ -70,7 +70,7 @@ id¦string_id¦language_code¦status¦value¦translation_date
             Contul dumneavoastră {0} a fost creat, vă rugăm să accesați pagina de mai jos pentru a-l activa:
         </p>
         <p>
-            <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}">Linkul de activare</a>
+            <a th:href="@{|${baseUrl}/${activatePage}?key=${user.activationKey}|}">Linkul de activare</a>
         </p>
         <p>
             <span>U stimă, </span>

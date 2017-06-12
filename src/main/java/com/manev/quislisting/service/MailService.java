@@ -3,11 +3,14 @@ package com.manev.quislisting.service;
 import com.manev.quislisting.config.QuisListingProperties;
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
+import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.repository.QlConfigRepository;
+import com.manev.quislisting.repository.post.PageRepository;
 import com.manev.quislisting.service.util.StringAndClassLoaderResourceResolver;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
@@ -39,6 +42,7 @@ public class MailService {
     private static final String BASE_NAME = "baseName";
     private static final String SUBJECT = "subject";
     private static final String ACTIVATION_TEXT = "activationText";
+    public static final String ACTIVATE_PAGE = "activatePage";
     private final Logger log = LoggerFactory.getLogger(MailService.class);
     private final QuisListingProperties quisListingProperties;
 
@@ -54,9 +58,11 @@ public class MailService {
 
     private QlConfigRepository qlConfigRepository;
 
+    private PageRepository pageRepository;
+
     public MailService(QuisListingProperties quisListingProperties, JavaMailSender javaMailSender,
                        MessageSource messageSource, SpringTemplateEngine templateEngine,
-                       EmailTemplateRepository emailTemplateRepository, QlConfigRepository qlConfigRepository) {
+                       EmailTemplateRepository emailTemplateRepository, QlConfigRepository qlConfigRepository, PageRepository pageRepository) {
 
         this.quisListingProperties = quisListingProperties;
         this.javaMailSender = javaMailSender;
@@ -64,6 +70,7 @@ public class MailService {
         this.templateEngine = templateEngine;
         this.emailTemplateRepository = emailTemplateRepository;
         this.qlConfigRepository = qlConfigRepository;
+        this.pageRepository = pageRepository;
 
         TemplateResolver resolver = new TemplateResolver();
         resolver.setResourceResolver(new StringAndClassLoaderResourceResolver());
@@ -101,6 +108,7 @@ public class MailService {
     @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation e-mail to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
 
         EmailTemplate activationEmailTemplate = emailTemplateRepository.findOneByName("activation_email");
         if (activationEmailTemplate == null) {
@@ -112,7 +120,22 @@ public class MailService {
             throw new RuntimeException("Site name not configured");
         }
 
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        QlConfig activationPageConfig = qlConfigRepository.findOneByKey("activation-page-id");
+        if (activationPageConfig == null) {
+            throw new RuntimeException("Activation page not configured");
+        }
+        QlPage activationPage = pageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
+        Translation translation = activationPage.getTranslation();
+        String activationPageSlug = activationPage.getName();
+        if (!translation.getLanguageCode().equals(user.getLangKey())) {
+            // check if there is a translation
+            Translation translationForLanguage = translationExists(user.getLangKey(), translation.getTranslationGroup().getTranslations());
+            if (translationForLanguage != null) {
+                QlPage oneByTranslation = pageRepository.findOneByTranslation(translationForLanguage);
+                activationPageSlug = oneByTranslation.getName();
+            }
+        }
+
         String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
         String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
         Context context = new StringAndClassLoaderResourceResolver
@@ -120,10 +143,20 @@ public class MailService {
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
         context.setVariable(BASE_NAME, siteNameConfig.getValue());
+        context.setVariable(ACTIVATE_PAGE, activationPageSlug);
         context.setVariable(SUBJECT, subject);
         context.setVariable(ACTIVATION_TEXT, activationText);
         String content = springTemplateEngine.process("redundant", context);
         sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    private Translation translationExists(String languageCode, Set<Translation> translationList) {
+        for (Translation translation : translationList) {
+            if (translation.getLanguageCode().equals(languageCode)) {
+                return translation;
+            }
+        }
+        return null;
     }
 
     private String getValueByLanguage(String languageCode, QlString qlString) {
