@@ -59,13 +59,13 @@ public class PostController extends BaseController {
         AbstractPost post = postRepository.findOneByName(name);
 
         Translation translation = post.getTranslation();
-        if (!translation.getLanguageCode().equals(language)){
+        if (!translation.getLanguageCode().equals(language)) {
             // find post related to the translation
             // and redirect it to the page url
 
             // check if there is a translation
             Translation translationForLanguage = translationExists(language, translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage!=null) {
+            if (translationForLanguage != null) {
                 AbstractPost translatedPost = postRepository.findOneByTranslation(translationForLanguage);
                 return "redirect:/" + URLEncoder.encode(translatedPost.getName(), "UTF-8");
             }
@@ -85,6 +85,47 @@ public class PostController extends BaseController {
         } else if (post instanceof DlListing) {
             // handle listing
             modelMap.addAttribute("view", "client/dl-listing");
+        }
+
+        return "client/index";
+    }
+
+    @RequestMapping(value = "/{name}/{secondName}", method = RequestMethod.GET)
+    public String showPage(@PathVariable String name,
+                           @PathVariable String secondName,
+                           final ModelMap modelMap, HttpServletRequest request,
+                           HttpServletResponse response) throws IOException {
+        Locale locale = localeResolver.resolveLocale(request);
+        String language = locale.getLanguage();
+        log.debug("Language from cookie: {}", language);
+
+        String slugName = name + "/" + secondName;
+        AbstractPost post = postRepository.findOneByName(slugName);
+
+        Translation translation = post.getTranslation();
+        if (!translation.getLanguageCode().equals(language)) {
+            // find post related to the translation
+            // and redirect it to the page url
+
+            // check if there is a translation
+            Translation translationForLanguage = translationExists(language, translation.getTranslationGroup().getTranslations());
+            if (translationForLanguage != null) {
+                AbstractPost translatedPost = postRepository.findOneByTranslation(translationForLanguage);
+                String firstPart = translatedPost.getName().split("/")[0];
+                String secondPart = translatedPost.getName().split("/")[1];
+                return "redirect:/" + URLEncoder.encode(firstPart, "UTF-8") + "/"
+                        + URLEncoder.encode(secondPart, "UTF-8");
+            }
+        }
+
+        modelMap.addAttribute("title", post.getTitle());
+
+        if (post instanceof QlPage) {
+            // handle page
+            String content = post.getContent();
+            if (content.equals("[activation-link-page]")) {
+                modelMap.addAttribute("view", "client/account/activation");
+            }
         }
 
         return "client/index";
