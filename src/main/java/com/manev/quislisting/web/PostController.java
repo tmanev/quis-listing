@@ -1,6 +1,8 @@
 package com.manev.quislisting.web;
 
+import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.Translation;
+import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
@@ -9,6 +11,7 @@ import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,28 +19,33 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
 public class PostController extends BaseController {
 
     private final Logger log = LoggerFactory.getLogger(PostController.class);
-
+    private final UserService userService;
     private PostRepository<AbstractPost> postRepository;
 
     public PostController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
                           LocaleResolver localeResolver,
-                          LanguageTranslationRepository languageTranslationRepository) {
+                          LanguageTranslationRepository languageTranslationRepository, UserService userService) {
         super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
         this.postRepository = postRepository;
+        this.userService = userService;
     }
 
     private Translation translationExists(String languageCode, Set<Translation> translationList) {
@@ -57,6 +65,9 @@ public class PostController extends BaseController {
         log.debug("Language from cookie: {}", language);
 
         AbstractPost post = postRepository.findOneByName(name);
+        if (post == null) {
+            return redirectToPageNotFound();
+        }
 
         Translation translation = post.getTranslation();
         if (!translation.getLanguageCode().equals(language)) {
@@ -78,6 +89,14 @@ public class PostController extends BaseController {
             String content = post.getContent();
             if (content.equals("[contact-form]")) {
                 modelMap.addAttribute("view", "client/contacts");
+            } else if (content.equals("[not-found-page]")) {
+                QlConfig contactPageIdConfig = qlConfigRepository.findOneByKey("contact-page-id");
+                if (contactPageIdConfig == null) {
+                    throw new RuntimeException("Contact Page configuration expected");
+                }
+                AbstractPost contactPage = retrievePage(language, contactPageIdConfig.getValue());
+                modelMap.addAttribute("contactPageName", contactPage.getName());
+                modelMap.addAttribute("view", "client/page-not-found");
             } else {
                 modelMap.addAttribute("content", content);
                 modelMap.addAttribute("view", "client/post");
@@ -94,13 +113,17 @@ public class PostController extends BaseController {
     public String showPage(@PathVariable String name,
                            @PathVariable String secondName,
                            final ModelMap modelMap, HttpServletRequest request,
-                           HttpServletResponse response) throws IOException {
+                           HttpServletResponse response,
+                           @RequestParam Map<String, String> allRequestParams) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
         log.debug("Language from cookie: {}", language);
 
         String slugName = name + "/" + secondName;
         AbstractPost post = postRepository.findOneByName(slugName);
+        if (post == null) {
+            return redirectToPageNotFound();
+        }
 
         Translation translation = post.getTranslation();
         if (!translation.getLanguageCode().equals(language)) {
@@ -124,11 +147,45 @@ public class PostController extends BaseController {
             // handle page
             String content = post.getContent();
             if (content.equals("[activation-link-page]")) {
-                modelMap.addAttribute("view", "client/account/activation");
+                String key = allRequestParams.get("key");
+                if (key == null) {
+                    return redirectToPageNotFound();
+                } else {
+                    Optional<User> activatedUser = userService.activateRegistration(key);
+                    if (activatedUser.isPresent()) {
+                        modelMap.addAttribute("view", "client/account/activation");
+                    } else {
+                        return redirectToPageNotFound();
+                    }
+                }
             }
         }
 
         return "client/index";
+    }
+
+    private String redirectToPageNotFound() throws UnsupportedEncodingException {
+        QlConfig notFoundPageConfig = qlConfigRepository.findOneByKey("not-found-page-id");
+        if (notFoundPageConfig == null) {
+            throw new RuntimeException("Not Found Page configuration expected");
+        }
+        AbstractPost notFoundPage = postRepository.findOne(Long.valueOf(notFoundPageConfig.getValue()));
+        return "redirect:/" + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
+    }
+
+    private AbstractPost retrievePage(String languageCode, String pageId) {
+        AbstractPost post;
+
+        post = postRepository.findOne(Long.valueOf(pageId));
+        Translation translation = post.getTranslation();
+        if (!translation.getLanguageCode().equals(languageCode)) {
+            Translation translationForLanguage = translationExists(languageCode, translation.getTranslationGroup().getTranslations());
+            if (translationForLanguage != null) {
+                post = postRepository.findOneByTranslation(translationForLanguage);
+            }
+        }
+
+        return post;
     }
 
 }
