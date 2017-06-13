@@ -80,3 +80,7 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 38¦Account Successfully Activated¦[activation-link-page]¦account/activate¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦43¦1¦null¦null
 39¦Профилът бе активиран успешно¦[activation-link-page]¦сметка/активиране¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦44¦1¦null¦null
 40¦Contul a fost activat cu succes¦[activation-link-page]¦cont/activate¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦45¦1¦null¦null
+
+41¦404 Page Not Found¦[not-found-page]¦page-not-found¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦46¦1¦null¦null
+42¦404 Страницата не е намерена¦[not-found-page]¦страница-не-намерен¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦47¦1¦null¦null
+43¦404 Pagina nu a fost găsită¦[not-found-page]¦pagina-nu-a-fost-gasita¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦48¦1¦null¦null
