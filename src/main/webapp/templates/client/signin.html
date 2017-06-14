@@ -49,9 +49,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <span th:text="#{page.signin.form.p.new_here}">New here?</span>
+                        <span>
+                            <a href="signup" th:href="@{/signup}" th:text="#{page.signin.form.link.signup}">Sign Up</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
-                        <p th:text="#{page.signin.form.p.new_here}">New here?</p>
-                        <a href="signup" th:href="@{/signup}" th:text="#{page.signin.form.link.signup}">Sign Up</a>
+                        <a href="signup" th:href="${forgotPasswordName}"
+                           th:text="#{page.signin.form.link.forgot_your_password}">Forgot your password?</a>
                     </div>
                 </div>
             </fieldset>

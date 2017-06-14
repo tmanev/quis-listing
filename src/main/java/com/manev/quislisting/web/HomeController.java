@@ -24,7 +24,8 @@ public class HomeController extends BaseController {
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
                           LocaleResolver localeResolver,
                           LanguageTranslationRepository languageTranslationRepository) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
+                postRepository);
         this.postRepository = postRepository;
     }
 

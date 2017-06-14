@@ -84,3 +84,7 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 41¦404 Page Not Found¦[not-found-page]¦page-not-found¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦46¦1¦null¦null
 42¦404 Страницата не е намерена¦[not-found-page]¦страница-не-намерен¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦47¦1¦null¦null
 43¦404 Pagina nu a fost găsită¦[not-found-page]¦pagina-nu-a-fost-gasita¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦48¦1¦null¦null
+
+44¦Forgot password¦[forgot-password-page]¦forgot-password¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦49¦1¦null¦null
+45¦Забравена парола¦[forgot-password-page]¦забравена-парола¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦50¦1¦null¦null
+46¦Aţi uitat parola¦[forgot-password-page]¦aţi-uitat-parola¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦51¦1¦null¦null

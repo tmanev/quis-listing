@@ -1,6 +1,9 @@
 package com.manev.quislisting.web;
 
+import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.repository.QlConfigRepository;
+import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
@@ -25,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Locale;
 
 import static com.manev.quislisting.security.jwt.JWTConfigurer.AUTHORIZATION_HEADER;
 
@@ -41,16 +45,25 @@ public class SignInController extends BaseController {
     public SignInController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                             TokenProvider tokenProvider, AuthenticationManager authenticationManager,
                             LanguageRepository languageRepository, LocaleResolver localeResolver,
-                            LanguageTranslationRepository languageTranslationRepository) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
+                            LanguageTranslationRepository languageTranslationRepository,
+                            PostRepository<AbstractPost> postRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
+                postRepository);
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(final ModelMap model) throws IOException {
+    public String indexPage(final ModelMap model, Locale locale) throws IOException {
         model.addAttribute("title", "Sign In");
         model.addAttribute("view", "client/signin");
+
+        QlConfig forgotPasswordPageIdConfig = qlConfigRepository.findOneByKey("forgot-password-page-id");
+        if (forgotPasswordPageIdConfig == null) {
+            throw new RuntimeException("Forgot Password Page configuration expected");
+        }
+        AbstractPost forgotPasswordPage = retrievePage(locale.getLanguage(), forgotPasswordPageIdConfig.getValue());
+        model.addAttribute("forgotPasswordName", forgotPasswordPage.getName());
         return "client/index";
     }
 

@@ -3,10 +3,12 @@ package com.manev.quislisting.web;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
+import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.PageRepository;
+import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
@@ -26,7 +28,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/sign-up")
@@ -38,8 +39,13 @@ public class SignUpController extends BaseController {
     private UserService userService;
     private MailService mailService;
 
-    public SignUpController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository, LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository, LocaleResolver localeResolver, PageRepository pageRepository, MessageSource messageSource, UserRepository userRepository, UserService userService, MailService mailService) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
+    public SignUpController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+                            LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
+                            LocaleResolver localeResolver, PageRepository pageRepository, MessageSource messageSource,
+                            UserRepository userRepository, UserService userService, MailService mailService,
+                            PostRepository<AbstractPost> postRepository) {
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
+                postRepository);
         this.pageRepository = pageRepository;
         this.messageSource = messageSource;
         this.userRepository = userRepository;
@@ -121,12 +127,4 @@ public class SignUpController extends BaseController {
         return qlPage;
     }
 
-    private Translation translationExists(String languageCode, Set<Translation> translationList) {
-        for (Translation translation : translationList) {
-            if (translation.getLanguageCode().equals(languageCode)) {
-                return translation;
-            }
-        }
-        return null;
-    }
 }

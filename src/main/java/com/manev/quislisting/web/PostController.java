@@ -30,7 +30,6 @@ import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 public class PostController extends BaseController {
@@ -43,19 +42,12 @@ public class PostController extends BaseController {
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
                           LocaleResolver localeResolver,
                           LanguageTranslationRepository languageTranslationRepository, UserService userService) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver);
+        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
+                postRepository);
         this.postRepository = postRepository;
         this.userService = userService;
     }
 
-    private Translation translationExists(String languageCode, Set<Translation> translationList) {
-        for (Translation translation : translationList) {
-            if (translation.getLanguageCode().equals(languageCode)) {
-                return translation;
-            }
-        }
-        return null;
-    }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
     public String showPost(@PathVariable String name, final ModelMap modelMap, HttpServletRequest request,
@@ -97,6 +89,8 @@ public class PostController extends BaseController {
                 AbstractPost contactPage = retrievePage(language, contactPageIdConfig.getValue());
                 modelMap.addAttribute("contactPageName", contactPage.getName());
                 modelMap.addAttribute("view", "client/page-not-found");
+            } else if (content.equals("[forgot-password-page]")) {
+                modelMap.addAttribute("view", "client/forgot-password");
             } else {
                 modelMap.addAttribute("content", content);
                 modelMap.addAttribute("view", "client/post");
@@ -173,19 +167,5 @@ public class PostController extends BaseController {
         return "redirect:/" + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
     }
 
-    private AbstractPost retrievePage(String languageCode, String pageId) {
-        AbstractPost post;
-
-        post = postRepository.findOne(Long.valueOf(pageId));
-        Translation translation = post.getTranslation();
-        if (!translation.getLanguageCode().equals(languageCode)) {
-            Translation translationForLanguage = translationExists(languageCode, translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                post = postRepository.findOneByTranslation(translationForLanguage);
-            }
-        }
-
-        return post;
-    }
 
 }
