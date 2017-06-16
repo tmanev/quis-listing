@@ -124,17 +124,7 @@ public class MailService {
         if (activationPageConfig == null) {
             throw new RuntimeException("Activation page not configured");
         }
-        QlPage activationPage = pageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
-        Translation translation = activationPage.getTranslation();
-        String activationPageSlug = activationPage.getName();
-        if (!translation.getLanguageCode().equals(user.getLangKey())) {
-            // check if there is a translation
-            Translation translationForLanguage = translationExists(user.getLangKey(), translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                QlPage oneByTranslation = pageRepository.findOneByTranslation(translationForLanguage);
-                activationPageSlug = oneByTranslation.getName();
-            }
-        }
+        String activationPageSlug = getPageSlug(user, activationPageConfig);
 
         String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
         String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
@@ -148,6 +138,21 @@ public class MailService {
         context.setVariable(ACTIVATION_TEXT, activationText);
         String content = springTemplateEngine.process("redundant", context);
         sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    private String getPageSlug(User user, QlConfig activationPageConfig) {
+        QlPage activationPage = pageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
+        Translation translation = activationPage.getTranslation();
+        String activationPageSlug = activationPage.getName();
+        if (!translation.getLanguageCode().equals(user.getLangKey())) {
+            // check if there is a translation
+            Translation translationForLanguage = translationExists(user.getLangKey(), translation.getTranslationGroup().getTranslations());
+            if (translationForLanguage != null) {
+                QlPage oneByTranslation = pageRepository.findOneByTranslation(translationForLanguage);
+                activationPageSlug = oneByTranslation.getName();
+            }
+        }
+        return activationPageSlug;
     }
 
     private Translation translationExists(String languageCode, Set<Translation> translationList) {
