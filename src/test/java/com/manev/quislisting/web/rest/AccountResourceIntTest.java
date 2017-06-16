@@ -6,6 +6,7 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.AuthorityRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.security.AuthoritiesConstants;
+import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
@@ -17,11 +18,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.LocaleResolver;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -60,6 +63,15 @@ public class AccountResourceIntTest {
     @Mock
     private MailService mockMailService;
 
+    @Mock
+    private EmailSendingService mockEmailSendingService;
+
+    @Mock
+    private MessageSource mockMessageSource;
+
+    @Mock
+    private LocaleResolver mockLocaleResolver;
+
     private MockMvc restUserMockMvc;
 
     private MockMvc restMvc;
@@ -70,10 +82,10 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail((User) anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService);
+            new AccountResource(userRepository, userService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService);
+            new AccountResource(userRepository, mockUserService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
