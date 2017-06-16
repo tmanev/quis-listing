@@ -39,3 +39,27 @@ id¦language_code¦context¦name¦value¦type¦status
         </p>
     </body>
 </html>'¦LINE¦0
+3¦en¦email-template¦email-template-#5¦'<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${title}">{0} password reset</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>
+            Dear <span th:text="${user.login}"></span>
+        </p>
+        <p th:text="${resetText1}">
+            For your {0} account a password reset was requested, please click on the URL below to reset it:
+        </p>
+        <p>
+            <a th:href="@{|${baseUrl}/${resetFinishPage}?key=${user.resetKey}|}">Reset Link</a>
+        </p>
+        <p>
+            <span>Regards, </span>
+            <br/>
+            <em th:text="${baseName}">Quis Listing</em>
+        </p>
+    </body>
+</html>
+'¦LINE¦0

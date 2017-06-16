@@ -88,3 +88,7 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 44¦Forgot password¦[forgot-password-page]¦forgot-password¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦49¦1¦null¦null
 45¦Забравена парола¦[forgot-password-page]¦забравена-парола¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦50¦1¦null¦null
 46¦Aţi uitat parola¦[forgot-password-page]¦aţi-uitat-parola¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦51¦1¦null¦null
+
+47¦Reset finish¦[reset-password-finish-page]¦reset/finish¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦52¦1¦null¦null
+48¦Нулиране завършек¦[reset-password-finish-page]¦нулиране/финалната¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦53¦1¦null¦null
+49¦Resetați finisajul¦[reset-password-finish-page]¦resetare/finisaj¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦54¦1¦null¦null

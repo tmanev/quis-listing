@@ -9,3 +9,4 @@ id;key;value
 8;not-found-page-id;41
 9;contact-page-id;6
 10;forgot-password-page-id;44
+11;reset-password-finish-page-id;47
