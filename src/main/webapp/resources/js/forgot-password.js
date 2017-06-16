@@ -3,6 +3,8 @@ ForgotPassword = {
         Vue.use(window.vuelidate.default);
         const {required, minLength, between, email} = window.validators;
 
+        const touchMap = new WeakMap();
+
         var forgotPasswordApp = new Vue({
             el: '#forgotPasswordApp',
             data: {
@@ -19,6 +21,13 @@ ForgotPassword = {
                 }
             },
             methods: {
+                delayTouch: function ($v) {
+                    $v.$reset();
+                    if (touchMap.has($v)) {
+                        clearTimeout(touchMap.get($v));
+                    }
+                    touchMap.set($v, setTimeout($v.$touch, 1000))
+                },
                 onSubmit: function (event) {
                     if (this.$v.forgotPassword.$invalid) {
                         console.log("Please fill the required fields!");
@@ -26,10 +35,10 @@ ForgotPassword = {
 
                         this.$v.forgotPassword.$touch();
                     } else {
-                        var payload = this.forgotPassword;
+                        var payload = this.forgotPassword.email;
                         var $btn = $('#sendButton').button('loading');
                         this.$http({
-                            url: '/account/reset_password/init',
+                            url: 'api/account/reset_password/init',
                             body: payload,
                             method: 'POST'
                         }).then(function (response) {
@@ -39,7 +48,7 @@ ForgotPassword = {
                             };
                             this.$v.forgotPassword.$reset();
                             $.notify({
-                                message: response.headers.get('X-qlService-alert')
+                                message: response.data
                             }, {
                                 type: 'success'
                             });
