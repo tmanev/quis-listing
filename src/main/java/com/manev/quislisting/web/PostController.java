@@ -7,6 +7,7 @@ import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.repository.QlConfigRepository;
+import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
@@ -37,15 +38,17 @@ public class PostController extends BaseController {
     private final Logger log = LoggerFactory.getLogger(PostController.class);
     private final UserService userService;
     private PostRepository<AbstractPost> postRepository;
+    private final UserRepository userRepository;
 
     public PostController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
                           LocaleResolver localeResolver,
-                          LanguageTranslationRepository languageTranslationRepository, UserService userService) {
+                          LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository) {
         super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
                 postRepository);
         this.postRepository = postRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
 
@@ -151,6 +154,18 @@ public class PostController extends BaseController {
                     } else {
                         return redirectToPageNotFound();
                     }
+                }
+            } else if (content.equals("[reset-password-finish-page]")) {
+                String key = allRequestParams.get("key");
+                if (key == null) {
+                    return redirectToPageNotFound();
+                } else {
+                    Optional<User> oneByResetKey = userRepository.findOneByResetKey(key);
+                    if (!oneByResetKey.isPresent()) {
+                        return redirectToPageNotFound();
+                    }
+                    modelMap.addAttribute("user", new User());
+                    modelMap.addAttribute("view", "client/account/password-reset-finish");
                 }
             }
         }
