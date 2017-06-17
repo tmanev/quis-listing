@@ -40,6 +40,8 @@ public class UserDTO {
     @Size(min = 2, max = 5)
     private String langKey;
 
+    private Boolean updates;
+
     private String createdBy;
 
     private ZonedDateTime createdDate;
@@ -56,14 +58,14 @@ public class UserDTO {
 
     public UserDTO(User user) {
         this(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName(),
-            user.getEmail(), user.getActivated(), user.getImageUrl(), user.getLangKey(),
+            user.getEmail(), user.getActivated(), user.getImageUrl(), user.getLangKey(), user.getUpdates(),
             user.getCreatedBy(), user.getCreatedDate(), user.getLastModifiedBy(), user.getLastModifiedDate(),
             user.getAuthorities().stream().map(Authority::getName)
                 .collect(Collectors.toSet()));
     }
 
     public UserDTO(Long id, String login, String firstName, String lastName,
-                   String email, boolean activated, String imageUrl, String langKey,
+                   String email, boolean activated, String imageUrl, String langKey, Boolean updates,
                    String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate,
                    Set<String> authorities) {
 
@@ -75,6 +77,7 @@ public class UserDTO {
         this.activated = activated;
         this.imageUrl = imageUrl;
         this.langKey = langKey;
+        this.updates = updates;
         this.createdBy = createdBy;
         this.createdDate = createdDate;
         this.lastModifiedBy = lastModifiedBy;
@@ -146,6 +149,14 @@ public class UserDTO {
         return authorities;
     }
 
+    public Boolean getUpdates() {
+        return updates;
+    }
+
+    public void setUpdates(Boolean updates) {
+        this.updates = updates;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -156,6 +167,7 @@ public class UserDTO {
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
+            ", updates='" + updates + '\'' +
             ", createdBy=" + createdBy +
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
