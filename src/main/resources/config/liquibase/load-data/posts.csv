@@ -92,3 +92,7 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 47¦Reset finish¦[reset-password-finish-page]¦reset/finish¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦52¦1¦null¦null
 48¦Нулиране завършек¦[reset-password-finish-page]¦нулиране/финалната¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦53¦1¦null¦null
 49¦Resetați finisajul¦[reset-password-finish-page]¦resetare/finisaj¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦54¦1¦null¦null
+
+50¦Profile¦[profile-page]¦account/profile¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦55¦1¦null¦null
+51¦Профил¦[profile-page]¦сметка/профил¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦56¦1¦null¦null
+52¦Profil¦[profile-page]¦cont/profil¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦57¦1¦null¦null
