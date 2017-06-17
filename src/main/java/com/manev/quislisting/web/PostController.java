@@ -12,6 +12,7 @@ import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +167,15 @@ public class PostController extends BaseController {
                     }
                     modelMap.addAttribute("user", new User());
                     modelMap.addAttribute("view", "client/account/password-reset-finish");
+                }
+            } else if (content.equals("[profile-page]")) {
+                String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+                Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+                if (oneByLogin.isPresent()) {
+                    modelMap.addAttribute("user", oneByLogin.get());
+                    modelMap.addAttribute("view", "client/account/profile");
+                } else {
+                    redirectToPageNotFound();
                 }
             }
         }
