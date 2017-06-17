@@ -45,13 +45,35 @@
                         </li>
                     </ul>
                 </li>
-                <li sec:authorize="!isAuthenticated()"><a href="/sign-in" th:href="@{/sign-in}"
-                                                          th:text="#{fragment.header.login}">Log In</a></li>
-                <li sec:authorize="!isAuthenticated()"><a href="/sign-up" th:href="@{/sign-up}"
-                                                          th:text="#{fragment.header.signup}">Sign Up</a></li>
-                <li sec:authorize="isAuthenticated()">
-                    <a href="/sign-out" th:href="@{/sign-out}"
-                       th:text="#{fragment.header.logout}">Log Out</a>
+                <li sec:authorize="!isAuthenticated()">
+                    <a href="/sign-in" th:href="@{/sign-in}">
+                        <span class="glyphicon glyphicon-log-in"></span>
+                        <span th:text="#{fragment.header.login}">Log In</span>
+                    </a>
+                </li>
+                <li sec:authorize="!isAuthenticated()">
+                    <a href="/sign-up" th:href="@{/sign-up}">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span th:text="#{fragment.header.signup}">Sign Up</span>
+                    </a>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span sec:authentication="name">Bob</span> <b class="caret"></b>
+                    </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span>Account</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="/sign-out" th:href="@{/sign-out}">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    <span th:text="#{fragment.header.logout}">Log Out</span>
+                                </a>
+                            </li>
+                        </ul>
                 </li>
             </ul>
         </div>
