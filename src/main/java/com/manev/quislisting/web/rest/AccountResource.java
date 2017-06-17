@@ -131,7 +131,8 @@ public class AccountResource {
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) or 500 (Internal Server Error) if the user couldn't be updated
      */
     @PostMapping("/account")
-    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
+        Locale locale = localeResolver.resolveLocale(request);
         Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
@@ -139,9 +140,10 @@ public class AccountResource {
         return userRepository
                 .findOneByLogin(SecurityUtils.getCurrentUserLogin())
                 .map(u -> {
-                    userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
-                            userDTO.getLangKey());
-                    return new ResponseEntity<String>(HttpStatus.OK);
+                    userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(),
+                            userDTO.getLangKey(), userDTO.getUpdates());
+                    return new ResponseEntity<>(messageSource.getMessage("info.save_success", null,
+                            locale), HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }

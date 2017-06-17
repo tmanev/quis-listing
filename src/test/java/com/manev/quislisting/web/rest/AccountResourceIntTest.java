@@ -161,6 +161,7 @@ public class AccountResourceIntTest {
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+            Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -190,6 +191,7 @@ public class AccountResourceIntTest {
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -219,6 +221,7 @@ public class AccountResourceIntTest {
             true,               // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -248,6 +251,7 @@ public class AccountResourceIntTest {
             true,               // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -278,6 +282,7 @@ public class AccountResourceIntTest {
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -286,7 +291,7 @@ public class AccountResourceIntTest {
 
         // Duplicate login, different e-mail
         ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), validUser.getLogin(), validUser.getPassword(), validUser.getLogin(), validUser.getLastName(),
-            "alicejr@example.com", true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
+            "alicejr@example.com", true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getUpdates(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
 
         // Good user
         restMvc.perform(
@@ -320,6 +325,7 @@ public class AccountResourceIntTest {
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -328,7 +334,7 @@ public class AccountResourceIntTest {
 
         // Duplicate e-mail, different login
         ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), "johnjr", validUser.getPassword(), validUser.getLogin(), validUser.getLastName(),
-            validUser.getEmail(), true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
+            validUser.getEmail(), true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getUpdates(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
 
         // Good user
         restMvc.perform(
@@ -361,6 +367,7 @@ public class AccountResourceIntTest {
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,                   // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
@@ -391,6 +398,7 @@ public class AccountResourceIntTest {
             true,                   // activated
             "http://placehold.it/50x50", //imageUrl
             "en",                   // langKey
+                Boolean.TRUE,       // updates
             null,                   // createdBy
             null,                   // createdDate
             null,                   // lastModifiedBy
