@@ -59,6 +59,10 @@ public class User extends AbstractAuditingEntity {
     @Column(nullable = false)
     private boolean activated = false;
 
+    @NotNull
+    @Column(nullable = false)
+    private boolean updates;
+
     @Size(min = 2, max = 5)
     @Column(name = "lang_key", length = 5)
     private String langKey;
@@ -151,6 +155,14 @@ public class User extends AbstractAuditingEntity {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public boolean getUpdates() {
+        return updates;
+    }
+
+    public void setUpdates(boolean updates) {
+        this.updates = updates;
     }
 
     public String getActivationKey() {

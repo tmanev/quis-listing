@@ -33,3 +33,97 @@ id¦string_id¦language_code¦status¦value¦translation_date
 	<br/>
 	<em>Acest e-mail a fost trimis de la un formular de contact pe Quis Listing (http://quislisting.com)</em>
 </div>'¦2017-05-31 11:40:25.505
+3¦2¦bg¦0¦'<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${subject}">Активиране на профила {0}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>
+            Мили <span th:text="${user.login}"></span>
+        </p>
+        <p th:text="${activationText}">
+            Вашият профил {0} е създаден, моля използвайте линка по-долу, за да я активирате:
+        </p>
+        <p>
+           <a th:href="@{|${baseUrl}/${activatePage}?key=${user.activationKey}|}">Линк за активиране</a>
+        </p>
+        <p>
+            <span>С уважение, </span>
+            <br/>
+            <em th:text="${baseName}">Quis Listing</em>
+        </p>
+    </body>
+</html>'¦2017-05-31 11:40:25.505
+4¦2¦ro¦0¦'<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${subject}">Activarea contului {0}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>
+            Draga <span th:text="${user.login}"></span>
+        </p>
+        <p th:text="${activationText}">
+            Contul dumneavoastră {0} a fost creat, vă rugăm să accesați pagina de mai jos pentru a-l activa:
+        </p>
+        <p>
+            <a th:href="@{|${baseUrl}/${activatePage}?key=${user.activationKey}|}">Linkul de activare</a>
+        </p>
+        <p>
+            <span>U stimă, </span>
+            <br/>
+            <em th:text="${baseName}">Quis Listing</em>
+        </p>
+    </body>
+</html>'¦2017-05-31 11:40:25.505
+5¦3¦bg¦0¦'<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${title}">{0} възстановяване на паролата</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>
+            Мили <span th:text="${user.login}"></span>
+        </p>
+        <p th:text="${resetText1}">
+            За Вашия профил {0} е поискано възстановяване на паролата, моля, кликнете върху URL адреса по-долу, за да го нулирате:
+        </p>
+        <p>
+            <a th:href="@{|${baseUrl}/${resetFinishPage}?key=${user.resetKey}|}">Линк за нулиране</a>
+        </p>
+        <p>
+            <span>Поздрави, </span>
+            <br/>
+            <em th:text="${baseName}">Quis Listing</em>
+        </p>
+    </body>
+</html>
+'¦2017-05-31 11:40:25.505
+6¦3¦ro¦0¦'<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${title}">{0} resetare parola</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>
+            Dragă <span th:text="${user.login}"></span>
+        </p>
+        <p th:text="${resetText1}">
+            Pentru contul dvs. {0} a fost solicitată o resetare a parolei, faceți clic pe adresa de mai jos pentru ao reseta:
+        </p>
+        <p>
+            <a th:href="@{|${baseUrl}/${resetFinishPage}?key=${user.resetKey}|}">Resetați legătura</a>
+        </p>
+        <p>
+            <span>Salutari, </span>
+            <br/>
+            <em th:text="${baseName}">Quis Listing</em>
+        </p>
+    </body>
+</html>
+'¦2017-05-31 11:40:25.505

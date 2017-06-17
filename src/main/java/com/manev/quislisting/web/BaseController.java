@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.QlMenuConfig;
 import com.manev.quislisting.domain.QlMenuPosConfig;
+import com.manev.quislisting.domain.Translation;
+import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.LanguageTranslation;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 import com.manev.quislisting.repository.QlConfigRepository;
+import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
@@ -22,11 +25,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class BaseController {
 
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
 
+    protected PostRepository<AbstractPost> postRepository;
     protected NavMenuRepository navMenuRepository;
 
     protected QlConfigRepository qlConfigRepository;
@@ -36,12 +41,14 @@ public class BaseController {
     private LanguageTranslationRepository languageTranslationRepository;
 
     public BaseController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
-                          LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository, LocaleResolver localeResolver) {
+                          LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
+                          LocaleResolver localeResolver, PostRepository<AbstractPost> postRepository) {
         this.navMenuRepository = navMenuRepository;
         this.qlConfigRepository = qlConfigRepository;
         this.languageRepository = languageRepository;
         this.languageTranslationRepository = languageTranslationRepository;
         this.localeResolver = localeResolver;
+        this.postRepository = postRepository;
     }
 
     @ModelAttribute("baseModel")
@@ -137,6 +144,30 @@ public class BaseController {
         for (QlMenuPosConfig qlMenuPosConfig : qlMenuPosConfigs) {
             if (qlMenuPosConfig.getLanguageCode().equals(languageCode)) {
                 return qlMenuPosConfig;
+            }
+        }
+        return null;
+    }
+
+    protected AbstractPost retrievePage(String languageCode, String pageId) {
+        AbstractPost post;
+
+        post = postRepository.findOne(Long.valueOf(pageId));
+        Translation translation = post.getTranslation();
+        if (!translation.getLanguageCode().equals(languageCode)) {
+            Translation translationForLanguage = translationExists(languageCode, translation.getTranslationGroup().getTranslations());
+            if (translationForLanguage != null) {
+                post = postRepository.findOneByTranslation(translationForLanguage);
+            }
+        }
+
+        return post;
+    }
+
+    protected Translation translationExists(String languageCode, Set<Translation> translationList) {
+        for (Translation translation : translationList) {
+            if (translation.getLanguageCode().equals(languageCode)) {
+                return translation;
             }
         }
         return null;

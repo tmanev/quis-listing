@@ -19,8 +19,8 @@ public abstract class TermTaxonomy {
     @JoinColumn(name = "term_id")
     private Term term;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "translation_id")
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "translation_id", nullable = false, updatable = false)
     private Translation translation;
 
     @Column(name = "taxonomy", insertable = false, updatable = false)

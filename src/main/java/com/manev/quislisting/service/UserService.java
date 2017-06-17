@@ -88,7 +88,7 @@ public class UserService {
     }
 
     public User createUser(String login, String password, String firstName, String lastName, String email,
-        String imageUrl, String langKey) {
+        String imageUrl, String langKey, Boolean updates) {
 
         User newUser = new User();
         Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
@@ -104,6 +104,7 @@ public class UserService {
         newUser.setLangKey(langKey);
         // new user is not active
         newUser.setActivated(false);
+        newUser.setUpdates(updates);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         authorities.add(authority);

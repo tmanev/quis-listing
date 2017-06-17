@@ -1,7 +1,17 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.config.QuisListingProperties;
+import com.manev.quislisting.domain.EmailTemplate;
+import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
+import com.manev.quislisting.domain.post.discriminator.QlPage;
+import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.qlml.StringTranslation;
+import com.manev.quislisting.repository.EmailTemplateRepository;
+import com.manev.quislisting.repository.QlConfigRepository;
+import com.manev.quislisting.repository.post.PageRepository;
+import com.manev.quislisting.service.util.StringAndClassLoaderResourceResolver;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +22,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 import javax.mail.internet.MimeMessage;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Service for sending e-mails.
@@ -25,12 +37,13 @@ import java.util.Locale;
 @Service
 public class MailService {
 
-    private final Logger log = LoggerFactory.getLogger(MailService.class);
-
     private static final String USER = "user";
-
     private static final String BASE_URL = "baseUrl";
-
+    private static final String BASE_NAME = "baseName";
+    private static final String SUBJECT = "subject";
+    private static final String ACTIVATION_TEXT = "activationText";
+    public static final String ACTIVATE_PAGE = "activatePage";
+    private final Logger log = LoggerFactory.getLogger(MailService.class);
     private final QuisListingProperties quisListingProperties;
 
     private final JavaMailSender javaMailSender;
@@ -39,19 +52,43 @@ public class MailService {
 
     private final SpringTemplateEngine templateEngine;
 
+    private final EmailTemplateRepository emailTemplateRepository;
+
+    private SpringTemplateEngine springTemplateEngine;
+
+    private QlConfigRepository qlConfigRepository;
+
+    private PageRepository pageRepository;
+
     public MailService(QuisListingProperties quisListingProperties, JavaMailSender javaMailSender,
-                       MessageSource messageSource, SpringTemplateEngine templateEngine) {
+                       MessageSource messageSource, SpringTemplateEngine templateEngine,
+                       EmailTemplateRepository emailTemplateRepository, QlConfigRepository qlConfigRepository, PageRepository pageRepository) {
 
         this.quisListingProperties = quisListingProperties;
         this.javaMailSender = javaMailSender;
         this.messageSource = messageSource;
         this.templateEngine = templateEngine;
+        this.emailTemplateRepository = emailTemplateRepository;
+        this.qlConfigRepository = qlConfigRepository;
+        this.pageRepository = pageRepository;
+
+        TemplateResolver resolver = new TemplateResolver();
+        resolver.setResourceResolver(new StringAndClassLoaderResourceResolver());
+        resolver.setPrefix("mail/"); // src/main/resources/mail
+        resolver.setSuffix(".html");
+        resolver.setTemplateMode("HTML5");
+        resolver.setCharacterEncoding(CharEncoding.UTF_8);
+        resolver.setOrder(1);
+
+        this.springTemplateEngine = new SpringTemplateEngine();
+        this.springTemplateEngine.setTemplateEngineMessageSource(messageSource);
+        this.springTemplateEngine.setTemplateResolver(resolver);
     }
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
         log.debug("Send e-mail[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
-            isMultipart, isHtml, to, subject, content);
+                isMultipart, isHtml, to, subject, content);
 
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -72,12 +109,74 @@ public class MailService {
     public void sendActivationEmail(User user) {
         log.debug("Sending activation e-mail to '{}'", user.getEmail());
         Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
+
+        EmailTemplate activationEmailTemplate = emailTemplateRepository.findOneByName("activation_email");
+        if (activationEmailTemplate == null) {
+            throw new RuntimeException("Activation email not configured");
+        }
+
+        QlConfig siteNameConfig = qlConfigRepository.findOneByKey("site-name");
+        if (siteNameConfig == null) {
+            throw new RuntimeException("Site name not configured");
+        }
+
+        QlConfig activationPageConfig = qlConfigRepository.findOneByKey("activation-page-id");
+        if (activationPageConfig == null) {
+            throw new RuntimeException("Activation page not configured");
+        }
+        String activationPageSlug = getPageSlug(user, activationPageConfig);
+
+        String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
+        String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
+        Context context = new StringAndClassLoaderResourceResolver
+                .StringContext(getValueByLanguage(user.getLangKey(), activationEmailTemplate.getQlString()));
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-        String content = templateEngine.process("activationEmail", context);
-        String subject = messageSource.getMessage("email.activation.title", null, locale);
+        context.setVariable(BASE_NAME, siteNameConfig.getValue());
+        context.setVariable(ACTIVATE_PAGE, activationPageSlug);
+        context.setVariable(SUBJECT, subject);
+        context.setVariable(ACTIVATION_TEXT, activationText);
+        String content = springTemplateEngine.process("redundant", context);
         sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    private String getPageSlug(User user, QlConfig activationPageConfig) {
+        QlPage activationPage = pageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
+        Translation translation = activationPage.getTranslation();
+        String activationPageSlug = activationPage.getName();
+        if (!translation.getLanguageCode().equals(user.getLangKey())) {
+            // check if there is a translation
+            Translation translationForLanguage = translationExists(user.getLangKey(), translation.getTranslationGroup().getTranslations());
+            if (translationForLanguage != null) {
+                QlPage oneByTranslation = pageRepository.findOneByTranslation(translationForLanguage);
+                activationPageSlug = oneByTranslation.getName();
+            }
+        }
+        return activationPageSlug;
+    }
+
+    private Translation translationExists(String languageCode, Set<Translation> translationList) {
+        for (Translation translation : translationList) {
+            if (translation.getLanguageCode().equals(languageCode)) {
+                return translation;
+            }
+        }
+        return null;
+    }
+
+    private String getValueByLanguage(String languageCode, QlString qlString) {
+        if (qlString.getLanguageCode().equals(languageCode)) {
+            return qlString.getValue();
+        }
+        Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
+        for (StringTranslation translation : stringTranslation) {
+            if (translation.getLanguageCode().equals(languageCode)) {
+                return translation.getValue();
+            }
+        }
+
+        // if nothing is founded return default value from qlString
+        return qlString.getValue();
     }
 
     @Async
