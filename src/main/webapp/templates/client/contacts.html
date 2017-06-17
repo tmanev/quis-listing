@@ -24,7 +24,7 @@
                     Name </label>
                 <input class="form-control" v-model.trim="contact.name" v-on:input="$v.contact.name.$touch" id="name"/>
                 <span class="help-block" v-if="!$v.contact.name.required"
-                      th:text="#{page.contact.form.validation.required}">Field is required</span>
+                      th:text="#{validation.required}">Field is required</span>
             </div>
 
             <div class="form-group"
@@ -35,9 +35,9 @@
                 <input class="form-control" type="text" v-model="contact.email" v-on:input="$v.contact.email.$touch"
                        id="email"/>
                 <span class="help-block" v-if="!$v.contact.email.required"
-                      th:text="#{page.contact.form.validation.required}">Field is required</span>
+                      th:text="#{validation.required}">Field is required</span>
                 <span class="help-block" v-if="!$v.contact.email.email"
-                      th:text="#{page.contact.form.validation.invalidEmail}">Invalid email</span>
+                      th:text="#{validation.invalid_email}">Invalid email</span>
             </div>
 
             <div class="form-group">
@@ -55,7 +55,7 @@
             <div class="form-group">
                 <button id="sendButton" type="submit" class="btn btn-primary"
                         data-loading-text="Sending..."
-                        th:data-loading-text="#{page.contact.form.button.send.dataLoading}"
+                        th:attr="data-loading-text=#{page.contact.form.button.sending}"
                         th:text="#{page.contact.form.button.send}">Send
                 </button>
             </div>
