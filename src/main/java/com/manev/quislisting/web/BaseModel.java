@@ -1,6 +1,8 @@
 package com.manev.quislisting.web;
 
+import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
+import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 
@@ -12,6 +14,7 @@ public class BaseModel {
     private Set<NavMenuItem> topHeaderMenus;
     private Set<NavMenuItem> footerMenus;
     private List<ActiveLanguageBean> activeLanguages;
+    private AbstractPost profilePage;
 
     public Set<NavMenuItem> getTopHeaderMenus() {
         return topHeaderMenus;
@@ -50,5 +53,13 @@ public class BaseModel {
     public BaseModel activeLanugages(List<ActiveLanguageBean> activeLanguages) {
         this.activeLanguages = activeLanguages;
         return this;
+    }
+
+    public AbstractPost getProfilePage() {
+        return profilePage;
+    }
+
+    public void setProfilePage(AbstractPost profilePage) {
+        this.profilePage = profilePage;
     }
 }

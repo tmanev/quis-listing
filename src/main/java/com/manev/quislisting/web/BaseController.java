@@ -92,6 +92,13 @@ public class BaseController {
             baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
         }
 
+        QlConfig accountProfilePageConfig = qlConfigRepository.findOneByKey("account-profile-page-id");
+        if (accountProfilePageConfig == null) {
+            throw new RuntimeException("Account profile page expected to be configured");
+        }
+
+        baseModel.setProfilePage(retrievePage(language, accountProfilePageConfig.getValue()));
+
         return baseModel;
     }
 
