@@ -146,14 +146,14 @@ public class UserService {
     }
 
     /**
-     * Update basic information (first name, last name, email, language) for the current user.
+     * Update basic information (first name, last name, language) for the current user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey) {
+    public void updateUser(String firstName, String lastName, String langKey, Boolean updates) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setEmail(email);
             user.setLangKey(langKey);
+            user.setUpdates(updates);
             userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
         });
