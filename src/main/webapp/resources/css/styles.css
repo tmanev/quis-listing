@@ -1,8 +1,6 @@
 /*  bhoechie tab */
 div.bhoechie-tab-container{
-    z-index: 10;
     background-color: #ffffff;
-    padding: 0 !important;
     border-radius: 4px;
     -moz-border-radius: 4px;
     border:1px solid #ddd;
@@ -12,11 +10,9 @@ div.bhoechie-tab-container{
     background-clip: padding-box;
     opacity: 0.97;
     filter: alpha(opacity=97);
+    margin-bottom: 20px;
 }
 div.bhoechie-tab-menu{
-    padding-right: 0;
-    padding-left: 0;
-    padding-bottom: 0;
 }
 div.bhoechie-tab-menu div.list-group{
     margin-bottom: 0;
