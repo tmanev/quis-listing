@@ -8,6 +8,7 @@ import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
+import com.manev.quislisting.web.rest.vm.ChangePasswordVM;
 import com.manev.quislisting.web.rest.vm.KeyAndPasswordVM;
 import com.manev.quislisting.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -47,8 +49,10 @@ public class AccountResource {
 
     private LocaleResolver localeResolver;
 
+    private final PasswordEncoder passwordEncoder;
+
     public AccountResource(UserRepository userRepository, UserService userService,
-                           MailService mailService, EmailSendingService emailSendingService, MessageSource messageSource, LocaleResolver localeResolver) {
+                           MailService mailService, EmailSendingService emailSendingService, MessageSource messageSource, LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
 
         this.userRepository = userRepository;
         this.userService = userService;
@@ -56,6 +60,7 @@ public class AccountResource {
         this.emailSendingService = emailSendingService;
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -156,12 +161,25 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/change_password",
             produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity changePassword(@RequestBody String password) {
-        if (!checkPasswordLength(password)) {
-            return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
+    public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordVM password, HttpServletRequest request) {
+        Locale locale = localeResolver.resolveLocale(request);
+        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (oneByLogin.isPresent()) {
+            String oldPassFromDb = oneByLogin.get().getPassword();
+
+            if (!passwordEncoder.matches(password.getOldPassword(), oldPassFromDb)) {
+                return new ResponseEntity<>(messageSource.getMessage("page.account.profile.incorrect_old_password", null,
+                        locale), HttpStatus.BAD_REQUEST);
+            }
+            if (!password.getNewPassword().equals(password.getNewPasswordRepeat())) {
+                return new ResponseEntity<>(messageSource.getMessage("info.save_success", null,
+                        locale), HttpStatus.BAD_REQUEST);
+            }
+            userService.changePassword(password.getNewPassword());
+            log.debug("Changed password for User: {}", oneByLogin.get());
         }
-        userService.changePassword(password);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        return new ResponseEntity<String>("Success", HttpStatus.OK);
     }
 
     /**

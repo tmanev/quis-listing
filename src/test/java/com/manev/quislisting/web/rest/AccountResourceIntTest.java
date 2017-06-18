@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -72,6 +73,9 @@ public class AccountResourceIntTest {
     @Mock
     private LocaleResolver mockLocaleResolver;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private MockMvc restUserMockMvc;
 
     private MockMvc restMvc;
@@ -82,10 +86,10 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail((User) anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver);
+            new AccountResource(userRepository, userService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver);
+            new AccountResource(userRepository, mockUserService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
