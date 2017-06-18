@@ -1,7 +1,7 @@
 PasswordResetFinish = {
     init: function () {
         Vue.use(window.vuelidate.default);
-        const {required, minLength, between, email, sameAs} = window.validators;
+        const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
         const touchMap = new WeakMap();
 
@@ -18,7 +18,8 @@ PasswordResetFinish = {
                 form:{
                     password: {
                         required: required,
-                        minLength: minLength(6)
+                        minLength: minLength(6),
+                        maxLength: maxLength(100)
                     },
                     repeatPassword: {
                         sameAsPassword: sameAs('password')
