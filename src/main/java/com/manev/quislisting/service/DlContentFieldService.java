@@ -65,8 +65,7 @@ public class DlContentFieldService {
                 qlString.setStatus(0);
             }
         }
-        dlContentField = dlContentFieldRepository.save(dlContentField);
-        return dlContentField;
+        return dlContentFieldRepository.save(dlContentField);
     }
 
     public Page<DlContentFieldDTO> findAll(Pageable pageable) {

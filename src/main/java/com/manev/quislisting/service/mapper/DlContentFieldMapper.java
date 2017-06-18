@@ -83,49 +83,35 @@ public class DlContentFieldMapper {
     }
 
     private Set<DlCategory> getDlCategories(List<DlCategoryDTO> dlCategoryDTOList) {
+        Set<DlCategory> dlCategories = new HashSet<>();
         if (dlCategoryDTOList != null && !dlCategoryDTOList.isEmpty()) {
-            Set<DlCategory> dlCategories = new HashSet<>();
             for (DlCategoryDTO dlCategoryDTO : dlCategoryDTOList) {
                 dlCategories.add(dlCategoryMapper.dlCategoryDTOTodlCategory(dlCategoryDTO));
             }
-            return dlCategories;
         }
-        return null;
+        return dlCategories;
     }
 
     private List<DlCategoryDTO> getDlCategoriesDTO(Set<DlCategory> dlCategories) {
+        List<DlCategoryDTO> dlCategoryDTOList = new ArrayList<>();
         if (dlCategories != null && !dlCategories.isEmpty()) {
-            List<DlCategoryDTO> dlCategoryDTOList = new ArrayList<>();
             for (DlCategory dlCategory : dlCategories) {
                 dlCategoryDTOList.add(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
             }
-            return dlCategoryDTOList;
         }
-        return null;
+        return dlCategoryDTOList;
     }
 
-//    private Set<DlContentFieldItem> getDlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItemDTOS) {
-//        if (dlContentFieldItemDTOS != null && !dlContentFieldItemDTOS.isEmpty()) {
-//            Set<DlContentFieldItem> result = new HashSet<>();
-//            for (DlContentFieldItemDTO dlContentFieldItem : dlContentFieldItemDTOS) {
-//                result.add(dlContentFieldItemMapper.dlContentFieldItemDTOToDlContentFieldItem(dlContentFieldItem));
-//            }
-//            return result;
-//        }
-//        return null;
-//    }
-
     private List<DlContentFieldItemDTO> getDlContentFieldsDTO(Set<DlContentFieldItem> dlContentFieldItems) {
+        List<DlContentFieldItemDTO> result = new ArrayList<>();
         if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
-            List<DlContentFieldItemDTO> result = new ArrayList<>();
             for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
                 result.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem));
             }
-            return result;
         }
-        return null;
-    }
 
+        return result;
+    }
 
 
 }

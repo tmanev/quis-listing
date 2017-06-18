@@ -1,6 +1,5 @@
 package com.manev.quislisting.repository.qlml;
 
-import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.LanguageTranslation;
 import org.springframework.data.jpa.repository.JpaRepository;
 

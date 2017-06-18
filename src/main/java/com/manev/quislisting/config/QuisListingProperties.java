@@ -104,9 +104,6 @@ public class QuisListingProperties {
         private String from = "";
         private String baseUrl = "";
 
-        public Mail() {
-        }
-
         public String getFrom() {
             return this.from;
         }

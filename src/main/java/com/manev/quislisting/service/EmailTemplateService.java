@@ -38,7 +38,7 @@ public class EmailTemplateService {
         log.debug("Request to save EmailTemplateDTO : {}", emailTemplateDTO);
 
         EmailTemplate emailTemplate;
-        if (emailTemplateDTO.getId()==null) {
+        if (emailTemplateDTO.getId() == null) {
             emailTemplate = emailTemplateMapper.emailTemplateDTOToEmailTemplate(emailTemplateDTO);
         } else {
             emailTemplate = emailTemplateRepository.findOne(emailTemplateDTO.getId());
@@ -69,7 +69,7 @@ public class EmailTemplateService {
         emailTemplateRepository.delete(id);
     }
 
-    private EmailTemplate saveQlString(EmailTemplate emailTemplate, QlString qlString) {
+    private void saveQlString(EmailTemplate emailTemplate, QlString qlString) {
         if (emailTemplate.getQlString() == null) {
             emailTemplate.setQlString(new QlString()
                     .languageCode(qlString.getLanguageCode())
@@ -110,8 +110,7 @@ public class EmailTemplateService {
                 }
             }
         }
-        emailTemplate = emailTemplateRepository.save(emailTemplate);
-        return emailTemplate;
+        emailTemplateRepository.save(emailTemplate);
     }
 
     private StringTranslation findStringTranslationByLanguageCode(String languageCode, Set<StringTranslation> stringTranslations) {

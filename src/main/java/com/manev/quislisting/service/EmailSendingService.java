@@ -8,6 +8,7 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
+import com.manev.quislisting.exception.MissingConfigurationException;
 import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.post.PageRepository;
@@ -29,9 +30,13 @@ import java.util.Set;
 @Service
 public class EmailSendingService {
 
+    private static final String ACTIVATE_PAGE = "activatePage";
     private static final String BASE_URL = "baseUrl";
     private static final String USER = "user";
     private static final String BASE_NAME = "baseName";
+    private static final String SUBJECT = "subject";
+    private static final String ACTIVATION_TEXT = "activationText";
+    private static final String REDUNDANT = "redundant";
     private final Logger log = LoggerFactory.getLogger(EmailSendingService.class);
     private final MessageSource messageSource;
     private final QuisListingProperties quisListingProperties;
@@ -65,13 +70,13 @@ public class EmailSendingService {
     public void sendContactUs(ContactDTO contactDTO, String language) {
         QlConfig adminEmailConfig = qlConfigRepository.findOneByKey("admin_email");
         if (adminEmailConfig == null) {
-            throw new RuntimeException("Admin email not configured");
+            throw new MissingConfigurationException("Admin email not configured");
         }
 
         // try and find the template by the selected language
         EmailTemplate contactUsEmailTemplate = emailTemplateRepository.findOneByName("contact-us");
         if (contactUsEmailTemplate == null) {
-            throw new RuntimeException("Email template not configured");
+            throw new MissingConfigurationException("Email template not configured");
         }
 
         IContext context = new StringAndClassLoaderResourceResolver.StringContext(getValueByLanguage(language, contactUsEmailTemplate.getQlString()));
@@ -79,7 +84,7 @@ public class EmailSendingService {
         context.getVariables().put("email", contactDTO.getEmail());
         context.getVariables().put("subject", contactDTO.getSubject());
         context.getVariables().put("message", contactDTO.getMessage().replaceAll("(\r\n|\n)", "<br />"));
-        String actual = springTemplateEngine.process("redundant", context);
+        String actual = springTemplateEngine.process(REDUNDANT, context);
 
         mailService.sendEmail(adminEmailConfig.getValue(), contactDTO.getSubject(), actual, false, true);
     }
@@ -91,23 +96,23 @@ public class EmailSendingService {
         // try and find the template by the selected language
         EmailTemplate passwordResetEmailTemplate = emailTemplateRepository.findOneByName("password-reset");
         if (passwordResetEmailTemplate == null) {
-            throw new RuntimeException("Email template not configured");
+            throw new MissingConfigurationException("Email template not configured");
         }
 
         QlConfig siteNameConfig = qlConfigRepository.findOneByKey("site-name");
         if (siteNameConfig == null) {
-            throw new RuntimeException("Site name not configured");
+            throw new MissingConfigurationException("Site name not configured");
         }
 
         QlConfig resetFinishPageConfig = qlConfigRepository.findOneByKey("reset-password-finish-page-id");
         if (resetFinishPageConfig == null) {
-            throw new RuntimeException("Reset finish page not configured");
+            throw new MissingConfigurationException("Reset finish page not configured");
         }
 
         Context context = new StringAndClassLoaderResourceResolver.StringContext(getValueByLanguage(user.getLangKey(),
                 passwordResetEmailTemplate.getQlString()));
 
-        String title =  messageSource.getMessage("email.reset.title", new String[]{siteNameConfig.getValue()}, locale);
+        String title = messageSource.getMessage("email.reset.title", new String[]{siteNameConfig.getValue()}, locale);
 
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
@@ -116,8 +121,42 @@ public class EmailSendingService {
         context.setVariable("resetText1", messageSource.getMessage("email.reset.text1", new String[]{siteNameConfig.getValue()}, locale));
         context.setVariable("resetFinishPage", getPageSlug(user, resetFinishPageConfig));
 
-        String actual = springTemplateEngine.process("redundant", context);
+        String actual = springTemplateEngine.process(REDUNDANT, context);
         mailService.sendEmail(user.getEmail(), title, actual, false, true);
+    }
+
+    public void sendActivationEmail(User user) {
+        log.debug("Sending activation e-mail to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+
+        EmailTemplate activationEmailTemplate = emailTemplateRepository.findOneByName("activation_email");
+        if (activationEmailTemplate == null) {
+            throw new MissingConfigurationException("Activation email not configured");
+        }
+
+        QlConfig siteNameConfig = qlConfigRepository.findOneByKey("site-name");
+        if (siteNameConfig == null) {
+            throw new MissingConfigurationException("Site name not configured");
+        }
+
+        QlConfig activationPageConfig = qlConfigRepository.findOneByKey("activation-page-id");
+        if (activationPageConfig == null) {
+            throw new MissingConfigurationException("Activation page not configured");
+        }
+        String activationPageSlug = getPageSlug(user, activationPageConfig);
+
+        String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
+        String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
+        Context context = new StringAndClassLoaderResourceResolver
+                .StringContext(getValueByLanguage(user.getLangKey(), activationEmailTemplate.getQlString()));
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
+        context.setVariable(BASE_NAME, siteNameConfig.getValue());
+        context.setVariable(ACTIVATE_PAGE, activationPageSlug);
+        context.setVariable(SUBJECT, subject);
+        context.setVariable(ACTIVATION_TEXT, activationText);
+        String content = springTemplateEngine.process(REDUNDANT, context);
+        mailService.sendEmail(user.getEmail(), subject, content, false, true);
     }
 
     private String getPageSlug(User user, QlConfig activationPageConfig) {

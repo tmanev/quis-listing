@@ -1,7 +1,10 @@
 package com.manev.quislisting.service.qlml;
 
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
+import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -9,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,9 +25,11 @@ public class LanguageService {
 
     private final Logger log = LoggerFactory.getLogger(LanguageService.class);
 
+    private ActiveLanguageMapper activeLanguageMapper;
     private final LanguageRepository languageRepository;
 
-    public LanguageService(LanguageRepository languageRepository) {
+    public LanguageService(ActiveLanguageMapper activeLanguageMapper, LanguageRepository languageRepository) {
+        this.activeLanguageMapper = activeLanguageMapper;
         this.languageRepository = languageRepository;
     }
 
@@ -34,8 +41,7 @@ public class LanguageService {
      */
     public Language save(Language language) {
         log.debug("Request to save Language : {}", language);
-        Language result = languageRepository.save(language);
-        return result;
+        return languageRepository.save(language);
     }
 
     /**
@@ -66,8 +72,7 @@ public class LanguageService {
     @Transactional(readOnly = true)
     public Language findOne(Long id) {
         log.debug("Request to get Language : {}", id);
-        Language language = languageRepository.findOne(id);
-        return language;
+        return languageRepository.findOne(id);
     }
 
     /**
@@ -78,6 +83,20 @@ public class LanguageService {
     public void delete(Long id) {
         log.debug("Request to delete Language : {}", id);
         languageRepository.delete(id);
+    }
+
+    public List<ActiveLanguageDTO> findAllActiveLanguages(PostRepository postRepository) {
+        log.debug("Request to retrieve all active languages");
+
+        List<ActiveLanguageDTO> result = new ArrayList<>();
+
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        for (Language language : allByActive) {
+            Long count = postRepository.countByTranslation_languageCode(language.getCode());
+            result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
+        }
+
+        return result;
     }
 
 }

@@ -27,7 +27,7 @@ public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
-    private static final String SERVER_PORT = "9092";
+    private static final String SERVER_PORT = "9093";
 
     @Autowired
     private Environment env;

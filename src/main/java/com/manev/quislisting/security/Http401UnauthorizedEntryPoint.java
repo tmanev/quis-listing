@@ -14,6 +14,7 @@ public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
     private final Logger log = LoggerFactory.getLogger(Http401UnauthorizedEntryPoint.class);
 
     public Http401UnauthorizedEntryPoint() {
+        // default constructor
     }
 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg2) throws IOException, ServletException {

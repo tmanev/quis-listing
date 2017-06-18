@@ -1,7 +1,6 @@
 package com.manev.quislisting.domain.taxonomy;
 
 import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 
 import javax.persistence.*;
 

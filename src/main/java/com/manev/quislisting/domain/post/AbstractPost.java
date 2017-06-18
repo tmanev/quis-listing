@@ -35,9 +35,6 @@ public abstract class AbstractPost {
     @Column(name = "type", insertable = false, updatable = false)
     private String type;
 
-//    @Column
-//    private String status;
-
     @Column
     private ZonedDateTime created;
 
@@ -93,14 +90,6 @@ public abstract class AbstractPost {
     public void setType(String type) {
         this.type = type;
     }
-
-//    public String getStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(String status) {
-//        this.status = status;
-//    }
 
     public ZonedDateTime getCreated() {
         return created;

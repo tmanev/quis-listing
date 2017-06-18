@@ -12,24 +12,20 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.post.dto.QlPageDTO;
 import com.manev.quislisting.service.post.mapper.QlPageMapper;
+import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
-import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-//import com.manev.quislisting.service.post.mapper.QlPageMapper;
-//import com.manev.quislisting.service.post.mapper.QlPageMapper;
-
 
 @Service
 @Transactional
@@ -41,17 +37,16 @@ public class QlPageService {
     private LanguageRepository languageRepository;
     private UserRepository userRepository;
     private TranslationGroupRepository translationGroupRepository;
-
     private QlPageMapper qlPageMapper;
-    private ActiveLanguageMapper activeLanguageMapper;
+    private LanguageService languageService;
 
-    public QlPageService(PageRepository pageRepository, LanguageRepository languageRepository, UserRepository userRepository, TranslationGroupRepository translationGroupRepository, QlPageMapper qlPageMapper, ActiveLanguageMapper activeLanguageMapper) {
+    public QlPageService(PageRepository pageRepository, LanguageRepository languageRepository, UserRepository userRepository, TranslationGroupRepository translationGroupRepository, QlPageMapper qlPageMapper, LanguageService languageService) {
         this.pageRepository = pageRepository;
         this.languageRepository = languageRepository;
         this.userRepository = userRepository;
         this.translationGroupRepository = translationGroupRepository;
         this.qlPageMapper = qlPageMapper;
-        this.activeLanguageMapper = activeLanguageMapper;
+        this.languageService = languageService;
     }
 
     public QlPageDTO save(QlPageDTO qlPageDTO) {
@@ -67,17 +62,23 @@ public class QlPageService {
         QlPage page;
         if (qlPageDTO.getId() == null) {
             page = qlPageMapper.pageDTOtoPage(qlPageDTO);
-            Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-            page.setUser(oneByLogin.get());
-            ZonedDateTime currentDateTime = ZonedDateTime.now();
-            page.setCreated(currentDateTime);
-            page.setModified(currentDateTime);
-            page.setTranslation(
-                    TranslationBuilder.aTranslation()
-                            .withLanguageCode(qlPageDTO.getLanguageCode())
-                            .withTranslationGroup(translationGroup)
-                            .withSourceLanguageCode(qlPageDTO.getSourceLanguageCode())
-                            .build());
+            String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+            Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+            if (oneByLogin.isPresent()) {
+                page.setUser(oneByLogin.get());
+                ZonedDateTime currentDateTime = ZonedDateTime.now();
+                page.setCreated(currentDateTime);
+                page.setModified(currentDateTime);
+                page.setTranslation(
+                        TranslationBuilder.aTranslation()
+                                .withLanguageCode(qlPageDTO.getLanguageCode())
+                                .withTranslationGroup(translationGroup)
+                                .withSourceLanguageCode(qlPageDTO.getSourceLanguageCode())
+                                .build());
+            } else {
+                throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
+                        "database");
+            }
         } else {
             QlPage existingQlPage = pageRepository.findOne(qlPageDTO.getId());
             page = qlPageMapper.pageDTOtoPage(existingQlPage, qlPageDTO);
@@ -112,15 +113,6 @@ public class QlPageService {
 
     public List<ActiveLanguageDTO> findAllActiveLanguages() {
         log.debug("Request to retrieve all active languages");
-
-        List<ActiveLanguageDTO> result = new ArrayList<>();
-
-        List<Language> allByActive = languageRepository.findAllByActive(true);
-        for (Language language : allByActive) {
-            Long count = pageRepository.countByTranslation_languageCode(language.getCode());
-            result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
-        }
-
-        return result;
+        return languageService.findAllActiveLanguages(pageRepository);
     }
 }

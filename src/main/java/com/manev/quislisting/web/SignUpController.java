@@ -12,7 +12,7 @@ import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
-import com.manev.quislisting.service.MailService;
+import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.web.model.SignUpUserBean;
 import org.springframework.context.MessageSource;
@@ -37,20 +37,20 @@ public class SignUpController extends BaseController {
     private MessageSource messageSource;
     private UserRepository userRepository;
     private UserService userService;
-    private MailService mailService;
+    private EmailSendingService emailSendingService;
 
     public SignUpController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                             LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
                             LocaleResolver localeResolver, PageRepository pageRepository, MessageSource messageSource,
-                            UserRepository userRepository, UserService userService, MailService mailService,
-                            PostRepository<AbstractPost> postRepository) {
+                            UserRepository userRepository, UserService userService,
+                            PostRepository<AbstractPost> postRepository, EmailSendingService emailSendingService) {
         super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
                 postRepository);
         this.pageRepository = pageRepository;
         this.messageSource = messageSource;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.mailService = mailService;
+        this.emailSendingService = emailSendingService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -102,7 +102,7 @@ public class SignUpController extends BaseController {
             User user = userService.createUser(signUpUserBean.getEmail(), signUpUserBean.getPassword(),
                     signUpUserBean.getFirstName(), signUpUserBean.getLastName(),
                     signUpUserBean.getEmail().toLowerCase(), null, locale.getLanguage(), signUpUserBean.getUpdates());
-            mailService.sendActivationEmail(user);
+            emailSendingService.sendActivationEmail(user);
 
             model.addAttribute("success", "success");
             // redirect info for registration and verification email is sent

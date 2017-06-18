@@ -2,6 +2,10 @@ package com.manev.quislisting.config;
 
 public class Constants {
 
+    private Constants() {
+        // hide the implicit public one
+    }
+
     //Regex for acceptable logins
     public static final String LOGIN_REGEX = "^[_'.@A-Za-z0-9-]*$";
 

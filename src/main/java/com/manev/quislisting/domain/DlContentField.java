@@ -84,7 +84,7 @@ public class DlContentField {
     private QlString qlString;
 
     @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="dlContentField")
-    public Set<DlContentFieldItem> dlContentFieldItems;
+    private Set<DlContentFieldItem> dlContentFieldItems;
 
     public Long getId() {
         return id;

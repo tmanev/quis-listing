@@ -2,6 +2,7 @@ package com.manev.quislisting.web.rest.post;
 
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -36,9 +37,11 @@ public class DlListingResource {
 
     private final Logger log = LoggerFactory.getLogger(DlListingResource.class);
     private final DlListingService dlListingService;
+    private final LanguageService languageService;
 
-    public DlListingResource(DlListingService dlListingService) {
+    public DlListingResource(DlListingService dlListingService, LanguageService languageService) {
         this.dlListingService = dlListingService;
+        this.languageService = languageService;
     }
 
     @RequestMapping(method = RequestMethod.POST,

@@ -14,7 +14,7 @@ public class DlContentFieldItem {
 
     @ManyToOne
     @JoinColumn(name = "dl_content_field_id")
-    public DlContentField dlContentField;
+    private DlContentField dlContentField;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "string_id")

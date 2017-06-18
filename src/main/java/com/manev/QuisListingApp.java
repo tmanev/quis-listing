@@ -3,7 +3,6 @@ package com.manev;
 import com.manev.quislisting.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
@@ -22,8 +21,11 @@ public class QuisListingApp {
 
     private static final Logger log = LoggerFactory.getLogger(QuisListingApp.class);
 
-    @Autowired
     private Environment env;
+
+    public QuisListingApp(Environment env) {
+        this.env = env;
+    }
 
     /**
      * Main method, used to run the application.
@@ -51,7 +53,8 @@ public class QuisListingApp {
      */
     @PostConstruct
     public void initApplication() {
-        log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
+        String activeProfilesStr = Arrays.toString(env.getActiveProfiles());
+        log.info("Running with Spring profile(s) : {}", activeProfilesStr);
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
         if (activeProfiles.contains(Constants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(Constants.SPRING_PROFILE_TEST)) {
             log.error("You have misconfigured your application! It should not run " +

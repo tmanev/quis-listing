@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,24 +53,26 @@ public class AttachmentService {
 
     public AttachmentDTO saveAttachmentAsTemp(AttachmentDTO attachmentDTO) {
         Attachment attachment = getAttachment(attachmentDTO);
-
         attachment.setStatus(Attachment.Status.TEMP);
-        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        attachment.setUser(oneByLogin.get());
-
-        attachment = postRepository.save(attachment);
-        return attachmentMapper.attachmentToAttachmentDTO(attachment);
+        return saveAttachment(attachment, SecurityUtils.getCurrentUserLogin());
     }
 
     public AttachmentDTO saveAttachmentByAdmin(AttachmentDTO attachmentDTO) {
         Attachment attachment = getAttachment(attachmentDTO);
-
         attachment.setStatus(Attachment.Status.BY_ADMIN);
-        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        attachment.setUser(oneByLogin.get());
+        return saveAttachment(attachment, SecurityUtils.getCurrentUserLogin());
+    }
 
-        attachment = postRepository.save(attachment);
-        return attachmentMapper.attachmentToAttachmentDTO(attachment);
+    private AttachmentDTO saveAttachment(Attachment attachment, String currentUserLogin) {
+        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+        if (oneByLogin.isPresent()) {
+            attachment.setUser(oneByLogin.get());
+            Attachment attachmentSaved = postRepository.save(attachment);
+            return attachmentMapper.attachmentToAttachmentDTO(attachmentSaved);
+        } else {
+            throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
+                    "database");
+        }
     }
 
     private Attachment getAttachment(AttachmentDTO attachmentDTO) {

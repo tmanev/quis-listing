@@ -83,13 +83,13 @@ public class AccountResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendActivationEmail((User) anyObject());
+        doNothing().when(mockEmailSendingService).sendActivationEmail((User) anyObject());
 
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+                new AccountResource(userRepository, userService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+                new AccountResource(userRepository, mockUserService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
@@ -156,27 +156,27 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterValid() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM(
-            null,                   // id
-            "joe",                  // login
-            "password",             // password
-            "Joe",                  // firstName
-            "Shmoe",                // lastName
-            "joe@example.com",      // e-mail
-            true,                   // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
-            Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+                null,                   // id
+                "joe",                  // login
+                "password",             // password
+                "Joe",                  // firstName
+                "Shmoe",                // lastName
+                "joe@example.com",      // e-mail
+                true,                   // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
+                Boolean.TRUE,                   // updates
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(validUser)))
-            .andExpect(status().isCreated());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(validUser)))
+                .andExpect(status().isCreated());
 
         Optional<User> user = userRepository.findOneByLogin("joe");
         assertThat(user.isPresent()).isTrue();
@@ -186,27 +186,27 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterInvalidLogin() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM(
-            null,                   // id
-            "funky-log!n",          // login <-- invalid
-            "password",             // password
-            "Funky",                // firstName
-            "One",                  // lastName
-            "funky@example.com",    // e-mail
-            true,                   // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,                   // id
+                "funky-log!n",          // login <-- invalid
+                "password",             // password
+                "Funky",                // firstName
+                "One",                  // lastName
+                "funky@example.com",    // e-mail
+                true,                   // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restUserMockMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
-            .andExpect(status().isBadRequest());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
+                .andExpect(status().isBadRequest());
 
         Optional<User> user = userRepository.findOneByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
@@ -216,27 +216,27 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterInvalidEmail() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM(
-            null,               // id
-            "bob",              // login
-            "password",         // password
-            "Bob",              // firstName
-            "Green",            // lastName
-            "invalid",          // e-mail <-- invalid
-            true,               // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,               // id
+                "bob",              // login
+                "password",         // password
+                "Bob",              // firstName
+                "Green",            // lastName
+                "invalid",          // e-mail <-- invalid
+                true,               // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restUserMockMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
-            .andExpect(status().isBadRequest());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
+                .andExpect(status().isBadRequest());
 
         Optional<User> user = userRepository.findOneByLogin("bob");
         assertThat(user.isPresent()).isFalse();
@@ -246,27 +246,27 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterInvalidPassword() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM(
-            null,               // id
-            "bob",              // login
-            "123",              // password with only 3 digits
-            "Bob",              // firstName
-            "Green",            // lastName
-            "bob@example.com",  // e-mail
-            true,               // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,               // id
+                "bob",              // login
+                "123",              // password with only 3 digits
+                "Bob",              // firstName
+                "Green",            // lastName
+                "bob@example.com",  // e-mail
+                true,               // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restUserMockMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
-            .andExpect(status().isBadRequest());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
+                .andExpect(status().isBadRequest());
 
         Optional<User> user = userRepository.findOneByLogin("bob");
         assertThat(user.isPresent()).isFalse();
@@ -277,39 +277,39 @@ public class AccountResourceIntTest {
     public void testRegisterDuplicateLogin() throws Exception {
         // Good
         ManagedUserVM validUser = new ManagedUserVM(
-            null,                   // id
-            "alice",                // login
-            "password",             // password
-            "Alice",                // firstName
-            "Something",            // lastName
-            "alice@example.com",    // e-mail
-            true,                   // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,                   // id
+                "alice",                // login
+                "password",             // password
+                "Alice",                // firstName
+                "Something",            // lastName
+                "alice@example.com",    // e-mail
+                true,                   // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         // Duplicate login, different e-mail
         ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), validUser.getLogin(), validUser.getPassword(), validUser.getLogin(), validUser.getLastName(),
-            "alicejr@example.com", true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getUpdates(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
+                "alicejr@example.com", true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getUpdates(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
 
         // Good user
         restMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(validUser)))
-            .andExpect(status().isCreated());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(validUser)))
+                .andExpect(status().isCreated());
 
         // Duplicate login
         restMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
-            .andExpect(status().is4xxClientError());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
+                .andExpect(status().is4xxClientError());
 
         Optional<User> userDup = userRepository.findOneByEmail("alicejr@example.com");
         assertThat(userDup.isPresent()).isFalse();
@@ -320,39 +320,39 @@ public class AccountResourceIntTest {
     public void testRegisterDuplicateEmail() throws Exception {
         // Good
         ManagedUserVM validUser = new ManagedUserVM(
-            null,                   // id
-            "john",                 // login
-            "password",             // password
-            "John",                 // firstName
-            "Doe",                  // lastName
-            "john@example.com",     // e-mail
-            true,                   // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,                   // id
+                "john",                 // login
+                "password",             // password
+                "John",                 // firstName
+                "Doe",                  // lastName
+                "john@example.com",     // e-mail
+                true,                   // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         // Duplicate e-mail, different login
         ManagedUserVM duplicatedUser = new ManagedUserVM(validUser.getId(), "johnjr", validUser.getPassword(), validUser.getLogin(), validUser.getLastName(),
-            validUser.getEmail(), true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getUpdates(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
+                validUser.getEmail(), true, validUser.getImageUrl(), validUser.getLangKey(), validUser.getUpdates(), validUser.getCreatedBy(), validUser.getCreatedDate(), validUser.getLastModifiedBy(), validUser.getLastModifiedDate(), validUser.getAuthorities());
 
         // Good user
         restMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(validUser)))
-            .andExpect(status().isCreated());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(validUser)))
+                .andExpect(status().isCreated());
 
         // Duplicate e-mail
         restMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
-            .andExpect(status().is4xxClientError());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
+                .andExpect(status().is4xxClientError());
 
         Optional<User> userDup = userRepository.findOneByLogin("johnjr");
         assertThat(userDup.isPresent()).isFalse();
@@ -362,59 +362,59 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterAdminIsIgnored() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM(
-            null,                   // id
-            "badguy",               // login
-            "password",             // password
-            "Bad",                  // firstName
-            "Guy",                  // lastName
-            "badguy@example.com",   // e-mail
-            true,                   // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,                   // id
+                "badguy",               // login
+                "password",             // password
+                "Bad",                  // firstName
+                "Guy",                  // lastName
+                "badguy@example.com",   // e-mail
+                true,                   // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,                   // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.ADMIN)));
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.ADMIN)));
 
         restMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(validUser)))
-            .andExpect(status().isCreated());
+                post("/api/register")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(validUser)))
+                .andExpect(status().isCreated());
 
         Optional<User> userDup = userRepository.findOneByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
         assertThat(userDup.get().getAuthorities()).hasSize(1)
-            .containsExactly(authorityRepository.findOne(AuthoritiesConstants.USER));
+                .containsExactly(authorityRepository.findOne(AuthoritiesConstants.USER));
     }
 
     @Test
     @Transactional
     public void testSaveInvalidLogin() throws Exception {
         UserDTO invalidUser = new UserDTO(
-            null,                   // id
-            "funky-log!n",          // login <-- invalid
-            "Funky",                // firstName
-            "One",                  // lastName
-            "funky@example.com",    // e-mail
-            true,                   // activated
-            "http://placehold.it/50x50", //imageUrl
-            "en",                   // langKey
+                null,                   // id
+                "funky-log!n",          // login <-- invalid
+                "Funky",                // firstName
+                "One",                  // lastName
+                "funky@example.com",    // e-mail
+                true,                   // activated
+                "http://placehold.it/50x50", //imageUrl
+                "en",                   // langKey
                 Boolean.TRUE,       // updates
-            null,                   // createdBy
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null,                   // lastModifiedDate
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER))
+                null,                   // createdBy
+                null,                   // createdDate
+                null,                   // lastModifiedBy
+                null,                   // lastModifiedDate
+                new HashSet<>(Arrays.asList(AuthoritiesConstants.USER))
         );
 
         restUserMockMvc.perform(
-            post("/api/account")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
-            .andExpect(status().isBadRequest());
+                post("/api/account")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
+                .andExpect(status().isBadRequest());
 
         Optional<User> user = userRepository.findOneByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();

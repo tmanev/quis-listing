@@ -2,14 +2,11 @@ package com.manev.quislisting.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.manev.quislisting.config.Constants;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Email;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -39,7 +36,7 @@ public class User extends AbstractAuditingEntity {
     @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
-    @Column(name = "password_hash",length = 60)
+    @Column(name = "password_hash", length = 60)
     private String password;
 
     @Size(max = 50)
@@ -216,11 +213,7 @@ public class User extends AbstractAuditingEntity {
 
         User user = (User) o;
 
-        if (!login.equals(user.login)) {
-            return false;
-        }
-
-        return true;
+        return login.equals(user.login);
     }
 
     @Override

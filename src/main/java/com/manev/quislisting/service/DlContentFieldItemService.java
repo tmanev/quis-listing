@@ -4,12 +4,13 @@ import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.repository.DlContentFieldItemRepository;
-import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldItemMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class DlContentFieldItemService {
@@ -90,7 +91,7 @@ public class DlContentFieldItemService {
         }
     }
 
-    private DlContentFieldItem saveQlString(DlContentFieldItem dlContentFieldItem) {
+    private void saveQlString(DlContentFieldItem dlContentFieldItem) {
         if (dlContentFieldItem.getQlString() == null) {
             dlContentFieldItem.setQlString(new QlString().languageCode("en").context("dl-content-field-item").name("dl-content-field-item-#" + dlContentFieldItem.getId()).value(dlContentFieldItem.getValue()).status(0));
         } else {
@@ -100,8 +101,8 @@ public class DlContentFieldItemService {
                 qlString.setStatus(0);
             }
         }
-        dlContentFieldItem = dlContentFieldItemRepository.save(dlContentFieldItem);
-        return dlContentFieldItem;
+
+        dlContentFieldItemRepository.save(dlContentFieldItem);
     }
 
 }

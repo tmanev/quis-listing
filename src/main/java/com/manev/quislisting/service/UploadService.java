@@ -4,6 +4,8 @@ import com.manev.quislisting.service.post.AttachmentService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.storage.StorageService;
 import com.manev.quislisting.service.util.AttachmentUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,8 @@ import java.util.List;
 @Service
 @Transactional
 public class UploadService {
+
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private AttachmentService attachmentService;
     private StorageService storageService;
@@ -30,7 +34,7 @@ public class UploadService {
             AttachmentDTO attachmentDTO = storageService.store(file);
             savedAttachmentDTO = attachmentService.saveAttachmentAsTemp(attachmentDTO);
         } catch (IOException | RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Attachment could not be uploaded", e);
         }
         return savedAttachmentDTO;
     }
@@ -41,7 +45,7 @@ public class UploadService {
             AttachmentDTO attachmentDTO = storageService.store(file);
             savedAttachmentDTO = attachmentService.saveAttachmentByAdmin(attachmentDTO);
         } catch (IOException | RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Attachment could not be uploaded", e);
         }
         return savedAttachmentDTO;
     }
@@ -57,7 +61,7 @@ public class UploadService {
             storageService.delete(filePaths);
             attachmentService.delete(attachmentDTO.getId());
         } catch (IOException | RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Attachment could not be uploaded", e);
         }
     }
 

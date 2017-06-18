@@ -6,12 +6,10 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
-import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
-import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
@@ -20,17 +18,18 @@ import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
+import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.storage.StorageService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
-import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import com.manev.quislisting.service.util.AttachmentUtil;
 import com.manev.quislisting.service.util.SlugUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,26 +48,22 @@ public class DlListingService {
 
     private DlListingRepository dlListingRepository;
     private UserRepository userRepository;
-    private LanguageRepository languageRepository;
     private DlCategoryRepository dlCategoryRepository;
     private DlLocationRepository dlLocationRepository;
-
     private DlListingMapper dlListingMapper;
-    private ActiveLanguageMapper activeLanguageMapper;
     private AttachmentMapper attachmentMapper;
-
     private StorageService storageService;
+    private LanguageService languageService;
 
-    public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository, LanguageRepository languageRepository, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, DlListingMapper dlListingMapper, ActiveLanguageMapper activeLanguageMapper, AttachmentMapper attachmentMapper, StorageService storageService) {
+    public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, DlListingMapper dlListingMapper, AttachmentMapper attachmentMapper, StorageService storageService, LanguageService languageService) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
-        this.languageRepository = languageRepository;
         this.dlCategoryRepository = dlCategoryRepository;
         this.dlLocationRepository = dlLocationRepository;
         this.dlListingMapper = dlListingMapper;
-        this.activeLanguageMapper = activeLanguageMapper;
         this.attachmentMapper = attachmentMapper;
         this.storageService = storageService;
+        this.languageService = languageService;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -81,21 +76,28 @@ public class DlListingService {
 
             setCommonProperties(dlListingDTO, now, dlListingForSaving);
         } else {
-            Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-            dlListingForSaving = new DlListing();
+            String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+            Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+            if (oneByLogin.isPresent()) {
+                dlListingForSaving = new DlListing();
 
-            setCommonProperties(dlListingDTO, now, dlListingForSaving);
+                setCommonProperties(dlListingDTO, now, dlListingForSaving);
 
-            dlListingForSaving.setStatus(DlListing.Status.UNFINISHED);
-            dlListingForSaving.setTranslation(
-                    TranslationBuilder.aTranslation()
-                            .withLanguageCode(dlListingDTO.getLanguageCode())
-                            .withTranslationGroup(new TranslationGroup())
-                            .build()
-            );
+                dlListingForSaving.setStatus(DlListing.Status.UNFINISHED);
+                dlListingForSaving.setTranslation(
+                        TranslationBuilder.aTranslation()
+                                .withLanguageCode(dlListingDTO.getLanguageCode())
+                                .withTranslationGroup(new TranslationGroup())
+                                .build()
+                );
 
-            dlListingForSaving.setCreated(now);
-            dlListingForSaving.setUser(oneByLogin.get());
+                dlListingForSaving.setCreated(now);
+                dlListingForSaving.setUser(oneByLogin.get());
+            } else {
+                throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
+                        "database");
+            }
+
         }
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
@@ -178,20 +180,6 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(result);
     }
 
-    public List<ActiveLanguageDTO> findAllActiveLanguages() {
-        log.debug("Request to retrieve all active languages");
-
-        List<ActiveLanguageDTO> result = new ArrayList<>();
-
-        List<Language> allByActive = languageRepository.findAllByActive(true);
-        for (Language language : allByActive) {
-            Long count = dlListingRepository.countByTranslation_languageCode(language.getCode());
-            result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
-        }
-
-        return result;
-    }
-
     public boolean publish(DlListingDTO dlListingDTO) {
         DlListing dlListing = dlListingRepository.findOne(dlListingDTO.getId());
         dlListing.setStatus(DlListing.Status.PUBLISH);
@@ -202,19 +190,27 @@ public class DlListingService {
     public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException, RepositoryException {
         DlListing dlListing = dlListingRepository.findOne(id);
 
-        for (MultipartFile file : fileMap.values()) {
-            AttachmentDTO attachmentDto = storageService.store(file);
-            Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+        if (oneByLogin.isPresent()) {
+            for (MultipartFile file : fileMap.values()) {
+                AttachmentDTO attachmentDto = storageService.store(file);
+                Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
+                attachment.setStatus(Attachment.Status.LISTING);
+                attachment.setUser(oneByLogin.get());
+                dlListing.addAttachment(attachment);
+            }
 
-            attachment.setStatus(Attachment.Status.LISTING);
-            Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-            attachment.setUser(oneByLogin.get());
-
-            dlListing.addAttachment(attachment);
+            DlListing result = dlListingRepository.save(dlListing);
+            return dlListingMapper.dlListingToDlListingDTO(result);
+        } else {
+            throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
+                    "database");
         }
-
-        DlListing result = dlListingRepository.save(dlListing);
-        return dlListingMapper.dlListingToDlListingDTO(result);
     }
 
+    public List<ActiveLanguageDTO> findAllActiveLanguages() {
+        log.debug("Request to retrieve all active languages");
+        return languageService.findAllActiveLanguages(dlListingRepository);
+    }
 }

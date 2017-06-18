@@ -16,7 +16,6 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.repository.post.AttachmentRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
@@ -25,6 +24,7 @@ import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
+import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.util.SlugUtil;
@@ -127,7 +127,7 @@ public class DlListingResourceTest extends GenericResourceTest {
     private DlContentFieldRepository dlContentFieldRepository;
 
     @Autowired
-    private AttachmentRepository attachmentRepository;
+    private LanguageService languageService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -189,7 +189,7 @@ public class DlListingResourceTest extends GenericResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingResource dlListingResource = new DlListingResource(dlListingService);
+        DlListingResource dlListingResource = new DlListingResource(dlListingService, languageService);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();

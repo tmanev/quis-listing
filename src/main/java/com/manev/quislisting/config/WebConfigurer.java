@@ -2,7 +2,6 @@ package com.manev.quislisting.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.MimeMappings;
@@ -26,11 +25,14 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
 
     private final Logger log = LoggerFactory.getLogger(WebConfigurer.class);
 
-    @Autowired
     private Environment env;
 
-    @Autowired
     private QuisListingProperties quisListingProperties;
+
+    public WebConfigurer(Environment env, QuisListingProperties quisListingProperties) {
+        this.env = env;
+        this.quisListingProperties = quisListingProperties;
+    }
 
     /**
      * Customize the Servlet engine: Mime types, the document root, the cache.
@@ -77,7 +79,8 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         if (env.getActiveProfiles().length != 0) {
-            log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
+            String activeProfilesStr = Arrays.toString(env.getActiveProfiles());
+            log.info("Web application configuration, using profiles: {}", activeProfilesStr);
         }
 
         if (env.acceptsProfiles(Constants.SPRING_PROFILE_DEVELOPMENT)) {
