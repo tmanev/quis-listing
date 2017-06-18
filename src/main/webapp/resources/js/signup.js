@@ -33,7 +33,7 @@ SignUp = {
                     },
                     password: {
                         required: required,
-                        minLength: minLength(4),
+                        minLength: minLength(6),
                         maxLength: maxLength(100)
                     }
                 }
