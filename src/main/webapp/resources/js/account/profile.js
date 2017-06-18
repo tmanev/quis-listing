@@ -15,6 +15,11 @@ Profile = {
                     lastName: user.lastName,
                     updates: user.updates,
                     langKey: user.langKey
+                },
+                password: {
+                    oldPassword: '',
+                    newPassword: '',
+                    newPasswordRepeat: ''
                 }
             },
             validations: {
@@ -24,6 +29,19 @@ Profile = {
                     },
                     lastName: {
                         maxLength: maxLength(50)
+                    }
+                },
+                password: {
+                    oldPassword: {
+                        required: required
+                    },
+                    newPassword: {
+                        required: required,
+                        minLength: minLength(6),
+                        maxLength: maxLength(100)
+                    },
+                    newPasswordRepeat: {
+                        sameAsPassword: sameAs('newPassword')
                     }
                 }
             },
@@ -51,6 +69,46 @@ Profile = {
                         }).then(function (response) {
                             console.log('Success!:', response.data);
 
+                            this.$v.profile.$reset();
+                            $.notify({
+                                message: response.bodyText
+                            }, {
+                                type: 'success'
+                            });
+                            $btn.button('reset');
+                            // trigger successful block
+                        }, function (response) {
+                            console.log('Error!:', response.data);
+                            $.notify({
+                                message: response.data
+                            }, {
+                                type: 'danger'
+                            });
+                            $btn.button('reset');
+                        });
+                    }
+                },
+                onSubmitPassword: function (event) {
+                    if (this.$v.password.$invalid) {
+                        console.log("Please fill the required fields!");
+                        // show notification
+
+                        this.$v.password.$touch();
+                    } else {
+                        console.log("valid");
+                        var $btn = $('#btnSavePassword').button('loading');
+                        this.$http({
+                            url: '/api/account/change_password',
+                            body: this.password,
+                            method: 'POST'
+                        }).then(function (response) {
+                            console.log('Success!:', response.data);
+
+                            this.profile = {
+                                oldPassword: '',
+                                newPassword: '',
+                                newPasswordRepeat: ''
+                            };
                             this.$v.profile.$reset();
                             $.notify({
                                 message: response.bodyText

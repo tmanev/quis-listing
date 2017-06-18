@@ -23,7 +23,7 @@
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
                 <div class="list-group">
                     <a href="#" class="list-group-item active text-center"
-                        th:text="#{page.account.profile.text_01}">
+                       th:text="#{page.account.profile.text_01}">
                         Information
                     </a>
                     <a href="#" class="list-group-item text-center"
@@ -39,7 +39,7 @@
                           v-on:submit.prevent="onSubmit($event)">
                         <div class="form-group">
                             <label for="inputEmail3" class="col-sm-2 control-label"
-                                th:text="#{page.account.profile.form.label.email}">Email</label>
+                                   th:text="#{page.account.profile.form.label.email}">Email</label>
                             <div class="col-sm-10">
                                 <input type="hidden" th:field="*{login}"
                                        v-model="profile.login"/>
@@ -121,14 +121,82 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-primary" id="btnSaveProfile"
                                         th:attr="data-loading-text=#{page.account.profile.form.saving}"
-                                    th:text="#{page.account.profile.form.btn_save}">Save</button>
+                                        th:text="#{page.account.profile.form.btn_save}">Save
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
                 <!-- Email Notifications -->
                 <div class="bhoechie-tab-content">
-                    Dab
+                    <form id="passwordChangeForm" method="post" class="form-horizontal"
+                          v-on:submit.prevent="onSubmitPassword($event)">
+                        <div class="form-group"
+                             v-bind:class="{ 'has-error': $v.password.oldPassword.$error, 'has-success': $v.password.oldPassword.$dirty &amp;&amp; !$v.password.oldPassword.$invalid }">
+                            <label class="col-sm-2 control-label"
+                                   th:text="#{page.account.profile.password_change.label.old_password}">Old
+                                password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control"
+                                       v-model="password.oldPassword"
+                                       v-on:input="delayTouch($v.password.oldPassword)"
+                                />
+                                <span class="help-block"
+                                      v-if="!$v.password.oldPassword.required &amp;&amp; $v.password.oldPassword.$dirty"
+                                      th:text="#{validation.required}">Field is required</span>
+                            </div>
+                        </div>
+                        <div class="form-group"
+                             v-bind:class="{ 'has-error': $v.password.newPassword.$error, 'has-success': $v.password.newPassword.$dirty &amp;&amp; !$v.password.newPassword.$invalid }">
+                            <label class="col-sm-2 control-label"
+                                   th:text="#{page.account.profile.password_change.label.new_password}">New
+                                password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control"
+                                       v-model="password.newPassword"
+                                       v-on:input="delayTouch($v.password.newPassword)"
+                                />
+                                <span class="help-block"
+                                      v-if="!$v.password.newPassword.required &amp;&amp; $v.password.newPassword.$dirty"
+                                      th:text="#{validation.required}">Field is required</span>
+                                <span class="help-block"
+                                      v-if="!$v.password.newPassword.minLength &amp;&amp; $v.password.newPassword.$dirty">
+                                                <span>Min</span>
+                                                {{ $v.password.newPassword.$params.minLength.min }}
+                                                <span>letters</span>
+                                </span>
+                                <span class="help-block"
+                                      v-if="!$v.password.newPassword.maxLength &amp;&amp; $v.password.newPassword.$dirty">
+                                                <span>Max</span>
+                                                {{ $v.password.newPassword.$params.maxLength.max }}
+                                                <span>letters</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group"
+                             v-bind:class="{ 'has-error': $v.password.newPasswordRepeat.$error, 'has-success': $v.password.newPasswordRepeat.$dirty &amp;&amp; !$v.password.newPasswordRepeat.$invalid }">
+                            <label class="col-sm-2 control-label"
+                                   th:text="#{page.account.profile.password_change.label.confirm}">Confirm</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control"
+                                       v-model="password.newPasswordRepeat"
+                                       v-on:input="delayTouch($v.password.newPasswordRepeat)"
+                                />
+                                <span class="help-block"
+                                      v-if="!$v.password.newPasswordRepeat.sameAsPassword &amp;&amp; $v.password.newPasswordRepeat.$dirty">
+                                    Passwords must be identical
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary" id="btnSavePassword"
+                                        th:attr="data-loading-text=#{page.account.profile.form.saving}"
+                                        th:text="#{page.account.profile.form.btn_save}">Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
