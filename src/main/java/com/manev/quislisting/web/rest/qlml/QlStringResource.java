@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_STRINGS;
 
@@ -31,28 +29,29 @@ import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_STR
 @RequestMapping(RESOURCE_API_ADMIN_QL_STRINGS)
 public class QlStringResource {
 
-    private static  final String ENTITY_NAME= "qlString";
+    private static final String ENTITY_NAME = "qlString";
     private final Logger log = LoggerFactory.getLogger(QlStringResource.class);
     private final QlStringService qlStringService;
 
-    public QlStringResource(QlStringService qlStringService){
-        this.qlStringService=qlStringService;
+    public QlStringResource(QlStringService qlStringService) {
+        this.qlStringService = qlStringService;
     }
 
 
     @GetMapping
-    public ResponseEntity<List<QlString>> getAllQlStrings(@PageableDefault(page = 0, value = Integer.MAX_VALUE)Pageable pageable, @RequestParam Map<String, String> allRequestParms)
+    public ResponseEntity<List<QlString>> getAllQlStrings(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable)
             throws URISyntaxException {
         log.debug("REST request to get a page of QlStrings");
-        Page<QlString> page = qlStringService.findAll(pageable, allRequestParms);
+        Page<QlString> page = qlStringService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_QL_STRINGS);
-        return  new ResponseEntity<List<QlString>>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<QlString> getQlString(@PathVariable Long id){
+    public ResponseEntity<QlString> getQlString(@PathVariable Long id) {
         log.debug("REST request to get QlString : {}", id);
-        QlString qlString=qlStringService.findOne(id);
+        QlString qlString = qlStringService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(qlString));
     }
 
@@ -69,22 +68,16 @@ public class QlStringResource {
     }
 
     @PutMapping
-    public ResponseEntity<QlString> updateQlString (@RequestBody QlString qlString) throws URISyntaxException{
+    public ResponseEntity<QlString> updateQlString(@RequestBody QlString qlString) throws URISyntaxException {
         log.debug("REST request to update QlString : {}", qlString);
-        if(qlString.getId()==null){
-            return  createQlString(qlString);
+        if (qlString.getId() == null) {
+            return createQlString(qlString);
         }
         QlString result = qlStringService.save(qlString);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, qlString.getId().toString()))
                 .body(result);
     }
-
-
-
-
-
-
 
 
 }

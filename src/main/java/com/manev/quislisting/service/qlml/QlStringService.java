@@ -11,12 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by adri on 4/10/2017.
- */
 @Service
 public class QlStringService {
 
@@ -35,22 +31,19 @@ public class QlStringService {
             stringTranslation.setQlString(qlString);
             stringTranslation.setTranslationDate(ZonedDateTime.now());
         }
-        QlString result = qlStringRepository.save(qlString);
-        return result;
+        return qlStringRepository.save(qlString);
     }
 
     @Transactional(readOnly = true)
-    public Page<QlString> findAll(Pageable pageable, Map<String, String> allRequestParams) {
+    public Page<QlString> findAll(Pageable pageable) {
         log.debug("Request to get all strings");
-        Page<QlString> result = qlStringRepository.findAll(pageable);
-        return result;
+        return qlStringRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
     public QlString findOne(Long id) {
         log.debug("Request to get one string : {}", id);
-        QlString qlString = qlStringRepository.findOne(id);
-        return qlString;
+        return qlStringRepository.findOne(id);
     }
 
 }

@@ -9,6 +9,7 @@ import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.dto.RefItem;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuItemDTO;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
@@ -25,12 +26,12 @@ public class NavMenuItemMapper {
         this.userRepository = userRepository;
     }
 
-    public NavMenuItem navMenuItemDtoToNavMenuItem(NavMenuDTO navMenuDTO, NavMenuItemDTO navMenuItemDTO) {
+    private NavMenuItem navMenuItemDtoToNavMenuItem(NavMenuDTO navMenuDTO, NavMenuItemDTO navMenuItemDTO) {
         NavMenuItem navMenuItem = new NavMenuItem();
 
         navMenuItem.setId(navMenuItemDTO.getId());
         navMenuItem.setTitle(navMenuItemDTO.getTitle());
-        navMenuItem.setName(navMenuDTO.getTerm().getSlug() + "-" + String.valueOf(navMenuItemDTO.getRefItem().getId()) + "-" + navMenuItemDTO.getOrder());
+        navMenuItem.setName(navMenuDTO.getTerm().getSlug() + "-" + navMenuItemDTO.getRefItem().getId() + "-" + navMenuItemDTO.getOrder());
         navMenuItem.setContent("");
         navMenuItem.setStatus(NavMenuItem.Status.PUBLISH);
         navMenuItem.setCommentCount(0L);
@@ -38,8 +39,15 @@ public class NavMenuItemMapper {
         navMenuItem.setCreated(currentDateTime);
         navMenuItem.setModified(currentDateTime);
         navMenuItem.setPostOrder(navMenuItemDTO.getOrder());
-        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-        navMenuItem.setUser(oneByLogin.get());
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+        if (oneByLogin.isPresent()) {
+            navMenuItem.setUser(oneByLogin.get());
+        }else {
+            throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
+                    "database");
+        }
+
         AbstractPost abstractPost = postRepository.findOne(navMenuItemDTO.getRefItem().getId());
         navMenuItem.setRefPost(abstractPost);
 

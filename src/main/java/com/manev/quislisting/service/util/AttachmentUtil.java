@@ -11,6 +11,10 @@ import java.util.List;
 
 public class AttachmentUtil {
 
+    private AttachmentUtil() {
+        // hide the public constructor
+    }
+
     public static List<String> getFilePaths(AttachmentDTO attachmentDTO) {
         AttachmentMetadata attachmentMetadata = attachmentDTO.getAttachmentMetadata();
         List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();

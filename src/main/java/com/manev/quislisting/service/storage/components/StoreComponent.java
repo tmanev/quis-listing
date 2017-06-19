@@ -28,6 +28,7 @@ import java.util.Map;
 @Component
 public class StoreComponent {
 
+    private static final String ADMIN = "admin";
     private JcrConfiguration jcrConfiguration;
 
     public StoreComponent(JcrConfiguration jcrConfiguration) {
@@ -38,7 +39,7 @@ public class StoreComponent {
         AttachmentDTO attachmentDTO;
         Repository repository = jcrConfiguration.repository();
         Session session = repository.login(
-                new SimpleCredentials("admin", "admin".toCharArray()));
+                new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
 
         String fileNameSlug = SlugUtil.getFileNameSlug(file.getOriginalFilename());
 
@@ -71,8 +72,10 @@ public class StoreComponent {
                                                                         String contentType, Map<String, BufferedImage> resizedImages, Session session, ZonedDateTime currentDateTime) throws IOException, RepositoryException {
         List<AttachmentMetadata.ImageResizeMeta> resizeMetaList = new ArrayList<>();
 
-        for (String key : resizedImages.keySet()) {
-            BufferedImage resizedImage = resizedImages.get(key);
+        for (Map.Entry<String, BufferedImage> stringBufferedImageEntry : resizedImages.entrySet()) {
+            String key = stringBufferedImageEntry.getKey();
+            BufferedImage resizedImage = stringBufferedImageEntry.getValue();
+
             String extension = FilenameUtils.getExtension(fileNameSlug);
             String fileName = FilenameUtils.getBaseName(fileNameSlug);
             String fileNameSlugResize = fileName + "-" + resizedImage.getWidth() + "x" + resizedImage.getHeight() + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));
@@ -95,7 +98,7 @@ public class StoreComponent {
         return resizeMetaList;
     }
 
-    private AttachmentDTO createAttachmentDTO(String originalFilename, String fileNameSlug, String contentType, ZonedDateTime currentDateTime) throws RepositoryException {
+    private AttachmentDTO createAttachmentDTO(String originalFilename, String fileNameSlug, String contentType, ZonedDateTime currentDateTime) {
         AttachmentDTO attachmentDTO = new AttachmentDTO();
         attachmentDTO.setTitle(FilenameUtils.getBaseName(originalFilename));
         attachmentDTO.setName(FilenameUtils.getBaseName(fileNameSlug));
@@ -120,7 +123,7 @@ public class StoreComponent {
     }
 
 
-    private Node createFileNode(String fileName, Session session) throws RepositoryException, IOException {
+    private Node createFileNode(String fileName, Session session) throws RepositoryException {
         DateTime dateTime = new DateTime();
         String yearStr = String.valueOf(dateTime.getYear());
         String monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
@@ -160,7 +163,7 @@ public class StoreComponent {
     public void removeInRepository(List<String> filePaths) throws IOException, RepositoryException {
         Repository repository = jcrConfiguration.repository();
         Session session = repository.login(
-                new SimpleCredentials("admin", "admin".toCharArray()));
+                new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
 
         try {
             for (String filePath : filePaths) {
@@ -176,7 +179,7 @@ public class StoreComponent {
         AttachmentStreamResource attachmentStreamResource;
         Repository repository = jcrConfiguration.repository();
         Session session = repository.login(
-                new SimpleCredentials("admin", "admin".toCharArray()));
+                new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
 
         try {
             Node fileNode = session.getNode(absPath);

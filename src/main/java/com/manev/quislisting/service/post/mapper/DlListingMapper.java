@@ -46,27 +46,20 @@ public class DlListingMapper {
 
         setExpirationDate(dlListing, dlListingDTO);
 
-        Set<DlCategory> dlCategories = dlListing.getDlCategories();
-        if (dlCategories != null && !dlCategories.isEmpty()) {
-            for (DlCategory dlCategory : dlCategories) {
-                dlListingDTO.addDlCategoryDto(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
-            }
-        }
+        setDlCategories(dlListing, dlListingDTO);
 
-        Set<DlLocation> dlLocations = dlListing.getDlLocations();
-        if (dlLocations != null && !dlLocations.isEmpty()) {
-            for (DlLocation dlLocation : dlLocations) {
-                dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation));
-            }
-        }
+        setDlLocations(dlListing, dlListingDTO);
 
-        Set<Attachment> attachments = dlListing.getAttachments();
-        if (attachments != null && !attachments.isEmpty()) {
-            for (Attachment attachment : attachments) {
-                dlListingDTO.addAttachmentDto(attachmentMapper.attachmentToAttachmentDTO(attachment));
-            }
-        }
+        setAttachments(dlListing, dlListingDTO);
 
+        setPostMetadata(dlListing, dlListingDTO);
+
+        setAuthor(dlListing, dlListingDTO);
+
+        return dlListingDTO;
+    }
+
+    private void setPostMetadata(DlListing dlListing, DlListingDTO dlListingDTO) {
         Set<PostMeta> postMeta = dlListing.getPostMeta();
         if (postMeta != null) {
             for (PostMeta meta : postMeta) {
@@ -76,10 +69,33 @@ public class DlListingMapper {
                 }
             }
         }
+    }
 
-        setAuthor(dlListing, dlListingDTO);
+    private void setAttachments(DlListing dlListing, DlListingDTO dlListingDTO) {
+        Set<Attachment> attachments = dlListing.getAttachments();
+        if (attachments != null && !attachments.isEmpty()) {
+            for (Attachment attachment : attachments) {
+                dlListingDTO.addAttachmentDto(attachmentMapper.attachmentToAttachmentDTO(attachment));
+            }
+        }
+    }
 
-        return dlListingDTO;
+    private void setDlLocations(DlListing dlListing, DlListingDTO dlListingDTO) {
+        Set<DlLocation> dlLocations = dlListing.getDlLocations();
+        if (dlLocations != null && !dlLocations.isEmpty()) {
+            for (DlLocation dlLocation : dlLocations) {
+                dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation));
+            }
+        }
+    }
+
+    private void setDlCategories(DlListing dlListing, DlListingDTO dlListingDTO) {
+        Set<DlCategory> dlCategories = dlListing.getDlCategories();
+        if (dlCategories != null && !dlCategories.isEmpty()) {
+            for (DlCategory dlCategory : dlCategories) {
+                dlListingDTO.addDlCategoryDto(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
+            }
+        }
     }
 
     private void setAuthor(DlListing dlListing, DlListingDTO dlListingDTO) {

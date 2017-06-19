@@ -18,6 +18,7 @@ import java.util.List;
 @Transactional
 public class UploadService {
 
+    private static final String ATTACHMENT_COULD_NOT_BE_UPLOADED = "Attachment could not be uploaded";
     private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private AttachmentService attachmentService;
@@ -34,7 +35,7 @@ public class UploadService {
             AttachmentDTO attachmentDTO = storageService.store(file);
             savedAttachmentDTO = attachmentService.saveAttachmentAsTemp(attachmentDTO);
         } catch (IOException | RepositoryException e) {
-            logger.error("Attachment could not be uploaded", e);
+            logger.error(ATTACHMENT_COULD_NOT_BE_UPLOADED, e);
         }
         return savedAttachmentDTO;
     }
@@ -45,7 +46,7 @@ public class UploadService {
             AttachmentDTO attachmentDTO = storageService.store(file);
             savedAttachmentDTO = attachmentService.saveAttachmentByAdmin(attachmentDTO);
         } catch (IOException | RepositoryException e) {
-            logger.error("Attachment could not be uploaded", e);
+            logger.error(ATTACHMENT_COULD_NOT_BE_UPLOADED, e);
         }
         return savedAttachmentDTO;
     }
@@ -61,7 +62,7 @@ public class UploadService {
             storageService.delete(filePaths);
             attachmentService.delete(attachmentDTO.getId());
         } catch (IOException | RepositoryException e) {
-            logger.error("Attachment could not be uploaded", e);
+            logger.error(ATTACHMENT_COULD_NOT_BE_UPLOADED, e);
         }
     }
 
