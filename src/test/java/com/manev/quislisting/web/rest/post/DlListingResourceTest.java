@@ -24,7 +24,6 @@ import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
-import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.util.SlugUtil;
@@ -127,9 +126,6 @@ public class DlListingResourceTest extends GenericResourceTest {
     private DlContentFieldRepository dlContentFieldRepository;
 
     @Autowired
-    private LanguageService languageService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -189,7 +185,7 @@ public class DlListingResourceTest extends GenericResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingResource dlListingResource = new DlListingResource(dlListingService, languageService);
+        DlListingResource dlListingResource = new DlListingResource(dlListingService);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();

@@ -7,6 +7,7 @@ import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Optional;
 
@@ -84,6 +84,6 @@ public class AttachmentService {
     }
 
     public AttachmentDTO save(AttachmentDTO attachmentDTO) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Save is not possible for attachment at the moment");
     }
 }

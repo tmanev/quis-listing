@@ -30,7 +30,7 @@ public class ContentController {
         Integer month = Integer.valueOf(monthStr);
 
         AttachmentStreamResource attachmentStreamResource = storageService.loadAsResource("/"
-                + String.valueOf(year) + "/"
+                + year + "/"
                 + String.format("%02d", month) + "/" + filename);
         return ResponseEntity
                 .ok()

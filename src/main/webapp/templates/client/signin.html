@@ -11,9 +11,15 @@
 
 <body>
 
-<div th:fragment="content" class="container-fluid">
+<div th:fragment="content" class="container">
     <div class="row">
-        <form class="form-horizontal col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3" action="/sign-in" method="post"
+        <div class="alert alert-danger alert-dismissible col-md-6 col-md-offset-3"
+             th:if="${errMsg != null}"
+             role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <span th:text="${errMsg}">Your email and password seem to be incorrect. Please try again.</span>
+        </div>
+        <form class="form-horizontal col-md-6 col-md-offset-3" action="/sign-in" method="post"
               th:action="@{/sign-in}" name="loginVM">
             <fieldset>
                 <legend th:text="#{page.signin.form.legend}">Please Sign In</legend>

@@ -55,7 +55,10 @@ public class DlListingService {
     private StorageService storageService;
     private LanguageService languageService;
 
-    public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, DlListingMapper dlListingMapper, AttachmentMapper attachmentMapper, StorageService storageService, LanguageService languageService) {
+    public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
+                            DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
+                            DlListingMapper dlListingMapper, AttachmentMapper attachmentMapper,
+                            StorageService storageService, LanguageService languageService) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -180,11 +183,10 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(result);
     }
 
-    public boolean publish(DlListingDTO dlListingDTO) {
+    public void publish(DlListingDTO dlListingDTO) {
         DlListing dlListing = dlListingRepository.findOne(dlListingDTO.getId());
         dlListing.setStatus(DlListing.Status.PUBLISH);
         dlListingRepository.save(dlListing);
-        return true;
     }
 
     public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException, RepositoryException {

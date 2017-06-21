@@ -9,6 +9,7 @@ import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.LanguageTranslation;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
+import com.manev.quislisting.exception.MissingConfigurationException;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
@@ -94,7 +95,7 @@ public class BaseController {
 
         QlConfig accountProfilePageConfig = qlConfigRepository.findOneByKey("account-profile-page-id");
         if (accountProfilePageConfig == null) {
-            throw new RuntimeException("Account profile page expected to be configured");
+            throw new MissingConfigurationException("Account profile page expected to be configured");
         }
 
         baseModel.setProfilePage(retrievePage(language, accountProfilePageConfig.getValue()));

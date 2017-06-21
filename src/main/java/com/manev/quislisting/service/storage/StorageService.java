@@ -4,7 +4,7 @@ import com.manev.quislisting.domain.AttachmentStreamResource;
 import com.manev.quislisting.service.exception.AttachmentStreamResourceException;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.storage.components.StoreComponent;
-import com.manev.quislisting.service.util.ImageResizer2Util;
+import com.manev.quislisting.service.util.ImageResizeUtil;
 import com.manev.quislisting.service.util.ImageWatermarkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class StorageService {
             Integer width = Integer.valueOf(sizesArr[0]);
             Integer height = Integer.valueOf(sizesArr[1]);
             if (inputWatermarked.getWidth() >= width || inputWatermarked.getHeight() >= height) {
-                BufferedImage resizedBufferedImage = ImageResizer2Util.resizeImage(inputWatermarked, width, height, false);
+                BufferedImage resizedBufferedImage = ImageResizeUtil.resizeImage(inputWatermarked, width, height);
                 resizedImages.put(key, resizedBufferedImage);
             }
         }

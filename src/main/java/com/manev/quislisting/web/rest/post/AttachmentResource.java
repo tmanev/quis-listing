@@ -20,16 +20,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.manev.quislisting.service.storage.StorageService.DL_THUMBNAIL;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_ATTACHMENTS;
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_ATTACHMENTS)
@@ -49,7 +45,7 @@ public class AttachmentResource {
 
 
     @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FileUploadResponse> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) throws IOException, RepositoryException, URISyntaxException {
+    public ResponseEntity<FileUploadResponse> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) {
         List<FileMeta> fileMetaList = new ArrayList<>();
 
         for (MultipartFile file : files) {
@@ -68,10 +64,10 @@ public class AttachmentResource {
     }
 
     @PutMapping
-    public ResponseEntity<AttachmentDTO> updateDlListing(@RequestBody AttachmentDTO attachmentDTO) throws URISyntaxException {
+    public ResponseEntity<AttachmentDTO> updateDlListing(@RequestBody AttachmentDTO attachmentDTO) {
         log.debug("REST request to update AttachmentDTO : {}", attachmentDTO);
         if (attachmentDTO.getId() == null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "Update  cannot be without an ID")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "Update cannot be without an ID")).body(null);
         }
         AttachmentDTO result = attachmentService.save(attachmentDTO);
         return ResponseEntity.ok()
@@ -80,8 +76,7 @@ public class AttachmentResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<AttachmentDTO>> getAllAttachments(Pageable pageable)
-            throws URISyntaxException {
+    public ResponseEntity<List<AttachmentDTO>> getAllAttachments(Pageable pageable) {
         log.debug("REST request to get a page of AttachmentDTO");
         Page<AttachmentDTO> page = attachmentService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_ATTACHMENTS);

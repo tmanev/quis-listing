@@ -15,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.jcr.RepositoryException;
 import javax.ws.rs.NotAuthorizedException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class UploadResource {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FileUploadResponse> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) throws IOException, RepositoryException, URISyntaxException {
+    public ResponseEntity<FileUploadResponse> handleFileUpload(@RequestParam("files[]") MultipartFile[] files) {
         List<FileMeta> fileMetaList = new ArrayList<>();
 
         for (MultipartFile file : files) {

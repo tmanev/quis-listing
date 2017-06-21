@@ -12,13 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.LocaleResolver;
 
-import java.io.IOException;
-
 @Controller
 @RequestMapping("/")
 public class HomeController extends BaseController {
 
-    private PostRepository<AbstractPost> postRepository;
 
     public HomeController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
                           PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
@@ -26,11 +23,10 @@ public class HomeController extends BaseController {
                           LanguageTranslationRepository languageTranslationRepository) {
         super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
                 postRepository);
-        this.postRepository = postRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(final ModelMap model) throws IOException {
+    public String indexPage(final ModelMap model) {
         AbstractPost post = postRepository.findOneByName("/");
 
         model.addAttribute("title", post.getTitle());

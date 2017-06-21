@@ -22,9 +22,6 @@ import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_STRINGS;
 
-/**
- * Created by adri on 4/10/2017.
- */
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_QL_STRINGS)
 public class QlStringResource {
@@ -37,15 +34,12 @@ public class QlStringResource {
         this.qlStringService = qlStringService;
     }
 
-
     @GetMapping
-    public ResponseEntity<List<QlString>> getAllQlStrings(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable)
-            throws URISyntaxException {
+    public ResponseEntity<List<QlString>> getAllQlStrings(@PageableDefault(value = Integer.MAX_VALUE) Pageable pageable) {
         log.debug("REST request to get a page of QlStrings");
         Page<QlString> page = qlStringService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_QL_STRINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-
     }
 
     @GetMapping("/{id}")
@@ -78,6 +72,5 @@ public class QlStringResource {
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, qlString.getId().toString()))
                 .body(result);
     }
-
 
 }

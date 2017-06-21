@@ -45,7 +45,7 @@ public class DlContentFieldResource {
         }
 
         DlContentFieldDTO result = dlContentFieldService.save(dlContentFieldDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -63,8 +63,7 @@ public class DlContentFieldResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlContentFieldDTO>> getAllDlContentFields(Pageable pageable)
-            throws URISyntaxException {
+    public ResponseEntity<List<DlContentFieldDTO>> getAllDlContentFields(Pageable pageable) {
         log.debug("REST request to get a page of DlContentFieldDTO");
         Page<DlContentFieldDTO> page = dlContentFieldService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_CONTENT_FIELDS);

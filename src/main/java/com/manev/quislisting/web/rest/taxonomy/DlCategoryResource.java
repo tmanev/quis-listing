@@ -47,7 +47,7 @@ public class DlCategoryResource {
         }
 
         DlCategoryDTO result = dlCategoryService.save(dlCategoryDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -65,8 +65,7 @@ public class DlCategoryResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlCategoryDTO>> getAllDlCategories(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
-            throws URISyntaxException {
+    public ResponseEntity<List<DlCategoryDTO>> getAllDlCategories(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of DlCategoryDTO");
         Page<DlCategoryDTO> page = dlCategoryService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LOCATIONS);

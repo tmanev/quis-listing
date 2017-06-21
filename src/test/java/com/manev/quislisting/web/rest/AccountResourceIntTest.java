@@ -7,7 +7,6 @@ import com.manev.quislisting.repository.AuthorityRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.service.EmailSendingService;
-import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.web.rest.vm.ManagedUserVM;
@@ -62,9 +61,6 @@ public class AccountResourceIntTest {
     private UserService mockUserService;
 
     @Mock
-    private MailService mockMailService;
-
-    @Mock
     private EmailSendingService mockEmailSendingService;
 
     @Mock
@@ -86,10 +82,10 @@ public class AccountResourceIntTest {
         doNothing().when(mockEmailSendingService).sendActivationEmail((User) anyObject());
 
         AccountResource accountResource =
-                new AccountResource(userRepository, userService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+                new AccountResource(userRepository, userService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         AccountResource accountUserMockResource =
-                new AccountResource(userRepository, mockUserService, mockMailService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+                new AccountResource(userRepository, mockUserService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();

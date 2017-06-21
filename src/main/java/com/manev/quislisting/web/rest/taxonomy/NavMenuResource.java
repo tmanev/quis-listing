@@ -1,8 +1,8 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
+import com.manev.quislisting.service.taxonomy.NavMenuService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
-import com.manev.quislisting.service.taxonomy.NavMenuService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -46,7 +46,7 @@ public class NavMenuResource {
         }
 
         NavMenuDTO result = navMenuService.save(navMenuDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_NAV_MENUS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_NAV_MENUS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -64,8 +64,7 @@ public class NavMenuResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<NavMenuDTO>> getAllNavMenus(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
-            throws URISyntaxException {
+    public ResponseEntity<List<NavMenuDTO>> getAllNavMenus(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of NavMenuDTO");
         Page<NavMenuDTO> page = navMenuService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_NAV_MENUS);

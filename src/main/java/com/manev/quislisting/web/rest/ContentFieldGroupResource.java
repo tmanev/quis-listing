@@ -2,8 +2,6 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.quislisting.domain.ContentFieldGroup;
 import com.manev.quislisting.service.ContentFieldGroupService;
-import com.manev.quislisting.service.taxonomy.dto.PostCategoryDTO;
-import com.manev.quislisting.web.rest.taxonomy.PostCategoriesResource;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -23,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS;
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_POST_CATEGORIES;
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS)
@@ -45,7 +42,7 @@ public class ContentFieldGroupResource {
         }
 
         ContentFieldGroup result = contentFieldGroupService.save(contentFieldGroup);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -64,9 +61,9 @@ public class ContentFieldGroupResource {
 
 
     @GetMapping
-    public ResponseEntity<List<ContentFieldGroup>> getAllContentFieldGroups(Pageable pageable) throws URISyntaxException {
+    public ResponseEntity<List<ContentFieldGroup>> getAllContentFieldGroups(Pageable pageable) {
         Page<ContentFieldGroup> page = contentFieldGroupService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/admin/content-field-groups");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

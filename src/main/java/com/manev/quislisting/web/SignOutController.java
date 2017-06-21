@@ -6,8 +6,6 @@ import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
-import com.manev.quislisting.security.jwt.TokenProvider;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Controller;
@@ -28,7 +26,6 @@ public class SignOutController extends BaseController {
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     public SignOutController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
-                             TokenProvider tokenProvider, AuthenticationManager authenticationManager,
                              LanguageRepository languageRepository, LocaleResolver localeResolver,
                              LanguageTranslationRepository languageTranslationRepository,
                              PostRepository<AbstractPost> postRepository) {

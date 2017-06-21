@@ -22,9 +22,6 @@ import java.util.Optional;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_CONFIG;
 
-/**
- * Created by Стефан on 05.04.2017.
- */
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_QL_CONFIG)
 public class QlConfigResource {
@@ -47,15 +44,15 @@ public class QlConfigResource {
         }
 
         QlConfigDTO result = qlConfigService.save(qlConfigDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_QL_CONFIG + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_QL_CONFIG + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
     @PutMapping
-    public ResponseEntity<QlConfigDTO> updateQlConfig(@RequestBody QlConfigDTO qlConfigDTO) throws URISyntaxException{
+    public ResponseEntity<QlConfigDTO> updateQlConfig(@RequestBody QlConfigDTO qlConfigDTO) throws URISyntaxException {
         log.debug("REST request to update QLConfigDTO : {}", qlConfigDTO);
-        if(qlConfigDTO.getId() == null){
+        if (qlConfigDTO.getId() == null) {
             return createQlConfig(qlConfigDTO);
         }
         QlConfigDTO result = qlConfigService.save(qlConfigDTO);
@@ -66,7 +63,7 @@ public class QlConfigResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<QlConfigDTO>> getAllQlConfigs(Pageable pageable) throws URISyntaxException{
+    public ResponseEntity<List<QlConfigDTO>> getAllQlConfigs(Pageable pageable) {
         log.debug("REST request to get a page of QlConfigDTO");
         Page<QlConfigDTO> page = qlConfigService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_QL_CONFIG);
@@ -81,10 +78,10 @@ public class QlConfigResource {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQlConfig(@PathVariable Long id){
+    public ResponseEntity<Void> deleteQlConfig(@PathVariable Long id) {
         log.debug("REST request to delete QlConfigDTO : {}", id);
         qlConfigService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME,id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
 }

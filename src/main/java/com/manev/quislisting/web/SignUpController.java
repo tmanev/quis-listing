@@ -25,7 +25,6 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -54,7 +53,7 @@ public class SignUpController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(final ModelMap model, HttpServletRequest request) throws IOException {
+    public String indexPage(final ModelMap model, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
         setSignUpPageInModel(model, locale);
 

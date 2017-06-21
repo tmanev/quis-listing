@@ -146,20 +146,20 @@ public class StoreComponent {
             monthOfYearNode = yearNode.addNode(monthOfYearStr);
         }
 
-        Node fileNode;
+        String checkedFileName = checkFileName(fileName, monthOfYearNode);
+        return monthOfYearNode.addNode(checkedFileName, JcrConstants.NT_FILE);
+    }
 
-        int counter = 0;
-
+    private String checkFileName(String fileName, Node monthOfYearNode) throws RepositoryException {
+        String checkedFileName = fileName;
         String baseName = FilenameUtils.getBaseName(fileName);
+        int counter = 0;
         while (monthOfYearNode.hasNode(fileName)) {
             String extension = FilenameUtils.getExtension(fileName);
-            fileName = baseName + "-" + (counter + 1) + (extension.isEmpty() ? "" : "." + extension);
+            checkedFileName = baseName + "-" + (counter + 1) + (extension.isEmpty() ? "" : "." + extension);
             counter++;
         }
-
-        fileNode = monthOfYearNode.addNode(fileName, JcrConstants.NT_FILE);
-
-        return fileNode;
+        return checkedFileName;
     }
 
     public void removeInRepository(List<String> filePaths) throws IOException, RepositoryException {

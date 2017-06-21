@@ -44,7 +44,7 @@ public class PostCategoriesResource {
         }
 
         PostCategoryDTO result = postCategoryService.save(postCategoryDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_POST_CATEGORIES + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_POST_CATEGORIES + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -62,8 +62,7 @@ public class PostCategoriesResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostCategoryDTO>> getAllPostCategories(Pageable pageable)
-            throws URISyntaxException {
+    public ResponseEntity<List<PostCategoryDTO>> getAllPostCategories(Pageable pageable) {
         log.debug("REST request to get a page of PostCategoryDTO");
         Page<PostCategoryDTO> page = postCategoryService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_POST_CATEGORIES);

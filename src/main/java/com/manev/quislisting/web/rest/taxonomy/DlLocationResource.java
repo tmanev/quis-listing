@@ -1,8 +1,8 @@
 package com.manev.quislisting.web.rest.taxonomy;
 
+import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
-import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -46,7 +46,7 @@ public class DlLocationResource {
         }
 
         DlLocationDTO result = dlLocationService.save(dlLocationDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -64,8 +64,7 @@ public class DlLocationResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlLocationDTO>> getAllDlLocations(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
-            throws URISyntaxException {
+    public ResponseEntity<List<DlLocationDTO>> getAllDlLocations(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of DlLocationDTO");
         Page<DlLocationDTO> page = dlLocationService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LOCATIONS);

@@ -4,7 +4,6 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.EmailSendingService;
-import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -41,22 +40,18 @@ public class AccountResource {
 
     private final UserService userService;
 
-    private final MailService mailService;
-
     private final EmailSendingService emailSendingService;
 
     private final MessageSource messageSource;
-
+    private final PasswordEncoder passwordEncoder;
     private LocaleResolver localeResolver;
 
-    private final PasswordEncoder passwordEncoder;
-
     public AccountResource(UserRepository userRepository, UserService userService,
-                           MailService mailService, EmailSendingService emailSendingService, MessageSource messageSource, LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
+                           EmailSendingService emailSendingService,
+                           MessageSource messageSource, LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
 
         this.userRepository = userRepository;
         this.userService = userService;
-        this.mailService = mailService;
         this.emailSendingService = emailSendingService;
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
@@ -179,7 +174,7 @@ public class AccountResource {
             log.debug("Changed password for User: {}", oneByLogin.get());
         }
 
-        return new ResponseEntity<String>("Success", HttpStatus.OK);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     /**

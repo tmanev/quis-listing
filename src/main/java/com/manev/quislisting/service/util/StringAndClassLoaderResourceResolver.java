@@ -9,6 +9,7 @@ import org.thymeleaf.util.ClassLoaderUtils;
 import org.thymeleaf.util.Validate;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class StringAndClassLoaderResourceResolver implements IResourceResolver {
         Validate.notNull(resourceName, "Resource name cannot be null");
         if (StringContext.class.isAssignableFrom(params.getContext().getClass())) {
             String content = ((StringContext) params.getContext()).getContent();
-            return IOUtils.toInputStream(content);
+            return IOUtils.toInputStream(content, StandardCharsets.UTF_8);
         }
         return ClassLoaderUtils.getClassLoader(ClassLoaderResourceResolver.class).getResourceAsStream(resourceName);
     }

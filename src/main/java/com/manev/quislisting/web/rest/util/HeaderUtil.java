@@ -37,6 +37,7 @@ public final class HeaderUtil {
         log.error("Entity creation failed, {}", defaultMessage);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-qlService-error", defaultMessage);
+        headers.add("X-qlService-errorKey", errorKey);
         headers.add("X-qlService-params", entityName);
         return headers;
     }

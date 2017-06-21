@@ -2,8 +2,6 @@ package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
-import com.manev.quislisting.domain.post.discriminator.QlPage;
-import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 
 import java.util.List;

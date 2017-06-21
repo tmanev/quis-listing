@@ -83,11 +83,9 @@ public class LanguageResource {
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of languages in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping
-    public ResponseEntity<List<Language>> getAllLanguages(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable, @RequestParam Map<String, String> allRequestParams)
-            throws URISyntaxException {
+    public ResponseEntity<List<Language>> getAllLanguages(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of Languages");
         Page<Language> page = languageService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_LANGUAGES);

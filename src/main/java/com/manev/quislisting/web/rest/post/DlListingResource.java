@@ -2,7 +2,6 @@ package com.manev.quislisting.web.rest.post;
 
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -37,11 +36,9 @@ public class DlListingResource {
 
     private final Logger log = LoggerFactory.getLogger(DlListingResource.class);
     private final DlListingService dlListingService;
-    private final LanguageService languageService;
 
-    public DlListingResource(DlListingService dlListingService, LanguageService languageService) {
+    public DlListingResource(DlListingService dlListingService) {
         this.dlListingService = dlListingService;
-        this.languageService = languageService;
     }
 
     @RequestMapping(method = RequestMethod.POST,
@@ -53,7 +50,7 @@ public class DlListingResource {
         }
 
         DlListingDTO result = dlListingService.save(dlListingDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LISTINGS + "/" + result.getId()))
+        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LISTINGS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -67,9 +64,7 @@ public class DlListingResource {
         }
 
         DlListingDTO result = dlListingService.save(dlListingDTO);
-        if (!dlListingService.publish(result)) {
-            // return errors
-        }
+        dlListingService.publish(result);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))
@@ -77,7 +72,7 @@ public class DlListingResource {
     }
 
     @PostMapping(value = "/{id}/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlListingDTO> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException, RepositoryException, URISyntaxException {
+    public ResponseEntity<DlListingDTO> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException, RepositoryException {
 
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 
@@ -101,8 +96,7 @@ public class DlListingResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable, @RequestParam Map<String, String> allRequestParams)
-            throws URISyntaxException {
+    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of DlListingDTO");
         Page<DlListingDTO> page = dlListingService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LISTINGS);
