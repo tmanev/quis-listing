@@ -13,10 +13,10 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 8¦Search¦[dl-search]¦search¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦15¦1¦null¦null
 9¦Search¦¦search-8-2¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦8¦2
 
-10¦Add Listing¦[add-listing]¦add-listing¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦16¦1¦null¦null
-11¦Add Listing¦¦add-listing-10-3¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦10¦3
+10¦Add Listing¦[my-listings-add-page]¦my-listings/add¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦16¦1¦null¦null
+11¦Add Listing¦¦my-listings-add-10-3¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦10¦3
 
-12¦My Listings¦[my-listings]¦my-listings¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦17¦1¦null¦null
+12¦My Listings¦[my-listings-page]¦my-listings¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦17¦1¦null¦null
 13¦My Listings¦¦my-listings-12-4¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦12¦4
 
 14¦Общи условия¦'Моля, прочетете тези правила и условия, преди да използвате уеб сайт myrighescort.com. Настоящите Общи условия уреждат взаимоотношенията между myrightescort.com уебсайт, и тези на потребителите на услугите на този сайт. Използването на myrightescort.com сайт по никакъв начин не означава, че потребителят е прочел и се съгласи да Общите условия и всички последващи промени в него, което го свързва с потребителя по силата на договор, който е длъжен да спазва. Ако не сте съгласни с всички условия и условията по-долу, моля не използвайте този сайт.
@@ -47,10 +47,10 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 20¦Търси¦[dl-search]¦търси¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦32¦1¦null¦null
 21¦Търси¦¦търси-20-2¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦20¦2
 
-22¦Добави обява¦[add-listing]¦добави-обява¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦33¦1¦null¦null
-23¦Добави обява¦¦добави-обява-22-3¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦22¦3
+22¦Добави обява¦[my-listings-add-page]¦моите-обяви/добави¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦33¦1¦null¦null
+23¦Добави обява¦¦моите-обяви-добави-22-3¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦22¦3
 
-24¦Моите обяви¦[my-listings]¦моите-обяви¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦34¦1¦null¦null
+24¦Моите обяви¦[my-listings-page]¦моите-обяви¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦34¦1¦null¦null
 25¦Моите обяви¦¦моите-обяви-12-4¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦24¦4
 
 
@@ -69,11 +69,11 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 32¦Căutare¦[dl-search]¦căutare¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦40¦1¦null¦null
 33¦Căutare¦¦căutare-32-2¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦32¦2
 
-34¦Adăugați o listă¦[add-listing]¦adăugați-o-listă¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦41¦1¦null¦null
-35¦Adăugați o listă¦¦adăugați-o-listă-34-3¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦34¦3
+34¦Adăugați o listă¦[my-listings-add-page]¦lista-mea/add¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦41¦1¦null¦null
+35¦Adăugați o listă¦¦lista-mea-add-34-3¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦34¦3
 
-36¦Anunțurile mele¦[my-listings]¦anunțurile-mele¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦42¦1¦null¦null
-37¦Anunțurile mele¦¦anunțurile-mele-12-4¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦36¦4
+36¦Anunțurile mele¦[my-listings-page]¦lista-mea¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦42¦1¦null¦null
+37¦Anunțurile mele¦¦lista-mea-12-4¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦36¦4
 
 
 
