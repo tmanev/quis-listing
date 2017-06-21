@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Optional;
 
@@ -83,6 +84,6 @@ public class AttachmentService {
     }
 
     public AttachmentDTO save(AttachmentDTO attachmentDTO) {
-        return null;
+        throw new NotImplementedException();
     }
 }

@@ -1,7 +1,6 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;

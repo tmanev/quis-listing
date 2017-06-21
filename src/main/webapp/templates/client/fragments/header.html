@@ -35,12 +35,12 @@
                        aria-expanded="false"
                        th:text="#{fragment.header.language}">Language <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li th:each="language : ${baseModel.activeLanguages}">
-                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${language.languageCode}">
-                                <span th:text="${language.translatedName}">English</span>
+                        <li th:each="activeLanguage : ${baseModel.activeLanguages}">
+                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${activeLanguage.language.code}">
+                                <span th:text="${activeLanguage.language.englishName}">English</span>
 
-                                <span th:if="${!language.languageCode.equals(language.displayLanguageCode)}"
-                                             th:text="' (' + ${language.englishName} + ')'">English Translated</span>
+                                <span th:if="${activeLanguage.languageTranslation != null}"
+                                             th:text="' (' + ${activeLanguage.languageTranslation.name} + ')'">English Translated</span>
                             </a>
                         </li>
                     </ul>

@@ -1,7 +1,6 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.Term;

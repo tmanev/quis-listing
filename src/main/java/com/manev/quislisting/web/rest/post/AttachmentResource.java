@@ -56,8 +56,8 @@ public class AttachmentResource {
             AttachmentDTO attachmentDTO = uploadService.uploadFileByAdmin(file);
             AttachmentMetadata.ImageResizeMeta imageThumbnailResizeMeta = attachmentDTO.getAttachmentMetadata().getImageResizeMetaByName(DL_THUMBNAIL);
 
-            FileMeta fileMeta = new FileMeta(attachmentDTO.getName(), attachmentDTO.getAttachmentMetadata().getSize(),
-                    "/content/files" + attachmentDTO.getAttachmentMetadata().getFile(),
+            FileMeta fileMeta = new FileMeta(attachmentDTO.getName(), attachmentDTO.getAttachmentMetadata().getDetail().getSize(),
+                    "/content/files" + attachmentDTO.getAttachmentMetadata().getDetail().getFile(),
                     "/content/files" + imageThumbnailResizeMeta.getDetail().getFile(),
                     RESOURCE_API_ADMIN_ATTACHMENTS + "/" + attachmentDTO.getId(), DELETE);
 

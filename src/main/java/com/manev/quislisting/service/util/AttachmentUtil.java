@@ -20,7 +20,7 @@ public class AttachmentUtil {
         List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
 
         List<String> filePaths = new ArrayList<>();
-        filePaths.add(attachmentMetadata.getFile());
+        filePaths.add(attachmentMetadata.getDetail().getFile());
         for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
             filePaths.add(imageResizeMeta.getDetail().getFile());
         }
@@ -33,7 +33,7 @@ public class AttachmentUtil {
         if (attachmentMetadataStr != null) {
             AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetadataStr,
                     AttachmentMetadata.class);
-            filePaths.add(attachmentMetadata.getFile());
+            filePaths.add(attachmentMetadata.getDetail().getFile());
             List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
             for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
                 filePaths.add(imageResizeMeta.getDetail().getFile());

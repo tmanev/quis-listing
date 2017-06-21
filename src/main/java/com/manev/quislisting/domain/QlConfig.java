@@ -2,9 +2,6 @@ package com.manev.quislisting.domain;
 
 import javax.persistence.*;
 
-/**
- * Created by Стефан on 04.04.2017.
- */
 @Entity
 @Table(name = "ql_config")
 public class QlConfig {
@@ -42,6 +39,5 @@ public class QlConfig {
     public void setValue(String value) {
         this.value = value;
     }
-
 
 }

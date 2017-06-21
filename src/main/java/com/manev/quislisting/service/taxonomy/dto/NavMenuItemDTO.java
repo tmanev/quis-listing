@@ -1,28 +1,11 @@
 package com.manev.quislisting.service.taxonomy.dto;
 
 import com.manev.quislisting.service.dto.RefItem;
+import com.manev.quislisting.service.post.dto.AbstractPostDTO;
 
-public class NavMenuItemDTO {
-    private Long id;
-    private String title;
+public class NavMenuItemDTO extends AbstractPostDTO {
     private Integer order;
     private RefItem refItem;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public Integer getOrder() {
         return order;

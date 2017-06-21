@@ -106,12 +106,12 @@
                                 <select class="form-control"
                                         th:field="*{langKey}"
                                         v-model="profile.langKey">
-                                    <option th:each="language: ${baseModel.activeLanguages}"
-                                            th:value="${language.languageCode}">
-                                        <span th:text="${language.translatedName}">English</span>
+                                    <option th:each="activeLanguage: ${baseModel.activeLanguages}"
+                                            th:value="${activeLanguage.language.code}">
+                                        <span th:text="${activeLanguage.language.englishName}">English</span>
 
-                                        <span th:if="${!language.languageCode.equals(language.displayLanguageCode)}"
-                                              th:text="' (' + ${language.englishName} + ')'">English Translated</span>
+                                        <span th:if="${activeLanguage.languageTranslation != null}"
+                                              th:text="' (' + ${activeLanguage.languageTranslation.name} + ')'">English Translated</span>
                                     </option>
                                 </select>
                             </div>

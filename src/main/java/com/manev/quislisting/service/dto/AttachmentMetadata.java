@@ -4,42 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttachmentMetadata {
-    private Integer width;
-    private Integer height;
-    private Long size;
-    private String file;
+    private DetailSize detail;
     private List<ImageResizeMeta> imageResizeMetas;
 
-    public Integer getWidth() {
-        return width;
+    public DetailSize getDetail() {
+        return detail;
     }
 
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
+    public void setDetail(DetailSize detail) {
+        this.detail = detail;
     }
 
     public List<ImageResizeMeta> getImageResizeMetas() {

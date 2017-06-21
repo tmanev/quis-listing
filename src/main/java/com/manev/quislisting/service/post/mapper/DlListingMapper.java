@@ -6,7 +6,7 @@ import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
-import com.manev.quislisting.service.post.dto.Author;
+import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
@@ -100,8 +100,7 @@ public class DlListingMapper {
 
     private void setAuthor(DlListing dlListing, DlListingDTO dlListingDTO) {
         User user = dlListing.getUser();
-
-        dlListingDTO.setAuthor(new Author(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
+        dlListingDTO.setAuthor(new UserDTO(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
     }
 
     private void setExpirationDate(DlListing dlListing, DlListingDTO dlListingDTO) {

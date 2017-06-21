@@ -1,26 +1,36 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.manev.quislisting.service.dto.UserDTO;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
+
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractPostDTO {
 
     private Long id;
-
     private String title;
-
     private String content;
-
     private String name;
 
-    private String status;
-
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private ZonedDateTime created;
-
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private ZonedDateTime modified;
 
-    private Long commentCount = 0L;
+    private UserDTO author;
 
-    private Author user;
+    private String languageCode;
+    private String sourceLanguageCode;
+
+    private Long translationGroupId;
+    private List<TranslationDTO> translations;
 
     public Long getId() {
         return id;
@@ -28,6 +38,14 @@ public abstract class AbstractPostDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTitle() {
@@ -46,21 +64,7 @@ public abstract class AbstractPostDTO {
         this.content = content;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public ZonedDateTime getCreated() {
         return created;
@@ -78,19 +82,50 @@ public abstract class AbstractPostDTO {
         this.modified = modified;
     }
 
-    public Long getCommentCount() {
-        return commentCount;
+    public UserDTO getAuthor() {
+        return author;
     }
 
-    public void setCommentCount(Long commentCount) {
-        this.commentCount = commentCount;
+    public void setAuthor(UserDTO author) {
+        this.author = author;
     }
 
-    public Author getUser() {
-        return user;
+    public String getLanguageCode() {
+        return languageCode;
     }
 
-    public void setUser(Author user) {
-        this.user = user;
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+
+    public String getSourceLanguageCode() {
+        return sourceLanguageCode;
+    }
+
+    public void setSourceLanguageCode(String sourceLanguageCode) {
+        this.sourceLanguageCode = sourceLanguageCode;
+    }
+
+    public void addTranslationDTO(TranslationDTO translationDTO) {
+        if (translations == null) {
+            translations = new ArrayList<>();
+        }
+        translations.add(translationDTO);
+    }
+
+    public Long getTranslationGroupId() {
+        return translationGroupId;
+    }
+
+    public void setTranslationGroupId(Long translationGroupId) {
+        this.translationGroupId = translationGroupId;
+    }
+
+    public List<TranslationDTO> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<TranslationDTO> translations) {
+        this.translations = translations;
     }
 }

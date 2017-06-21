@@ -7,9 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by tmanev on 3/21/2017.
- */
 public class ImageResizer2Util {
 
 //    public static void main(String[] args) throws IOException {

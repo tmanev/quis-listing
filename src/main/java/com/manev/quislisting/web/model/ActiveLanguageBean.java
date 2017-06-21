@@ -1,49 +1,25 @@
 package com.manev.quislisting.web.model;
 
+import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.domain.qlml.LanguageTranslation;
+
 public class ActiveLanguageBean {
-    private Long id;
-    private String languageCode;
-    private String displayLanguageCode;
-    private String englishName;
-    private String translatedName;
+    private Language language;
+    private LanguageTranslation languageTranslation;
 
-    public Long getId() {
-        return id;
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
-    public String getLanguageCode() {
-        return languageCode;
+    public LanguageTranslation getLanguageTranslation() {
+        return languageTranslation;
     }
 
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
-    }
-
-    public String getDisplayLanguageCode() {
-        return displayLanguageCode;
-    }
-
-    public void setDisplayLanguageCode(String displayLanguageCode) {
-        this.displayLanguageCode = displayLanguageCode;
-    }
-
-    public String getEnglishName() {
-        return englishName;
-    }
-
-    public void setEnglishName(String englishName) {
-        this.englishName = englishName;
-    }
-
-    public String getTranslatedName() {
-        return translatedName;
-    }
-
-    public void setTranslatedName(String translatedName) {
-        this.translatedName = translatedName;
+    public void setLanguageTranslation(LanguageTranslation languageTranslation) {
+        this.languageTranslation = languageTranslation;
     }
 }

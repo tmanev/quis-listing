@@ -6,16 +6,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * An authority (a security role) used by Spring Security.
  */
 @Entity
 @Table(name = "ql_authority")
-public class Authority {
+public class Authority implements Serializable{
 
     @NotNull
-    @Size(min = 0, max = 50)
+    @Size(max = 50)
     @Id
     @Column(length = 50)
     private String name;

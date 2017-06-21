@@ -50,10 +50,12 @@ public class StoreComponent {
             attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName(), file.getContentType(), currentDateTime);
 
             AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
-            attachmentMetadata.setFile(fileNode.getPath());
-            attachmentMetadata.setWidth(inputWatermarked.getWidth());
-            attachmentMetadata.setHeight(inputWatermarked.getHeight());
-            attachmentMetadata.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
+            AttachmentMetadata.DetailSize detailSize = new AttachmentMetadata.DetailSize();
+            detailSize.setFile(fileNode.getPath());
+            detailSize.setWidth(inputWatermarked.getWidth());
+            detailSize.setHeight(inputWatermarked.getHeight());
+            detailSize.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
+            attachmentMetadata.setDetail(detailSize);
 
             List<AttachmentMetadata.ImageResizeMeta> resizedImagesMeta = storeResizedImages(fileNode.getName(), file.getContentType(), resizedImages, session, currentDateTime);
             attachmentMetadata.setImageResizeMetas(resizedImagesMeta);

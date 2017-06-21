@@ -6,8 +6,6 @@ import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.service.post.dto.QlPageDTO;
 import com.manev.quislisting.service.post.dto.TranslationDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -17,8 +15,6 @@ import java.util.Set;
 
 @Component
 public class QlPageMapper {
-
-    private final Logger log = LoggerFactory.getLogger(QlPageMapper.class);
 
     private TranslationMapper translationMapper;
 
@@ -61,7 +57,7 @@ public class QlPageMapper {
 
     private void setTranslationsDTO(QlPage qlPage, QlPageDTO qlPageDTO, List<Language> activeLanguages) {
         Set<Translation> translations = qlPage.getTranslation().getTranslationGroup().getTranslations();
-        if (translations!=null) {
+        if (translations != null) {
             Map<String, Translation> stringTranslationMap = mapTranslationsByLanguageCode(translations);
             for (Language activeLanguage : activeLanguages) {
                 // I don't need the language that the page is displayed

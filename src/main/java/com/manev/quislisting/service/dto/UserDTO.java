@@ -56,12 +56,17 @@ public class UserDTO {
         // Empty constructor needed for MapStruct.
     }
 
+    public UserDTO(Long id, String login, String firstName, String lastName) {
+        this(id, login, firstName, lastName, null, Boolean.FALSE, null, null, null,
+                null, null, null, null, null);
+    }
+
     public UserDTO(User user) {
         this(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName(),
-            user.getEmail(), user.getActivated(), user.getImageUrl(), user.getLangKey(), user.getUpdates(),
-            user.getCreatedBy(), user.getCreatedDate(), user.getLastModifiedBy(), user.getLastModifiedDate(),
-            user.getAuthorities().stream().map(Authority::getName)
-                .collect(Collectors.toSet()));
+                user.getEmail(), user.getActivated(), user.getImageUrl(), user.getLangKey(), user.getUpdates(),
+                user.getCreatedBy(), user.getCreatedDate(), user.getLastModifiedBy(), user.getLastModifiedDate(),
+                user.getAuthorities().stream().map(Authority::getName)
+                        .collect(Collectors.toSet()));
     }
 
     public UserDTO(Long id, String login, String firstName, String lastName,
@@ -93,6 +98,10 @@ public class UserDTO {
         this.id = id;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public String getLogin() {
         return login;
     }
@@ -105,13 +114,19 @@ public class UserDTO {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
+
+
 
     public String getImageUrl() {
         return imageUrl;
@@ -160,19 +175,19 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", updates='" + updates + '\'' +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            "}";
+                "login='" + login + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", activated=" + activated +
+                ", langKey='" + langKey + '\'' +
+                ", updates='" + updates + '\'' +
+                ", createdBy=" + createdBy +
+                ", createdDate=" + createdDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", authorities=" + authorities +
+                "}";
     }
 }

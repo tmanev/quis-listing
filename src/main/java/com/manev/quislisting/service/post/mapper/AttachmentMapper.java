@@ -5,8 +5,8 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
+import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
-import com.manev.quislisting.service.post.dto.Author;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class AttachmentMapper {
             attachment.setCreated(attachmentDTO.getCreated());
             attachment.setModified(attachmentDTO.getModified());
 
-            attachment.addPostMeta(new PostMeta(attachment, QL_ATTACHED_FILE, attachmentDTO.getAttachmentMetadata().getFile()));
+            attachment.addPostMeta(new PostMeta(attachment, QL_ATTACHED_FILE, attachmentDTO.getAttachmentMetadata().getDetail().getFile()));
             attachment.addPostMeta(new PostMeta(attachment, QL_ATTACHMENT_METADATA, new ObjectMapper().writeValueAsString(attachmentDTO.getAttachmentMetadata())));
         } catch (IOException e) {
             log.error("Error writing Obj to Json", e);
@@ -71,7 +71,6 @@ public class AttachmentMapper {
 
     private void setAuthor(Attachment attachment, AttachmentDTO attachmentDTO) {
         User user = attachment.getUser();
-
-        attachmentDTO.setAuthor(new Author(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
+        attachmentDTO.setAuthor(new UserDTO(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
     }
 }

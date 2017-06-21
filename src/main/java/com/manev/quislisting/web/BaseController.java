@@ -107,11 +107,7 @@ public class BaseController {
 
         for (Language activeLanguage : activeLanguages) {
             ActiveLanguageBean activeLanguageBean = new ActiveLanguageBean();
-            activeLanguageBean.setId(activeLanguage.getId());
-            activeLanguageBean.setLanguageCode(activeLanguage.getCode());
-            activeLanguageBean.setDisplayLanguageCode(activeLanguage.getCode());
-            activeLanguageBean.setEnglishName(activeLanguage.getEnglishName());
-            activeLanguageBean.setTranslatedName(activeLanguage.getEnglishName());
+            activeLanguageBean.setLanguage(activeLanguage);
             activeLanguageBeans.add(activeLanguageBean);
         }
         return activeLanguageBeans;
@@ -124,11 +120,8 @@ public class BaseController {
             for (LanguageTranslation languageTranslation : languageTranslations) {
                 if (activeLanguage.getCode().equals(languageTranslation.getLanguageCode())) {
                     ActiveLanguageBean activeLanguageBean = new ActiveLanguageBean();
-                    activeLanguageBean.setId(activeLanguage.getId());
-                    activeLanguageBean.setLanguageCode(activeLanguage.getCode());
-                    activeLanguageBean.setDisplayLanguageCode(languageTranslation.getDisplayLanguageCode());
-                    activeLanguageBean.setEnglishName(activeLanguage.getEnglishName());
-                    activeLanguageBean.setTranslatedName(languageTranslation.getName());
+                    activeLanguageBean.setLanguage(activeLanguage);
+                    activeLanguageBean.setLanguageTranslation(languageTranslation);
                     activeLanguageBeans.add(activeLanguageBean);
                 }
             }
