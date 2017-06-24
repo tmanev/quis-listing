@@ -61,3 +61,11 @@ div.bhoechie-tab-content{
 div.bhoechie-tab div.bhoechie-tab-content:not(.active){
     display: none;
 }
+
+.category-green {
+    background-color: rgba(0, 255, 0, 0.14);
+}
+
+.category-red {
+    background-color: rgba(255, 0, 0, 0.11);
+}

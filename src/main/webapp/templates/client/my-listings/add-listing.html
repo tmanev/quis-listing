@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="${title}">Profile</title>
+
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/css/styles.css"
+          th:href="@{/resources/css/styles.css}"
+          rel="stylesheet"/>
+</head>
+<body>
+<div th:fragment="content" class="container">
+    <div id="addListingApp">
+        <div class="page-header">
+            <h1>Add listing</h1>
+        </div>
+        <form class="form-horizontal" v-on:submit.prevent="onSubmit($event)">
+            <div class="form-group"
+                 v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
+                <label for="inputTitle" class="col-xs-12 col-sm-1 control-label"
+                       style="text-align: center;">
+                    <div class="row" style="margin-right: 0px; margin-left: 0px;">
+                        <span class="badge col-xs-12" style="font-size: 18px;">1</span>
+                    </div>
+                </label>
+                <div class="col-xs-12 col-sm-11">
+                    <input type="text" class="form-control" id="inputTitle"
+                           placeholder="Your listing title - Minimum two words"
+                           v-model="listing.title"
+                           v-on:input="delayTouch($v.listing.title)"
+                    />
+                    <span class="help-block"
+                          v-if="!$v.listing.title.required &amp;&amp; $v.listing.title.$dirty"
+                          th:text="#{validation.required}">Field is required</span>
+                    <span class="help-block"
+                          v-if="!$v.listing.title.TwoWordValidator &amp;&amp; $v.listing.title.$dirty"
+                    >Title must have at least two words</span>
+                </div>
+            </div>
+            <div class="form-group"
+                 v-bind:class="{ 'has-error': $v.listing.category.name.$error, 'has-success': $v.listing.category.name.$dirty &amp;&amp; !$v.listing.category.name.$invalid }">
+                <label for="inputTitle" class="col-xs-12 col-sm-1 control-label"
+                       style="text-align: center;">
+                    <div class="row" style="margin-right: 0px; margin-left: 0px;">
+                        <span class="badge col-xs-12" style="font-size: 18px;">2</span>
+                    </div>
+                </label>
+                <div class="col-xs-12 col-sm-11">
+                    <div class="input-group ">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" data-target="#myModal"
+                                    v-on:click="openCategorySelection($v.listing.category.name)"
+                            >Select category</button>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Your listing category"
+                               style="cursor: pointer;"
+                                   readonly="readonly"
+                                   v-model="listing.category.name"
+                                    v-on:click="openCategorySelection($v.listing.category.name)" />
+                    </div>
+                    <span class="help-block"
+                          v-if="!$v.listing.category.name.required &amp;&amp; $v.listing.category.name.$dirty"
+                          th:text="#{validation.required}">Field is required</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-8 col-sm-4">
+                    <button type="submit" class="btn btn-primary btn-block" id="btnNext">
+                        <span> Next</span>
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Select category</h4>
+                    </div>
+                    <div class="modal-body pre-scrollable">
+                        <item v-for="category in categories"
+                              class="item"
+                              :model="category">
+                        </item>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        <!--<button type="button" class="btn btn-primary">Select</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="item-template">
+        <div class="panel-group" v-bind:id="getPanelId" role="tablist" aria-multiselectable="true"
+             style="margin-bottom: 5px;">
+            <div class="panel panel-default">
+                <div role="tab" v-bind:id="getHeadingId">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" v-bind:data-parent="getPanelIdWithHashTag"
+                           v-bind:href="getBodyIdWithHashTag" aria-expanded="false" v-bind:aria-controls="getBodyId"
+                           v-bind:class="{ 'category-red': isFolder, 'category-green': !isFolder, 'active': model.active }"
+                           v-on:click="selectCategory"
+                           class="list-group-item">
+                            {{model.term.name}}
+                        </a>
+                    </h4>
+                </div>
+                <div v-if="isFolder">
+                    <div v-bind:id="getBodyId" class="panel-collapse collapse" role="tabpanel"
+                         v-bind:aria-labelledby="getHeadingId">
+                        <div class="panel-body">
+
+                            <item
+                                    class="item"
+                                    v-for="model in model.children"
+                                    :model="model">
+                            </item>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </script>
+    <script src="../../../resources/js/my-listings/add-listing.js"
+            th:src="@{/resources/js/my-listings/add-listing.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        window.onload = function () {
+            AddListing.init();
+        };
+    </script>
+</div>
+
+
+<!-- JavaScript libraries used to be able to open the html page itself in browser -->
+<script src="../../../resources/vendor/vue/vue.min.js"
+        th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/vuelidate.min.js"
+        th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/validators.min.js"
+        th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+<script src="../../../resources/vendor/vue-resource/vue-resource.min.js"
+        th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+<script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"
+        th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap/js/bootstrap.min.js"
+        th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+        th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+</body>
+</html>

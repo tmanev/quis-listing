@@ -156,6 +156,9 @@ public class PostController extends BaseController {
                 case "[profile-page]":
                     handleProfilePage(modelMap);
                     break;
+                case "[my-listings-add-page]":
+                     modelMap.addAttribute("view", "client/my-listings/add-listing");
+                    break;
                 default:
                     modelMap.addAttribute("content", content);
                     modelMap.addAttribute("view", "client/post");
