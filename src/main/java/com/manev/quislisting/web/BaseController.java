@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.QlMenuConfig;
 import com.manev.quislisting.domain.QlMenuPosConfig;
-import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.LanguageTranslation;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
-import com.manev.quislisting.exception.MissingConfigurationException;
-import com.manev.quislisting.repository.QlConfigRepository;
-import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.service.QlConfigService;
+import com.manev.quislisting.service.post.AbstractPostService;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,30 +23,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class BaseController {
 
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
 
-    protected PostRepository<AbstractPost> postRepository;
     protected NavMenuRepository navMenuRepository;
 
-    protected QlConfigRepository qlConfigRepository;
+    protected QlConfigService qlConfigService;
 
     protected LanguageRepository languageRepository;
     protected LocaleResolver localeResolver;
+    protected AbstractPostService abstractPostService;
     private LanguageTranslationRepository languageTranslationRepository;
 
-    public BaseController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+    public BaseController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                           LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
-                          LocaleResolver localeResolver, PostRepository<AbstractPost> postRepository) {
+                          LocaleResolver localeResolver, AbstractPostService abstractPostService) {
         this.navMenuRepository = navMenuRepository;
-        this.qlConfigRepository = qlConfigRepository;
+        this.qlConfigService = qlConfigService;
         this.languageRepository = languageRepository;
         this.languageTranslationRepository = languageTranslationRepository;
         this.localeResolver = localeResolver;
-        this.postRepository = postRepository;
+        this.abstractPostService = abstractPostService;
     }
 
     @ModelAttribute("baseModel")
@@ -60,7 +56,7 @@ public class BaseController {
         String language = locale.getLanguage();
         log.debug("Language from cookie: {}", language);
 
-        QlConfig qlMenuConfigs = qlConfigRepository.findOneByKey("ql-menu-configurations");
+        QlConfig qlMenuConfigs = qlConfigService.findOneByKey("ql-menu-configurations");
 
         QlMenuConfig qlMenuPosConfig = new ObjectMapper().readValue(qlMenuConfigs.getValue(),
                 QlMenuConfig.class);
@@ -93,12 +89,9 @@ public class BaseController {
             baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
         }
 
-        QlConfig accountProfilePageConfig = qlConfigRepository.findOneByKey("account-profile-page-id");
-        if (accountProfilePageConfig == null) {
-            throw new MissingConfigurationException("Account profile page expected to be configured");
-        }
+        QlConfig accountProfilePageConfig = qlConfigService.findOneByKey("account-profile-page-id");
 
-        baseModel.setProfilePage(retrievePage(language, accountProfilePageConfig.getValue()));
+        baseModel.setProfilePage(abstractPostService.retrievePost(language, accountProfilePageConfig.getValue()));
 
         return baseModel;
     }
@@ -145,30 +138,6 @@ public class BaseController {
         for (QlMenuPosConfig qlMenuPosConfig : qlMenuPosConfigs) {
             if (qlMenuPosConfig.getLanguageCode().equals(languageCode)) {
                 return qlMenuPosConfig;
-            }
-        }
-        return null;
-    }
-
-    protected AbstractPost retrievePage(String languageCode, String pageId) {
-        AbstractPost post;
-
-        post = postRepository.findOne(Long.valueOf(pageId));
-        Translation translation = post.getTranslation();
-        if (!translation.getLanguageCode().equals(languageCode)) {
-            Translation translationForLanguage = translationExists(languageCode, translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                post = postRepository.findOneByTranslation(translationForLanguage);
-            }
-        }
-
-        return post;
-    }
-
-    protected Translation translationExists(String languageCode, Set<Translation> translationList) {
-        for (Translation translation : translationList) {
-            if (translation.getLanguageCode().equals(languageCode)) {
-                return translation;
             }
         }
         return null;

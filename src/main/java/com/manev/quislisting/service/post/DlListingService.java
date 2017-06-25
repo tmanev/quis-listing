@@ -14,6 +14,7 @@ import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
+import com.manev.quislisting.service.post.dto.ClientDlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingField;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
@@ -44,6 +45,7 @@ import java.util.*;
 @Transactional
 public class DlListingService {
 
+    private static final String USER_S_WAS_NOT_FOUND_IN_THE_DATABASE = "User : %s was not found in the database";
     private final Logger log = LoggerFactory.getLogger(DlListingService.class);
 
     private DlListingRepository dlListingRepository;
@@ -67,6 +69,43 @@ public class DlListingService {
         this.attachmentMapper = attachmentMapper;
         this.storageService = storageService;
         this.languageService = languageService;
+    }
+
+    public ClientDlListingDTO save(ClientDlListingDTO clientDlListingDto) {
+
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+        if (oneByLogin.isPresent()) {
+            ZonedDateTime now = ZonedDateTime.now();
+
+            DlListing dlListingForSaving = new DlListing();
+            dlListingForSaving.setTitle(clientDlListingDto.getTitle());
+            dlListingForSaving.setName(SlugUtil.getFileNameSlug(clientDlListingDto.getTitle()));
+            dlListingForSaving.setStatus(DlListing.Status.UNFINISHED);
+            dlListingForSaving.setTranslation(
+                    TranslationBuilder.aTranslation()
+                            .withLanguageCode(oneByLogin.get().getLangKey())
+                            .withTranslationGroup(new TranslationGroup())
+                            .build()
+            );
+
+            DlCategory dlCategory = dlCategoryRepository.findOne(clientDlListingDto.getCategoryId());
+
+            Set<DlCategory> dlCategories = new HashSet<>();
+            dlCategories.add(dlCategory);
+            dlListingForSaving.setDlCategories(dlCategories);
+            dlListingForSaving.setUser(oneByLogin.get());
+
+            dlListingForSaving.setCreated(now);
+            dlListingForSaving.setModified(now);
+
+            DlListing save = dlListingRepository.save(dlListingForSaving);
+            return new ClientDlListingDTO(save.getId(), save.getTitle(), save.getDlCategories().iterator().next().getId());
+        } else {
+            throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
+        }
+
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -97,8 +136,7 @@ public class DlListingService {
                 dlListingForSaving.setCreated(now);
                 dlListingForSaving.setUser(oneByLogin.get());
             } else {
-                throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
-                        "database");
+                throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
             }
 
         }
@@ -206,8 +244,7 @@ public class DlListingService {
             DlListing result = dlListingRepository.save(dlListing);
             return dlListingMapper.dlListingToDlListingDTO(result);
         } else {
-            throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
-                    "database");
+            throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
         }
     }
 
@@ -215,4 +252,5 @@ public class DlListingService {
         log.debug("Request to retrieve all active languages");
         return languageService.findAllActiveLanguages(dlListingRepository);
     }
+
 }

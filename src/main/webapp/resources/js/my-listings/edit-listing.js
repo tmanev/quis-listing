@@ -1,4 +1,4 @@
-AddListing = {
+EditListing = {
     init: function () {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
@@ -73,30 +73,17 @@ AddListing = {
             }
         });
 
-        var addListingApp = new Vue({
-            el: '#addListingApp',
+        var editListingApp = new Vue({
+            el: '#editListingApp',
             data: {
                 categories: roots,
                 listing: {
-                    title: '',
-                    selectedCategory: null,
-                    category: {
-                        id: null,
-                        name: ''
-                    }
+
                 }
             },
             validations: {
                 listing: {
-                    title: {
-                        required: required,
-                        TwoWordValidator: TwoWordValidator
-                    },
-                    category: {
-                        name: {
-                            required: required
-                        }
-                    }
+
                 }
             },
             methods: {
@@ -107,54 +94,13 @@ AddListing = {
                     }
                     touchMap.set($v, setTimeout($v.$touch, 1000))
                 },
-                onSubmit: function (event) {
-                    if (this.$v.listing.$invalid) {
-                        this.$v.listing.$touch();
-                    } else {
-                        var payload = {};
-                        payload.title = this.listing.title;
-                        payload.categoryId = this.listing.selectedCategory.id;
-                        var $btn = $('#btnNext').button('loading');
-                        this.$http({
-                            url: '/api/client/dl-listings',
-                            body: payload,
-                            method: 'POST'
-                        }).then(function (response) {
-                            console.log('Success!:', response.data);
-                            $btn.button('reset');
-
-                            // move the user to the next page
-                            window.location.href = response.headers.get('Location');
-
-                        }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
-                            $btn.button('reset');
-                        });
-                    }
-                },
+                onSubmit: function (event) {},
                 openCategorySelection: function ($v) {
                     // $v.$touch();
                     this.delayTouch($v);
                     $('#myModal').modal('toggle');
                 }
             }
-        });
-
-        // var bus = new Vue();
-
-        addListingApp.$on('id-selected', function (category) {
-            if (this.listing.selectedCategory) {
-                this.listing.selectedCategory.active = false;
-            }
-            this.listing.selectedCategory = category;
-            this.listing.selectedCategory.active = true;
-            this.listing.category.id = category.id;
-            this.listing.category.name = category.term.name;
         });
     }
 };

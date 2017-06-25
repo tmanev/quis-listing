@@ -20,9 +20,12 @@ public final class Constants {
     public static final String RESOURCE_API_ADMIN_QL_STRINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-strings";
     public static final String RESOURCE_API_ADMIN_QL_PAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-pages";
 
-    private static final String RESOURCE_USER = "/user";
-    public static final String RESOURCE_API_USER_UPLOAD = RESOURCE_API_BASE + RESOURCE_USER + "/upload";
+    private static final String RESOURCE_CLIENT = "/client";
+    public static final String RESOURCE_API_USER_UPLOAD = RESOURCE_API_BASE + RESOURCE_CLIENT + "/upload";
     public static final String RESOURCE_API_CONTACTS = RESOURCE_API_BASE + "/contacts";
+    public static final String RESOURCE_API_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_CLIENT + "/dl-listings";
+
+
 
     private Constants() {
     }

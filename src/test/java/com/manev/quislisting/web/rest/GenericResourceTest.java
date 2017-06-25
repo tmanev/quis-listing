@@ -10,6 +10,12 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.jcr.*;
 import java.io.File;
@@ -68,5 +74,15 @@ public abstract class GenericResourceTest {
     public static File createFile() throws URISyntaxException {
         URL resource = AttachmentResourceTest.class.getResource("/images/small fish.jpg");
         return new File(resource.toURI());
+    }
+
+    protected void setupSecurityContext() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User("admin",
+                "admin",
+                grantedAuthorities);
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null));
     }
 }

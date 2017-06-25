@@ -1,20 +1,20 @@
 package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.QlConfig;
-import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.QlPage;
-import com.manev.quislisting.exception.MissingConfigurationException;
-import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.service.post.AbstractPostService;
+import com.manev.quislisting.service.post.exception.PostDifferentLanguageException;
+import com.manev.quislisting.service.post.exception.PostNotFoundException;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,12 +42,12 @@ public class PostController extends BaseController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public PostController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
-                          PostRepository<AbstractPost> postRepository, LanguageRepository languageRepository,
+    public PostController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
+                          AbstractPostService abstractPostService, LanguageRepository languageRepository,
                           LocaleResolver localeResolver,
                           LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
-                postRepository);
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
+                abstractPostService);
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -58,53 +58,39 @@ public class PostController extends BaseController {
         String language = locale.getLanguage();
         log.debug("Language from cookie: {}", language);
 
-        AbstractPost post = postRepository.findOneByName(name);
-        if (post == null) {
+        try {
+            AbstractPost post = abstractPostService.findOneByName(name, language);
+            modelMap.addAttribute("title", post.getTitle());
+
+            if (post instanceof QlPage) {
+                // handle page
+                String content = post.getContent();
+                switch (content) {
+                    case "[contact-form]":
+                        modelMap.addAttribute("view", "client/contacts");
+                        break;
+                    case "[not-found-page]":
+                        QlConfig contactPageIdConfig = qlConfigService.findOneByKey("contact-page-id");
+                        AbstractPost contactPage = abstractPostService.retrievePost(language, contactPageIdConfig.getValue());
+                        modelMap.addAttribute("contactPageName", contactPage.getName());
+                        modelMap.addAttribute("view", "client/page-not-found");
+                        break;
+                    case "[forgot-password-page]":
+                        modelMap.addAttribute("view", "client/forgot-password");
+                        break;
+                    default:
+                        modelMap.addAttribute("content", content);
+                        modelMap.addAttribute("view", "client/post");
+                        break;
+                }
+            } else if (post instanceof DlListing) {
+                // handle listing
+                modelMap.addAttribute("view", "client/dl-listing");
+            }
+        } catch (PostNotFoundException e) {
             return redirectToPageNotFound();
-        }
-
-        Translation translation = post.getTranslation();
-        if (!translation.getLanguageCode().equals(language)) {
-            // find post related to the translation
-            // and redirect it to the page url
-
-            // check if there is a translation
-            Translation translationForLanguage = translationExists(language, translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                AbstractPost translatedPost = postRepository.findOneByTranslation(translationForLanguage);
-                return REDIRECT + URLEncoder.encode(translatedPost.getName(), CharEncoding.UTF_8);
-            }
-        }
-
-        modelMap.addAttribute("title", post.getTitle());
-
-        if (post instanceof QlPage) {
-            // handle page
-            String content = post.getContent();
-            switch (content) {
-                case "[contact-form]":
-                    modelMap.addAttribute("view", "client/contacts");
-                    break;
-                case "[not-found-page]":
-                    QlConfig contactPageIdConfig = qlConfigRepository.findOneByKey("contact-page-id");
-                    if (contactPageIdConfig == null) {
-                        throw new MissingConfigurationException("Contact Page configuration expected");
-                    }
-                    AbstractPost contactPage = retrievePage(language, contactPageIdConfig.getValue());
-                    modelMap.addAttribute("contactPageName", contactPage.getName());
-                    modelMap.addAttribute("view", "client/page-not-found");
-                    break;
-                case "[forgot-password-page]":
-                    modelMap.addAttribute("view", "client/forgot-password");
-                    break;
-                default:
-                    modelMap.addAttribute("content", content);
-                    modelMap.addAttribute("view", "client/post");
-                    break;
-            }
-        } else if (post instanceof DlListing) {
-            // handle listing
-            modelMap.addAttribute("view", "client/dl-listing");
+        } catch (PostDifferentLanguageException e) {
+            return REDIRECT + URLEncoder.encode(e.getPostNameDifferentLanguage(), CharEncoding.UTF_8);
         }
 
         return "client/index";
@@ -120,50 +106,38 @@ public class PostController extends BaseController {
         log.debug("Language from cookie: {}", language);
 
         String slugName = name + "/" + secondName;
-        AbstractPost post = postRepository.findOneByName(slugName);
-        if (post == null) {
+
+        try {
+            AbstractPost post = abstractPostService.findOneByName(slugName, language);
+
+            modelMap.addAttribute("title", post.getTitle());
+
+            if (post instanceof QlPage) {
+                // handle page
+                String content = post.getContent();
+                switch (content) {
+                    case "[activation-link-page]":
+                        if (handleActivationLinkPage(modelMap, allRequestParams)) return redirectToPageNotFound();
+                        break;
+                    case "[reset-password-finish-page]":
+                        if (handleResetPasswordFinishPage(modelMap, allRequestParams)) return redirectToPageNotFound();
+                        break;
+                    case "[profile-page]":
+                        handleProfilePage(modelMap);
+                        break;
+                    default:
+                        modelMap.addAttribute("content", content);
+                        modelMap.addAttribute("view", "client/post");
+                        break;
+                }
+            }
+        } catch (PostNotFoundException e) {
             return redirectToPageNotFound();
-        }
-
-        Translation translation = post.getTranslation();
-        if (!translation.getLanguageCode().equals(language)) {
-            // find post related to the translation
-            // and redirect it to the page url
-
-            // check if there is a translation
-            Translation translationForLanguage = translationExists(language, translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                AbstractPost translatedPost = postRepository.findOneByTranslation(translationForLanguage);
-                String firstPart = translatedPost.getName().split("/")[0];
-                String secondPart = translatedPost.getName().split("/")[1];
-                return REDIRECT + URLEncoder.encode(firstPart, CharEncoding.UTF_8) + "/"
-                        + URLEncoder.encode(secondPart, CharEncoding.UTF_8);
-            }
-        }
-
-        modelMap.addAttribute("title", post.getTitle());
-
-        if (post instanceof QlPage) {
-            // handle page
-            String content = post.getContent();
-            switch (content) {
-                case "[activation-link-page]":
-                    if (handleActivationLinkPage(modelMap, allRequestParams)) return redirectToPageNotFound();
-                    break;
-                case "[reset-password-finish-page]":
-                    if (handleResetPasswordFinishPage(modelMap, allRequestParams)) return redirectToPageNotFound();
-                    break;
-                case "[profile-page]":
-                    handleProfilePage(modelMap);
-                    break;
-                case "[my-listings-add-page]":
-                     modelMap.addAttribute("view", "client/my-listings/add-listing");
-                    break;
-                default:
-                    modelMap.addAttribute("content", content);
-                    modelMap.addAttribute("view", "client/post");
-                    break;
-            }
+        } catch (PostDifferentLanguageException e) {
+            String firstPart = e.getPostNameDifferentLanguage().split("/")[0];
+            String secondPart = e.getPostNameDifferentLanguage().split("/")[1];
+            return REDIRECT + URLEncoder.encode(firstPart, CharEncoding.UTF_8) + "/"
+                    + URLEncoder.encode(secondPart, CharEncoding.UTF_8);
         }
 
         return "client/index";
@@ -211,13 +185,9 @@ public class PostController extends BaseController {
     }
 
     private String redirectToPageNotFound() throws UnsupportedEncodingException {
-        QlConfig notFoundPageConfig = qlConfigRepository.findOneByKey("not-found-page-id");
-        if (notFoundPageConfig == null) {
-            throw new MissingConfigurationException("Not Found Page configuration expected");
-        }
-        AbstractPost notFoundPage = postRepository.findOne(Long.valueOf(notFoundPageConfig.getValue()));
+        QlConfig notFoundPageConfig = qlConfigService.findOneByKey("not-found-page-id");
+        AbstractPost notFoundPage = abstractPostService.findOne(Long.valueOf(notFoundPageConfig.getValue()));
         return REDIRECT + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
     }
-
 
 }

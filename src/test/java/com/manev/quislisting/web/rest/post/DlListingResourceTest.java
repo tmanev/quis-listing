@@ -500,16 +500,6 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 
-    private void setupSecurityContext() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User("admin",
-                "admin",
-                grantedAuthorities);
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null));
-    }
-
     private DlContentField findDlContentFieldByName(String name, List<DlContentField> dlContentFields) {
         for (DlContentField dlContentField : dlContentFields) {
             if (dlContentField.getName().equals(name)) {

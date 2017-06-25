@@ -1,6 +1,7 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.exception.MissingConfigurationException;
 import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.service.dto.QlConfigDTO;
 import com.manev.quislisting.service.mapper.QlConfigMapper;
@@ -55,5 +56,13 @@ public class QlConfigService {
     public void delete(Long id) {
         log.debug("Request to delete QlConfigDTO : {}", id);
         qlConfigRepository.delete(id);
+    }
+
+    public QlConfig findOneByKey(String key) {
+        QlConfig qlConfig = qlConfigRepository.findOneByKey(key);
+        if (qlConfig == null) {
+            throw new MissingConfigurationException(String.format("Missing configuration for key: %s", key));
+        }
+        return qlConfig;
     }
 }

@@ -273,14 +273,4 @@ public class AttachmentResourceTest extends GenericResourceTest {
         return attachment;
     }
 
-    private void setupSecurityContext() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User("admin",
-                "admin",
-                grantedAuthorities);
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null));
-    }
-
 }

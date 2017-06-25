@@ -6,6 +6,7 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class DlListing extends AbstractPost {
             @JoinColumn(name = "object_id", nullable = false, updatable = false))
     private Set<Attachment> attachments;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column
     private Status status;

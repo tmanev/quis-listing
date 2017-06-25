@@ -1,19 +1,15 @@
 package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.QlConfig;
-import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.domain.post.discriminator.QlPage;
-import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.repository.post.PageRepository;
-import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.EmailSendingService;
+import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.service.post.AbstractPostService;
 import com.manev.quislisting.web.model.SignUpUserBean;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -32,20 +28,18 @@ import java.util.Optional;
 @RequestMapping("/sign-up")
 public class SignUpController extends BaseController {
 
-    private PageRepository pageRepository;
     private MessageSource messageSource;
     private UserRepository userRepository;
     private UserService userService;
     private EmailSendingService emailSendingService;
 
-    public SignUpController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+    public SignUpController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                             LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
-                            LocaleResolver localeResolver, PageRepository pageRepository, MessageSource messageSource,
+                            LocaleResolver localeResolver, MessageSource messageSource,
                             UserRepository userRepository, UserService userService,
-                            PostRepository<AbstractPost> postRepository, EmailSendingService emailSendingService) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
-                postRepository);
-        this.pageRepository = pageRepository;
+                            AbstractPostService abstractPostService, EmailSendingService emailSendingService) {
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
+                abstractPostService);
         this.messageSource = messageSource;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -66,17 +60,12 @@ public class SignUpController extends BaseController {
     }
 
     private void setTermsAndConditionPageInModel(ModelMap model, Locale locale) {
-        QlConfig siteNameConfig = qlConfigRepository.findOneByKey("site-name");
-        if (siteNameConfig != null) {
-            model.addAttribute("siteName", siteNameConfig.getValue());
-        }
-
         // request to load terms and conditions page
-        QlConfig termsAndConditionsPageIdConfig = qlConfigRepository.findOneByKey("terms-and-conditions-page-id");
+        QlConfig termsAndConditionsPageIdConfig = qlConfigService.findOneByKey("terms-and-conditions-page-id");
         if (termsAndConditionsPageIdConfig != null) {
             String language = locale.getLanguage();
 
-            model.addAttribute("termsAndConditionsPage", retrieveTermsAndConditionsPage(language,
+            model.addAttribute("termsAndConditionsPage", abstractPostService.retrievePost(language,
                     termsAndConditionsPageIdConfig.getValue()));
         }
     }
@@ -109,21 +98,6 @@ public class SignUpController extends BaseController {
 
 
         return "client/index";
-    }
-
-    private QlPage retrieveTermsAndConditionsPage(String languageCode, String pageId) {
-        QlPage qlPage;
-
-        qlPage = pageRepository.findOne(Long.valueOf(pageId));
-        Translation translation = qlPage.getTranslation();
-        if (!translation.getLanguageCode().equals(languageCode)) {
-            Translation translationForLanguage = translationExists(languageCode, translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                qlPage = pageRepository.findOneByTranslation(translationForLanguage);
-            }
-        }
-
-        return qlPage;
     }
 
 }

@@ -96,3 +96,7 @@ id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_co
 50¦Profile¦[profile-page]¦account/profile¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦55¦1¦null¦null
 51¦Профил¦[profile-page]¦сметка/профил¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦56¦1¦null¦null
 52¦Profil¦[profile-page]¦cont/profil¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦57¦1¦null¦null
+
+53¦Listing edit¦[my-listings-edit-page]¦my-listings/edit¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦58¦1¦null¦null
+54¦Редактиране на обява¦[my-listings-edit-page]¦моите-обяви/редактиране¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦59¦1¦null¦null
+55¦Editare de editare¦[my-listings-edit-page]¦lista-mea/edit¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦60¦1¦null¦null

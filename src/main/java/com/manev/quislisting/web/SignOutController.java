@@ -1,11 +1,10 @@
 package com.manev.quislisting.web;
 
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.repository.QlConfigRepository;
-import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.service.QlConfigService;
+import com.manev.quislisting.service.post.AbstractPostService;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Controller;
@@ -25,12 +24,12 @@ public class SignOutController extends BaseController {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public SignOutController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+    public SignOutController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                              LanguageRepository languageRepository, LocaleResolver localeResolver,
                              LanguageTranslationRepository languageTranslationRepository,
-                             PostRepository<AbstractPost> postRepository) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
-                postRepository);
+                             AbstractPostService abstractPostService) {
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
+                abstractPostService);
     }
 
     @RequestMapping(method = RequestMethod.GET)

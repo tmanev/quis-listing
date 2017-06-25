@@ -2,13 +2,12 @@ package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.exception.MissingConfigurationException;
-import com.manev.quislisting.repository.QlConfigRepository;
-import com.manev.quislisting.repository.post.PostRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.jwt.TokenProvider;
+import com.manev.quislisting.service.QlConfigService;
+import com.manev.quislisting.service.post.AbstractPostService;
 import com.manev.quislisting.web.rest.vm.LoginVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +49,13 @@ public class SignInController extends BaseController {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public SignInController(NavMenuRepository navMenuRepository, QlConfigRepository qlConfigRepository,
+    public SignInController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                             TokenProvider tokenProvider, AuthenticationManager authenticationManager,
                             LanguageRepository languageRepository, LocaleResolver localeResolver,
                             LanguageTranslationRepository languageTranslationRepository,
-                            PostRepository<AbstractPost> postRepository, MessageSource messageSource) {
-        super(navMenuRepository, qlConfigRepository, languageRepository, languageTranslationRepository, localeResolver,
-                postRepository);
+                            AbstractPostService abstractPostService, MessageSource messageSource) {
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
+                abstractPostService);
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.messageSource = messageSource;
@@ -67,11 +66,8 @@ public class SignInController extends BaseController {
         model.addAttribute("title", "Sign In");
         model.addAttribute("view", "client/signin");
 
-        QlConfig forgotPasswordPageIdConfig = qlConfigRepository.findOneByKey("forgot-password-page-id");
-        if (forgotPasswordPageIdConfig == null) {
-            throw new MissingConfigurationException("Forgot Password Page configuration expected");
-        }
-        AbstractPost forgotPasswordPage = retrievePage(locale.getLanguage(), forgotPasswordPageIdConfig.getValue());
+        QlConfig forgotPasswordPageIdConfig = qlConfigService.findOneByKey("forgot-password-page-id");
+        AbstractPost forgotPasswordPage = abstractPostService.retrievePost(locale.getLanguage(), forgotPasswordPageIdConfig.getValue());
         model.addAttribute("forgotPasswordName", forgotPasswordPage.getName());
         return "client/index";
     }
@@ -97,7 +93,7 @@ public class SignInController extends BaseController {
         } catch (AuthenticationException exception) {
             logger.warn("User : {} cannot login. Reason : {}", loginVM.getUsername(), exception.getMessage());
             // send message login error
-            model.addAttribute("errMsg", messageSource.getMessage("page.signin.error.wrong_email_password",null, locale));
+            model.addAttribute("errMsg", messageSource.getMessage("page.signin.error.wrong_email_password", null, locale));
         }
         return "client/index";
     }

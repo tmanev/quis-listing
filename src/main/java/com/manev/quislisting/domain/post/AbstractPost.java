@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public abstract class AbstractPost {
     @Column
     private String title;
 
+    @NotNull
     @Column
     private String name;
 

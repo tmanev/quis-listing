@@ -3,6 +3,7 @@ package com.manev.quislisting.service;
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
+import com.manev.quislisting.exception.MissingConfigurationException;
 import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.service.dto.EmailTemplateDTO;
 import com.manev.quislisting.service.mapper.EmailTemplateMapper;
@@ -67,6 +68,14 @@ public class EmailTemplateService {
     public void delete(Long id) {
         log.debug("Request to delete EmailTemplateService : {}", id);
         emailTemplateRepository.delete(id);
+    }
+
+    public EmailTemplate findOneByName(String name) {
+        EmailTemplate emailTemplate = emailTemplateRepository.findOneByName(name);
+        if (emailTemplate == null) {
+            throw new MissingConfigurationException(String.format("Template: %s not configured", name));
+        }
+        return emailTemplate;
     }
 
     private void saveQlString(EmailTemplate emailTemplate, QlString qlString) {
