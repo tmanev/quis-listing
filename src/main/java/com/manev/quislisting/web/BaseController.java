@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.QlMenuConfig;
 import com.manev.quislisting.domain.QlMenuPosConfig;
+import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.qlml.LanguageTranslation;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +30,8 @@ import java.util.Locale;
 public class BaseController {
 
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
+
+    static final String REDIRECT = "redirect:/";
 
     protected NavMenuRepository navMenuRepository;
 
@@ -141,6 +146,12 @@ public class BaseController {
             }
         }
         return null;
+    }
+
+    protected String redirectToPageNotFound() throws UnsupportedEncodingException {
+        QlConfig notFoundPageConfig = qlConfigService.findOneByKey("not-found-page-id");
+        AbstractPost notFoundPage = abstractPostService.findOne(Long.valueOf(notFoundPageConfig.getValue()));
+        return REDIRECT + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
     }
 
 }

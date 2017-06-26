@@ -37,7 +37,6 @@ import java.util.Optional;
 @Controller
 public class PostController extends BaseController {
 
-    private static final String REDIRECT = "redirect:/";
     private final Logger log = LoggerFactory.getLogger(PostController.class);
     private final UserService userService;
     private final UserRepository userRepository;
@@ -184,10 +183,5 @@ public class PostController extends BaseController {
         return false;
     }
 
-    private String redirectToPageNotFound() throws UnsupportedEncodingException {
-        QlConfig notFoundPageConfig = qlConfigService.findOneByKey("not-found-page-id");
-        AbstractPost notFoundPage = abstractPostService.findOne(Long.valueOf(notFoundPageConfig.getValue()));
-        return REDIRECT + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
-    }
 
 }

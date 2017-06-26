@@ -34,7 +34,7 @@ public class DlCategoryMapper {
                 .build();
     }
 
-    public List<DlCategoryDTO> dlCategoryToDlCategoryDtoFlat(Page<DlCategory> page) {
+    public List<DlCategoryDTO> dlCategoryToDlCategoryDtoFlat(List<DlCategory> page) {
         Set<Long> ids = new HashSet<>();
 
         List<DlCategoryDTO> result = new ArrayList<>();

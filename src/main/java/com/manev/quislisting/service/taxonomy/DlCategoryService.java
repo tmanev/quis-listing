@@ -68,8 +68,13 @@ public class DlCategoryService {
         log.debug("Request to get all DlCategoryDTO");
         String languageCode = allRequestParams.get("languageCode");
         Page<DlCategory> result = dlCategoryRepository.findAllByTranslation_languageCode(pageable, languageCode);
-        List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(result);
+        List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(result.getContent());
         return new PageImpl<>(dlCategoryDTOs, pageable, result.getTotalElements());
+    }
+
+    public List<DlCategoryDTO> findAllByLanguageCode(String languageCode) {
+        List<DlCategory> result = dlCategoryRepository.findAllByTranslation_languageCode(languageCode);
+        return dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(result);
     }
 
     @Transactional(readOnly = true)

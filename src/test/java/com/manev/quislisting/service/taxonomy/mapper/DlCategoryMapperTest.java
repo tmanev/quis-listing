@@ -50,7 +50,7 @@ public class DlCategoryMapperTest {
 
         PageImpl<DlCategory> page = new PageImpl<>(dlCategoryList);
 
-        List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(page);
+        List<DlCategoryDTO> dlCategoryDTOs = dlCategoryMapper.dlCategoryToDlCategoryDtoFlat(page.getContent());
         assertEquals(dlCategoryList.size(), dlCategoryDTOs.size());
         assertEquals(0, findById(1L, dlCategoryDTOs).getDepthLevel());
         assertEquals(0, findById(2L, dlCategoryDTOs).getDepthLevel());
