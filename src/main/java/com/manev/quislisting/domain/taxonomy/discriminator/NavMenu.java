@@ -9,10 +9,10 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue(value = NavMenu.TAXONOMY)
 public class NavMenu extends TermTaxonomy {
-    public static final String TAXONOMY = "nav-menu";
+    static final String TAXONOMY = "nav-menu";
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "ql_term_relationship",
+    @JoinTable(name = "ql_term_post_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
             inverseJoinColumns =

@@ -14,10 +14,10 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue(value = DlListing.TYPE)
 public class DlListing extends AbstractPost {
-    public static final String TYPE = "dl-listing";
+    static final String TYPE = "dl-listing";
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "ql_term_relationship",
+    @JoinTable(name = "ql_term_post_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", nullable = false, updatable = false),
             inverseJoinColumns =
@@ -26,7 +26,7 @@ public class DlListing extends AbstractPost {
     private Set<DlCategory> dlCategories = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "ql_term_relationship",
+    @JoinTable(name = "ql_term_post_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", nullable = false, updatable = false),
             inverseJoinColumns =
@@ -35,7 +35,7 @@ public class DlListing extends AbstractPost {
     private Set<DlLocation> dlLocations;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "ql_post_relationship",
+    @JoinTable(name = "ql_post_post_relationship",
             joinColumns =
             @JoinColumn(name = "post_id", nullable = false, updatable = false),
             inverseJoinColumns =
@@ -100,9 +100,10 @@ public class DlListing extends AbstractPost {
         this.status = status;
     }
 
-
     public enum Status {
-        UNFINISHED,
+        DRAFT,
         PUBLISH
+
+
     }
 }

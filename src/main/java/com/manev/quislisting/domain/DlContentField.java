@@ -66,7 +66,7 @@ public class DlContentField {
     private Boolean onAdvancedSearchForm;
 
     @ManyToMany
-    @JoinTable(name = "ql_term_relationship",
+    @JoinTable(name = "ql_term_dl_content_field_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
             inverseJoinColumns =
