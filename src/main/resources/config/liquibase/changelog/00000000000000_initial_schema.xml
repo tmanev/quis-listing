@@ -273,7 +273,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="ql_term_relationship">
+        <createTable tableName="ql_term_post_relationship">
             <column name="object_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -285,7 +285,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="ql_post_relationship">
+        <createTable tableName="ql_post_post_relationship">
             <column name="object_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -377,6 +377,17 @@
             </column>
             <column name="hide_anonymous" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="ql_term_dl_content_field_relationship">
+            <column name="object_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="term_taxonomy_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="field_order" type="int(11)">
+                <constraints nullable="true" />
             </column>
         </createTable>
     </changeSet>
@@ -634,7 +645,7 @@
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/term-relationships.csv"
                   separator=";"
-                  tableName="ql_term_relationship"/>
+                  tableName="ql_term_post_relationship"/>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/ql-strings.csv"
                   separator="¦"

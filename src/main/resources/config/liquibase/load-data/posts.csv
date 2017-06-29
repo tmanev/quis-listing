@@ -1,5 +1,5 @@
 id¦title¦content¦name¦type¦status¦created¦modified¦mime_type¦comment_count¦translation_id¦user_id¦ref_post_id¦post_order
-1¦Title 01¦Content 01¦title-01¦dl-listing¦UNFINISHED¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦7¦1¦null¦null
+1¦Title 01¦Content 01¦title-01¦dl-listing¦DRAFT¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦7¦1¦null¦null
 
 2¦Home¦[home-page]¦/¦page¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦9¦1¦null¦null
 3¦Home¦¦/-2-1¦nav-menu-item¦PUBLISH¦2013-08-05 18:19:03¦2013-08-05 18:19:03¦¦0¦null¦1¦2¦1
