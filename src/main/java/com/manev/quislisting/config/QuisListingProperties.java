@@ -19,6 +19,7 @@ public class QuisListingProperties {
     private final Ribbon ribbon = new Ribbon();
     private final QuisListingProperties.Mail mail = new QuisListingProperties.Mail();
     private final CorsConfiguration cors = new CorsConfiguration();
+    private final JcrRepository jcrRepository = new JcrRepository();
 
     public Security getSecurity() {
         return security;
@@ -30,6 +31,10 @@ public class QuisListingProperties {
 
     public QuisListingProperties.Mail getMail() {
         return this.mail;
+    }
+
+    public JcrRepository getJcrRepository() {
+        return jcrRepository;
     }
 
     public CorsConfiguration getCors() {
@@ -118,6 +123,18 @@ public class QuisListingProperties {
 
         public void setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
+        }
+    }
+
+    public static class JcrRepository {
+        private String home;
+
+        public String getHome() {
+            return home;
+        }
+
+        public void setHome(String home) {
+            this.home = home;
         }
     }
 }
