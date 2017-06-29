@@ -14,7 +14,7 @@
     <!--
         security configuration
     -->
-    <Security appName="Jackrabbit">
+    <Security appName="QuisJcr">
         <!--
             security manager:
             class: FQN of class implementing the JackrabbitSecurityManager interface
