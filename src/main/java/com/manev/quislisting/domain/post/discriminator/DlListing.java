@@ -1,8 +1,9 @@
 package com.manev.quislisting.domain.post.discriminator;
 
+import com.manev.quislisting.domain.DlContentFieldRelationship;
+import com.manev.quislisting.domain.DlLocationRelationship;
 import com.manev.quislisting.domain.post.AbstractPost;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -25,15 +26,6 @@ public class DlListing extends AbstractPost {
     @Where(clause = "taxonomy='" + DlCategory.TAXONOMY + "'")
     private Set<DlCategory> dlCategories = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "ql_term_post_relationship",
-            joinColumns =
-            @JoinColumn(name = "term_taxonomy_id", nullable = false, updatable = false),
-            inverseJoinColumns =
-            @JoinColumn(name = "object_id", nullable = false, updatable = false))
-    @Where(clause = "taxonomy='" + DlLocation.TAXONOMY + "'")
-    private Set<DlLocation> dlLocations;
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "ql_post_post_relationship",
             joinColumns =
@@ -41,6 +33,12 @@ public class DlListing extends AbstractPost {
             inverseJoinColumns =
             @JoinColumn(name = "object_id", nullable = false, updatable = false))
     private Set<Attachment> attachments;
+
+    @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
+    private Set<DlContentFieldRelationship> dlContentFieldRelationships;
+
+    @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
+    private Set<DlLocationRelationship> dlLocationRelationships;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -53,14 +51,6 @@ public class DlListing extends AbstractPost {
 
     public void setDlCategories(Set<DlCategory> dlCategories) {
         this.dlCategories = dlCategories;
-    }
-
-    public Set<DlLocation> getDlLocations() {
-        return dlLocations;
-    }
-
-    public void setDlLocations(Set<DlLocation> dlLocations) {
-        this.dlLocations = dlLocations;
     }
 
     public Set<Attachment> getAttachments() {
@@ -100,10 +90,38 @@ public class DlListing extends AbstractPost {
         this.status = status;
     }
 
+    public Set<DlContentFieldRelationship> getDlContentFieldRelationships() {
+        return dlContentFieldRelationships;
+    }
+
+    public void setDlContentFieldRelationships(Set<DlContentFieldRelationship> dlContentFieldRelationships) {
+        this.dlContentFieldRelationships = dlContentFieldRelationships;
+    }
+
+    public void addDlContentFieldRelationships(DlContentFieldRelationship dlContentFieldRelationshipForSave) {
+        if (this.dlContentFieldRelationships == null) {
+            this.dlContentFieldRelationships = new HashSet<>();
+        }
+        this.dlContentFieldRelationships.add(dlContentFieldRelationshipForSave);
+    }
+
+    public Set<DlLocationRelationship> getDlLocationRelationships() {
+        return dlLocationRelationships;
+    }
+
+    public void setDlLocationRelationships(Set<DlLocationRelationship> dlLocationRelationships) {
+        this.dlLocationRelationships = dlLocationRelationships;
+    }
+
+    public void addDlLocationRelationship(DlLocationRelationship dlLocationRelationship) {
+        if (this.dlLocationRelationships == null) {
+            this.dlLocationRelationships = new HashSet<>();
+        }
+        this.dlLocationRelationships.add(dlLocationRelationship);
+    }
+
     public enum Status {
         DRAFT,
         PUBLISH
-
-
     }
 }

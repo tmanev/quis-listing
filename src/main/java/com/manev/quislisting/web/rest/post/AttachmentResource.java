@@ -50,7 +50,7 @@ public class AttachmentResource {
 
         for (MultipartFile file : files) {
             AttachmentDTO attachmentDTO = uploadService.uploadFileByAdmin(file);
-            AttachmentMetadata.ImageResizeMeta imageThumbnailResizeMeta = attachmentDTO.getAttachmentMetadata().getImageResizeMetaByName(DL_THUMBNAIL);
+            AttachmentMetadata.ImageResizeMeta imageThumbnailResizeMeta = attachmentDTO.getAttachmentMetadata().getThumbnailImageResizeMeta();
 
             FileMeta fileMeta = new FileMeta(attachmentDTO.getName(), attachmentDTO.getAttachmentMetadata().getDetail().getSize(),
                     "/content/files" + attachmentDTO.getAttachmentMetadata().getDetail().getFile(),

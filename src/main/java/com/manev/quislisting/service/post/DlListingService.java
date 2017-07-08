@@ -1,22 +1,22 @@
 package com.manev.quislisting.service.post;
 
-import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.TranslationGroup;
-import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.PostMeta;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+import com.manev.quislisting.repository.DlContentFieldItemRepository;
+import com.manev.quislisting.repository.DlContentFieldRelationshipRepository;
+import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
-import com.manev.quislisting.service.post.dto.ClientDlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.DlListingField;
+import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.qlml.LanguageService;
@@ -33,6 +33,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.jcr.RepositoryException;
@@ -56,11 +57,14 @@ public class DlListingService {
     private AttachmentMapper attachmentMapper;
     private StorageService storageService;
     private LanguageService languageService;
+    private DlContentFieldRepository dlContentFieldRepository;
+    private DlContentFieldItemRepository dlContentFieldItemRepository;
+    private DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
                             DlListingMapper dlListingMapper, AttachmentMapper attachmentMapper,
-                            StorageService storageService, LanguageService languageService) {
+                            StorageService storageService, LanguageService languageService, DlContentFieldRepository dlContentFieldRepository, DlContentFieldItemRepository dlContentFieldItemRepository, DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -69,43 +73,9 @@ public class DlListingService {
         this.attachmentMapper = attachmentMapper;
         this.storageService = storageService;
         this.languageService = languageService;
-    }
-
-    public ClientDlListingDTO save(ClientDlListingDTO clientDlListingDto) {
-
-
-        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
-        if (oneByLogin.isPresent()) {
-            ZonedDateTime now = ZonedDateTime.now();
-
-            DlListing dlListingForSaving = new DlListing();
-            dlListingForSaving.setTitle(clientDlListingDto.getTitle());
-            dlListingForSaving.setName(SlugUtil.getFileNameSlug(clientDlListingDto.getTitle()));
-            dlListingForSaving.setStatus(DlListing.Status.UNFINISHED);
-            dlListingForSaving.setTranslation(
-                    TranslationBuilder.aTranslation()
-                            .withLanguageCode(oneByLogin.get().getLangKey())
-                            .withTranslationGroup(new TranslationGroup())
-                            .build()
-            );
-
-            DlCategory dlCategory = dlCategoryRepository.findOne(clientDlListingDto.getCategoryId());
-
-            Set<DlCategory> dlCategories = new HashSet<>();
-            dlCategories.add(dlCategory);
-            dlListingForSaving.setDlCategories(dlCategories);
-            dlListingForSaving.setUser(oneByLogin.get());
-
-            dlListingForSaving.setCreated(now);
-            dlListingForSaving.setModified(now);
-
-            DlListing save = dlListingRepository.save(dlListingForSaving);
-            return new ClientDlListingDTO(save.getId(), save.getTitle(), save.getDlCategories().iterator().next().getId());
-        } else {
-            throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
-        }
-
+        this.dlContentFieldRepository = dlContentFieldRepository;
+        this.dlContentFieldItemRepository = dlContentFieldItemRepository;
+        this.dlContentFieldRelationshipRepository = dlContentFieldRelationshipRepository;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -116,62 +86,131 @@ public class DlListingService {
         if (dlListingDTO.getId() != null) {
             dlListingForSaving = dlListingRepository.findOne(dlListingDTO.getId());
 
-            setCommonProperties(dlListingDTO, now, dlListingForSaving);
+            setCommonProperties(dlListingDTO, dlListingForSaving);
+            dlListingForSaving.setModified(now);
         } else {
             String currentUserLogin = SecurityUtils.getCurrentUserLogin();
             Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
             if (oneByLogin.isPresent()) {
                 dlListingForSaving = new DlListing();
 
-                setCommonProperties(dlListingDTO, now, dlListingForSaving);
+                setCommonProperties(dlListingDTO, dlListingForSaving);
 
-                dlListingForSaving.setStatus(DlListing.Status.UNFINISHED);
+                dlListingForSaving.setStatus(DlListing.Status.DRAFT);
                 dlListingForSaving.setTranslation(
                         TranslationBuilder.aTranslation()
-                                .withLanguageCode(dlListingDTO.getLanguageCode())
+                                .withLanguageCode(oneByLogin.get().getLangKey())
                                 .withTranslationGroup(new TranslationGroup())
                                 .build()
                 );
 
                 dlListingForSaving.setCreated(now);
+                dlListingForSaving.setModified(now);
                 dlListingForSaving.setUser(oneByLogin.get());
             } else {
                 throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
             }
-
         }
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
     }
 
-    private void setCommonProperties(DlListingDTO dlListingDTO, ZonedDateTime now, DlListing dlListingForSaving) {
+    private void setCommonProperties(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
         dlListingForSaving.setTitle(dlListingDTO.getTitle());
         dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingDTO.getTitle()));
         dlListingForSaving.setContent(dlListingDTO.getContent());
-        dlListingForSaving.setModified(now);
 
         setCategory(dlListingDTO, dlListingForSaving);
         setLocation(dlListingDTO, dlListingForSaving);
 
-        List<DlListingField> dlListingFields = dlListingDTO.getDlListingFields();
-        if (dlListingFields != null) {
-            for (DlListingField dlListingField : dlListingFields) {
-                String fieldId = SlugUtil.metaContentFieldId(dlListingField.getId());
-                dlListingForSaving.addPostMeta(new PostMeta(dlListingForSaving, fieldId,
-                        dlListingField.getValue()));
+        List<DlListingFieldDTO> dlListingFieldDTOS = dlListingDTO.getDlListingFields();
+
+        if (dlListingFieldDTOS != null) {
+            Set<DlContentFieldRelationship> existingDlContentFieldRelationships = dlListingForSaving.getDlContentFieldRelationships();
+            for (DlListingFieldDTO dlListingFieldDTO : dlListingFieldDTOS) {
+                DlContentField dlContentField = dlContentFieldRepository.findOne(dlListingFieldDTO.getId());
+                DlContentFieldRelationship dlContentFieldRelationship = findDlContentFieldRelationship(dlContentField, existingDlContentFieldRelationships);
+
+                updateDlContentFieldRelationship(dlListingForSaving, dlListingFieldDTO, dlContentField, dlContentFieldRelationship);
             }
         }
+    }
+
+    private void updateDlContentFieldRelationship(DlListing dlListingForSaving, DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlContentFieldRelationship dlContentFieldRelationship) {
+        if (dlContentFieldRelationship != null) {
+            // update existing relationship object
+            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, dlContentFieldRelationship);
+        } else {
+            // create new relationship object
+            DlContentFieldRelationship newDlContentFieldRelationship = new DlContentFieldRelationship();
+            newDlContentFieldRelationship.setDlContentField(dlContentField);
+            newDlContentFieldRelationship.setDlListing(dlListingForSaving);
+            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, newDlContentFieldRelationship);
+            dlListingForSaving.addDlContentFieldRelationships(newDlContentFieldRelationship);
+        }
+    }
+
+    private void setContentFieldRelationValue(DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlContentFieldRelationship newDlContentFieldRelationship) {
+        try {
+            if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
+                // make relation with the selection items
+                if (!StringUtils.isEmpty(dlListingFieldDTO.getValue())) {
+                    Long[] ids = new ObjectMapper().readValue(dlListingFieldDTO.getValue(), Long[].class);
+                    List<Long> idsAsList = Arrays.asList(ids);
+                    if (!idsAsList.isEmpty()) {
+                        Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdIn(idsAsList);
+                        newDlContentFieldRelationship.setDlContentFieldItems(byIdIn);
+                    }
+                }
+            } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)) {
+                if (!StringUtils.isEmpty(dlListingFieldDTO.getValue())) {
+                    DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getValue()));
+                    Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
+                    dlContentFieldItemSet.add(dlContentFieldItem);
+                    newDlContentFieldRelationship.setDlContentFieldItems(dlContentFieldItemSet);
+                }
+            } else {
+                // set value
+                newDlContentFieldRelationship.setValue(dlListingFieldDTO.getValue());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO do something
+        }
+    }
+
+    private DlContentFieldRelationship findDlContentFieldRelationship(DlContentField dlContentField, Set<DlContentFieldRelationship> dlContentFieldRelationships) {
+        if (dlContentFieldRelationships != null) {
+            for (DlContentFieldRelationship dlContentFieldRelationship : dlContentFieldRelationships) {
+                if (dlContentField.getId().equals(dlContentFieldRelationship.getDlContentField().getId())) {
+                    return dlContentFieldRelationship;
+                }
+            }
+        }
+
+        return null;
     }
 
     private void setLocation(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
         // set location
         if (dlListingDTO.getDlLocations() != null && !dlListingDTO.getDlLocations().isEmpty()) {
             DlLocationDTO dlLocationDTO = dlListingDTO.getDlLocations().get(0);
-            DlLocation dlLocation = dlLocationRepository.findOne(dlLocationDTO.getId());
-            Set<DlLocation> dlLocations = new HashSet<>();
-            dlLocations.add(dlLocation);
-            dlListingForSaving.setDlLocations(dlLocations);
+            if (dlLocationDTO.getId() != -1L) {
+                DlLocation dlLocation = dlLocationRepository.findOne(dlLocationDTO.getId());
+                Set<DlLocationRelationship> dlLocationRelationships = dlListingForSaving.getDlLocationRelationships();
+                if (dlLocationRelationships != null && !dlLocationRelationships.isEmpty()) {
+                    // update
+                    DlLocationRelationship dlLocationRelationship = dlLocationRelationships.iterator().next();
+                    dlLocationRelationship.setDlLocation(dlLocation);
+                } else {
+                    // create new
+                    DlLocationRelationship dlLocationRelationship = new DlLocationRelationship();
+                    dlLocationRelationship.setDlLocation(dlLocation);
+                    dlLocationRelationship.setDlListing(dlListingForSaving);
+                    dlListingForSaving.addDlLocationRelationship(dlLocationRelationship);
+                }
+            }
         }
     }
 
@@ -253,4 +292,11 @@ public class DlListingService {
         return languageService.findAllActiveLanguages(dlListingRepository);
     }
 
+    public Page<DlListingDTO> findAllByLanguageAndUser(Pageable pageable, String language) {
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
+
+        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, language, oneByLogin.get());
+        return result.map(dlListingMapper::dlListingToDlListingDTO);
+    }
 }

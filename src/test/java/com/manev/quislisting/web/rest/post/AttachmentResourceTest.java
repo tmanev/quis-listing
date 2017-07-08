@@ -11,6 +11,7 @@ import com.manev.quislisting.service.post.AttachmentService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.storage.StorageService;
+import com.manev.quislisting.service.util.AttachmentUtil;
 import com.manev.quislisting.web.ContentController;
 import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.TestUtil;
@@ -29,12 +30,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -42,7 +38,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jcr.*;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -56,7 +54,6 @@ import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_ATTACH
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -110,7 +107,6 @@ public class AttachmentResourceTest extends GenericResourceTest {
         this.restUploadResourceMockMvc = MockMvcBuilders.standaloneSetup(uploadResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
-        setupSecurityContext();
     }
 
     @Before
@@ -125,13 +121,14 @@ public class AttachmentResourceTest extends GenericResourceTest {
         filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish-300x222.jpg");
         try {
             storageService.delete(filePathsToDelete);
-        }catch (PathNotFoundException ex) {
+        } catch (PathNotFoundException ex) {
 
         }
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void uploadAttachment() throws Exception {
         Attachment attachment = doFileUpload();
 
@@ -144,26 +141,27 @@ public class AttachmentResourceTest extends GenericResourceTest {
 
         String attachmentMetaStr = attachment.getPostMetaValue(QL_ATTACHMENT_METADATA);
         AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetaStr, AttachmentMetadata.class);
-        List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
-        assertThat(imageResizeMetas.size()).isEqualTo(2);
+
+        AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = attachmentMetadata.getThumbnailImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = attachmentMetadata.getMediumImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getBigImageResizeMeta();
+
+        assertThat(thumbnailImageResizeMeta.getName()).isEqualTo("dl-thumbnail");
+        assertThat(thumbnailImageResizeMeta.getDetail().getFile()).isEqualTo("/2017/07/small-fish-242x179.jpg");
+//        assertThat(mediumImageResizeMeta.getName()).isEqualTo("dl-medium");
+//        assertThat(mediumImageResizeMeta.getDetail().getFile()).isEqualTo("/2017/07/small-fish-300x222.jpg");
+        assertThat(mediumImageResizeMeta).isNull();
+        assertThat(bigImageResizeMeta).isNull();
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void getAttachment() throws Exception {
         // make the upload
         Attachment attachment = doFileUpload();
 
-
-        List<String> filePaths = new ArrayList<>();
-        filePaths.add(attachment.getPostMetaValue(QL_ATTACHED_FILE));
-
-        String attachmentMetaStr = attachment.getPostMetaValue(QL_ATTACHMENT_METADATA);
-        AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetaStr, AttachmentMetadata.class);
-        List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
-        for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
-            filePaths.add(imageResizeMeta.getDetail().getFile());
-        }
+        List<String> filePaths = AttachmentUtil.getFilePaths(attachment);
 
         ContentController contentController = new ContentController(storageService);
         MockMvc contentControllerMockMvc = MockMvcBuilders.standaloneSetup(contentController)
@@ -184,15 +182,17 @@ public class AttachmentResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.title").value(attachment.getTitle()))
                 .andExpect(jsonPath("$.mimeType").value(attachment.getMimeType()))
                 .andExpect(jsonPath("$.attachmentMetadata.detail.file").value(attachment.getPostMetaValue(QL_ATTACHED_FILE)))
-                .andExpect(jsonPath("$.attachmentMetadata.imageResizeMetas.[0].name").value("dl-thumbnail"))
-                .andExpect(jsonPath("$.attachmentMetadata.imageResizeMetas.[0].detail.file").value(String.format("/%s/%s/small-fish-180x133.jpg", yearStr, monthOfYearStr)))
-                .andExpect(jsonPath("$.attachmentMetadata.imageResizeMetas.[1].name").value("dl-medium"))
-                .andExpect(jsonPath("$.attachmentMetadata.imageResizeMetas.[1].detail.file").value(String.format("/%s/%s/small-fish-300x222.jpg", yearStr, monthOfYearStr)))
+                .andExpect(jsonPath("$.attachmentMetadata.thumbnailImageResizeMeta.name").value("dl-thumbnail"))
+                .andExpect(jsonPath("$.attachmentMetadata.mediumImageResizeMeta").doesNotExist())
+                .andExpect(jsonPath("$.attachmentMetadata.largeImageResizeMeta").doesNotExist());
+//                .andExpect(jsonPath("$.attachmentMetadata.mediumImageResizeMeta.name").value("dl-medium"))
+//                .andExpect(jsonPath("$.attachmentMetadata.mediumImageResizeMeta.detail.file").value(String.format("/%s/%s/small-fish-300x222.jpg", yearStr, monthOfYearStr)))
         ;
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void deleteAttachment() throws Exception {
         // 1. upload attachment
         Attachment savedEntity = doFileUpload();
@@ -208,25 +208,14 @@ public class AttachmentResourceTest extends GenericResourceTest {
 
         // 4. verify jcr that all generated files are removed from JCR repo
         AttachmentDTO attachmentDTO = attachmentMapper.attachmentToAttachmentDTO(savedEntity);
-        AttachmentMetadata attachmentMetadata = attachmentDTO.getAttachmentMetadata();
-        List<String> filePaths = new ArrayList<>();
-        filePaths.add(attachmentMetadata.getDetail().getFile());
-        List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
-        for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
-            filePaths.add(imageResizeMeta.getDetail().getFile());
-        }
 
-        Repository repository = jcrConfiguration.repository();
-        Session session = repository.login(
-                new SimpleCredentials("admin", "admin".toCharArray()));
-        try {
-            for (String filePath : filePaths) {
-                assertFalse("File path should not exist: " + filePath, session.nodeExists(filePath));
-            }
-            session.save();
-        } finally {
-            session.logout();
+        List<String> filePaths = AttachmentUtil.getFilePaths(attachmentDTO);
+
+        Session session = jcrConfiguration.getSession();
+        for (String filePath : filePaths) {
+            assertFalse("File path should not exist: " + filePath, session.nodeExists(filePath));
         }
+        session.save();
     }
 
     @Ignore("Save for attachment still not implemented")

@@ -95,8 +95,9 @@ public class BaseController {
         }
 
         QlConfig accountProfilePageConfig = qlConfigService.findOneByKey("account-profile-page-id");
-
         baseModel.setProfilePage(abstractPostService.retrievePost(language, accountProfilePageConfig.getValue()));
+
+        baseModel.setBaseUrl(qlConfigService.findOneByKey("base-url").getValue());
 
         return baseModel;
     }

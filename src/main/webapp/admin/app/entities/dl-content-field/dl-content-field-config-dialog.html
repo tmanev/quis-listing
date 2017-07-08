@@ -13,7 +13,7 @@
             <input type="text" class="form-control" id="id" name="id"
                    ng-model="vm.dlContentField.id" readonly/>
         </div>
-        <div ng-if="vm.dlContentField.type == 'string'">
+        <div ng-if="vm.dlContentField.type == 'STRING'">
             <div class="form-group">
                 <label for="string_max_length" data-translate="quisListingApp.dlContentField.string.maxLength">Max
                     length</label>
@@ -26,7 +26,7 @@
                        ng-model="vm.dlContentFieldOption.regex"/>
             </div>
         </div>
-        <div ng-if="vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox'">
+        <div ng-if="vm.dlContentField.type == 'SELECT' || vm.dlContentField.type == 'CHECKBOX'">
 
             <div class="form-inline" ng-repeat="dlContentFieldItem in vm.dlContentField.dlContentFieldItems">
                 <div class="form-group">
@@ -46,7 +46,7 @@
                 </button>
             </div>
         </div>
-        <div ng-if="vm.dlContentField.type == 'number'">
+        <div ng-if="vm.dlContentField.type == 'NUMBER'">
             <div class="form-group">
                 <label data-translate="quisListingApp.dlContentField.number.isIntegerOrDecimal">Is Integer or
                     Decimal</label>
@@ -81,7 +81,7 @@
                        ng-model="vm.dlContentFieldOption.max"/>
             </div>
         </div>
-        <div ng-if="vm.dlContentField.type == 'website'">
+        <div ng-if="vm.dlContentField.type == 'WEBSITE'">
             <div class="checkbox">
                 <label>
                     <input type="checkbox" ng-model="vm.dlContentFieldOption.isBlank">

@@ -17,28 +17,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.servlet.LocaleResolver;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LISTINGS;
 
 @RestController
-@RequestMapping(RESOURCE_API_ADMIN_DL_LISTINGS)
+@RequestMapping(RESOURCE_API_DL_LISTINGS)
 public class DlListingResource {
 
     private static final String ENTITY_NAME = "DlListing";
 
     private final Logger log = LoggerFactory.getLogger(DlListingResource.class);
     private final DlListingService dlListingService;
+    private final LocaleResolver localeResolver;
 
-    public DlListingResource(DlListingService dlListingService) {
+    public DlListingResource(DlListingService dlListingService, LocaleResolver localeResolver) {
         this.dlListingService = dlListingService;
+        this.localeResolver = localeResolver;
     }
 
     @RequestMapping(method = RequestMethod.POST,
@@ -50,8 +55,20 @@ public class DlListingResource {
         }
 
         DlListingDTO result = dlListingService.save(dlListingDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LISTINGS + String.format("/%s", result.getId())))
+        return ResponseEntity.created(new URI(RESOURCE_API_DL_LISTINGS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    @PutMapping
+    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
+        log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
+        if (dlListingDTO.getId() == null) {
+            return createDlListing(dlListingDTO);
+        }
+        DlListingDTO result = dlListingService.save(dlListingDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
@@ -83,23 +100,17 @@ public class DlListingResource {
                 .body(result);
     }
 
-    @PutMapping
-    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
-        log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() == null) {
-            return createDlListing(dlListingDTO);
-        }
-        DlListingDTO result = dlListingService.save(dlListingDTO);
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
-    }
-
     @GetMapping
-    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
+    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable,
+                                                             @RequestParam Map<String, String> allRequestParams,
+                                                             HttpServletRequest request) {
         log.debug("REST request to get a page of DlListingDTO");
-        Page<DlListingDTO> page = dlListingService.findAll(pageable, allRequestParams);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LISTINGS);
+
+        Locale locale = localeResolver.resolveLocale(request);
+        String language = locale.getLanguage();
+        log.debug("Language from cookie: {}", language);
+        Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, language);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_LISTINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

@@ -15,7 +15,8 @@
 <body>
 
 <!-- Navbar -->
-<div class="navbar navbar-inverse navbar-static-top" role="navigation" th:fragment="header">
+<div class="navbar navbar-inverse navbar-static-top" role="navigation" th:fragment="header"
+     >
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="/">
@@ -26,7 +27,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li th:each="navMenuItem : ${baseModel.topHeaderMenus}">
-                    <a th:href="@{${navMenuItem.refPost.name}}" th:text="${navMenuItem.title}"></a>
+                    <a th:href="@{/{path}(path=${navMenuItem.refPost.name})}" th:text="${navMenuItem.title}"></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

@@ -7,7 +7,7 @@
     DlListing.$inject = ['$resource', 'DateUtils'];
 
     function DlListing ($resource, DateUtils) {
-        var resourceUrl =  'api/admin/dl-listings/:id';
+        var resourceUrl =  'api/dl-listings/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},

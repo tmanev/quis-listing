@@ -34,11 +34,11 @@ public class DlLocationMapper {
                 .build();
     }
 
-    public List<DlLocationDTO> dlLocationToDlLocationDtoFlat(Page<DlLocation> page) {
+    public List<DlLocationDTO> dlLocationToDlLocationDtoFlat(List<DlLocation> dlLocations) {
         Set<Long> ids = new HashSet<>();
 
         List<DlLocationDTO> result = new ArrayList<>();
-        for (DlLocation dlLocation : page) {
+        for (DlLocation dlLocation : dlLocations) {
             doMappingAndFillDepthLevel(dlLocation, ids, result);
         }
 
@@ -75,6 +75,7 @@ public class DlLocationMapper {
                         .build())
                 .withDescription(dlLocation.getDescription())
                 .withParentId(dlLocation.getParent() != null ? dlLocation.getParent().getId() : null)
+                .withParent(dlLocation.getParent() != null ? this.dlLocationToDlLocationDTO(dlLocation.getParent()) : null)
                 .withCount(dlLocation.getCount())
                 .withLanguageId(dlLocation.getTranslation() != null ? dlLocation.getTranslation().getLanguageCode() : null)
                 .build();

@@ -13,6 +13,7 @@ public class BaseModel {
     private Set<NavMenuItem> footerMenus;
     private List<ActiveLanguageBean> activeLanguages;
     private AbstractPost profilePage;
+    private String baseUrl;
 
     public Set<NavMenuItem> getTopHeaderMenus() {
         return topHeaderMenus;
@@ -59,5 +60,13 @@ public class BaseModel {
 
     public void setProfilePage(AbstractPost profilePage) {
         this.profilePage = profilePage;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

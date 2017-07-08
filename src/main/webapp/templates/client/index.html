@@ -37,6 +37,10 @@
 <!--<h1 th:text="#{greeting}"></h1>-->
 <div th:replace="client/fragments/footer :: footer">Footer goes here!</div>
 
+<script type="text/javascript" th:inline="javascript">
+
+</script>
+
 <script src="../../resources/vendor/vue/vue.min.js"
         th:src="@{/resources/vendor/vue/vue.min.js}"></script>
 <script src="../../resources/vendor/vuelidate/vuelidate.min.js"
@@ -51,6 +55,8 @@
         th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
 <script src="../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
         th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+<script src="../../resources/vendor/dmuploader/dmuploader.min.js"
+        th:src="@{/resources/vendor/dmuploader/dmuploader.min.js}"></script>
 
 </body>
 </html>

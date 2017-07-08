@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -69,7 +70,7 @@ public class DlLocationService {
         log.debug("Request to get all DlLocationDTO");
         String languageCode = allRequestParams.get("languageCode");
         Page<DlLocation> result = dlLocationRepository.findAllByTranslation_languageCode(pageable, languageCode);
-        List<DlLocationDTO> dlLocationDTOS = dlLocationMapper.dlLocationToDlLocationDtoFlat(result);
+        List<DlLocationDTO> dlLocationDTOS = dlLocationMapper.dlLocationToDlLocationDtoFlat(result.getContent());
         return new PageImpl<>(dlLocationDTOS, pageable, result.getTotalElements());
     }
 
@@ -98,4 +99,12 @@ public class DlLocationService {
         return result;
     }
 
+    public List<DlLocationDTO> findAllByParentId(String parentId, String language) {
+        DlLocation parent = null;
+        if (parentId !=null) {
+            parent = dlLocationRepository.findOne(Long.valueOf(parentId));
+        }
+        List<DlLocation> dlLocations = dlLocationRepository.findAllByParentAndTranslation_languageCode(parent, language);
+        return dlLocations.stream().map(dlLocationMapper::dlLocationToDlLocationDTO).collect(Collectors.toList());
+    }
 }

@@ -14,7 +14,7 @@ public class DlListingDTO extends AbstractPostDTO {
     private String views;
     private List<DlCategoryDTO> dlCategories;
     private List<DlLocationDTO> dlLocations;
-    private List<DlListingField> dlListingFields;
+    private List<DlListingFieldDTO> dlListingFields;
     private List<AttachmentDTO> attachments;
 
     public String getExpirationDate() {
@@ -71,19 +71,19 @@ public class DlListingDTO extends AbstractPostDTO {
         dlLocations.add(dlLocationDTO);
     }
 
-    public List<DlListingField> getDlListingFields() {
+    public List<DlListingFieldDTO> getDlListingFields() {
         return dlListingFields;
     }
 
-    public void setDlListingFields(List<DlListingField> dlListingFields) {
+    public void setDlListingFields(List<DlListingFieldDTO> dlListingFields) {
         this.dlListingFields = dlListingFields;
     }
 
-    public void addDlListingField(DlListingField dlListingField) {
+    public void addDlListingField(DlListingFieldDTO dlListingFieldDTO) {
         if (dlListingFields == null) {
             dlListingFields = new ArrayList<>();
         }
-        dlListingFields.add(dlListingField);
+        dlListingFields.add(dlListingFieldDTO);
     }
 
     public List<AttachmentDTO> getAttachments() {

@@ -10,6 +10,7 @@ public final class DlLocationDTOBuilder {
     private String description;
     private Long count;
     private String languageId;
+    private DlLocationDTO parent;
 
     private DlLocationDTOBuilder() {
     }
@@ -33,6 +34,11 @@ public final class DlLocationDTOBuilder {
         return this;
     }
 
+    public DlLocationDTOBuilder withParent(DlLocationDTO parent) {
+        this.parent = parent;
+        return this;
+    }
+
     public DlLocationDTOBuilder withDescription(String description) {
         this.description = description;
         return this;
@@ -53,6 +59,7 @@ public final class DlLocationDTOBuilder {
         dlLocationDTO.setId(id);
         dlLocationDTO.setTerm(term);
         dlLocationDTO.setParentId(parentId);
+        dlLocationDTO.setParent(parent);
         dlLocationDTO.setDescription(description);
         dlLocationDTO.setCount(count);
         dlLocationDTO.setLanguageCode(languageId);

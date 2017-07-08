@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -13,77 +14,58 @@ public class DlContentField {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Column
     private Boolean coreField;
-
     @Column
     private Integer orderNum;
-
     @Column
     private String name;
-
     @Column
     private String slug;
-
     @Column
     private String description;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column
-    private String type;
-
+    private Type type;
     @Column
     private String iconImage;
-
     @Column
     private Boolean required;
-
     @Column
     private Boolean hasConfiguration;
-
     @Column
     private Boolean hasSearchConfiguration;
-
     @Column
     private Boolean canBeOrdered;
-
     @Column
     private Boolean hideName;
-
     @Column
     private Boolean onExcerptPage;
-
     @Column
     private Boolean onListingPage;
-
     @Column
     private Boolean onSearchForm;
-
     @Column
     private Boolean onMap;
-
     @Column
     private Boolean onAdvancedSearchForm;
-
     @ManyToMany
     @JoinTable(name = "ql_term_dl_content_field_relationship",
             joinColumns =
             @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
             inverseJoinColumns =
-            @JoinColumn(name = "object_id", referencedColumnName = "id"))
+            @JoinColumn(name = "dl_content_field_id", referencedColumnName = "id"))
     private Set<DlCategory> dlCategories;
-
     @Column
     private String options;
-
     @Column
     private String searchOptions;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "string_id")
     private QlString qlString;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="dlContentField")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "dlContentField")
     private Set<DlContentFieldItem> dlContentFieldItems;
 
     public Long getId() {
@@ -164,15 +146,15 @@ public class DlContentField {
         return this;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
-    public DlContentField type(String type) {
+    public DlContentField type(Type type) {
         this.type = type;
         return this;
     }
@@ -383,5 +365,9 @@ public class DlContentField {
     public DlContentField dlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
         return this;
+    }
+
+    public enum Type {
+        STRING, SELECT, CHECKBOX, NUMBER, WEBSITE, EXCERPT, ADDRESS, CONTENT, CATEGORIES, TAGS
     }
 }

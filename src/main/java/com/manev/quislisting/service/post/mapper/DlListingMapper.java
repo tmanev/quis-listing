@@ -1,20 +1,23 @@
 package com.manev.quislisting.service.post.mapper;
 
-import com.manev.quislisting.domain.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.DlListingField;
+import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -56,7 +59,41 @@ public class DlListingMapper {
 
         setAuthor(dlListing, dlListingDTO);
 
+        setDlListingContentFields(dlListing, dlListingDTO);
+
         return dlListingDTO;
+    }
+
+    private void setDlListingContentFields(DlListing dlListing, DlListingDTO dlListingDTO) {
+        try {
+            Set<DlContentFieldRelationship> dlContentFieldRelationships = dlListing.getDlContentFieldRelationships();
+            if (dlContentFieldRelationships != null) {
+                for (DlContentFieldRelationship dlContentFieldRelationship : dlContentFieldRelationships) {
+                    DlContentField dlContentField = dlContentFieldRelationship.getDlContentField();
+                    String value = "";
+                    if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
+                        Set<DlContentFieldItem> dlContentFieldItems = dlContentFieldRelationship.getDlContentFieldItems();
+                        List<Long> selectionIds = new ArrayList<>();
+                        if (dlContentFieldItems != null) {
+                            for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
+                                selectionIds.add(dlContentFieldItem.getId());
+                            }
+                        }
+                        value = new ObjectMapper().writeValueAsString(selectionIds);
+                    } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)) {
+                        Set<DlContentFieldItem> dlContentFieldItems = dlContentFieldRelationship.getDlContentFieldItems();
+                        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+                            value = String.valueOf(dlContentFieldItems.iterator().next().getId());
+                        }
+                    } else {
+                        value = dlContentFieldRelationship.getValue();
+                    }
+                    dlListingDTO.addDlListingField(new DlListingFieldDTO(dlContentField.getId(), value));
+                }
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setPostMetadata(DlListing dlListing, DlListingDTO dlListingDTO) {
@@ -65,7 +102,7 @@ public class DlListingMapper {
             for (PostMeta meta : postMeta) {
                 if (meta.getKey().startsWith("content_field_")) {
                     String contentFieldId = meta.getKey().split("content_field_")[1];
-                    dlListingDTO.addDlListingField(new DlListingField(Long.valueOf(contentFieldId), meta.getValue()));
+                    dlListingDTO.addDlListingField(new DlListingFieldDTO(Long.valueOf(contentFieldId), meta.getValue()));
                 }
             }
         }
@@ -81,10 +118,10 @@ public class DlListingMapper {
     }
 
     private void setDlLocations(DlListing dlListing, DlListingDTO dlListingDTO) {
-        Set<DlLocation> dlLocations = dlListing.getDlLocations();
+        Set<DlLocationRelationship> dlLocations = dlListing.getDlLocationRelationships();
         if (dlLocations != null && !dlLocations.isEmpty()) {
-            for (DlLocation dlLocation : dlLocations) {
-                dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation));
+            for (DlLocationRelationship dlLocationRelationship : dlLocations) {
+                dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlLocationRelationship.getDlLocation()));
             }
         }
     }

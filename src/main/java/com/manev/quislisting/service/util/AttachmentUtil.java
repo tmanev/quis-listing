@@ -17,14 +17,25 @@ public class AttachmentUtil {
 
     public static List<String> getFilePaths(AttachmentDTO attachmentDTO) {
         AttachmentMetadata attachmentMetadata = attachmentDTO.getAttachmentMetadata();
-        List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
 
         List<String> filePaths = new ArrayList<>();
         filePaths.add(attachmentMetadata.getDetail().getFile());
-        for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
+
+        AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = attachmentMetadata.getThumbnailImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = attachmentMetadata.getMediumImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getBigImageResizeMeta();
+
+        addIfNotNull(filePaths, thumbnailImageResizeMeta);
+        addIfNotNull(filePaths, mediumImageResizeMeta);
+        addIfNotNull(filePaths, bigImageResizeMeta);
+
+        return filePaths;
+    }
+
+    private static void addIfNotNull(List<String> filePaths, AttachmentMetadata.ImageResizeMeta imageResizeMeta) {
+        if (imageResizeMeta != null) {
             filePaths.add(imageResizeMeta.getDetail().getFile());
         }
-        return filePaths;
     }
 
     public static List<String> getFilePaths(Attachment attachment) throws IOException {
@@ -34,10 +45,13 @@ public class AttachmentUtil {
             AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetadataStr,
                     AttachmentMetadata.class);
             filePaths.add(attachmentMetadata.getDetail().getFile());
-            List<AttachmentMetadata.ImageResizeMeta> imageResizeMetas = attachmentMetadata.getImageResizeMetas();
-            for (AttachmentMetadata.ImageResizeMeta imageResizeMeta : imageResizeMetas) {
-                filePaths.add(imageResizeMeta.getDetail().getFile());
-            }
+            AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = attachmentMetadata.getThumbnailImageResizeMeta();
+            AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = attachmentMetadata.getMediumImageResizeMeta();
+            AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getBigImageResizeMeta();
+
+            addIfNotNull(filePaths, thumbnailImageResizeMeta);
+            addIfNotNull(filePaths, mediumImageResizeMeta);
+            addIfNotNull(filePaths, bigImageResizeMeta);
         }
         return filePaths;
     }

@@ -66,15 +66,145 @@
                 </div>
             </form>
         </div>
+        <hr/>
         <div id="details" class="container-fluid">
-            Content fields
+            <form class="form-horizontal">
+                <fieldset v-for="dlContentField in dlContentFields">
+                    <div class="form-group" v-if="dlContentField.type.$name == 'STRING' ">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="dlContentField.value"/>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="dlContentField.type.$name == 'SELECT' ">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" v-model="dlContentField.value">
+                                <option value="-1"> - Select -</option>
+                                <option v-for="selectionItem in dlContentField.dlContentFieldItems"
+                                        v-bind:value="selectionItem.id">{{selectionItem.value}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="dlContentField.type.$name == 'CHECKBOX' ">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox"
+                                 v-for="selectionItem in dlContentField.dlContentFieldItems">
+                                <label>
+                                    <input type="checkbox" v-bind:value="selectionItem.id"
+                                           v-model="dlContentField.value"/>
+                                    {{selectionItem.value}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="dlContentField.type.$name == 'NUMBER' ">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="dlContentField.value"/>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
         </div>
+        <hr/>
         <div id="location" class="container-fluid">
-            Try to select based on geo location
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Country</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
+                            <option value="-1">- Select -</option>
+                            <option v-for="dlLocationCountry in dlLocationCountries"
+                                    v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.term.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">State</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState">
+                            <option value="-1">- Select -</option>
+                            <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
+                                dlLocationState.term.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">City</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-model="selectedCity">
+                            <option value="-1">- Select -</option>
+                            <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
+                                dlLocationCity.term.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
         </div>
+        <hr/>
         <div id="gallery" class="container-fluid">
-            Gallery
+            <div class="row">
+                <div class="col-sm-6 col-md-4" v-for="attachment in listing.attachments">
+                    <div class="thumbnail">
+                        <img v-bind:src="'/content/files' + attachment.attachmentMetadata.thumbnailImageResizeMeta.detail.file"
+                             data-holder-rendered="true"
+                             style="height: 200px; display: block;"
+                        />
+                        <div class="caption">
+                            <p>
+                                <a class="btn btn-danger btn-sm" v-on:click="removeImage(attachment)">
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                    <span class="hidden-sm-down">Remove</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop"
+                 v-on:click="onBoxClick">
+                Drop images here or click to upload
+                <input type="file" name="image" v-on:change="onChange" style="display: none"/>
+            </div>
+            <div id="upload_info" class="row" v-for="queueFile in queueFiles">
+                <div class="col-md-2">
+                    {{queueFile.file.name}}
+                </div>
+                <div class="col-md-10">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             v-bind:aria-valuenow="queueFile.progress"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             v-bind:style="{width: queueFile.progress+'%'}">
+                            {{queueFile.progress}}%
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <button type="button" class="btn btn-default col-sm-6"
+                        id="btnSave"
+                        v-on:click="onSave">
+                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span>Save</span>
+                </button>
+                <button type="button" class="btn btn-primary col-sm-6" id="btnPublish">
+                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span>Publish</span>
+                </button>
+            </div>
+        </form>
 
         <div th:replace="client/my-listings/components-category-modal :: category-modal"></div>
     </div>
@@ -89,9 +219,16 @@
         window.onload = function () {
             var commonVar = {};
             MyListingsComponent.init(commonVar);
-            EditListing.init(/*[[${dlListingDTO}]], [[${dlCategoriesDtoFlat}]]*/, commonVar);
+            var dlListingDTO = [[${dlListingDTO}]];
+            var dlCategoriesDtoFlat = [[${dlCategoriesDtoFlat}]];
+            var dlContentFieldsDto = [[${dlContentFieldsDto}]];
+            var dlLocationCountries = [[${dlLocationCountries}]];
+            var dlLocationStates = [[${dlLocationStates}]];
+            var dlLocationCities = [[${dlLocationCities}]];
+            EditListing.init(dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, commonVar);
         };
     </script>
+
 </div>
 
 <!-- JavaScript libraries used to be able to open the html page itself in browser -->
@@ -109,5 +246,7 @@
         th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
 <script src="../../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
         th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+<script src="../../../resources/vendor/dmuploader/dmuploader.min.js"
+        th:src="@{/resources/vendor/dmuploader/dmuploader.min.js}"></script>
 </body>
 </html>

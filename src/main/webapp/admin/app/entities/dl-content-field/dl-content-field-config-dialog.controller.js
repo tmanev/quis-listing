@@ -39,12 +39,12 @@
             if (vm.dlContentField.options) {
                 vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
             } else {
-                if (vm.dlContentField.type == 'string') {
+                if (vm.dlContentField.type == 'STRING') {
                     vm.dlContentFieldOption = {
                         maxLength: 25,
                         regex: ''
                     }
-                } else if (vm.dlContentField.type == 'number') {
+                } else if (vm.dlContentField.type == 'NUMBER') {
                     vm.dlContentFieldOption = {
                         isInteger: true,
                         decimalSeparator: ',',
@@ -52,7 +52,7 @@
                         min: '',
                         max: ''
                     }
-                } else if (vm.dlContentField.type == 'website') {
+                } else if (vm.dlContentField.type == 'WEBSITE') {
                     vm.dlContentFieldOption = {
                         isBlank: true,
                         isNoFollow: true,
@@ -60,7 +60,7 @@
                         defaultLinkText: '',
                         useDefaultLinkText: false
                     }
-                } else if (vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox') {
+                } else if (vm.dlContentField.type == 'SELECT' || vm.dlContentField.type == 'CHECKBOX') {
                     vm.dlContentFieldOption = {}
                 }
             }
@@ -71,7 +71,7 @@
             }
 
 
-            // if (vm.dlContentField.type == 'select' || vm.dlContentField.type == 'checkbox') {
+            // if (vm.dlContentField.type == 'SELECT' || vm.dlContentField.type == 'CHECKBOX') {
             //     for (var i = 0; i < vm.dlContentFieldOption.selectionItems.length; i++) {
             //         if (vm.dlContentFieldOption.selectionItems[i].key > vm.idReferenceCounter) {
             //             vm.idReferenceCounter = vm.dlContentFieldOption.selectionItems[i].key;

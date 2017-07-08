@@ -13,6 +13,7 @@ import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import com.manev.quislisting.web.rest.TestUtil;
+import com.manev.quislisting.web.rest.admin.DlAdminLocationResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlLocationResourceIntTest {
+public class DlAdminLocationResourceIntTest {
 
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
@@ -115,8 +116,8 @@ public class DlLocationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlLocationResource dlLocationResource = new DlLocationResource(dlLocationService);
-        this.restDlLocationMockMvc = MockMvcBuilders.standaloneSetup(dlLocationResource)
+        DlAdminLocationResource dlAdminLocationResource = new DlAdminLocationResource(dlLocationService);
+        this.restDlLocationMockMvc = MockMvcBuilders.standaloneSetup(dlAdminLocationResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
     }

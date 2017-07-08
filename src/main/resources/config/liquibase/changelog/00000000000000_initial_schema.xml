@@ -380,7 +380,7 @@
             </column>
         </createTable>
         <createTable tableName="ql_term_dl_content_field_relationship">
-            <column name="object_id" type="bigint">
+            <column name="dl_content_field_id" type="bigint">
                 <constraints nullable="false" />
             </column>
             <column name="term_taxonomy_id" type="bigint">
@@ -388,6 +388,28 @@
             </column>
             <column name="field_order" type="int(11)">
                 <constraints nullable="true" />
+            </column>
+        </createTable>
+        <createTable tableName="ql_post_dl_content_field_relationship">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="dl_content_field_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+        <createTable tableName="ql_content_field_selection_relationship">
+            <column name="ql_post_dl_content_field_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="ql_dl_content_field_item_id" type="bigint">
+                <constraints nullable="false" />
             </column>
         </createTable>
     </changeSet>
@@ -560,8 +582,39 @@
             </column>
         </createTable>
     </changeSet>
-
     <changeSet id="00000000000009" author="tmanev">
+        <createTable tableName="ql_dl_location_relationship">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="location_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="address_line_one" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="address_line_two" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="postal_code" type="varchar(25)">
+                <constraints nullable="true" />
+            </column>
+            <column name="additional_info" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="latitude" type="decimal(10,6)">
+                <constraints nullable="true" />
+            </column>
+            <column name="longitude" type="decimal(10,6)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000010" author="tmanev">
         <comment>Loading of simple data</comment>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/users.csv"

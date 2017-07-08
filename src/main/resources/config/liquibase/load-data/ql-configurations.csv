@@ -13,3 +13,4 @@ id;key;value
 12;account-profile-page-id;50
 15;my-listings-page-id;12
 13;my-listings-edit-page-id;53
+14;base-url;http://localhost:8181

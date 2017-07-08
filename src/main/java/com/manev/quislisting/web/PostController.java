@@ -40,15 +40,17 @@ public class PostController extends BaseController {
     private final Logger log = LoggerFactory.getLogger(PostController.class);
     private final UserService userService;
     private final UserRepository userRepository;
+    private final MyListingsViewModelComponent myListingsViewModelComponent;
 
     public PostController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                           AbstractPostService abstractPostService, LanguageRepository languageRepository,
                           LocaleResolver localeResolver,
-                          LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository) {
+                          LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
                 abstractPostService);
         this.userService = userService;
         this.userRepository = userRepository;
+        this.myListingsViewModelComponent = myListingsViewModelComponent;
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
@@ -76,6 +78,10 @@ public class PostController extends BaseController {
                         break;
                     case "[forgot-password-page]":
                         modelMap.addAttribute("view", "client/forgot-password");
+                        break;
+                    case "[my-listings-page]":
+                        myListingsViewModelComponent.fillViewModel(modelMap);
+                        modelMap.addAttribute("view", "client/my-listings/my-listings");
                         break;
                     default:
                         modelMap.addAttribute("content", content);

@@ -19,7 +19,6 @@ import javax.ws.rs.NotAuthorizedException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.manev.quislisting.service.storage.StorageService.DL_THUMBNAIL;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_USER_UPLOAD;
 
 @RestController
@@ -44,7 +43,7 @@ public class UploadResource {
 
         for (MultipartFile file : files) {
             AttachmentDTO attachmentDTO = uploadService.uploadFile(file);
-            AttachmentMetadata.ImageResizeMeta imageThumbnailResizeMeta = attachmentDTO.getAttachmentMetadata().getImageResizeMetaByName(DL_THUMBNAIL);
+            AttachmentMetadata.ImageResizeMeta imageThumbnailResizeMeta = attachmentDTO.getAttachmentMetadata().getThumbnailImageResizeMeta();
 
             FileMeta fileMeta = new FileMeta(attachmentDTO.getName(), attachmentDTO.getAttachmentMetadata().getDetail().getSize(),
                     "/content/files" + attachmentDTO.getAttachmentMetadata().getDetail().getFile(),

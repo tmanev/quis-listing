@@ -5,6 +5,7 @@ import com.manev.quislisting.config.JcrConfiguration;
 import com.manev.quislisting.domain.AttachmentStreamResource;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
+import com.manev.quislisting.service.storage.ResizedImages;
 import com.manev.quislisting.service.util.SlugUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jackrabbit.JcrConstants;
@@ -21,63 +22,55 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import static com.manev.quislisting.service.storage.StorageService.*;
 
 @Component
 public class StoreComponent {
 
-    private static final String ADMIN = "admin";
     private JcrConfiguration jcrConfiguration;
 
     public StoreComponent(JcrConfiguration jcrConfiguration) {
         this.jcrConfiguration = jcrConfiguration;
     }
 
-    public AttachmentDTO storeInRepository(MultipartFile file, BufferedImage inputWatermarked, Map<String, BufferedImage> resizedImages) throws IOException, RepositoryException {
+    public AttachmentDTO storeInRepository(MultipartFile file, BufferedImage inputWatermarked, ResizedImages resizedImages) throws IOException, RepositoryException {
         AttachmentDTO attachmentDTO;
-        Repository repository = jcrConfiguration.repository();
-        Session session = repository.login(
-                new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
+        Session session = jcrConfiguration.getSession();
 
         String fileNameSlug = SlugUtil.getFileNameSlug(file.getOriginalFilename());
 
-        try {
-            ZonedDateTime currentDateTime = ZonedDateTime.now();
-            Node fileNode = createFileNode(fileNameSlug, session);
-            Node resourceNode = createResourceNode(file.getContentType(), FilenameUtils.getExtension(fileNameSlug), inputWatermarked, session, fileNode, currentDateTime);
-            attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName(), file.getContentType(), currentDateTime);
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
+        Node fileNode = createFileNode(fileNameSlug, session);
+        Node resourceNode = createResourceNode(file.getContentType(), FilenameUtils.getExtension(fileNameSlug), inputWatermarked, session, fileNode, currentDateTime);
+        attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName(), file.getContentType(), currentDateTime);
 
-            AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
-            AttachmentMetadata.DetailSize detailSize = new AttachmentMetadata.DetailSize();
-            detailSize.setFile(fileNode.getPath());
-            detailSize.setWidth(inputWatermarked.getWidth());
-            detailSize.setHeight(inputWatermarked.getHeight());
-            detailSize.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
-            attachmentMetadata.setDetail(detailSize);
+        AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
+        AttachmentMetadata.DetailSize detailSize = new AttachmentMetadata.DetailSize();
+        detailSize.setFile(fileNode.getPath());
+        detailSize.setWidth(inputWatermarked.getWidth());
+        detailSize.setHeight(inputWatermarked.getHeight());
+        detailSize.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
+        attachmentMetadata.setDetail(detailSize);
 
-            List<AttachmentMetadata.ImageResizeMeta> resizedImagesMeta = storeResizedImages(fileNode.getName(), file.getContentType(), resizedImages, session, currentDateTime);
-            attachmentMetadata.setImageResizeMetas(resizedImagesMeta);
+        AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_THUMBNAIL, resizedImages.getThumbnail());
+        AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_MEDIUM, resizedImages.getMedium());
+        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_BIG, resizedImages.getBig());
 
-            attachmentDTO.setAttachmentMetadata(attachmentMetadata);
+        attachmentMetadata.setThumbnailImageResizeMeta(thumbnailImageResizeMeta);
+        attachmentMetadata.setMediumImageResizeMeta(mediumImageResizeMeta);
+        attachmentMetadata.setBigImageResizeMeta(bigImageResizeMeta);
 
-            session.save();
-        } finally {
-            session.logout();
-        }
+        attachmentDTO.setAttachmentMetadata(attachmentMetadata);
+
+        session.save();
 
         return attachmentDTO;
     }
 
-    private List<AttachmentMetadata.ImageResizeMeta> storeResizedImages(String fileNameSlug,
-                                                                        String contentType, Map<String, BufferedImage> resizedImages, Session session, ZonedDateTime currentDateTime) throws IOException, RepositoryException {
-        List<AttachmentMetadata.ImageResizeMeta> resizeMetaList = new ArrayList<>();
-
-        for (Map.Entry<String, BufferedImage> stringBufferedImageEntry : resizedImages.entrySet()) {
-            String key = stringBufferedImageEntry.getKey();
-            BufferedImage resizedImage = stringBufferedImageEntry.getValue();
-
+    private AttachmentMetadata.ImageResizeMeta storeImage(String fileNameSlug, String contentType, Session session, ZonedDateTime currentDateTime, String key, BufferedImage resizedImage) throws RepositoryException, IOException {
+        if (resizedImage != null) {
             String extension = FilenameUtils.getExtension(fileNameSlug);
             String fileName = FilenameUtils.getBaseName(fileNameSlug);
             String fileNameSlugResize = fileName + "-" + resizedImage.getWidth() + "x" + resizedImage.getHeight() + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));
@@ -93,11 +86,9 @@ public class StoreComponent {
             detail.setHeight(resizedImage.getHeight());
             detail.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
             imageResizeMeta.setDetail(detail);
-
-            resizeMetaList.add(imageResizeMeta);
+            return imageResizeMeta;
         }
-
-        return resizeMetaList;
+        return null;
     }
 
     private AttachmentDTO createAttachmentDTO(String originalFilename, String fileNameSlug, String contentType, ZonedDateTime currentDateTime) {
@@ -163,41 +154,30 @@ public class StoreComponent {
     }
 
     public void removeInRepository(List<String> filePaths) throws IOException, RepositoryException {
-        Repository repository = jcrConfiguration.repository();
-        Session session = repository.login(
-                new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
+        Session session = jcrConfiguration.getSession();
 
-        try {
-            for (String filePath : filePaths) {
-                session.removeItem(filePath);
-            }
-            session.save();
-        } finally {
-            session.logout();
+        for (String filePath : filePaths) {
+            session.removeItem(filePath);
         }
+
+        session.save();
     }
 
     public AttachmentStreamResource getResource(String absPath) throws RepositoryException, IOException {
         AttachmentStreamResource attachmentStreamResource;
-        Repository repository = jcrConfiguration.repository();
-        Session session = repository.login(
-                new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
+        Session session = jcrConfiguration.getSession();
 
-        try {
-            Node fileNode = session.getNode(absPath);
-            Node contentNode = fileNode.getNode(Node.JCR_CONTENT);
-            Property jcrDataProperty = contentNode.getProperty(JcrConstants.JCR_DATA);
-            Property mimeType = contentNode.getProperty(JcrConstants.JCR_MIMETYPE);
+        Node fileNode = session.getNode(absPath);
+        Node contentNode = fileNode.getNode(Node.JCR_CONTENT);
+        Property jcrDataProperty = contentNode.getProperty(JcrConstants.JCR_DATA);
+        Property mimeType = contentNode.getProperty(JcrConstants.JCR_MIMETYPE);
 
-            Binary binary = jcrDataProperty.getBinary();
-            InputStreamResource inputStreamResource = new InputStreamResource(binary.getStream());
-            attachmentStreamResource = new AttachmentStreamResource(inputStreamResource, mimeType.getString(),
-                    fileNode.getName());
+        Binary binary = jcrDataProperty.getBinary();
+        InputStreamResource inputStreamResource = new InputStreamResource(binary.getStream());
+        attachmentStreamResource = new AttachmentStreamResource(inputStreamResource, mimeType.getString(),
+                fileNode.getName());
 
-            session.save();
-        } finally {
-            session.logout();
-        }
+        session.save();
 
         return attachmentStreamResource;
     }

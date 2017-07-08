@@ -58,10 +58,10 @@ AddListing = {
                     } else {
                         var payload = {};
                         payload.title = this.listing.title;
-                        payload.categoryId = this.listing.selectedCategory.id;
+                        payload.dlCategories = [this.listing.selectedCategory];
                         var $btn = $('#btnNext').button('loading');
                         this.$http({
-                            url: '/api/client/dl-listings',
+                            url: '/api/dl-listings',
                             body: payload,
                             method: 'POST'
                         }).then(function (response) {
@@ -69,7 +69,8 @@ AddListing = {
                             $btn.button('reset');
 
                             // move the user to the next page
-                            window.location.href = response.headers.get('Location');
+                            let editUrl = '/my-listings/edit/' + response.data.id;
+                            window.location.href = editUrl;
 
                         }, function (response) {
                             console.log('Error!:', response.data);

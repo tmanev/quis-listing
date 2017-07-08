@@ -1,14 +1,14 @@
 package com.manev.quislisting.service.post.dto;
 
-public class DlListingField {
+public class DlListingFieldDTO {
 
     private Long id;
     private String value;
 
-    public DlListingField() {
+    public DlListingFieldDTO() {
     }
 
-    public DlListingField(Long id, String value) {
+    public DlListingFieldDTO(Long id, String value) {
         this.id = id;
         this.value = value;
     }

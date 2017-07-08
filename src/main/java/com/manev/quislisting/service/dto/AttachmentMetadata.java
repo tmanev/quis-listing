@@ -5,7 +5,9 @@ import java.util.List;
 
 public class AttachmentMetadata {
     private DetailSize detail;
-    private List<ImageResizeMeta> imageResizeMetas;
+    private ImageResizeMeta thumbnailImageResizeMeta;
+    private ImageResizeMeta mediumImageResizeMeta;
+    private ImageResizeMeta bigImageResizeMeta;
 
     public DetailSize getDetail() {
         return detail;
@@ -13,32 +15,6 @@ public class AttachmentMetadata {
 
     public void setDetail(DetailSize detail) {
         this.detail = detail;
-    }
-
-    public List<ImageResizeMeta> getImageResizeMetas() {
-        return imageResizeMetas;
-    }
-
-    public void setImageResizeMetas(List<ImageResizeMeta> imageResizeMetas) {
-        this.imageResizeMetas = imageResizeMetas;
-    }
-
-    public ImageResizeMeta getImageResizeMetaByName(String name) {
-        if (imageResizeMetas != null) {
-            for (ImageResizeMeta imageResizeMeta : imageResizeMetas) {
-                if (name.equals(imageResizeMeta.getName())) {
-                    return imageResizeMeta;
-                }
-            }
-        }
-        return null;
-    }
-
-    public void addSize(ImageResizeMeta imageResizeMeta) {
-        if (this.imageResizeMetas == null) {
-            imageResizeMetas = new ArrayList<>();
-        }
-        this.imageResizeMetas.add(imageResizeMeta);
     }
 
     public static class ImageResizeMeta {
@@ -108,5 +84,29 @@ public class AttachmentMetadata {
         public void setMimeType(String mimeType) {
             this.mimeType = mimeType;
         }
+    }
+
+    public ImageResizeMeta getThumbnailImageResizeMeta() {
+        return thumbnailImageResizeMeta;
+    }
+
+    public void setThumbnailImageResizeMeta(ImageResizeMeta thumbnailImageResizeMeta) {
+        this.thumbnailImageResizeMeta = thumbnailImageResizeMeta;
+    }
+
+    public ImageResizeMeta getMediumImageResizeMeta() {
+        return mediumImageResizeMeta;
+    }
+
+    public void setMediumImageResizeMeta(ImageResizeMeta mediumImageResizeMeta) {
+        this.mediumImageResizeMeta = mediumImageResizeMeta;
+    }
+
+    public ImageResizeMeta getBigImageResizeMeta() {
+        return bigImageResizeMeta;
+    }
+
+    public void setBigImageResizeMeta(ImageResizeMeta bigImageResizeMeta) {
+        this.bigImageResizeMeta = bigImageResizeMeta;
     }
 }

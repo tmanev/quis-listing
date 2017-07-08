@@ -40,26 +40,4 @@ public class ClientListingResource {
         this.localeResolver = localeResolver;
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ClientDlListingDTO> createDlListing(@RequestBody @Valid ClientDlListingDTO clientDlListingDto,
-                                                              HttpServletRequest request) throws URISyntaxException {
-        Locale locale = localeResolver.resolveLocale(request);
-        String language = locale.getLanguage();
-        if (clientDlListingDto.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
-        }
-
-        ClientDlListingDTO result = dlListingService.save(clientDlListingDto);
-
-        AbstractPost myListingsPage = abstractPostService.retrievePost(language,
-                qlConfigService.findOneByKey("my-listings-page-id").getValue());
-        AbstractPost myListingsEditPage = abstractPostService.retrievePost(language,
-                qlConfigService.findOneByKey("my-listings-edit-page-id").getValue());
-
-        return ResponseEntity.created(new URI(String.format("/%s/%s",
-                myListingsEditPage.getName(), result.getId())))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
-    }
-
 }
