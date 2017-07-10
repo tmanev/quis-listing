@@ -70,14 +70,14 @@
         <div id="details" class="container-fluid">
             <form class="form-horizontal">
                 <fieldset v-for="dlContentField in dlContentFields">
-                    <div class="form-group" v-if="dlContentField.type.$name == 'STRING' ">
+                    <div class="form-group" v-if="dlContentField.type == 'STRING' ">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="dlContentField.value"/>
                         </div>
                     </div>
-                    <div class="form-group" v-if="dlContentField.type.$name == 'SELECT' ">
+                    <div class="form-group" v-if="dlContentField.type == 'SELECT' ">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">
@@ -89,7 +89,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group" v-if="dlContentField.type.$name == 'CHECKBOX' ">
+                    <div class="form-group" v-if="dlContentField.type == 'CHECKBOX' ">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" v-if="dlContentField.type.$name == 'NUMBER' ">
+                    <div class="form-group" v-if="dlContentField.type == 'NUMBER' ">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">

@@ -140,7 +140,7 @@ EditListing = {
             if (dlListingFields) {
                 for (let dlListingField of dlListingFields) {
                     if (dlListingField.id == dlContentField.id) {
-                        if (dlContentField.type.$name == 'CHECKBOX') {
+                        if (dlContentField.type == 'CHECKBOX') {
                             if (dlListingField.value) {
                                 return JSON.parse(dlListingField.value);
                             } else {
@@ -372,7 +372,7 @@ EditListing = {
                     let dlListingFields = [];
                     for (let dlContentField of this.dlContentFields) {
                         let value;
-                        if (dlContentField.type.$name == 'CHECKBOX') {
+                        if (dlContentField.type == 'CHECKBOX') {
                             if (dlContentField.value) {
                                 value = JSON.stringify(dlContentField.value);
                             } else {
