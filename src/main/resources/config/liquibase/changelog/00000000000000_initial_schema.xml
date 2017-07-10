@@ -190,11 +190,6 @@
             </column>
         </createTable>
 
-        <createIndex indexName="idx_post_name"
-                     tableName="ql_post"
-                     unique="true">
-            <column name="name" type="varchar(200)"/>
-        </createIndex>
         <createIndex indexName="idx_user_id"
                      tableName="ql_post"
                      unique="false">
