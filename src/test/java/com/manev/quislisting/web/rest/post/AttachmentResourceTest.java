@@ -95,6 +95,7 @@ public class AttachmentResourceTest extends GenericResourceTest {
 
     private String yearStr;
     private String monthOfYearStr;
+    private String dayOfMonthStr;
 
     @Before
     public void setup() {
@@ -115,10 +116,11 @@ public class AttachmentResourceTest extends GenericResourceTest {
         DateTime dateTime = new DateTime();
         this.yearStr = String.valueOf(dateTime.getYear());
         this.monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
+        this.dayOfMonthStr = String.format("%02d", dateTime.getDayOfMonth());
         List<String> filePathsToDelete = new ArrayList<>();
-        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish.jpg");
-        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish-180x133.jpg");
-        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish-300x222.jpg");
+        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + dayOfMonthStr + "/" + "small-fish.jpg");
+        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + dayOfMonthStr + "/" + "small-fish-180x133.jpg");
+        filePathsToDelete.add("/" + yearStr + "/" + monthOfYearStr + "/" + dayOfMonthStr + "/" + "small-fish-300x222.jpg");
         try {
             storageService.delete(filePathsToDelete);
         } catch (PathNotFoundException ex) {
@@ -137,7 +139,7 @@ public class AttachmentResourceTest extends GenericResourceTest {
         assertThat(attachment.getStatus()).isEqualTo(Attachment.Status.BY_ADMIN);
         assertThat(attachment.getMimeType()).isEqualTo("image/jpeg");
 
-        assertThat(attachment.getPostMetaValue(QL_ATTACHED_FILE)).isEqualTo("/" + yearStr + "/" + monthOfYearStr + "/" + "small-fish.jpg");
+        assertThat(attachment.getPostMetaValue(QL_ATTACHED_FILE)).isEqualTo("/" + yearStr + "/" + monthOfYearStr + "/" + dayOfMonthStr + "/" + "small-fish.jpg");
 
         String attachmentMetaStr = attachment.getPostMetaValue(QL_ATTACHMENT_METADATA);
         AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetaStr, AttachmentMetadata.class);
@@ -147,7 +149,7 @@ public class AttachmentResourceTest extends GenericResourceTest {
         AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getBigImageResizeMeta();
 
         assertThat(thumbnailImageResizeMeta.getName()).isEqualTo("dl-thumbnail");
-        assertThat(thumbnailImageResizeMeta.getDetail().getFile()).isEqualTo("/2017/07/small-fish-242x179.jpg");
+        assertThat(thumbnailImageResizeMeta.getDetail().getFile()).isEqualTo(String.format("/%s/%s/%s/small-fish-242x179.jpg", yearStr, monthOfYearStr, dayOfMonthStr));
 //        assertThat(mediumImageResizeMeta.getName()).isEqualTo("dl-medium");
 //        assertThat(mediumImageResizeMeta.getDetail().getFile()).isEqualTo("/2017/07/small-fish-300x222.jpg");
         assertThat(mediumImageResizeMeta).isNull();
@@ -187,7 +189,7 @@ public class AttachmentResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.attachmentMetadata.largeImageResizeMeta").doesNotExist());
 //                .andExpect(jsonPath("$.attachmentMetadata.mediumImageResizeMeta.name").value("dl-medium"))
 //                .andExpect(jsonPath("$.attachmentMetadata.mediumImageResizeMeta.detail.file").value(String.format("/%s/%s/small-fish-300x222.jpg", yearStr, monthOfYearStr)))
-        ;
+
     }
 
     @Test

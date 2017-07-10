@@ -120,6 +120,7 @@ public class StoreComponent {
         DateTime dateTime = new DateTime();
         String yearStr = String.valueOf(dateTime.getYear());
         String monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
+        String dayOfMonthStr = String.format("%02d", dateTime.getDayOfMonth());
 
         Node root = session.getRootNode();
 
@@ -136,16 +137,22 @@ public class StoreComponent {
         } else {
             monthOfYearNode = yearNode.addNode(monthOfYearStr);
         }
+        Node dayOfMonthNode;
+        if (monthOfYearNode.hasNode(dayOfMonthStr)) {
+            dayOfMonthNode = monthOfYearNode.getNode(dayOfMonthStr);
+        } else {
+            dayOfMonthNode = monthOfYearNode.addNode(dayOfMonthStr);
+        }
 
-        String checkedFileName = checkFileName(fileName, monthOfYearNode);
-        return monthOfYearNode.addNode(checkedFileName, JcrConstants.NT_FILE);
+        String checkedFileName = checkFileName(fileName, dayOfMonthNode);
+        return dayOfMonthNode.addNode(checkedFileName, JcrConstants.NT_FILE);
     }
 
-    private String checkFileName(String fileName, Node monthOfYearNode) throws RepositoryException {
+    private String checkFileName(String fileName, Node dayOfMonthNode) throws RepositoryException {
         String checkedFileName = fileName;
         String baseName = FilenameUtils.getBaseName(fileName);
         int counter = 0;
-        while (monthOfYearNode.hasNode(fileName)) {
+        while (dayOfMonthNode.hasNode(checkedFileName)) {
             String extension = FilenameUtils.getExtension(fileName);
             checkedFileName = baseName + "-" + (counter + 1) + (extension.isEmpty() ? "" : "." + extension);
             counter++;
