@@ -3,10 +3,8 @@ package com.manev.quislisting.domain;
 import com.manev.quislisting.domain.qlml.QlString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
-/**
- * Created by adri on 4/4/2017.
- */
 @Entity
 @Table(name = "ql_email_template")
 public class EmailTemplate {
@@ -16,16 +14,17 @@ public class EmailTemplate {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "string_id")
     private QlString qlString;
 
+    @NotNull
     @Column
     private String name;
 
+    @NotNull
     @Column
     private String text;
-
 
     public Long getId() {
         return id;

@@ -1,28 +1,36 @@
 package com.manev.quislisting.service.post.dto;
 
-import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 
-public class AttachmentDTO extends AbstractPostDTO {
+public class AttachmentDTO {
 
-    private String mimeType;
-    private Attachment.Status status;
+    private Long id;
+    private String fileName;
+    private String fileNameSlug;
     private AttachmentMetadata attachmentMetadata;
 
-    public String getMimeType() {
-        return mimeType;
+    public Long getId() {
+        return id;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Attachment.Status getStatus() {
-        return status;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setStatus(Attachment.Status status) {
-        this.status = status;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileNameSlug() {
+        return fileNameSlug;
+    }
+
+    public void setFileNameSlug(String fileNameSlug) {
+        this.fileNameSlug = fileNameSlug;
     }
 
     public AttachmentMetadata getAttachmentMetadata() {

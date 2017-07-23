@@ -1,9 +1,8 @@
 package com.manev.quislisting.web.rest;
 
 import com.manev.quislisting.config.JcrConfiguration;
-import com.manev.quislisting.domain.post.discriminator.Attachment;
+import com.manev.quislisting.domain.DlAttachment;
 import com.manev.quislisting.service.util.AttachmentUtil;
-import com.manev.quislisting.web.rest.post.AttachmentResourceTest;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,13 @@ import java.util.List;
 
 public abstract class GenericResourceTest {
     protected File imageFile;
-    protected List<Attachment> attachmentsToBeDeletedFromJcrInAfter;
+    protected List<DlAttachment> attachmentsToBeDeletedFromJcrInAfter;
 
     @Autowired
     private JcrConfiguration jcrConfiguration;
 
     private static File createFile() throws URISyntaxException {
-        URL resource = AttachmentResourceTest.class.getResource("/images/small fish.jpg");
+        URL resource = GenericResourceTest.class.getResource("/images/small fish.jpg");
         return new File(resource.toURI());
     }
 
@@ -38,7 +37,7 @@ public abstract class GenericResourceTest {
 
     @After
     public void clearJcrRepoSaves() throws IOException, RepositoryException {
-        for (Attachment attachment : attachmentsToBeDeletedFromJcrInAfter) {
+        for (DlAttachment attachment : attachmentsToBeDeletedFromJcrInAfter) {
 
             List<String> filePaths = AttachmentUtil.getFilePaths(attachment);
 

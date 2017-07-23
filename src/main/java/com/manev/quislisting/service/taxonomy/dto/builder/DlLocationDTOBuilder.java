@@ -1,11 +1,11 @@
 package com.manev.quislisting.service.taxonomy.dto.builder;
 
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
-import com.manev.quislisting.service.taxonomy.dto.TermDTO;
 
 public final class DlLocationDTOBuilder {
     private Long id;
-    private TermDTO term;
+    private String name;
+    private String slug;
     private Long parentId;
     private String description;
     private Long count;
@@ -24,8 +24,13 @@ public final class DlLocationDTOBuilder {
         return this;
     }
 
-    public DlLocationDTOBuilder withTerm(TermDTO term) {
-        this.term = term;
+    public DlLocationDTOBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public DlLocationDTOBuilder withSlug(String slug) {
+        this.slug = slug;
         return this;
     }
 
@@ -57,7 +62,8 @@ public final class DlLocationDTOBuilder {
     public DlLocationDTO build() {
         DlLocationDTO dlLocationDTO = new DlLocationDTO();
         dlLocationDTO.setId(id);
-        dlLocationDTO.setTerm(term);
+        dlLocationDTO.setName(name);
+        dlLocationDTO.setSlug(slug);
         dlLocationDTO.setParentId(parentId);
         dlLocationDTO.setParent(parent);
         dlLocationDTO.setDescription(description);

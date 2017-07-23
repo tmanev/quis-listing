@@ -91,9 +91,6 @@ AddListing = {
             }
         });
 
-        // var bus = new Vue();
-
-        // commonVar.bus = new Vue();
         commonVar.addListingApp = addListingApp;
 
         addListingApp.$on('id-selected', function (category) {
@@ -103,7 +100,7 @@ AddListing = {
             this.listing.selectedCategory = category;
             this.listing.selectedCategory.active = true;
             this.listing.category.id = category.id;
-            this.listing.category.name = category.term.name;
+            this.listing.category.name = category.name;
         });
     }
 };

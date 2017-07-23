@@ -24,10 +24,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.manev.quislisting.service.storage.StorageService.*;
-
 @Component
 public class StoreComponent {
+
+    private static final String DL_MEDIUM = "medium";
+    private static final String DL_BIG = "big";
+    private static final String DL_SMALL = "small";
 
     private JcrConfiguration jcrConfiguration;
 
@@ -36,7 +38,6 @@ public class StoreComponent {
     }
 
     public AttachmentDTO storeInRepository(MultipartFile file, BufferedImage inputWatermarked, ResizedImages resizedImages) throws IOException, RepositoryException {
-        AttachmentDTO attachmentDTO;
         Session session = jcrConfiguration.getSession();
 
         String fileNameSlug = SlugUtil.getFileNameSlug(file.getOriginalFilename());
@@ -44,7 +45,8 @@ public class StoreComponent {
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         Node fileNode = createFileNode(fileNameSlug, session);
         Node resourceNode = createResourceNode(file.getContentType(), FilenameUtils.getExtension(fileNameSlug), inputWatermarked, session, fileNode, currentDateTime);
-        attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName(), file.getContentType(), currentDateTime);
+
+        AttachmentDTO attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName());
 
         AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
         AttachmentMetadata.DetailSize detailSize = new AttachmentMetadata.DetailSize();
@@ -52,13 +54,14 @@ public class StoreComponent {
         detailSize.setWidth(inputWatermarked.getWidth());
         detailSize.setHeight(inputWatermarked.getHeight());
         detailSize.setSize(resourceNode.getProperty(JcrConstants.JCR_DATA).getBinary().getSize());
+        detailSize.setMimeType(file.getContentType());
         attachmentMetadata.setDetail(detailSize);
 
-        AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_THUMBNAIL, resizedImages.getThumbnail());
+        AttachmentMetadata.ImageResizeMeta smallImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_SMALL, resizedImages.getSmall());
         AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_MEDIUM, resizedImages.getMedium());
         AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = storeImage(fileNameSlug, file.getContentType(), session, currentDateTime, DL_BIG, resizedImages.getBig());
 
-        attachmentMetadata.setThumbnailImageResizeMeta(thumbnailImageResizeMeta);
+        attachmentMetadata.setSmallImageResizeMeta(smallImageResizeMeta);
         attachmentMetadata.setMediumImageResizeMeta(mediumImageResizeMeta);
         attachmentMetadata.setBigImageResizeMeta(bigImageResizeMeta);
 
@@ -73,7 +76,7 @@ public class StoreComponent {
         if (resizedImage != null) {
             String extension = FilenameUtils.getExtension(fileNameSlug);
             String fileName = FilenameUtils.getBaseName(fileNameSlug);
-            String fileNameSlugResize = fileName + "-" + resizedImage.getWidth() + "x" + resizedImage.getHeight() + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));
+            String fileNameSlugResize = fileName + "-" + key + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));;
             Node fileNode = createFileNode(fileNameSlugResize, session);
             Node resourceNode = createResourceNode(contentType, extension, resizedImage, session, fileNode, currentDateTime);
 
@@ -91,13 +94,10 @@ public class StoreComponent {
         return null;
     }
 
-    private AttachmentDTO createAttachmentDTO(String originalFilename, String fileNameSlug, String contentType, ZonedDateTime currentDateTime) {
+    private AttachmentDTO createAttachmentDTO(String originalFilename, String fileNameSlug) {
         AttachmentDTO attachmentDTO = new AttachmentDTO();
-        attachmentDTO.setTitle(FilenameUtils.getBaseName(originalFilename));
-        attachmentDTO.setName(FilenameUtils.getBaseName(fileNameSlug));
-        attachmentDTO.setMimeType(contentType);
-        attachmentDTO.setCreated(currentDateTime);
-        attachmentDTO.setModified(currentDateTime);
+        attachmentDTO.setFileName(originalFilename);
+        attachmentDTO.setFileNameSlug(fileNameSlug);
         return attachmentDTO;
     }
 
@@ -160,7 +160,7 @@ public class StoreComponent {
         return checkedFileName;
     }
 
-    public void removeInRepository(List<String> filePaths) throws IOException, RepositoryException {
+    public void removeInRepository(List<String> filePaths) throws RepositoryException {
         Session session = jcrConfiguration.getSession();
 
         for (String filePath : filePaths) {
@@ -170,7 +170,7 @@ public class StoreComponent {
         session.save();
     }
 
-    public AttachmentStreamResource getResource(String absPath) throws RepositoryException, IOException {
+    public AttachmentStreamResource getResource(String absPath) throws RepositoryException {
         AttachmentStreamResource attachmentStreamResource;
         Session session = jcrConfiguration.getSession();
 

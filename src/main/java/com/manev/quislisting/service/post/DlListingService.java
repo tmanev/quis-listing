@@ -2,15 +2,10 @@ package com.manev.quislisting.service.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.*;
-import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
-import com.manev.quislisting.repository.DlContentFieldItemRepository;
-import com.manev.quislisting.repository.DlContentFieldRelationshipRepository;
-import com.manev.quislisting.repository.DlContentFieldRepository;
-import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.repository.post.AttachmentRepository;
+import com.manev.quislisting.repository.*;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
@@ -61,12 +56,16 @@ public class DlListingService {
     private DlContentFieldRepository dlContentFieldRepository;
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository;
-    private AttachmentRepository attachmentRepository;
+    private DlAttachmentRepository dlAttachmentRepository;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
                             DlListingMapper dlListingMapper, AttachmentMapper attachmentMapper,
-                            StorageService storageService, LanguageService languageService, DlContentFieldRepository dlContentFieldRepository, DlContentFieldItemRepository dlContentFieldItemRepository, DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository, AttachmentRepository attachmentRepository) {
+                            StorageService storageService, LanguageService languageService,
+                            DlContentFieldRepository dlContentFieldRepository,
+                            DlContentFieldItemRepository dlContentFieldItemRepository,
+                            DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository,
+                            DlAttachmentRepository dlAttachmentRepository) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -78,7 +77,7 @@ public class DlListingService {
         this.dlContentFieldRepository = dlContentFieldRepository;
         this.dlContentFieldItemRepository = dlContentFieldItemRepository;
         this.dlContentFieldRelationshipRepository = dlContentFieldRelationshipRepository;
-        this.attachmentRepository = attachmentRepository;
+        this.dlAttachmentRepository = dlAttachmentRepository;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -130,31 +129,31 @@ public class DlListingService {
         List<DlListingFieldDTO> dlListingFieldDTOS = dlListingDTO.getDlListingFields();
 
         if (dlListingFieldDTOS != null) {
-            Set<DlContentFieldRelationship> existingDlContentFieldRelationships = dlListingForSaving.getDlContentFieldRelationships();
+            Set<DlListingContentFieldRel> existingDlListingContentFieldRels = dlListingForSaving.getDlListingContentFieldRels();
             for (DlListingFieldDTO dlListingFieldDTO : dlListingFieldDTOS) {
                 DlContentField dlContentField = dlContentFieldRepository.findOne(dlListingFieldDTO.getId());
-                DlContentFieldRelationship dlContentFieldRelationship = findDlContentFieldRelationship(dlContentField, existingDlContentFieldRelationships);
+                DlListingContentFieldRel dlListingContentFieldRel = findDlContentFieldRelationship(dlContentField, existingDlListingContentFieldRels);
 
-                updateDlContentFieldRelationship(dlListingForSaving, dlListingFieldDTO, dlContentField, dlContentFieldRelationship);
+                updateDlContentFieldRelationship(dlListingForSaving, dlListingFieldDTO, dlContentField, dlListingContentFieldRel);
             }
         }
     }
 
-    private void updateDlContentFieldRelationship(DlListing dlListingForSaving, DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlContentFieldRelationship dlContentFieldRelationship) {
-        if (dlContentFieldRelationship != null) {
+    private void updateDlContentFieldRelationship(DlListing dlListingForSaving, DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlListingContentFieldRel dlListingContentFieldRel) {
+        if (dlListingContentFieldRel != null) {
             // update existing relationship object
-            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, dlContentFieldRelationship);
+            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, dlListingContentFieldRel);
         } else {
             // create new relationship object
-            DlContentFieldRelationship newDlContentFieldRelationship = new DlContentFieldRelationship();
-            newDlContentFieldRelationship.setDlContentField(dlContentField);
-            newDlContentFieldRelationship.setDlListing(dlListingForSaving);
-            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, newDlContentFieldRelationship);
-            dlListingForSaving.addDlContentFieldRelationships(newDlContentFieldRelationship);
+            DlListingContentFieldRel newDlListingContentFieldRel = new DlListingContentFieldRel();
+            newDlListingContentFieldRel.setDlContentField(dlContentField);
+            newDlListingContentFieldRel.setDlListing(dlListingForSaving);
+            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, newDlListingContentFieldRel);
+            dlListingForSaving.addDlContentFieldRelationships(newDlListingContentFieldRel);
         }
     }
 
-    private void setContentFieldRelationValue(DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlContentFieldRelationship newDlContentFieldRelationship) {
+    private void setContentFieldRelationValue(DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlListingContentFieldRel newDlListingContentFieldRel) {
         try {
             if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
                 // make relation with the selection items
@@ -163,7 +162,7 @@ public class DlListingService {
                     List<Long> idsAsList = Arrays.asList(ids);
                     if (!idsAsList.isEmpty()) {
                         Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdIn(idsAsList);
-                        newDlContentFieldRelationship.setDlContentFieldItems(byIdIn);
+                        newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
                     }
                 }
             } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)) {
@@ -171,11 +170,11 @@ public class DlListingService {
                     DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getValue()));
                     Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
                     dlContentFieldItemSet.add(dlContentFieldItem);
-                    newDlContentFieldRelationship.setDlContentFieldItems(dlContentFieldItemSet);
+                    newDlListingContentFieldRel.setDlContentFieldItems(dlContentFieldItemSet);
                 }
             } else {
                 // set value
-                newDlContentFieldRelationship.setValue(dlListingFieldDTO.getValue());
+                newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -183,11 +182,11 @@ public class DlListingService {
         }
     }
 
-    private DlContentFieldRelationship findDlContentFieldRelationship(DlContentField dlContentField, Set<DlContentFieldRelationship> dlContentFieldRelationships) {
-        if (dlContentFieldRelationships != null) {
-            for (DlContentFieldRelationship dlContentFieldRelationship : dlContentFieldRelationships) {
-                if (dlContentField.getId().equals(dlContentFieldRelationship.getDlContentField().getId())) {
-                    return dlContentFieldRelationship;
+    private DlListingContentFieldRel findDlContentFieldRelationship(DlContentField dlContentField, Set<DlListingContentFieldRel> dlListingContentFieldRels) {
+        if (dlListingContentFieldRels != null) {
+            for (DlListingContentFieldRel dlListingContentFieldRel : dlListingContentFieldRels) {
+                if (dlContentField.getId().equals(dlListingContentFieldRel.getDlContentField().getId())) {
+                    return dlListingContentFieldRel;
                 }
             }
         }
@@ -201,17 +200,17 @@ public class DlListingService {
             DlLocationDTO dlLocationDTO = dlListingDTO.getDlLocations().get(0);
             if (dlLocationDTO.getId() != -1L) {
                 DlLocation dlLocation = dlLocationRepository.findOne(dlLocationDTO.getId());
-                Set<DlLocationRelationship> dlLocationRelationships = dlListingForSaving.getDlLocationRelationships();
-                if (dlLocationRelationships != null && !dlLocationRelationships.isEmpty()) {
+                Set<DlListingLocationRel> dlListingLocationRels = dlListingForSaving.getDlListingLocationRels();
+                if (dlListingLocationRels != null && !dlListingLocationRels.isEmpty()) {
                     // update
-                    DlLocationRelationship dlLocationRelationship = dlLocationRelationships.iterator().next();
-                    dlLocationRelationship.setDlLocation(dlLocation);
+                    DlListingLocationRel dlListingLocationRel = dlListingLocationRels.iterator().next();
+                    dlListingLocationRel.setDlLocation(dlLocation);
                 } else {
                     // create new
-                    DlLocationRelationship dlLocationRelationship = new DlLocationRelationship();
-                    dlLocationRelationship.setDlLocation(dlLocation);
-                    dlLocationRelationship.setDlListing(dlListingForSaving);
-                    dlListingForSaving.addDlLocationRelationship(dlLocationRelationship);
+                    DlListingLocationRel dlListingLocationRel = new DlListingLocationRel();
+                    dlListingLocationRel.setDlLocation(dlLocation);
+                    dlListingLocationRel.setDlListing(dlListingForSaving);
+                    dlListingForSaving.addDlLocationRelationship(dlListingLocationRel);
                 }
             }
         }
@@ -251,12 +250,12 @@ public class DlListingService {
     public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException, RepositoryException {
         log.debug("Request to delete attachment with id : {}, from DlCategoryDTO : {}", attachmentId, id);
         DlListing dlListing = dlListingRepository.findOne(id);
-        Attachment attachment = dlListing.removeAttachment(attachmentId);
+        DlAttachment attachment = dlListing.removeAttachment(attachmentId);
         dlListing.setModified(ZonedDateTime.now());
         DlListing result = dlListingRepository.save(dlListing);
 
         if (attachment != null) {
-            attachmentRepository.delete(attachment);
+            dlAttachmentRepository.delete(attachment);
             List<String> filePaths = AttachmentUtil.getFilePaths(attachment);
             storageService.delete(filePaths);
         }
@@ -278,10 +277,9 @@ public class DlListingService {
         if (oneByLogin.isPresent()) {
             for (MultipartFile file : fileMap.values()) {
                 AttachmentDTO attachmentDto = storageService.store(file);
-                Attachment attachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
-                attachment.setStatus(Attachment.Status.LISTING);
-                attachment.setUser(oneByLogin.get());
-                dlListing.addAttachment(attachment);
+                DlAttachment dlAttachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
+                dlAttachment.setDlListing(dlListing);
+                dlListing.addDlAttachment(dlAttachment);
             }
 
             DlListing result = dlListingRepository.save(dlListing);

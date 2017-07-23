@@ -3,12 +3,10 @@ package com.manev.quislisting.web.rest.post;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.*;
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.domain.post.PostMeta;
-import com.manev.quislisting.domain.post.discriminator.Attachment;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.DlContentFieldRepository;
@@ -26,7 +24,7 @@ import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import com.manev.quislisting.web.rest.DlContentFieldResourceTest;
 import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.taxonomy.DlAdminLocationResourceIntTest;
+import com.manev.quislisting.web.rest.taxonomy.DlLocationResourceIntTest;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +51,6 @@ import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static com.manev.quislisting.domain.post.PostMeta.*;
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LISTINGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -159,32 +156,6 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .build();
     }
 
-    public static Set<PostMeta> createPostMeta(AbstractPost abstractPost) {
-        Set<PostMeta> postMetas = new HashSet<>();
-        postMetas.add(new PostMeta(abstractPost, META_KEY_EXPIRATION_DATE, META_VALUE_EXPIRATION_DATE));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_00));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_01));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_02));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_03));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CONTENT_FIELD_20, META_VALUE_CONTENT_FIELD_20));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CONTENT_FIELD_21, META_VALUE_CONTENT_FIELD_21));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CONTENT_FIELD_22, META_VALUE_CONTENT_FIELD_22));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE_AS_LOGO, META_VALUE_ATTACHED_IMAGE_AS_LOGO));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_THUMBNAIL_ID, META_VALUE_THUMBNAIL_ID));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_LISTING_STATUS, META_VALUE_LISTING_STATUS));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_POST_VIEWS_COUNT, META_VALUE_POST_VIEWS_COUNT));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_LOCATION_ID, META_VALUE_LOCATION_ID));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ADDRESS_LINE_1, META_VALUE_ADDRESS_LINE_1));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ADDRESS_LINE_2, META_VALUE_ADDRESS_LINE_2));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_MAP_COORDS_1, META_VALUE_MAP_COORDS_1));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_MAP_COORDS_2, META_VALUE_MAP_COORDS_2));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_MAP_ZOOM, META_VALUE_MAP_ZOOM));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CLICKS_DATA, META_VALUE_CLICKS_DATA));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_TOTAL_CLICKS, META_VALUE_TOTAL_CLICKS));
-
-        return postMetas;
-    }
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -198,20 +169,21 @@ public class DlListingResourceTest extends GenericResourceTest {
     public void initTest() {
         // setup dlListing
         dlListing = createEntity();
-        dlListing.setPostMeta(createPostMeta(dlListing));
         dlListing.setUser(userRepository.findOneByLogin("user").orElse(null));
 
         // setup dl category availability
         dlCategory = DlCategoryResourceIntTest.createEntity();
 
         // setup dl location availability
-        dlLocation = DlAdminLocationResourceIntTest.createEntity();
+        dlLocation = DlLocationResourceIntTest.createEntity();
 
         // setup dl content fields
         dlHeightCF = DlContentFieldResourceTest.createField(DlContentField.Type.NUMBER, "Height", 1,
                 Collections.singleton(dlCategory));
+        dlHeightCF.qlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-" + DlContentField.Type.NUMBER + "-" + dlHeightCF.getName()).value(dlHeightCF.getName()).status(0));
         dlPhoneCF = DlContentFieldResourceTest.createField(DlContentField.Type.NUMBER, "Phone", 2,
                 Collections.singleton(dlCategory));
+        dlPhoneCF.qlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-" + DlContentField.Type.NUMBER + "-" + dlPhoneCF.getName()).value(dlPhoneCF.getName()).status(0));
     }
 
     @Test
@@ -238,8 +210,8 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].term.name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].term.slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
+                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
     }
 
     @Test
@@ -266,7 +238,6 @@ public class DlListingResourceTest extends GenericResourceTest {
                         .withId(1000L)
                         .build())
                 .withStatus(DlListing.Status.PUBLISH)
-                .withViews("100000")
                 .addDlCategory(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory))
                 .addDlLocation(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation))
                 .addDlListingField(new DlListingFieldDTO(dlHeightCF.getId(), "180"))
@@ -296,27 +267,27 @@ public class DlListingResourceTest extends GenericResourceTest {
         assertThat(dlListingSaved.getTranslation().getSourceLanguageCode()).isNull();
         assertThat(dlListingSaved.getTranslation().getTranslationGroup().getId()).isNotEqualTo(TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS);
         assertThat(dlListingSaved.getDlCategories().iterator().next().getId()).isEqualTo(dlCategory.getId());
-        assertThat(dlListingSaved.getDlLocationRelationships().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
+        assertThat(dlListingSaved.getDlListingLocationRels().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
         assertThat(dlListingSaved.getUser().getId()).isEqualTo(user.getId());
         assertThat(dlListingSaved.getCreated()).isNotEqualTo(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS);
         assertThat(dlListingSaved.getModified()).isNotEqualTo(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS);
-        assertThat(dlListingSaved.getAttachments()).isNull();
+        assertThat(dlListingSaved.getDlAttachments()).isNull();
 
-        Set<DlContentFieldRelationship> dlContentFieldRelationships = dlListingSaved.getDlContentFieldRelationships();
-        dlContentFieldRelationships.stream().filter(dlContentFieldRelationship ->
+        Set<DlListingContentFieldRel> dlListingContentFieldRels = dlListingSaved.getDlListingContentFieldRels();
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
                 dlContentFieldRelationship.getDlContentField().getId().equals(dlHeightCF.getId()))
                 .findFirst()
                 .ifPresent(dlContentFieldRelationship -> {
                     assertThat(dlContentFieldRelationship.getValue()).isEqualTo("180");
                 });
-        dlContentFieldRelationships.stream().filter(dlContentFieldRelationship ->
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
                 dlContentFieldRelationship.getDlContentField().getId().equals(dlPhoneCF.getId()))
                 .findFirst()
                 .ifPresent(dlContentFieldRelationship -> {
                     assertThat(dlContentFieldRelationship.getValue()).isEqualTo("+123 456 555");
                 });
 
-        assertThat(dlListingSaved.getDlLocationRelationships().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
+        assertThat(dlListingSaved.getDlListingLocationRels().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
     }
 
     @Test
@@ -330,17 +301,17 @@ public class DlListingResourceTest extends GenericResourceTest {
         dlContentFieldRepository.saveAndFlush(dlHeightCF);
         dlContentFieldRepository.saveAndFlush(dlPhoneCF);
 
-        DlContentFieldRelationship dlContentFieldRelationshipHeight = new DlContentFieldRelationship();
-        dlContentFieldRelationshipHeight.setDlContentField(dlHeightCF);
-        dlContentFieldRelationshipHeight.setDlListing(dlListing);
-        dlContentFieldRelationshipHeight.setValue("180");
-        dlListing.addDlContentFieldRelationships(dlContentFieldRelationshipHeight);
+        DlListingContentFieldRel dlListingContentFieldRelHeight = new DlListingContentFieldRel();
+        dlListingContentFieldRelHeight.setDlContentField(dlHeightCF);
+        dlListingContentFieldRelHeight.setDlListing(dlListing);
+        dlListingContentFieldRelHeight.setValue("180");
+        dlListing.addDlContentFieldRelationships(dlListingContentFieldRelHeight);
 
-        DlContentFieldRelationship dlContentFieldRelationshipPhone = new DlContentFieldRelationship();
-        dlContentFieldRelationshipPhone.setDlContentField(dlPhoneCF);
-        dlContentFieldRelationshipPhone.setDlListing(dlListing);
-        dlContentFieldRelationshipPhone.setValue("+123 456 666");
-        dlListing.addDlContentFieldRelationships(dlContentFieldRelationshipHeight);
+        DlListingContentFieldRel dlListingContentFieldRelPhone = new DlListingContentFieldRel();
+        dlListingContentFieldRelPhone.setDlContentField(dlPhoneCF);
+        dlListingContentFieldRelPhone.setDlListing(dlListing);
+        dlListingContentFieldRelPhone.setValue("+123 456 666");
+        dlListing.addDlContentFieldRelationships(dlListingContentFieldRelHeight);
 
         dlListingRepository.saveAndFlush(dlListing);
 
@@ -371,16 +342,16 @@ public class DlListingResourceTest extends GenericResourceTest {
         assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.DRAFT);
         assertThat(dlListingSaved.getTranslation().getLanguageCode()).isEqualTo(DEFAULT_LANGUAGE_CODE);
         assertThat(dlListingSaved.getDlCategories().iterator().next().getId()).isEqualTo(dlCategory.getId());
-        assertThat(dlListingSaved.getDlLocationRelationships().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
+        assertThat(dlListingSaved.getDlListingLocationRels().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
 
-        Set<DlContentFieldRelationship> dlContentFieldRelationships = dlListingSaved.getDlContentFieldRelationships();
-        dlContentFieldRelationships.stream().filter(dlContentFieldRelationship ->
+        Set<DlListingContentFieldRel> dlListingContentFieldRels = dlListingSaved.getDlListingContentFieldRels();
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
                 dlContentFieldRelationship.getDlContentField().getId().equals(dlHeightCF.getId()))
                 .findFirst()
                 .ifPresent(dlContentFieldRelationship -> {
                     assertThat(dlContentFieldRelationship.getValue()).isEqualTo("190");
                 });
-        dlContentFieldRelationships.stream().filter(dlContentFieldRelationship ->
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
                 dlContentFieldRelationship.getDlContentField().getId().equals(dlPhoneCF.getId()))
                 .findFirst()
                 .ifPresent(dlContentFieldRelationship -> {
@@ -463,7 +434,7 @@ public class DlListingResourceTest extends GenericResourceTest {
 
         // verify it also in database
         DlListing updatedDlListing = dlListingRepository.findOne(deletedAttachmentDlListingDTO.getId());
-        assertThat(updatedDlListing.getAttachments()).isEmpty();
+        assertThat(updatedDlListing.getDlAttachments()).isEmpty();
     }
 
     private DlListingDTO doFileUpload(Long id) throws Exception {
@@ -477,9 +448,9 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(status().isOk());
         // test get call to verify the resource
         DlListing updatedDlListing = dlListingRepository.findOne(id);
-        Set<Attachment> attachments = updatedDlListing.getAttachments();
+        Set<DlAttachment> attachments = updatedDlListing.getDlAttachments();
         assertThat(attachments.size()).isEqualTo(1);
-        Attachment attachment = attachments.iterator().next();
+        DlAttachment attachment = attachments.iterator().next();
         attachmentsToBeDeletedFromJcrInAfter.add(attachment);
 
         MvcResult mvcResult = resultActions.andReturn();
@@ -510,7 +481,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
                 .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
-                .andExpect(jsonPath("$.[*].count").value(hasItem(2)));
+                .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 
 }

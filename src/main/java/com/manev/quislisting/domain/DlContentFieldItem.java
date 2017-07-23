@@ -3,6 +3,7 @@ package com.manev.quislisting.domain;
 import com.manev.quislisting.domain.qlml.QlString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ql_dl_content_field_item")
@@ -16,10 +17,11 @@ public class DlContentFieldItem {
     @JoinColumn(name = "dl_content_field_id")
     private DlContentField dlContentField;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "string_id")
     private QlString qlString;
 
+    @NotNull
     @Column
     private String value;
 

@@ -3,16 +3,16 @@ package com.manev.quislisting.service.storage;
 import java.awt.image.BufferedImage;
 
 public class ResizedImages {
-    private BufferedImage thumbnail;
+    private BufferedImage small;
     private BufferedImage medium;
     private BufferedImage big;
 
-    public BufferedImage getThumbnail() {
-        return thumbnail;
+    public BufferedImage getSmall() {
+        return small;
     }
 
-    public void setThumbnail(BufferedImage thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setSmall(BufferedImage small) {
+        this.small = small;
     }
 
     public BufferedImage getMedium() {

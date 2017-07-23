@@ -1,13 +1,12 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.builder.DlLocationDTOBuilder;
 import com.manev.quislisting.service.taxonomy.dto.builder.TermDTOBuilder;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,15 +20,14 @@ public class DlLocationMapper {
     public DlLocation dlLocationDTOTodlLocation(DlLocationDTO dlLocationDTO) {
         return DlLocationBuilder.aDlLocation()
                 .withId(dlLocationDTO.getId())
-                .withTerm(TermBuilder.aTerm()
-                        .withId(dlLocationDTO.getTerm().getId())
-                        .withName(dlLocationDTO.getTerm().getName())
-                        .withSlug(dlLocationDTO.getTerm().getSlug())
-                        .build())
+                .withName(dlLocationDTO.getName())
+                .withSlug(dlLocationDTO.getSlug())
                 .withDescription(dlLocationDTO.getDescription())
                 .withTranslation(
                         TranslationBuilder.aTranslation()
                                 .withLanguageCode(dlLocationDTO.getLanguageCode())
+                                .withTranslationGroup(new TranslationGroup())
+                                .withSourceLanguageCode(dlLocationDTO.getSourceLanguageCode())
                                 .build())
                 .build();
     }
@@ -68,16 +66,20 @@ public class DlLocationMapper {
 
     public DlLocationDTO dlLocationToDlLocationDTO(DlLocation dlLocation) {
         return DlLocationDTOBuilder.aDlLocationDTO().withId(dlLocation.getId())
-                .withTerm(TermDTOBuilder.aTerm()
-                        .withId(dlLocation.getTerm().getId())
-                        .withName(dlLocation.getTerm().getName())
-                        .withSlug(dlLocation.getTerm().getSlug())
-                        .build())
+                        .withName(dlLocation.getName())
+                        .withSlug(dlLocation.getSlug())
                 .withDescription(dlLocation.getDescription())
                 .withParentId(dlLocation.getParent() != null ? dlLocation.getParent().getId() : null)
                 .withParent(dlLocation.getParent() != null ? this.dlLocationToDlLocationDTO(dlLocation.getParent()) : null)
                 .withCount(dlLocation.getCount())
                 .withLanguageId(dlLocation.getTranslation() != null ? dlLocation.getTranslation().getLanguageCode() : null)
                 .build();
+    }
+
+    public DlLocation dlLocationDTOTodlLocation(DlLocation existingDlLocation, DlLocationDTO dlLocationDTO) {
+        existingDlLocation.setName(dlLocationDTO.getName());
+        existingDlLocation.setDescription(dlLocationDTO.getDescription());
+
+        return existingDlLocation;
     }
 }

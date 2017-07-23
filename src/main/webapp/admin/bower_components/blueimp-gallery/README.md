@@ -568,7 +568,7 @@ The URL property name defined by each list object can be configured via the
 **urlProperty** option. By default, it is set to **href**, which allows to pass
 a list of HTML link elements as first argument.
 
-For images, the **thumbnail** property defines the URL of the image thumbnail,
+For images, the **thumbnail** property defines the URL of the image small,
 which is used for the indicator navigation displayed at the bottom of the
 Gallery, if the controls are visible.
 

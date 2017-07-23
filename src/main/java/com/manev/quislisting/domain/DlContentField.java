@@ -14,14 +14,24 @@ public class DlContentField {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotNull
     @Column
     private Boolean coreField;
+
+    @NotNull
     @Column
     private Integer orderNum;
+
+    @NotNull
     @Column
     private String name;
+
+    @NotNull
     @Column
     private String slug;
+
+    @NotNull
     @Column
     private String description;
 
@@ -29,43 +39,68 @@ public class DlContentField {
     @Enumerated(EnumType.STRING)
     @Column
     private Type type;
+
     @Column
     private String iconImage;
+
+    @NotNull
     @Column
     private Boolean required;
+
+    @NotNull
     @Column
     private Boolean hasConfiguration;
+
+    @NotNull
     @Column
     private Boolean hasSearchConfiguration;
+
+    @NotNull
     @Column
     private Boolean canBeOrdered;
+
+    @NotNull
     @Column
     private Boolean hideName;
+
+    @NotNull
     @Column
     private Boolean onExcerptPage;
+
+    @NotNull
     @Column
     private Boolean onListingPage;
+
+    @NotNull
     @Column
     private Boolean onSearchForm;
+
+    @NotNull
     @Column
     private Boolean onMap;
+
+    @NotNull
     @Column
     private Boolean onAdvancedSearchForm;
+
     @ManyToMany
-    @JoinTable(name = "ql_term_dl_content_field_relationship",
-            joinColumns =
-            @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
-            inverseJoinColumns =
-            @JoinColumn(name = "dl_content_field_id", referencedColumnName = "id"))
+    @JoinTable(name = "ql_dl_category_dl_content_field_relationship",
+            joinColumns = @JoinColumn(name = "dl_content_field_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"))
     private Set<DlCategory> dlCategories;
+
     @Column
     private String options;
+
     @Column
     private String searchOptions;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "string_id")
     private QlString qlString;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "dlContentField")
+    @OrderBy
     private Set<DlContentFieldItem> dlContentFieldItems;
 
     public Long getId() {

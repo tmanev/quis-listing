@@ -6,19 +6,19 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ql_dl_location_relationship")
-public class DlLocationRelationship {
+@Table(name = "ql_dl_listing_dl_location_relationship")
+public class DlListingLocationRel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "post_id", nullable = false, updatable = false)
+    @JoinColumn(name = "dl_listing_id", nullable = false, updatable = false)
     private DlListing dlListing;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "location_id", nullable = false, updatable = true)
+    @JoinColumn(name = "term_taxonomy_id", nullable = false)
     private DlLocation dlLocation;
 
     @Column

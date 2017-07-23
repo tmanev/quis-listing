@@ -1,7 +1,8 @@
 package com.manev.quislisting.service.qlml;
 
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.repository.post.PostRepository;
+import com.manev.quislisting.repository.StaticPageRepository;
+import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
@@ -24,9 +25,8 @@ import java.util.Map;
 public class LanguageService {
 
     private final Logger log = LoggerFactory.getLogger(LanguageService.class);
-
-    private ActiveLanguageMapper activeLanguageMapper;
     private final LanguageRepository languageRepository;
+    private ActiveLanguageMapper activeLanguageMapper;
 
     public LanguageService(ActiveLanguageMapper activeLanguageMapper, LanguageRepository languageRepository) {
         this.activeLanguageMapper = activeLanguageMapper;
@@ -85,14 +85,28 @@ public class LanguageService {
         languageRepository.delete(id);
     }
 
-    public List<ActiveLanguageDTO> findAllActiveLanguages(PostRepository postRepository) {
+    public List<ActiveLanguageDTO> findAllActiveLanguages(DlListingRepository dlListingRepository) {
         log.debug("Request to retrieve all active languages");
 
         List<ActiveLanguageDTO> result = new ArrayList<>();
 
         List<Language> allByActive = languageRepository.findAllByActive(true);
         for (Language language : allByActive) {
-            Long count = postRepository.countByTranslation_languageCode(language.getCode());
+            Long count = dlListingRepository.countByTranslation_languageCode(language.getCode());
+            result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
+        }
+
+        return result;
+    }
+
+    public List<ActiveLanguageDTO> findAllActiveLanguages(StaticPageRepository staticPageRepository) {
+        log.debug("Request to retrieve all active languages");
+
+        List<ActiveLanguageDTO> result = new ArrayList<>();
+
+        List<Language> allByActive = languageRepository.findAllByActive(true);
+        for (Language language : allByActive) {
+            Long count = staticPageRepository.countByTranslation_languageCode(language.getCode());
             result.add(activeLanguageMapper.toActiveLanguageDTO(language, count));
         }
 

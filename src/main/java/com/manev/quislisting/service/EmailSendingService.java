@@ -1,14 +1,10 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.config.QuisListingProperties;
-import com.manev.quislisting.domain.EmailTemplate;
-import com.manev.quislisting.domain.QlConfig;
-import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.discriminator.QlPage;
+import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
-import com.manev.quislisting.repository.post.PageRepository;
+import com.manev.quislisting.repository.StaticPageRepository;
 import com.manev.quislisting.service.dto.ContactDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +31,15 @@ public class EmailSendingService {
     private final QlConfigService qlConfigService;
     private final EmailTemplateService emailTemplateService;
     private MailService mailService;
-    private PageRepository pageRepository;
+    private StaticPageRepository staticPageRepository;
 
     private TemplateEngineComponent templateEngineComponent;
 
-    public EmailSendingService(MailService mailService, PageRepository pageRepository,
+    public EmailSendingService(MailService mailService, StaticPageRepository staticPageRepository,
                                MessageSource messageSource,
                                QuisListingProperties quisListingProperties, QlConfigService qlConfigService, EmailTemplateService emailTemplateService, TemplateEngineComponent templateEngineComponent) {
         this.mailService = mailService;
-        this.pageRepository = pageRepository;
+        this.staticPageRepository = staticPageRepository;
         this.messageSource = messageSource;
         this.quisListingProperties = quisListingProperties;
         this.qlConfigService = qlConfigService;
@@ -125,14 +121,14 @@ public class EmailSendingService {
     }
 
     private String getPageSlug(User user, QlConfig activationPageConfig) {
-        QlPage activationPage = pageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
+        StaticPage activationPage = staticPageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
         Translation translation = activationPage.getTranslation();
         String activationPageSlug = activationPage.getName();
         if (!translation.getLanguageCode().equals(user.getLangKey())) {
             // check if there is a translation
             Translation translationForLanguage = translationExists(user.getLangKey(), translation.getTranslationGroup().getTranslations());
             if (translationForLanguage != null) {
-                QlPage oneByTranslation = pageRepository.findOneByTranslation(translationForLanguage);
+                StaticPage oneByTranslation = staticPageRepository.findOneByTranslation(translationForLanguage);
                 activationPageSlug = oneByTranslation.getName();
             }
         }

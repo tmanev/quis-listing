@@ -1,4 +1,4 @@
-id¦language_code¦context¦name¦value¦type¦status
+id¦language_code¦context¦name¦value¦status
 1¦en¦email-template¦email-template-#3¦'<div>
 	<b>From:</b>
 	<span th:text="${name}">John Doe</span>&nbsp;&#x3C;<span th:text="${email}">john.doe@gmail.com</span>&#x3E;
@@ -15,7 +15,7 @@ id¦language_code¦context¦name¦value¦type¦status
 	<span>--</span>
 	<br/>
 	<em>This e-mail was sent from a contact form on Quis Listing (http://quislisting.com)</em>
-</div>'¦LINE¦0
+</div>'¦0
 2¦en¦email-template¦email-template-#4¦'<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
@@ -38,7 +38,7 @@ id¦language_code¦context¦name¦value¦type¦status
             <em th:text="${baseName}">Quis Listing</em>
         </p>
     </body>
-</html>'¦LINE¦0
+</html>'¦0
 3¦en¦email-template¦email-template-#5¦'<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
@@ -62,4 +62,34 @@ id¦language_code¦context¦name¦value¦type¦status
         </p>
     </body>
 </html>
-'¦LINE¦0
+'¦0
+4¦en¦content-field¦content-field#phone¦Phone¦0
+5¦en¦content-field¦content-field#website¦Website¦0
+6¦en¦content-field¦content-field#additional-information¦Additional information¦0
+7¦en¦content-field¦content-field#age¦Age¦0
+8¦en¦content-field¦content-field#height¦Height¦0
+9¦en¦content-field¦content-field#weight¦Weight¦0
+10¦en¦content-field¦content-field#hair¦Hair¦0
+11¦en¦content-field¦content-field#eyes¦Eyes¦0
+12¦en¦content-field¦content-field#price¦Price¦0
+13¦en¦content-field¦content-field#currency¦Currency¦0
+
+14¦en¦content-field-item¦content-field-item#4x4¦4x4¦0
+15¦en¦content-field-item¦content-field-item#abs¦ABS¦0
+16¦en¦content-field-item¦content-field-item#airbag¦Airbag¦0
+17¦en¦content-field-item¦content-field-item#alarm¦Alarm¦0
+
+18¦en¦content-field-item¦content-field-item#blond¦Blond¦0
+19¦en¦content-field-item¦content-field-item#brown¦Brown¦0
+20¦en¦content-field-item¦content-field-item#black¦Black¦0
+21¦en¦content-field-item¦content-field-item#red¦Red¦0
+
+22¦en¦content-field-item¦content-field-item#black¦Black¦0
+23¦en¦content-field-item¦content-field-item#brown¦Brown¦0
+24¦en¦content-field-item¦content-field-item#green¦Green¦0
+25¦en¦content-field-item¦content-field-item#blue¦Blue¦0
+26¦en¦content-field-item¦content-field-item#hazel¦Hazel¦0
+27¦en¦content-field-item¦content-field-item#gray¦Gray¦0
+
+28¦en¦content-field-item¦content-field-item#eur¦EUR¦0
+29¦en¦content-field-item¦content-field-item#bgn¦BGN¦0

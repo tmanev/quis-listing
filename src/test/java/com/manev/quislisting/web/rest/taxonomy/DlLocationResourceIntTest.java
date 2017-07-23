@@ -4,7 +4,6 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
@@ -39,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlAdminLocationResourceIntTest {
+public class DlLocationResourceIntTest {
 
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
@@ -85,10 +84,8 @@ public class DlAdminLocationResourceIntTest {
 
     public static DlLocation createEntity() {
         return DlLocationBuilder.aDlLocation()
-                .withTerm(TermBuilder.aTerm()
-                        .withName(DEFAULT_NAME)
-                        .withSlug(DEFAULT_SLUG)
-                        .build())
+                .withName(DEFAULT_NAME)
+                .withSlug(DEFAULT_SLUG)
                 .withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -100,10 +97,8 @@ public class DlAdminLocationResourceIntTest {
 
     public static DlLocation createEntity2() {
         return DlLocationBuilder.aDlLocation()
-                .withTerm(TermBuilder.aTerm()
-                        .withName(DEFAULT_NAME_2)
-                        .withSlug(DEFAULT_SLUG_2)
-                        .build())
+                .withName(DEFAULT_NAME_2)
+                .withSlug(DEFAULT_SLUG_2)
                 .withDescription(DEFAULT_DESCRIPTION_2)
                 .withCount(DEFAULT_COUNT_2)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -146,8 +141,8 @@ public class DlAdminLocationResourceIntTest {
         List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeCreate + 1);
         DlLocation dlLocationSaved = dlLocationList.get(dlLocationList.size() - 1);
-        assertThat(dlLocationSaved.getTerm().getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(dlLocationSaved.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
+        assertThat(dlLocationSaved.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(dlLocationSaved.getSlug()).isEqualTo(DEFAULT_SLUG);
         assertThat(dlLocationSaved.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(dlLocationSaved.getParent()).isEqualTo(DEFAULT_PARENT_ID);
         assertThat(dlLocationSaved.getCount()).isEqualTo(DEFAULT_COUNT);
@@ -186,7 +181,7 @@ public class DlAdminLocationResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlLocation.getId().intValue())))
-                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
                 .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID)))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT.intValue())));
@@ -203,7 +198,7 @@ public class DlAdminLocationResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlLocation.getId().intValue()))
-                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
                 .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
                 .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
@@ -227,7 +222,8 @@ public class DlAdminLocationResourceIntTest {
 
         // Update the DlLocation
         DlLocation updatedDlLocation = dlLocationRepository.findOne(dlLocation.getId());
-        updatedDlLocation.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
+        updatedDlLocation.setName(UPDATED_NAME);
+        updatedDlLocation.setSlug(UPDATED_SLUG);
 
         updatedDlLocation.setDescription(UPDATED_DESCRIPTION);
         updatedDlLocation.setParent(parent);
@@ -243,8 +239,8 @@ public class DlAdminLocationResourceIntTest {
         List<DlLocation> dlLocationList = dlLocationRepository.findAll();
         assertThat(dlLocationList).hasSize(databaseSizeBeforeUpdate);
         DlLocation testDlLocation = dlLocationRepository.findOne(updatedDlLocation.getId());
-        assertThat(testDlLocation.getTerm().getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testDlLocation.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
+        assertThat(testDlLocation.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testDlLocation.getSlug()).isEqualTo(UPDATED_SLUG);
         assertThat(testDlLocation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testDlLocation.getParent().getId()).isEqualTo(parent.getId());
         assertThat(testDlLocation.getCount()).isEqualTo(UPDATED_COUNT);

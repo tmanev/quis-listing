@@ -49,20 +49,21 @@ public class DlContentFieldService {
             dlContentField = dlContentFieldMapper.dlContentFieldDTOToDlContentField(dlContentFieldDTO);
         }
 
-        DlContentField dlContentFieldSaved = dlContentFieldRepository.save(dlContentField);
-        DlContentField dlContentFieldWithQlString = saveQlString(dlContentFieldSaved);
+        setQlString(dlContentField);
+
+        dlContentFieldRepository.save(dlContentField);
 
         if (dlContentFieldDTO.getDlContentFieldItems() != null) {
-            List<DlContentFieldItem> dlContentFieldItemsSaved = dlContentFieldItemService.saveDlContentFieldItems(dlContentFieldWithQlString, dlContentFieldDTO.getDlContentFieldItems());
-            dlContentFieldWithQlString.setDlContentFieldItems(new HashSet<>(dlContentFieldItemsSaved));
+            List<DlContentFieldItem> dlContentFieldItemsSaved = dlContentFieldItemService.saveDlContentFieldItems(dlContentField, dlContentFieldDTO.getDlContentFieldItems());
+            dlContentField.setDlContentFieldItems(new HashSet<>(dlContentFieldItemsSaved));
         }
 
-        return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentFieldWithQlString);
+        return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
     }
 
-    private DlContentField saveQlString(DlContentField dlContentField) {
+    private void setQlString(DlContentField dlContentField) {
         if (dlContentField.getQlString() == null) {
-            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getId()).value(dlContentField.getName()).status(0));
+            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getName()).value(dlContentField.getName()).status(0));
         } else {
             QlString qlString = dlContentField.getQlString();
             if (!qlString.getValue().equals(dlContentField.getName())) {
@@ -70,7 +71,6 @@ public class DlContentFieldService {
                 qlString.setStatus(0);
             }
         }
-        return dlContentFieldRepository.save(dlContentField);
     }
 
     public Page<DlContentFieldDTO> findAll(Pageable pageable) {
@@ -84,7 +84,7 @@ public class DlContentFieldService {
         List<DlContentField> dlContentFields = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNull(dlCategory);
         List<DlContentFieldDTO> result = new ArrayList<>();
         dlContentFields.forEach(dlContentField ->
-            result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField))
+                result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField))
         );
         return result;
     }

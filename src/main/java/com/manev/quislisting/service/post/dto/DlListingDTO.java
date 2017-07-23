@@ -11,7 +11,6 @@ public class DlListingDTO extends AbstractPostDTO {
 
     private String expirationDate;
     private DlListing.Status status;
-    private String views;
     private List<DlCategoryDTO> dlCategories;
     private List<DlLocationDTO> dlLocations;
     private List<DlListingFieldDTO> dlListingFields;
@@ -31,14 +30,6 @@ public class DlListingDTO extends AbstractPostDTO {
 
     public void setStatus(DlListing.Status status) {
         this.status = status;
-    }
-
-    public String getViews() {
-        return views;
-    }
-
-    public void setViews(String views) {
-        this.views = views;
     }
 
     public List<DlLocationDTO> getDlLocations() {

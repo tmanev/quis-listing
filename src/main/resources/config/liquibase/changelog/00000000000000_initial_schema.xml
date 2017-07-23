@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <property name="now" value="now()" dbms="mysql,h2"/>
@@ -19,7 +19,7 @@
         QUIS Listing service core tables.
         The initial schema has the '00000000000001' id, so that it is over-written if we re-generate it.
     -->
-    <changeSet id="00000000000001" author="tmanev" >
+    <changeSet id="00000000000001" author="tmanev">
         <comment>Core tables for the users</comment>
         <createTable tableName="ql_user">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
@@ -36,10 +36,10 @@
             </column>
             <column name="image_url" type="varchar(256)"/>
             <column name="activated" type="boolean" valueBoolean="false">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="updates" type="boolean" valueBoolean="true" defaultValue="true">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="lang_key" type="varchar(5)"/>
             <column name="activation_key" type="varchar(20)"/>
@@ -104,7 +104,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="principal" type="varchar(50)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="event_date" type="timestamp"/>
             <column name="event_type" type="varchar(255)"/>
@@ -139,165 +139,102 @@
                                  constraintName="fk_evt_pers_audit_evt_data"
                                  referencedColumnNames="event_id"
                                  referencedTableName="ql_persistent_audit_event"/>
-    </changeSet>
 
-    <changeSet id="00000000000002" author="tmanev">
-        <comment>Tables for keeping posts</comment>
-        <createTable tableName="ql_post">
+        <createTable tableName="ql_translation_group">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="title" type="text">
-                <constraints nullable="false" />
-            </column>
-            <column name="content" type="longtext" />
-            <column name="name" type="varchar(200)" defaultValue="">
-                <constraints nullable="false" />
-            </column>
-            <column name="type" type="varchar(20)" defaultValue="post">
-                <constraints nullable="false" />
-            </column>
-            <column name="status" type="varchar(20)" defaultValue="publish">
-                <constraints nullable="false" />
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false" />
-            </column>
-            <column name="modified" type="datetime" defaultValueDate="0000-00-00 00:00:00">
-                <constraints nullable="false" />
-            </column>
-            <column name="mime_type" type="varchar(100)" defaultValue="">
-                <constraints nullable="false" />
-            </column>
+        </createTable>
 
-            <column name="comment_count" type="bigint" defaultValue="0">
+        <createTable tableName="ql_translation">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tr_group_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_translation_translation_group"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_translation_group"/>
+            </column>
+            <column name="language_code" type="varchar(7)">
                 <constraints nullable="false"/>
             </column>
-            <column name="post_order" type="int" defaultValue="0" remarks="This column represents order of posts in most cases positions of nav-menu-item">
-                <constraints nullable="true"/>
-            </column>
-            <column name="translation_id" type="bigint">
-                <constraints nullable="true"/>
-            </column>
-            <column name="user_id" type="bigint" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="parent_id" type="bigint">
-                <constraints nullable="true"/>
-            </column>
-            <column name="ref_post_id" type="bigint" remarks="Column is meant to refer to related post. Usual usage nav-menu-item to reference post">
+            <column name="source_language_code" type="varchar(7)">
                 <constraints nullable="true"/>
             </column>
         </createTable>
 
-        <createIndex indexName="idx_user_id"
-                     tableName="ql_post"
-                     unique="false">
-            <column name="user_id" type="bigint"/>
-        </createIndex>
-
-        <createTable tableName="ql_postmeta">
+        <createTable tableName="ql_string">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="post_id" type="bigint" defaultValue="0">
+            <column name="language_code" type="varchar(7)">
                 <constraints nullable="false"/>
             </column>
-            <column name="key" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="value" type="longtext">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-
-    </changeSet>
-    <changeSet id="00000000000003" author="tmanev">
-        <comment>Tables for keeping taxonomies</comment>
-        <createTable tableName="ql_term">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(200)" defaultValue="">
-                <constraints nullable="false" />
-            </column>
-            <column name="slug" type="varchar(200)" defaultValue="">
-                <constraints nullable="false" />
-            </column>
-            <column name="term_group" type="bigint" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-
-        <createTable tableName="ql_term_meta">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="term_id" type="bigint" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-            <column name="key" type="bigint" >
-                <constraints nullable="true" />
-            </column>
-            <column name="value" type="longtext">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-
-        <createTable tableName="ql_term_taxonomy">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="term_id" type="bigint" defaultValue="0">
+            <column name="context" type="varchar(160)">
                 <constraints nullable="false"/>
             </column>
-            <column name="translation_id" type="bigint">
+            <column name="name" type="varchar(160)">
                 <constraints nullable="false"/>
             </column>
-            <column name="taxonomy" type="varchar(32)">
-                <constraints nullable="false" />
+            <column name="value" type="text">
+                <constraints nullable="false"/>
             </column>
-            <column name="description" type="longtext">
-                <constraints nullable="false" />
-            </column>
-            <column name="parent_id" type="bigint">
-                <constraints nullable="true"/>
-            </column>
-            <column name="count" type="bigint(20)" defaultValue="0">
-                <constraints nullable="false" />
+            <column name="status" type="tinyint(4)">
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <createTable tableName="ql_term_post_relationship">
-            <column name="object_id" type="bigint">
-                <constraints nullable="false" />
+        <createTable tableName="ql_string_translation">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="term_taxonomy_id" type="bigint">
-                <constraints nullable="false" />
+            <column name="string_id" type="bigint">
+                <constraints foreignKeyName="fk_string_translation_string"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_string"/>
             </column>
-            <column name="term_order" type="int(11)">
-                <constraints nullable="true" />
+            <column name="language_code" type="varchar(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="tinyint(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="translation_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <createTable tableName="ql_post_post_relationship">
-            <column name="object_id" type="bigint">
-                <constraints nullable="false" />
+        <createTable tableName="ql_email_template">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="post_id" type="bigint" >
-                <constraints nullable="false" />
+            <column name="string_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_email_template_string"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_string"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="00000000000004" author="tmanev">
-        <comment>Tables for keeping custom content fields</comment>
         <createTable tableName="ql_dl_content_field">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="string_id" type="bigint" >
-                <constraints nullable="true"/>
+            <column name="string_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_content_field_string"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_string"/>
             </column>
             <column name="core_field" type="tinyint(1)" defaultValue="0">
                 <constraints nullable="false"/>
@@ -320,34 +257,34 @@
             <column name="icon_image" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="required" type="tinyint(1)" defaultValue="0">
+            <column name="required" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="has_configuration" type="tinyint(1)" defaultValue="0">
+            <column name="has_configuration" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="has_search_configuration" type="tinyint(1)" defaultValue="0">
+            <column name="has_search_configuration" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="can_be_ordered" type="tinyint(1)" defaultValue="0">
+            <column name="can_be_ordered" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="hide_name" type="tinyint(1)" defaultValue="0">
+            <column name="hide_name" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="on_excerpt_page" type="tinyint(1)" defaultValue="0">
+            <column name="on_excerpt_page" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="on_listing_page" type="tinyint(1)" defaultValue="0">
+            <column name="on_listing_page" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="on_search_form" type="tinyint(1)" defaultValue="0">
+            <column name="on_search_form" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="on_map" type="tinyint(1)" defaultValue="0">
+            <column name="on_map" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
-            <column name="on_advanced_search_form" type="tinyint(1)" defaultValue="0">
+            <column name="on_advanced_search_form" type="tinyint(1)">
                 <constraints nullable="false"/>
             </column>
             <column name="options" type="text">
@@ -356,61 +293,301 @@
             <column name="search_options" type="text">
                 <constraints nullable="true"/>
             </column>
-            <column name="group_id" type="bigint" >
-                <constraints nullable="true"/>
-            </column>
         </createTable>
-        <createTable tableName="ql_dl_content_fields_group">
+
+        <createTable tableName="ql_dl_content_field_item">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="on_tab" type="tinyint(1)" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="hide_anonymous" type="tinyint(1)" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createTable tableName="ql_term_dl_content_field_relationship">
             <column name="dl_content_field_id" type="bigint">
-                <constraints nullable="false" />
+                <constraints nullable="false"
+                             foreignKeyName="dl_content_field_item_dl_content_field"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_content_field"/>
             </column>
-            <column name="term_taxonomy_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="field_order" type="int(11)">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-        <createTable tableName="ql_post_dl_content_field_relationship">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="post_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="dl_content_field_id" type="bigint">
-                <constraints nullable="false" />
+            <column name="string_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_content_field_item_string"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_string"/>
             </column>
             <column name="value" type="varchar(255)">
-                <constraints nullable="true" />
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_term_taxonomy">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slug" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="translation_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_term_taxonomy_translation"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_translation"/>
+            </column>
+            <column name="taxonomy" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="longtext">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_term_taxonomy_parent"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_term_taxonomy"/>
+            </column>
+            <column name="count" type="bigint(20)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_dl_listing">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)" defaultValue="">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="longtext"/>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="translation_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_translation"
+                             referencedTableName="ql_translation"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="user_id" type="bigint" defaultValue="0">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_user"
+                             referencedTableName="ql_user"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_dl_attachment">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="file_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_name_slug" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="varchar(400)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="width" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="height" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dl_listing_id" type="bigint">
+                <constraints foreignKeyName="fk_dl_listing_attachment"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_listing"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_dl_attachment_resize">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="size_type" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="varchar(400)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="width" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="height" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dl_attachment_id" type="bigint">
+                <constraints foreignKeyName="fk_dl_attachment_attachment_resize"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_attachment"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_dl_category_dl_content_field_relationship">
+            <column name="term_taxonomy_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_content_field_relationship_dl_category"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_term_taxonomy"/>
+            </column>
+            <column name="dl_content_field_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_content_field_relationship_dl_content_field"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_content_field"/>
+            </column>
+        </createTable>
+        <createTable tableName="ql_dl_listing_dl_content_field_relationship">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="dl_listing_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_dl_content_field_rel_dl_listing"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_listing"/>
+            </column>
+            <column name="dl_content_field_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_dl_content_field_rel_dl_content_field"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_content_field"/>
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="true"/>
             </column>
         </createTable>
         <createTable tableName="ql_content_field_selection_relationship">
-            <column name="ql_post_dl_content_field_id" type="bigint">
-                <constraints nullable="false" />
+            <column name="dl_listing_dl_content_field_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_dl_content_field_relationship"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_listing_dl_content_field_relationship"/>
             </column>
-            <column name="ql_dl_content_field_item_id" type="bigint">
-                <constraints nullable="false" />
+            <column name="dl_content_field_item_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_content_field_selection_dl_content_field_item"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_content_field_item"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="00000000000005" author="tmanev">
-        <comment>Tables for keeping and managing languages and translations</comment>
+        <createTable tableName="ql_static_page">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="longtext"/>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="translation_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_static_page_translation"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_translation"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_static_page_nav_menu_relationship">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="static_page_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_static_page_nav_menu_rel_static_page"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_static_page"/>
+            </column>
+            <column name="term_taxonomy_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_static_page_nav_menu_rel_term_taxonomy"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_term_taxonomy"/>
+            </column>
+            <column name="menu_order" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <createTable tableName="ql_dl_listing_dl_location_relationship">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="dl_listing_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing__dl_location_relationship_dl_listing"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_listing"/>
+            </column>
+            <column name="term_taxonomy_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_dl_location_relationship_dl_location"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_term_taxonomy"/>
+            </column>
+            <column name="address_line_one" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="address_line_two" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="postal_code" type="varchar(25)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="additional_info" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="latitude" type="decimal(10,6)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="longitude" type="decimal(10,6)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ql_dl_listing_dl_category_relationship">
+            <column name="dl_listing_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_dl_category_rel_dl_listing"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_listing"/>
+            </column>
+            <column name="term_taxonomy_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_dl_listing_dl_category_rel_term_taxonomy"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_term_taxonomy"/>
+            </column>
+        </createTable>
+
         <createTable tableName="ql_language">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -421,9 +598,6 @@
             <column name="english_name" type="varchar(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="major" type="tinyint(4)" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
             <column name="active" type="tinyint(4)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
@@ -432,9 +606,6 @@
             </column>
             <column name="tag" type="varchar(35)">
                 <constraints nullable="true"/>
-            </column>
-            <column name="encode_url" type="tinyint(1)" defaultValue="0">
-                <constraints nullable="false"/>
             </column>
         </createTable>
 
@@ -453,101 +624,6 @@
             </column>
         </createTable>
 
-        <createTable tableName="ql_locale_map">
-            <column name="code" type="varchar(7)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="locale" type="varchar(35)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="ql_translation">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="tr_group_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="language_code" type="varchar(7)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="source_language_code" type="varchar(7)">
-                <constraints nullable="true"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="ql_translation_group">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="ql_string">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="language_code" type="varchar(7)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="context" type="varchar(160)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(160)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="value" type="text">
-                <constraints nullable="false"/>
-            </column>
-            <column name="type" type="varchar(40)" defaultValue="LINE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="tinyint(4)" >
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="ql_string_translation">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="string_id" type="bigint" >
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="language_code" type="varchar(7)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="tinyint(4)" >
-                <constraints nullable="false"/>
-            </column>
-            <column name="value" type="text">
-                <constraints nullable="false"/>
-            </column>
-            <column name="translation_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-    </changeSet>
-
-    <changeSet id="00000000000006" author="adri">
-        <createTable tableName="ql_email_template">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="string_id" type="bigint" >
-                <constraints nullable="true"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="text" type="text">
-                <constraints nullable="false"/>
-            </column>
-
-        </createTable>
-    </changeSet>
-    <changeSet id="00000000000007" author="sanevskis">
         <createTable tableName="ql_config">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -561,56 +637,17 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="00000000000008" author="tmanev">
-        <createTable tableName="ql_dl_content_field_item">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="dl_content_field_id" type="bigint" >
-                <constraints nullable="false"/>
-            </column>
-            <column name="string_id" type="bigint" >
-                <constraints nullable="true"/>
-            </column>
-            <column name="value" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="00000000000009" author="tmanev">
-        <createTable tableName="ql_dl_location_relationship">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="post_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="location_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="address_line_one" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="address_line_two" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="postal_code" type="varchar(25)">
-                <constraints nullable="true" />
-            </column>
-            <column name="additional_info" type="text">
-                <constraints nullable="true" />
-            </column>
-            <column name="latitude" type="decimal(10,6)">
-                <constraints nullable="true" />
-            </column>
-            <column name="longitude" type="decimal(10,6)">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="00000000000010" author="tmanev">
+    <changeSet id="00000000000003" author="tmanev">
         <comment>Loading of simple data</comment>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/languages.csv"
+                  separator=";"
+                  tableName="ql_language"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/language_translations.csv"
+                  separator=";"
+                  tableName="ql_language_translation"/>
+
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/users.csv"
                   separator=";"
@@ -630,14 +667,9 @@
                   tableName="ql_user_authority"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/terms.csv"
+                  file="config/liquibase/load-data/translation_groups.csv"
                   separator=";"
-                  tableName="ql_term"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/term-taxonomies.csv"
-                  separator=";"
-                  tableName="ql_term_taxonomy"/>
+                  tableName="ql_translation_group"/>
 
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/translations.csv"
@@ -645,18 +677,21 @@
                   tableName="ql_translation"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/translation_groups.csv"
+                  file="config/liquibase/load-data/term-taxonomies.csv"
                   separator=";"
-                  tableName="ql_translation_group"/>
+                  tableName="ql_term_taxonomy"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/languages.csv"
-                  separator=";"
-                  tableName="ql_language"/>
+                  file="config/liquibase/load-data/ql-strings.csv"
+                  separator="¦"
+                  quotchar="'"
+                  tableName="ql_string"/>
+
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/language_translations.csv"
-                  separator=";"
-                  tableName="ql_language_translation"/>
+                  file="config/liquibase/load-data/ql-string-translations.csv"
+                  separator="¦"
+                  quotchar="'"
+                  tableName="ql_string_translation"/>
 
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/dl-content-fields.csv"
@@ -664,46 +699,31 @@
                   tableName="ql_dl_content_field"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/content-field-groups.csv"
-                  separator=";"
-                  tableName="ql_dl_content_fields_group"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/posts.csv"
-                  separator="¦"
-                  quotchar="'"
-                  tableName="ql_post"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/postmetas.csv"
-                  separator=";"
-                  tableName="ql_postmeta"/>
-        <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/dl-content-field-items.csv"
                   separator="¦"
                   tableName="ql_dl_content_field_item"/>
+
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/email-templates.csv"
+                  file="config/liquibase/load-data/static_pages.csv"
+                  separator="¦"
+                  quotchar="'"
+                  tableName="ql_static_page"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/static_page_nav_menu_relationships.csv"
+                  separator=";"
+                  tableName="ql_static_page_nav_menu_relationship"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/load-data/email_templates.csv"
                   separator="¦"
                   quotchar="'"
                   tableName="ql_email_template"/>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-configurations.csv"
+                  file="config/liquibase/load-data/ql_configurations.csv"
                   separator=";"
                   tableName="ql_config"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/term-relationships.csv"
-                  separator=";"
-                  tableName="ql_term_post_relationship"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-strings.csv"
-                  separator="¦"
-                  quotchar="'"
-                  tableName="ql_string"/>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-string-translations.csv"
-                  separator="¦"
-                  quotchar="'"
-                  tableName="ql_string_translation"/>
+
     </changeSet>
 
 </databaseChangeLog>

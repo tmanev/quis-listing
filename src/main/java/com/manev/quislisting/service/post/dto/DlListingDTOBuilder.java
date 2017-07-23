@@ -12,7 +12,6 @@ import java.util.List;
 public final class DlListingDTOBuilder {
     private String expirationDate;
     private DlListing.Status status;
-    private String views;
     private List<DlCategoryDTO> dlCategories;
     private List<DlLocationDTO> dlLocations;
     private Long id;
@@ -43,11 +42,6 @@ public final class DlListingDTOBuilder {
 
     public DlListingDTOBuilder withStatus(DlListing.Status status) {
         this.status = status;
-        return this;
-    }
-
-    public DlListingDTOBuilder withViews(String views) {
-        this.views = views;
         return this;
     }
 
@@ -162,7 +156,6 @@ public final class DlListingDTOBuilder {
         DlListingDTO dlListingDTO = new DlListingDTO();
         dlListingDTO.setExpirationDate(expirationDate);
         dlListingDTO.setStatus(status);
-        dlListingDTO.setViews(views);
         dlListingDTO.setDlCategories(dlCategories);
         dlListingDTO.setDlLocations(dlLocations);
         dlListingDTO.setId(id);

@@ -15,20 +15,15 @@ import javax.jcr.RepositoryException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Component
 public class StorageService {
 
-    public static final String DL_MEDIUM = "dl-medium";
+
+    private static final String DL_SMALL_SIZE = "242x200";
     private static final String DL_MEDIUM_SIZE = "800x600";
-    public static final String DL_BIG = "dl-big";
     private static final String DL_BIG_SIZE = "1024x768";
-    public static final String DL_THUMBNAIL = "dl-thumbnail";
-    public static final String DL_THUMBNAIL_SIZE = "242x200";
     private final Logger logger = LoggerFactory.getLogger(StorageService.class);
     private StoreComponent storeComponent;
 
@@ -39,7 +34,7 @@ public class StorageService {
     public AttachmentStreamResource loadAsResource(String filename) {
         try {
             return storeComponent.getResource(filename);
-        } catch (RepositoryException | IOException e) {
+        } catch (RepositoryException e) {
             logger.error("Resource {} cannot be retrieved", filename);
             throw new AttachmentStreamResourceException("Resource cannot be retrieved", e);
         }
@@ -51,7 +46,7 @@ public class StorageService {
         BufferedImage inputWatermarked = ImageWatermarkUtil.addImageWatermark(watermarkStream, file.getInputStream());
 
         ResizedImages resizedImages = new ResizedImages();
-        resizedImages.setThumbnail(resizeImage(DL_THUMBNAIL_SIZE, inputWatermarked));
+        resizedImages.setSmall(resizeImage(DL_SMALL_SIZE, inputWatermarked));
         resizedImages.setMedium(resizeImage(DL_MEDIUM_SIZE, inputWatermarked));
         resizedImages.setBig(resizeImage(DL_BIG_SIZE, inputWatermarked));
 
@@ -68,7 +63,7 @@ public class StorageService {
         return null;
     }
 
-    public void delete(List<String> filePaths) throws IOException, RepositoryException {
+    public void delete(List<String> filePaths) throws RepositoryException {
         storeComponent.removeInRepository(filePaths);
     }
 }

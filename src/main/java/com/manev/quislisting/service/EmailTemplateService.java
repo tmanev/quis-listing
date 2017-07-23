@@ -17,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-/**
- * Created by adri on 4/4/2017.
- */
 @Service
 @Transactional
 public class EmailTemplateService {
@@ -47,8 +44,8 @@ public class EmailTemplateService {
             emailTemplate.setText(emailTemplateDTO.getText());
         }
 
+        saveQlString(emailTemplate, emailTemplateDTO.getQlString());
         EmailTemplate emailTemplateSaved = emailTemplateRepository.save(emailTemplate);
-        saveQlString(emailTemplateSaved, emailTemplateDTO.getQlString());
 
         return emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplateSaved);
     }
@@ -83,7 +80,7 @@ public class EmailTemplateService {
             emailTemplate.setQlString(new QlString()
                     .languageCode(qlString.getLanguageCode())
                     .context(CONTEXT)
-                    .name("email-template-#" + emailTemplate.getId())
+                    .name("email-template-#" + emailTemplate.getName())
                     .value(qlString.getValue())
                     .status(0));
             // store and translations

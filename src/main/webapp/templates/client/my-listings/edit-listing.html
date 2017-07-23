@@ -55,12 +55,13 @@
                         <div class="input-group">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" data-target="#myModal"
-                                    v-on:click="openCategorySelection($v.listing.category.name)">Select</button>
+                                    v-on:click="openCategorySelection($v)">Select</button>
                         </span>
                             <input type="text" class="form-control"
                                    style="cursor: pointer;"
                                    readonly="readonly"
-                                   v-model="selectedCategory.term.name"/>
+                                   v-model="selectedCategory.name"
+                                   v-on:click="openCategorySelection($v)"/>
                         </div>
                     </div>
                 </div>
@@ -122,7 +123,7 @@
                         <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
                             <option value="-1">- Select -</option>
                             <option v-for="dlLocationCountry in dlLocationCountries"
-                                    v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.term.name }}
+                                    v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
                             </option>
                         </select>
                     </div>
@@ -133,7 +134,7 @@
                         <select class="form-control" v-on:change="onStateChange" v-model="selectedState">
                             <option value="-1">- Select -</option>
                             <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
-                                dlLocationState.term.name }}
+                                dlLocationState.name }}
                             </option>
                         </select>
                     </div>
@@ -144,7 +145,7 @@
                         <select class="form-control" v-model="selectedCity">
                             <option value="-1">- Select -</option>
                             <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
-                                dlLocationCity.term.name }}
+                                dlLocationCity.name }}
                             </option>
                         </select>
                     </div>
@@ -156,7 +157,7 @@
             <div class="row">
                 <div class="col-sm-6 col-md-4" v-for="attachment in listing.attachments">
                     <div class="thumbnail">
-                        <img v-bind:src="'/content/files' + attachment.attachmentMetadata.thumbnailImageResizeMeta.detail.file"
+                        <img v-bind:src="'/content/files' + attachment.attachmentMetadata.smallImageResizeMeta.detail.file"
                              data-holder-rendered="true"
                              style="height: 200px; display: block;"
                         />

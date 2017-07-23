@@ -3,31 +3,29 @@ package com.manev.quislisting.domain;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
-@Table(name = "ql_post_dl_content_field_relationship")
-public class DlContentFieldRelationship {
+@Table(name = "ql_dl_listing_dl_content_field_relationship")
+public class DlListingContentFieldRel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="post_id", nullable=false, updatable=false)
+    @JoinColumn(name = "dl_listing_id", nullable = false, updatable = false)
     private DlListing dlListing;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="dl_content_field_id", nullable=false, updatable=false)
+    @JoinColumn(name = "dl_content_field_id", nullable = false, updatable = false)
     private DlContentField dlContentField;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="ql_content_field_selection_relationship",
-            joinColumns=
-            @JoinColumn(name="ql_post_dl_content_field_id", referencedColumnName="id"),
-            inverseJoinColumns=
-            @JoinColumn(name="ql_dl_content_field_item_id", referencedColumnName="id")
-    )
+    @JoinTable(name = "ql_content_field_selection_relationship",
+            joinColumns = @JoinColumn(name = "dl_listing_dl_content_field_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "dl_content_field_item_id", referencedColumnName = "id"))
     private Set<DlContentFieldItem> dlContentFieldItems;
 
     @Column

@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
@@ -51,12 +52,14 @@ public class DlCategoryService {
     public DlCategoryDTO save(DlCategoryDTO dlCategoryDTO) {
         log.debug("Request to save DlCategoryDTO : {}", dlCategoryDTO);
 
-        DlCategory dlCategory = dlCategoryMapper.dlCategoryDTOTodlCategory(dlCategoryDTO);
-        if (dlCategoryDTO.getTranslationGroupId() != null) {
-            dlCategory.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlCategoryDTO.getTranslationGroupId()));
+        DlCategory dlCategory;
+        if (dlCategoryDTO.getId()!=null) {
+            DlCategory existingDlCategory = dlCategoryRepository.findOne(dlCategoryDTO.getId());
+            dlCategory = dlCategoryMapper.dlCategoryDtoToDlCategory(existingDlCategory, dlCategoryDTO);
         } else {
-            dlCategory.getTranslation().setTranslationGroup(new TranslationGroup());
+            dlCategory = dlCategoryMapper.dlCategoryDtoToDlCategory(dlCategoryDTO);
         }
+
         if (dlCategoryDTO.getParentId() != null) {
             dlCategory.setParent(dlCategoryRepository.findOne(dlCategoryDTO.getParentId()));
         }

@@ -4,7 +4,6 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
@@ -85,10 +84,8 @@ public class DlCategoryResourceIntTest {
 
     public static DlCategory createEntity() {
         return DlCategoryBuilder.aDlCategory()
-                .withTerm(TermBuilder.aTerm()
-                        .withName(DEFAULT_NAME)
-                        .withSlug(DEFAULT_SLUG)
-                        .build())
+                .withName(DEFAULT_NAME)
+                .withSlug(DEFAULT_SLUG)
                 .withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -100,10 +97,8 @@ public class DlCategoryResourceIntTest {
 
     public static DlCategory createEntity2() {
         return DlCategoryBuilder.aDlCategory()
-                .withTerm(TermBuilder.aTerm()
-                        .withName(DEFAULT_NAME_2)
-                        .withSlug(DEFAULT_SLUG_2)
-                        .build())
+                .withName(DEFAULT_NAME_2)
+                .withSlug(DEFAULT_SLUG_2)
                 .withDescription(DEFAULT_DESCRIPTION_2)
                 .withCount(DEFAULT_COUNT_2)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -146,8 +141,8 @@ public class DlCategoryResourceIntTest {
         List<DlCategory> dlCategoryTrList = dlCategoryRepository.findAll();
         assertThat(dlCategoryTrList).hasSize(databaseSizeBeforeCreate + 1);
         DlCategory dlCategorySaved = dlCategoryTrList.get(dlCategoryTrList.size() - 1);
-        assertThat(dlCategorySaved.getTerm().getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(dlCategorySaved.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
+        assertThat(dlCategorySaved.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(dlCategorySaved.getSlug()).isEqualTo(DEFAULT_SLUG);
         assertThat(dlCategorySaved.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(dlCategorySaved.getParent()).isEqualTo(DEFAULT_PARENT_ID);
         assertThat(dlCategorySaved.getCount()).isEqualTo(DEFAULT_COUNT);
@@ -160,9 +155,8 @@ public class DlCategoryResourceIntTest {
         int databaseSizeBeforeCreate = dlCategoryRepository.findAll().size();
 
         // Create the DlCategory with an existing ID
-        DlCategory existingDlCategory = new DlCategory();
-        existingDlCategory.setId(1L);
-        DlCategoryDTO existingDlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(existingDlCategory);
+        dlCategory.setId(1L);
+        DlCategoryDTO existingDlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restDlCategoryMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CATEGORIES)
@@ -186,7 +180,7 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlCategory.getId().intValue())))
-                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
                 .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID)))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT.intValue())));
@@ -203,7 +197,7 @@ public class DlCategoryResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))
-                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
                 .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
                 .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
@@ -227,7 +221,8 @@ public class DlCategoryResourceIntTest {
 
         // Update the DlCategory
         DlCategory updatedDlCategory = dlCategoryRepository.findOne(this.dlCategory.getId());
-        updatedDlCategory.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
+        updatedDlCategory.setName(UPDATED_NAME);
+        updatedDlCategory.setSlug(UPDATED_SLUG);
 
         updatedDlCategory.setDescription(UPDATED_DESCRIPTION);
         updatedDlCategory.setParent(parent);
@@ -243,8 +238,8 @@ public class DlCategoryResourceIntTest {
         List<DlCategory> dlCategoryList = dlCategoryRepository.findAll();
         assertThat(dlCategoryList).hasSize(databaseSizeBeforeUpdate);
         DlCategory testDlCategory = dlCategoryRepository.findOne(updatedDlCategory.getId());
-        assertThat(testDlCategory.getTerm().getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testDlCategory.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
+        assertThat(testDlCategory.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testDlCategory.getSlug()).isEqualTo(UPDATED_SLUG);
         assertThat(testDlCategory.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testDlCategory.getParent().getId()).isEqualTo(parent.getId());
         assertThat(testDlCategory.getCount()).isEqualTo(UPDATED_COUNT);

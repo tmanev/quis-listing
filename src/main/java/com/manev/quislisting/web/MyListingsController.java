@@ -9,8 +9,8 @@ import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
-import com.manev.quislisting.service.post.AbstractPostService;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
@@ -46,8 +46,8 @@ public class MyListingsController extends BaseController {
     public MyListingsController(NavMenuRepository navMenuRepository,
                                 QlConfigService qlConfigService, LanguageRepository languageRepository,
                                 LanguageTranslationRepository languageTranslationRepository,
-                                LocaleResolver localeResolver, AbstractPostService abstractPostService, MessageSource messageSource, DlListingService dlListingService, DlCategoryService dlCategoryService, DlContentFieldService dlContentFieldService, UserService userService, DlLocationService dlLocationService) {
-        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, abstractPostService);
+                                LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource, DlListingService dlListingService, DlCategoryService dlCategoryService, DlContentFieldService dlContentFieldService, UserService userService, DlLocationService dlLocationService) {
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService);
         this.messageSource = messageSource;
         this.dlListingService = dlListingService;
         this.dlCategoryService = dlCategoryService;

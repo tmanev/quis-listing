@@ -1,7 +1,7 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
@@ -22,8 +22,10 @@ public class DlCategoryMapperTest {
         return DlCategoryBuilder.aDlCategory()
                 .withId(id)
                 .withParent(parent)
-                .withTerm(TermBuilder.aTerm().withId(1L).build())
-                .withTranslation(TranslationBuilder.aTranslation().withLanguageCode("en").build())
+                .withTranslation(TranslationBuilder.aTranslation()
+                        .withLanguageCode("en")
+                        .withTranslationGroup(new TranslationGroup())
+                        .build())
                 .build();
     }
 

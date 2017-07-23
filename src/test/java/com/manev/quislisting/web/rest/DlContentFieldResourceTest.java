@@ -2,6 +2,7 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.DlContentField;
+import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
@@ -121,7 +122,8 @@ public class DlContentFieldResourceTest {
                 .onMap(DEFAULT_ON_MAP)
                 .onAdvancedSearchForm(DEFAULT_ON_ADVANCED_SEARCH_FORM)
                 .options(DEFAULT_OPTIONS)
-                .searchOptions(DEFAULT_SEARCH_OPTIONS);
+                .searchOptions(DEFAULT_SEARCH_OPTIONS)
+                .qlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + DEFAULT_NAME).value(DEFAULT_NAME).status(0));
     }
 
     public static DlContentField createField(DlContentField.Type type, String name, Integer orderNum,

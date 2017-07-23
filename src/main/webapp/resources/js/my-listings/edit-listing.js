@@ -151,14 +151,17 @@ EditListing = {
                         }
                     }
                 }
+            } else {
+                if (dlContentField.type == 'CHECKBOX') {
+                    // return empty array to be able to operate checkbox
+                    return [];
+                }
             }
             return null;
         }
 
         var selectedCategory = {
-            term: {
-                name: ''
-            }
+            name: ''
         };
         if (dlListingDTO.dlCategories && dlListingDTO.dlCategories.length > 0) {
             selectedCategory = dlListingDTO.dlCategories[0];
@@ -192,7 +195,7 @@ EditListing = {
                     title: dlListingDTO.title,
                     content: dlListingDTO.content,
                     name: dlListingDTO.name,
-                    status: dlListingDTO.status.name,
+                    status: dlListingDTO.status,
                     dlCategories: dlListingDTO.dlCategories,
                     dlLocations: dlListingDTO.dlLocations,
                     dlListingFields: dlListingDTO.dlListingFields,
@@ -397,6 +400,8 @@ EditListing = {
                         this.listing.dlLocations = [];
                     }
 
+                    this.listing.dlCategories = [this.selectedCategory];
+
                     var payload = this.listing;
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
@@ -437,6 +442,16 @@ EditListing = {
                     });
                 }
             }
+        });
+
+        commonVar.addListingApp = editListingApp;
+
+        editListingApp.$on('id-selected', function (category) {
+            if (this.selectedCategory) {
+                this.selectedCategory.active = false;
+            }
+            this.selectedCategory = category;
+            this.selectedCategory.active = true;
         });
     }
 };

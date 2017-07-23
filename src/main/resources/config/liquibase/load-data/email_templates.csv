@@ -1,6 +1,4 @@
 id¦name¦text¦string_id
-1¦listing-added¦Some text example¦null
-2¦listing-expiring¦Listing expiring description¦null
 3¦contact-us¦'<div>
 	<b>From:</b>
 	<span th:text="${name}">John Doe</span>&nbsp;&#x3C;<span th:text="${email}">john.doe@gmail.com</span>&#x3E;

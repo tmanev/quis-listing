@@ -53,12 +53,14 @@ public class DlLocationService {
     public DlLocationDTO save(DlLocationDTO dlLocationDTO) {
         log.debug("Request to save DlLocationDTO : {}", dlLocationDTO);
 
-        DlLocation dlLocation = dlLocationMapper.dlLocationDTOTodlLocation(dlLocationDTO);
-        if (dlLocationDTO.getTranslationGroupId() != null) {
-            dlLocation.getTranslation().setTranslationGroup(translationGroupRepository.findOne(dlLocationDTO.getTranslationGroupId()));
+        DlLocation dlLocation;
+        if (dlLocationDTO.getId()!=null) {
+            DlLocation existingDlLocation = dlLocationRepository.findOne(dlLocationDTO.getId());
+            dlLocation = dlLocationMapper.dlLocationDTOTodlLocation(existingDlLocation, dlLocationDTO);
         } else {
-            dlLocation.getTranslation().setTranslationGroup(new TranslationGroup());
+            dlLocation = dlLocationMapper.dlLocationDTOTodlLocation(dlLocationDTO);
         }
+
         if (dlLocationDTO.getParentId() != null) {
             dlLocation.setParent(dlLocationRepository.findOne(dlLocationDTO.getParentId()));
         }

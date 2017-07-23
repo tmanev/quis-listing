@@ -86,7 +86,7 @@ public class DlContentFieldMapper {
         Set<DlCategory> dlCategories = new HashSet<>();
         if (dlCategoryDTOList != null && !dlCategoryDTOList.isEmpty()) {
             for (DlCategoryDTO dlCategoryDTO : dlCategoryDTOList) {
-                dlCategories.add(dlCategoryMapper.dlCategoryDTOTodlCategory(dlCategoryDTO));
+                dlCategories.add(dlCategoryMapper.dlCategoryDtoToDlCategory(dlCategoryDTO));
             }
         }
         return dlCategories;

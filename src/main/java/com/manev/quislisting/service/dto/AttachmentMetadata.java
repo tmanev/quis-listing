@@ -1,11 +1,8 @@
 package com.manev.quislisting.service.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AttachmentMetadata {
     private DetailSize detail;
-    private ImageResizeMeta thumbnailImageResizeMeta;
+    private ImageResizeMeta smallImageResizeMeta;
     private ImageResizeMeta mediumImageResizeMeta;
     private ImageResizeMeta bigImageResizeMeta;
 
@@ -86,12 +83,12 @@ public class AttachmentMetadata {
         }
     }
 
-    public ImageResizeMeta getThumbnailImageResizeMeta() {
-        return thumbnailImageResizeMeta;
+    public ImageResizeMeta getSmallImageResizeMeta() {
+        return smallImageResizeMeta;
     }
 
-    public void setThumbnailImageResizeMeta(ImageResizeMeta thumbnailImageResizeMeta) {
-        this.thumbnailImageResizeMeta = thumbnailImageResizeMeta;
+    public void setSmallImageResizeMeta(ImageResizeMeta thumbnailImageResizeMeta) {
+        this.smallImageResizeMeta = thumbnailImageResizeMeta;
     }
 
     public ImageResizeMeta getMediumImageResizeMeta() {

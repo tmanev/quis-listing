@@ -1,10 +1,8 @@
 package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.StaticPage;
 import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.domain.post.discriminator.DlListing;
-import com.manev.quislisting.domain.post.discriminator.QlPage;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
@@ -12,7 +10,7 @@ import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
-import com.manev.quislisting.service.post.AbstractPostService;
+import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.exception.PostDifferentLanguageException;
 import com.manev.quislisting.service.post.exception.PostNotFoundException;
 import org.apache.commons.lang3.CharEncoding;
@@ -35,19 +33,19 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-public class PostController extends BaseController {
+public class StaticPageController extends BaseController {
 
-    private final Logger log = LoggerFactory.getLogger(PostController.class);
+    private final Logger log = LoggerFactory.getLogger(StaticPageController.class);
     private final UserService userService;
     private final UserRepository userRepository;
     private final MyListingsViewModelComponent myListingsViewModelComponent;
 
-    public PostController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
-                          AbstractPostService abstractPostService, LanguageRepository languageRepository,
-                          LocaleResolver localeResolver,
-                          LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent) {
+    public StaticPageController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
+                                StaticPageService staticPageService, LanguageRepository languageRepository,
+                                LocaleResolver localeResolver,
+                                LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                abstractPostService);
+                staticPageService);
         this.userService = userService;
         this.userRepository = userRepository;
         this.myListingsViewModelComponent = myListingsViewModelComponent;
@@ -60,38 +58,34 @@ public class PostController extends BaseController {
         log.debug("Language from cookie: {}", language);
 
         try {
-            AbstractPost post = abstractPostService.findOneByName(name, language);
+            StaticPage post = staticPageService.findOneByName(name, language);
             modelMap.addAttribute("title", post.getTitle());
 
-            if (post instanceof QlPage) {
-                // handle page
-                String content = post.getContent();
-                switch (content) {
-                    case "[contact-form]":
-                        modelMap.addAttribute("view", "client/contacts");
-                        break;
-                    case "[not-found-page]":
-                        QlConfig contactPageIdConfig = qlConfigService.findOneByKey("contact-page-id");
-                        AbstractPost contactPage = abstractPostService.retrievePost(language, contactPageIdConfig.getValue());
-                        modelMap.addAttribute("contactPageName", contactPage.getName());
-                        modelMap.addAttribute("view", "client/page-not-found");
-                        break;
-                    case "[forgot-password-page]":
-                        modelMap.addAttribute("view", "client/forgot-password");
-                        break;
-                    case "[my-listings-page]":
-                        myListingsViewModelComponent.fillViewModel(modelMap);
-                        modelMap.addAttribute("view", "client/my-listings/my-listings");
-                        break;
-                    default:
-                        modelMap.addAttribute("content", content);
-                        modelMap.addAttribute("view", "client/post");
-                        break;
-                }
-            } else if (post instanceof DlListing) {
-                // handle listing
-                modelMap.addAttribute("view", "client/dl-listing");
+            // handle page
+            String content = post.getContent();
+            switch (content) {
+                case "[contact-form]":
+                    modelMap.addAttribute("view", "client/contacts");
+                    break;
+                case "[not-found-page]":
+                    QlConfig contactPageIdConfig = qlConfigService.findOneByKey("contact-page-id");
+                    StaticPage contactPage = staticPageService.retrievePost(language, contactPageIdConfig.getValue());
+                    modelMap.addAttribute("contactPageName", contactPage.getName());
+                    modelMap.addAttribute("view", "client/page-not-found");
+                    break;
+                case "[forgot-password-page]":
+                    modelMap.addAttribute("view", "client/forgot-password");
+                    break;
+                case "[my-listings-page]":
+                    myListingsViewModelComponent.fillViewModel(modelMap);
+                    modelMap.addAttribute("view", "client/my-listings/my-listings");
+                    break;
+                default:
+                    modelMap.addAttribute("content", content);
+                    modelMap.addAttribute("view", "client/post");
+                    break;
             }
+
         } catch (PostNotFoundException e) {
             return redirectToPageNotFound();
         } catch (PostDifferentLanguageException e) {
@@ -113,28 +107,26 @@ public class PostController extends BaseController {
         String slugName = name + "/" + secondName;
 
         try {
-            AbstractPost post = abstractPostService.findOneByName(slugName, language);
+            StaticPage post = staticPageService.findOneByName(slugName, language);
 
             modelMap.addAttribute("title", post.getTitle());
 
-            if (post instanceof QlPage) {
-                // handle page
-                String content = post.getContent();
-                switch (content) {
-                    case "[activation-link-page]":
-                        if (handleActivationLinkPage(modelMap, allRequestParams)) return redirectToPageNotFound();
-                        break;
-                    case "[reset-password-finish-page]":
-                        if (handleResetPasswordFinishPage(modelMap, allRequestParams)) return redirectToPageNotFound();
-                        break;
-                    case "[profile-page]":
-                        handleProfilePage(modelMap);
-                        break;
-                    default:
-                        modelMap.addAttribute("content", content);
-                        modelMap.addAttribute("view", "client/post");
-                        break;
-                }
+            // handle page
+            String content = post.getContent();
+            switch (content) {
+                case "[activation-link-page]":
+                    if (handleActivationLinkPage(modelMap, allRequestParams)) return redirectToPageNotFound();
+                    break;
+                case "[reset-password-finish-page]":
+                    if (handleResetPasswordFinishPage(modelMap, allRequestParams)) return redirectToPageNotFound();
+                    break;
+                case "[profile-page]":
+                    handleProfilePage(modelMap);
+                    break;
+                default:
+                    modelMap.addAttribute("content", content);
+                    modelMap.addAttribute("view", "client/post");
+                    break;
             }
         } catch (PostNotFoundException e) {
             return redirectToPageNotFound();

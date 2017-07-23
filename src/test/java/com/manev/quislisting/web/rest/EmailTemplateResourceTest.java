@@ -30,20 +30,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Created by adri on 4/5/2017.
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
 public class EmailTemplateResourceTest {
 
-
-    public static final String DEFAULT_NAME = "Default_Name";
-    public static final String DEFAULT_TEXT = "Default_Text";
-    public static final String DEFAULT_TEXT_BG = "Default_Text_BG";
-    public static final String UPDATE_DEFAULT_NAME = "Update_Default_Name";
-    public static final String UPDATE_DEFAULT_TEXT = "Update_DefaultText";
-    public static final String UPDATE_DEFAULT_TEXT_BG = "Update_Default_Text_BG";
+    private static final String DEFAULT_NAME = "Default_Name";
+    private static final String DEFAULT_TEXT = "Default_Text";
+    private static final String DEFAULT_TEXT_BG = "Default_Text_BG";
+    private static final String UPDATE_DEFAULT_NAME = "Update_Default_Name";
+    private static final String UPDATE_DEFAULT_TEXT = "Update_DefaultText";
+    private static final String UPDATE_DEFAULT_TEXT_BG = "Update_Default_Text_BG";
 
     @Autowired
     private EmailTemplateRepository emailTemplateRepository;
@@ -63,6 +59,7 @@ public class EmailTemplateResourceTest {
         EmailTemplate emailTemplate = new EmailTemplate();
         emailTemplate.setName(DEFAULT_NAME);
         emailTemplate.setText(DEFAULT_TEXT);
+
         return emailTemplate;
     }
 
@@ -87,7 +84,7 @@ public class EmailTemplateResourceTest {
     public void createEmailTemplate() throws Exception {
         int databaseSizeBeforeCrate = emailTemplateRepository.findAll().size();
 
-        setDefautQlString(emailTemplate);
+        setDefaultQlString(emailTemplate);
 
         EmailTemplateDTO emailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplate);
         restEmailNotificationMockMvc.perform(post(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
@@ -108,8 +105,8 @@ public class EmailTemplateResourceTest {
     @Test
     @Transactional
     public void getEmailNotification() throws Exception {
+        setDefaultQlString(emailTemplate);
         EmailTemplate emailTemplateSaved = emailTemplateRepository.saveAndFlush(emailTemplate);
-        setDefautQlString(emailTemplateSaved);
         emailTemplateRepository.saveAndFlush(emailTemplateSaved);
 
         restEmailNotificationMockMvc.perform(get(RESOURCE_API_ADMIN_EMAIL_TEMPLATE + "/{id}",
@@ -126,11 +123,11 @@ public class EmailTemplateResourceTest {
 
     }
 
-    private void setDefautQlString(EmailTemplate emailTemplateSaved) {
+    private void setDefaultQlString(EmailTemplate emailTemplateSaved) {
         QlString qlString = new QlString();
         qlString.setValue(DEFAULT_TEXT);
         qlString.setLanguageCode("en");
-        qlString.setName("email-template-#" + emailTemplate.getId());
+        qlString.setName("email-template-#" + emailTemplateSaved.getName());
         qlString.setContext(EmailTemplateService.CONTEXT);
         qlString.setStatus(0);
 
@@ -156,7 +153,7 @@ public class EmailTemplateResourceTest {
     @Test
     @Transactional
     public void updateEmailNotification() throws Exception {
-        setDefautQlString(emailTemplate);
+        setDefaultQlString(emailTemplate);
         emailTemplateRepository.saveAndFlush(emailTemplate);
         int databaseSizeBeforeUpdate = emailTemplateRepository.findAll().size();
 
@@ -186,7 +183,7 @@ public class EmailTemplateResourceTest {
     @Test
     @Transactional
     public void updateNoneExistingEmailNotification() throws Exception {
-        setDefautQlString(emailTemplate);
+        setDefaultQlString(emailTemplate);
         int databaseSizeBeforeUpdate = emailTemplateRepository.findAll().size();
         EmailTemplateDTO emailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplate);
         restEmailNotificationMockMvc.perform(put(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
@@ -202,6 +199,7 @@ public class EmailTemplateResourceTest {
     @Test
     @Transactional
     public void deleteEmailNotification() throws Exception {
+        setDefaultQlString(emailTemplate);
         emailTemplateRepository.saveAndFlush(emailTemplate);
         int databaseSizeBeforeDelete = emailTemplateRepository.findAll().size();
 

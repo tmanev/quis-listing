@@ -1,13 +1,13 @@
 package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.QlConfig;
-import com.manev.quislisting.domain.post.AbstractPost;
+import com.manev.quislisting.domain.StaticPage;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.QlConfigService;
-import com.manev.quislisting.service.post.AbstractPostService;
+import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.web.rest.vm.LoginVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +53,9 @@ public class SignInController extends BaseController {
                             TokenProvider tokenProvider, AuthenticationManager authenticationManager,
                             LanguageRepository languageRepository, LocaleResolver localeResolver,
                             LanguageTranslationRepository languageTranslationRepository,
-                            AbstractPostService abstractPostService, MessageSource messageSource) {
+                            StaticPageService staticPageService, MessageSource messageSource) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                abstractPostService);
+                staticPageService);
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.messageSource = messageSource;
@@ -67,7 +67,7 @@ public class SignInController extends BaseController {
         model.addAttribute("view", "client/signin");
 
         QlConfig forgotPasswordPageIdConfig = qlConfigService.findOneByKey("forgot-password-page-id");
-        AbstractPost forgotPasswordPage = abstractPostService.retrievePost(locale.getLanguage(), forgotPasswordPageIdConfig.getValue());
+        StaticPage forgotPasswordPage = staticPageService.retrievePost(locale.getLanguage(), forgotPasswordPageIdConfig.getValue());
         model.addAttribute("forgotPasswordName", forgotPasswordPage.getName());
         return "client/index";
     }
