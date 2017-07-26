@@ -324,4 +324,9 @@ public class DlListingService {
         Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, language, oneByLogin.get());
         return result.map(dlListingMapper::dlListingToDlListingDTO);
     }
+
+    public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
+        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCode(pageable, language);
+        return result.map(dlListingMapper::dlListingToDlListingDTO);
+    }
 }
