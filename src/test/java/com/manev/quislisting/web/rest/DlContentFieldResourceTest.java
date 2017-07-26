@@ -2,12 +2,14 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.DlContentField;
+import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldMapper;
+import com.manev.quislisting.service.util.SlugUtil;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CONTENT_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,45 +38,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = QuisListingApp.class)
 public class DlContentFieldResourceTest {
 
-    public static final boolean DEFAULT_CORE_FIELD = true;
-    public static final int DEFAULT_ORDER_NUM = 0;
-    public static final String DEFAULT_NAME = "DEFAULT_NAME";
-    public static final String DEFAULT_SLUG = "DEFAULT_SLUG";
-    public static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
-    public static final String DEFAULT_TYPE = "DEFAULT_TYPE";
-    public static final String DEFAULT_ICON_IMAGE = "DEFAULT_ICON_IMAGE";
-    public static final boolean DEFAULT_REQUIRED = true;
-    public static final boolean DEFAULT_HAS_CONFIGURATION = true;
-    public static final boolean DEFAULT_HAS_SEARCH_CONFIGURATION = true;
-    public static final boolean DEFAULT_CAN_BE_ORDERED = true;
-    public static final boolean DEFAULT_HIDE_NAME = false;
-    public static final boolean DEFAULT_ON_EXCERPT_PAGE = true;
-    public static final boolean DEFAULT_ON_LISTING_PAGE = true;
-    public static final boolean DEFAULT_ON_SEARCH_FORM = true;
-    public static final boolean DEFAULT_ON_MAP = false;
-    public static final boolean DEFAULT_ON_ADVANCED_SEARCH_FORM = true;
-    public static final String DEFAULT_OPTIONS = "DEFAULT_OPTIONS";
-    public static final String DEFAULT_SEARCH_OPTIONS = "DEFAULT_SEARCH_OPTIONS";
+    private static final boolean DEFAULT_CORE_FIELD = true;
+    private static final int DEFAULT_ORDER_NUM = 0;
+    private static final String DEFAULT_NAME = "DEFAULT_NAME";
+    private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
+    private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
+    private static final DlContentField.Type DEFAULT_TYPE = DlContentField.Type.STRING;
+    private static final String DEFAULT_ICON_IMAGE = "DEFAULT_ICON_IMAGE";
+    private static final boolean DEFAULT_REQUIRED = true;
+    private static final boolean DEFAULT_HAS_CONFIGURATION = true;
+    private static final boolean DEFAULT_HAS_SEARCH_CONFIGURATION = true;
+    private static final boolean DEFAULT_CAN_BE_ORDERED = true;
+    private static final boolean DEFAULT_HIDE_NAME = false;
+    private static final boolean DEFAULT_ON_EXCERPT_PAGE = true;
+    private static final boolean DEFAULT_ON_LISTING_PAGE = true;
+    private static final boolean DEFAULT_ON_SEARCH_FORM = true;
+    private static final boolean DEFAULT_ON_MAP = false;
+    private static final boolean DEFAULT_ON_ADVANCED_SEARCH_FORM = true;
+    private static final String DEFAULT_OPTIONS = "DEFAULT_OPTIONS";
+    private static final String DEFAULT_SEARCH_OPTIONS = "DEFAULT_SEARCH_OPTIONS";
 
-    public static final boolean UPDATED_CORE_FIELD = false;
-    public static final int UPDATED_ORDER_NUM = 1;
-    public static final String UPDATED_NAME = "UPDATED_NAME";
-    public static final String UPDATED_SLUG = "UPDATED_SLUG";
-    public static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    public static final String UPDATED_TYPE = "UPDATED_TYPE";
-    public static final String UPDATED_ICON_IMAGE = "UPDATED_ICON_IMAGE";
-    public static final boolean UPDATED_REQUIRED = false;
-    public static final boolean UPDATED_HAS_CONFIGURATION = false;
-    public static final boolean UPDATED_HAS_SEARCH_CONFIGURATION = false;
-    public static final boolean UPDATED_CAN_BE_ORDERED = false;
-    public static final boolean UPDATED_HIDE_NAME = true;
-    public static final boolean UPDATED_ON_EXCERPT_PAGE = false;
-    public static final boolean UPDATED_ON_LISTING_PAGE = false;
-    public static final boolean UPDATED_ON_SEARCH_FORM = false;
-    public static final boolean UPDATED_ON_MAP = true;
-    public static final boolean UPDATED_ON_ADVANCED_SEARCH_FORM = false;
-    public static final String UPDATED_OPTIONS = "UPDATED_OPTIONS";
-    public static final String UPDATED_SEARCH_OPTIONS = "UPDATED_SEARCH_OPTIONS";
+    private static final boolean UPDATED_CORE_FIELD = false;
+    private static final int UPDATED_ORDER_NUM = 1;
+    private static final String UPDATED_NAME = "UPDATED_NAME";
+    private static final String UPDATED_SLUG = "UPDATED_SLUG";
+    private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
+    private static final DlContentField.Type UPDATED_TYPE = DlContentField.Type.NUMBER;
+    private static final String UPDATED_ICON_IMAGE = "UPDATED_ICON_IMAGE";
+    private static final boolean UPDATED_REQUIRED = false;
+    private static final boolean UPDATED_HAS_CONFIGURATION = false;
+    private static final boolean UPDATED_HAS_SEARCH_CONFIGURATION = false;
+    private static final boolean UPDATED_CAN_BE_ORDERED = false;
+    private static final boolean UPDATED_HIDE_NAME = true;
+    private static final boolean UPDATED_ON_EXCERPT_PAGE = false;
+    private static final boolean UPDATED_ON_LISTING_PAGE = false;
+    private static final boolean UPDATED_ON_SEARCH_FORM = false;
+    private static final boolean UPDATED_ON_MAP = true;
+    private static final boolean UPDATED_ON_ADVANCED_SEARCH_FORM = false;
+    private static final String UPDATED_OPTIONS = "UPDATED_OPTIONS";
+    private static final String UPDATED_SEARCH_OPTIONS = "UPDATED_SEARCH_OPTIONS";
 
     @Autowired
     private DlContentFieldService dlContentFieldService;
@@ -119,7 +122,32 @@ public class DlContentFieldResourceTest {
                 .onMap(DEFAULT_ON_MAP)
                 .onAdvancedSearchForm(DEFAULT_ON_ADVANCED_SEARCH_FORM)
                 .options(DEFAULT_OPTIONS)
-                .searchOptions(DEFAULT_SEARCH_OPTIONS);
+                .searchOptions(DEFAULT_SEARCH_OPTIONS)
+                .qlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + DEFAULT_NAME).value(DEFAULT_NAME).status(0));
+    }
+
+    public static DlContentField createField(DlContentField.Type type, String name, Integer orderNum,
+                                             Set<DlCategory> dlCategories) {
+        return new DlContentField()
+                .coreField(Boolean.FALSE)
+                .orderNum(orderNum)
+                .name(name)
+                .slug(SlugUtil.getFileNameSlug(name))
+                .description("Some description")
+                .type(type)
+                .required(Boolean.TRUE)
+                .hasConfiguration(Boolean.FALSE)
+                .hasSearchConfiguration(Boolean.FALSE)
+                .canBeOrdered(Boolean.FALSE)
+                .hideName(Boolean.FALSE)
+                .onExcerptPage(Boolean.FALSE)
+                .onListingPage(Boolean.FALSE)
+                .onSearchForm(Boolean.FALSE)
+                .onAdvancedSearchForm(Boolean.FALSE)
+                .onMap(Boolean.FALSE)
+                .options("")
+                .searchOptions("")
+                .dlCategories(dlCategories);
     }
 
     @Before
@@ -184,7 +212,7 @@ public class DlContentFieldResourceTest {
         assertThat(dlContentFieldSaved.getOnSearchForm()).isEqualTo(DEFAULT_ON_SEARCH_FORM);
         assertThat(dlContentFieldSaved.getOnMap()).isEqualTo(DEFAULT_ON_MAP);
         assertThat(dlContentFieldSaved.getOnAdvancedSearchForm()).isEqualTo(DEFAULT_ON_ADVANCED_SEARCH_FORM);
-        assertThat(dlContentFieldSaved.getDlCategories().stream().findFirst().get().getId()).isEqualTo(this.dlCategory.getId());
+        assertThat(dlContentFieldSaved.getDlCategories().stream().findFirst().orElse(null).getId()).isEqualTo(this.dlCategory.getId());
         assertThat(dlContentFieldSaved.getOptions()).isEqualTo(DEFAULT_OPTIONS);
         assertThat(dlContentFieldSaved.getSearchOptions()).isEqualTo(DEFAULT_SEARCH_OPTIONS);
 
@@ -236,7 +264,7 @@ public class DlContentFieldResourceTest {
                 .andExpect(jsonPath("$.name").value(dlContentField.getName()))
                 .andExpect(jsonPath("$.slug").value(dlContentField.getSlug()))
                 .andExpect(jsonPath("$.description").value(dlContentField.getDescription()))
-                .andExpect(jsonPath("$.type").value(dlContentField.getType()))
+                .andExpect(jsonPath("$.type").value(dlContentField.getType().toString()))
                 .andExpect(jsonPath("$.iconImage").value(dlContentField.getIconImage()))
                 .andExpect(jsonPath("$.required").value(dlContentField.getRequired()))
                 .andExpect(jsonPath("$.hasConfiguration").value(dlContentField.getHasConfiguration()))
@@ -248,7 +276,7 @@ public class DlContentFieldResourceTest {
                 .andExpect(jsonPath("$.onSearchForm").value(dlContentField.getOnSearchForm()))
                 .andExpect(jsonPath("$.onMap").value(dlContentField.getOnMap()))
                 .andExpect(jsonPath("$.onAdvancedSearchForm").value(dlContentField.getOnAdvancedSearchForm()))
-                .andExpect(jsonPath("$.dlCategories.[0].id").value(dlContentField.getDlCategories().stream().findFirst().get().getId()))
+                .andExpect(jsonPath("$.dlCategories.[0].id").value(dlContentField.getDlCategories().stream().findFirst().orElse(null).getId()))
                 .andExpect(jsonPath("$.options").value(dlContentField.getOptions()))
                 .andExpect(jsonPath("$.searchOptions").value(dlContentField.getSearchOptions()))
         ;
@@ -262,9 +290,9 @@ public class DlContentFieldResourceTest {
                 .andExpect(status().isNotFound());
     }
 
-        @Test
-        @Transactional
-        public void updateDlContentField() throws Exception {
+    @Test
+    @Transactional
+    public void updateDlContentField() throws Exception {
         // Initialize the database
         DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
         DlCategory dlCategory2Saved = dlCategoryRepository.saveAndFlush(dlCategory2);

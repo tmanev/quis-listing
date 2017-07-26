@@ -7,7 +7,8 @@ import java.util.List;
 
 public abstract class TermTaxonomyDTO {
     private Long id;
-    private TermDTO term;
+    private String name;
+    private String slug;
     private Long parentId;
     private String description;
     private Long count;
@@ -18,10 +19,6 @@ public abstract class TermTaxonomyDTO {
 
     private int depthLevel;
 
-    public TermTaxonomyDTO() {
-        this.term = new TermDTO();
-    }
-
     public Long getId() {
         return id;
     }
@@ -30,12 +27,20 @@ public abstract class TermTaxonomyDTO {
         this.id = id;
     }
 
-    public TermDTO getTerm() {
-        return term;
+    public String getName() {
+        return name;
     }
 
-    public void setTerm(TermDTO term) {
-        this.term = term;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Long getParentId() {

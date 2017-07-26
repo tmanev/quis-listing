@@ -1,17 +1,15 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
+import com.manev.quislisting.domain.StaticPageNavMenuRel;
 import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.domain.taxonomy.Term;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
-import com.manev.quislisting.repository.post.NavMenuItemRepository;
+import com.manev.quislisting.repository.StaticPageNavMenuRelRepository;
 import com.manev.quislisting.service.post.dto.TranslationDTO;
 import com.manev.quislisting.service.post.mapper.TranslationMapper;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
-import com.manev.quislisting.service.taxonomy.dto.NavMenuItemDTO;
+import com.manev.quislisting.service.taxonomy.dto.StaticPageNavMenuDTO;
 import com.manev.quislisting.service.taxonomy.dto.builder.NavMenuDTOBuilder;
-import com.manev.quislisting.service.taxonomy.dto.builder.TermDTOBuilder;
 import com.manev.quislisting.service.util.SlugUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -22,12 +20,12 @@ import java.util.*;
 public class NavMenuMapper {
 
     private NavMenuItemMapper navMenuItemMapper;
-    private NavMenuItemRepository navMenuItemRepository;
+    private StaticPageNavMenuRelRepository navMenuItemRepository;
     private TranslationMapper translationMapper;
 
-    public NavMenuMapper(NavMenuItemMapper navMenuItemMapper, NavMenuItemRepository navMenuItemRepository, TranslationMapper translationMapper) {
+    public NavMenuMapper(NavMenuItemMapper navMenuItemMapper, StaticPageNavMenuRelRepository staticPageNavMenuRelRepository, TranslationMapper translationMapper) {
         this.navMenuItemMapper = navMenuItemMapper;
-        this.navMenuItemRepository = navMenuItemRepository;
+        this.navMenuItemRepository = staticPageNavMenuRelRepository;
         this.translationMapper = translationMapper;
     }
 
@@ -43,17 +41,14 @@ public class NavMenuMapper {
     public NavMenuDTO navMenuToNavMenuDTO(NavMenu navMenu, List<Language> activeLanguages) {
         NavMenuDTO navMenuDTO = NavMenuDTOBuilder.aNavMenuDTO()
                 .withId(navMenu.getId())
-                .withTerm(TermDTOBuilder.aTerm()
-                        .withId(navMenu.getTerm().getId())
-                        .withName(navMenu.getTerm().getName())
-                        .withSlug(navMenu.getTerm().getSlug())
-                        .build())
+                .withName(navMenu.getName())
+                .withSlug(navMenu.getSlug())
                 .withDescription(navMenu.getDescription())
                 .withCount(navMenu.getCount())
                 .withLanguageCode(navMenu.getTranslation().getLanguageCode())
                 .withSourceLanguageCode(navMenu.getTranslation().getSourceLanguageCode())
                 .withTranslationGroupId(navMenu.getTranslation().getTranslationGroup().getId())
-                .withNavMenuItemDTOList(navMenuItemMapper.navMenuItemToNavMenuItemDto(navMenu.getNavMenuItems()))
+                .withNavMenuItemDTOList(navMenuItemMapper.navMenuItemToNavMenuItemDto(navMenu.getStaticPageNavMenuRels()))
                 .build();
 
         setTranslationsDTO(navMenu, navMenuDTO, activeLanguages);
@@ -97,49 +92,42 @@ public class NavMenuMapper {
     public NavMenu navMenuDTOToNavMenu(NavMenu existingNavMenu, NavMenuDTO navMenuDTO) {
         existingNavMenu.setId(navMenuDTO.getId());
 
-        Term term = existingNavMenu.getTerm();
-        if (term == null) {
-            term = new Term();
-        }
-        term.setId(navMenuDTO.getTerm().getId());
-        term.setName(navMenuDTO.getTerm().getName());
-        term.setSlug(SlugUtil.getFileNameSlug(navMenuDTO.getTerm().getName()));
+        existingNavMenu.setName(navMenuDTO.getName());
+        existingNavMenu.setSlug(SlugUtil.getFileNameSlug(navMenuDTO.getName()));
 
         existingNavMenu.setDescription(navMenuDTO.getDescription());
 
-        Set<NavMenuItem> existingNavMenuItems = existingNavMenu.getNavMenuItems();
-        List<NavMenuItem> toBeDeletedNavMenuItems = new ArrayList<>();
+        Set<StaticPageNavMenuRel> existingNavMenuItems = existingNavMenu.getStaticPageNavMenuRels();
+        List<StaticPageNavMenuRel> toBeDeletedNavMenuItems = new ArrayList<>();
         if (existingNavMenuItems == null) {
-            existingNavMenu.setNavMenuItems(navMenuItemMapper.navMenuItemDtoToNavMenuItem(navMenuDTO, navMenuDTO.getNavMenuItemDTOs()));
+            existingNavMenu.setStaticPageNavMenuRels(navMenuItemMapper.navMenuItemDtoToNavMenuItem(existingNavMenu, navMenuDTO.getStaticPageNavMenuDTOS()));
         } else {
             // search existing one
-            Iterator<NavMenuItem> iterator = existingNavMenuItems.iterator();
+            Iterator<StaticPageNavMenuRel> iterator = existingNavMenuItems.iterator();
             while (iterator.hasNext()) {
-                NavMenuItem navMenuItem = iterator.next();
-                NavMenuItemDTO existingNavMenuItemDto = findAndRemoveNavMenuItem(navMenuItem, navMenuDTO.getNavMenuItemDTOs());
-                if (existingNavMenuItemDto != null) {
-                    navMenuItem.setTitle(existingNavMenuItemDto.getTitle());
-                } else {
+                StaticPageNavMenuRel navMenuItem = iterator.next();
+                StaticPageNavMenuDTO existingStaticPageNavMenuDto = findAndRemoveNavMenuItem(navMenuItem, navMenuDTO.getStaticPageNavMenuDTOS());
+                if (existingStaticPageNavMenuDto == null) {
                     // remove the item if not present in the list
                     toBeDeletedNavMenuItems.add(navMenuItem);
                     iterator.remove();
                 }
             }
             // add the rest of the nav menu items
-            existingNavMenuItems.addAll(navMenuItemMapper.navMenuItemDtoToNavMenuItem(navMenuDTO, navMenuDTO.getNavMenuItemDTOs()));
+            existingNavMenuItems.addAll(navMenuItemMapper.navMenuItemDtoToNavMenuItem(existingNavMenu, navMenuDTO.getStaticPageNavMenuDTOS()));
             navMenuItemRepository.delete(toBeDeletedNavMenuItems);
         }
 
         return existingNavMenu;
     }
 
-    private NavMenuItemDTO findAndRemoveNavMenuItem(NavMenuItem navMenuItem, List<NavMenuItemDTO> navMenuItemDTOs) {
-        Iterator<NavMenuItemDTO> iterator = navMenuItemDTOs.iterator();
+    private StaticPageNavMenuDTO findAndRemoveNavMenuItem(StaticPageNavMenuRel navMenuItem, List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
+        Iterator<StaticPageNavMenuDTO> iterator = staticPageNavMenuDTOS.iterator();
         while (iterator.hasNext()) {
-            NavMenuItemDTO navMenuItemDTO = iterator.next();
-            if (navMenuItemDTO.getId() != null && navMenuItemDTO.getId().equals(navMenuItem.getId())) {
+            StaticPageNavMenuDTO staticPageNavMenuDTO = iterator.next();
+            if (staticPageNavMenuDTO.getId() != null && staticPageNavMenuDTO.getId().equals(navMenuItem.getId())) {
                 iterator.remove();
-                return navMenuItemDTO;
+                return staticPageNavMenuDTO;
             }
         }
         return null;

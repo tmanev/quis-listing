@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.4.RELEASE</version>
+		<version>1.5.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -44,15 +44,32 @@
 			<artifactId>spring-boot-starter-jersey</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring4</artifactId>
+			<version>3.0.6.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf</artifactId>
+			<version>3.0.6.RELEASE</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect -->
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity4 -->
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
-			<version>2.1.2.RELEASE</version>
+			<version>3.0.2.RELEASE</version>
 		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -163,7 +180,7 @@
 		<dependency>
 			<groupId>org.apache.jackrabbit</groupId>
 			<artifactId>jackrabbit-core</artifactId>
-			<version>2.15.1</version>
+			<version>2.15.3</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -174,6 +191,11 @@
 					<artifactId>lucene-core</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>3.0.9</version>
 		</dependency>
 		<!-- JCR END -->
 

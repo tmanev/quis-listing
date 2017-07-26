@@ -11,7 +11,8 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.QlConfigService;
-import com.manev.quislisting.service.post.AbstractPostService;
+import com.manev.quislisting.service.post.StaticPageService;
+import com.manev.quislisting.service.post.dto.StaticPageDTO;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,32 +21,34 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class BaseController {
 
+    static final String REDIRECT = "redirect:/";
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
-
     protected NavMenuRepository navMenuRepository;
 
     protected QlConfigService qlConfigService;
 
     protected LanguageRepository languageRepository;
     protected LocaleResolver localeResolver;
-    protected AbstractPostService abstractPostService;
+    protected StaticPageService staticPageService;
     private LanguageTranslationRepository languageTranslationRepository;
 
     public BaseController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                           LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
-                          LocaleResolver localeResolver, AbstractPostService abstractPostService) {
+                          LocaleResolver localeResolver, StaticPageService staticPageService) {
         this.navMenuRepository = navMenuRepository;
         this.qlConfigService = qlConfigService;
         this.languageRepository = languageRepository;
         this.languageTranslationRepository = languageTranslationRepository;
         this.localeResolver = localeResolver;
-        this.abstractPostService = abstractPostService;
+        this.staticPageService = staticPageService;
     }
 
     @ModelAttribute("baseModel")
@@ -66,13 +69,13 @@ public class BaseController {
             Long topHeaderMenuRefId = qlMenuPosByLanguageCode.getTopHeaderMenuRefId();
             if (topHeaderMenuRefId != null) {
                 NavMenu topHeaderMenu = navMenuRepository.findOne(topHeaderMenuRefId);
-                baseModel.setTopHeaderMenus(topHeaderMenu.getNavMenuItems());
+                baseModel.setTopHeaderMenus(topHeaderMenu.getStaticPageNavMenuRels());
             }
 
             Long footerMenuRefId = qlMenuPosByLanguageCode.getFooterMenuRefId();
             if (footerMenuRefId != null) {
                 NavMenu footerMenu = navMenuRepository.findOne(footerMenuRefId);
-                baseModel.setFooterMenus(footerMenu.getNavMenuItems());
+                baseModel.setFooterMenus(footerMenu.getStaticPageNavMenuRels());
             }
         }
 
@@ -90,8 +93,9 @@ public class BaseController {
         }
 
         QlConfig accountProfilePageConfig = qlConfigService.findOneByKey("account-profile-page-id");
+        baseModel.setProfilePage(staticPageService.retrievePost(language, accountProfilePageConfig.getValue()));
 
-        baseModel.setProfilePage(abstractPostService.retrievePost(language, accountProfilePageConfig.getValue()));
+        baseModel.setBaseUrl(qlConfigService.findOneByKey("base-url").getValue());
 
         return baseModel;
     }
@@ -141,6 +145,12 @@ public class BaseController {
             }
         }
         return null;
+    }
+
+    protected String redirectToPageNotFound() throws UnsupportedEncodingException {
+        QlConfig notFoundPageConfig = qlConfigService.findOneByKey("not-found-page-id");
+        StaticPageDTO notFoundPage = staticPageService.findOne(Long.valueOf(notFoundPageConfig.getValue()));
+        return REDIRECT + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
     }
 
 }

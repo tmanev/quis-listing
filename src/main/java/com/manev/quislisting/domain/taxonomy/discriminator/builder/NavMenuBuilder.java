@@ -1,12 +1,12 @@
 package com.manev.quislisting.domain.taxonomy.discriminator.builder;
 
 import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.taxonomy.Term;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 
 public final class NavMenuBuilder {
     private Long id;
-    private Term term;
+    private String name;
+    private String slug;
     private String taxonomy;
     private String description;
     private Long count = 0L;
@@ -24,8 +24,13 @@ public final class NavMenuBuilder {
         return this;
     }
 
-    public NavMenuBuilder withTerm(Term term) {
-        this.term = term;
+    public NavMenuBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public NavMenuBuilder withSlug(String slug) {
+        this.slug = slug;
         return this;
     }
 
@@ -52,7 +57,8 @@ public final class NavMenuBuilder {
     public NavMenu build() {
         NavMenu navMenu = new NavMenu();
         navMenu.setId(id);
-        navMenu.setTerm(term);
+        navMenu.setName(name);
+        navMenu.setSlug(slug);
         navMenu.setTaxonomy(taxonomy);
         navMenu.setDescription(description);
         navMenu.setCount(count);

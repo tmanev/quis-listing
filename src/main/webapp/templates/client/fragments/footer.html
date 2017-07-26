@@ -9,7 +9,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li th:each="navMenuItem : ${baseModel.footerMenus}">
-                        <a th:href="@{${navMenuItem.refPost.name}}" th:text="${navMenuItem.title}"></a>
+                        <a th:href="@{/{path}(path=${navMenuItem.staticPage.name})}" th:text="${navMenuItem.staticPage.title}"></a>
                     </li>
                 </ul>
             </div>

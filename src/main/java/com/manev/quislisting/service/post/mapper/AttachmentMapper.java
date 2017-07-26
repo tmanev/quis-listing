@@ -1,76 +1,103 @@
 package com.manev.quislisting.service.post.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.PostMeta;
-import com.manev.quislisting.domain.post.discriminator.Attachment;
+import com.manev.quislisting.domain.DlAttachment;
+import com.manev.quislisting.domain.DlAttachmentResize;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
-import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
-import static com.manev.quislisting.domain.post.discriminator.Attachment.QL_ATTACHED_FILE;
-import static com.manev.quislisting.domain.post.discriminator.Attachment.QL_ATTACHMENT_METADATA;
+import java.util.Set;
 
 @Component
 public class AttachmentMapper {
 
-    private final Logger log = LoggerFactory.getLogger(AttachmentMapper.class);
+    private DlAttachmentResizeMapper dlAttachmentResizeMapper;
 
-    public Attachment attachmentDTOToAttachment(AttachmentDTO attachmentDTO) {
-        Attachment attachment = null;
-        try {
-            attachment = new Attachment();
-            attachment.setId(attachmentDTO.getId());
-            attachment.setName(attachmentDTO.getName());
-            attachment.setTitle(attachmentDTO.getTitle());
-            attachment.setMimeType(attachmentDTO.getMimeType());
-            attachment.setStatus(attachmentDTO.getStatus());
-            attachment.setCreated(attachmentDTO.getCreated());
-            attachment.setModified(attachmentDTO.getModified());
+    public AttachmentMapper(DlAttachmentResizeMapper dlAttachmentResizeMapper) {
+        this.dlAttachmentResizeMapper = dlAttachmentResizeMapper;
+    }
 
-            attachment.addPostMeta(new PostMeta(attachment, QL_ATTACHED_FILE, attachmentDTO.getAttachmentMetadata().getDetail().getFile()));
-            attachment.addPostMeta(new PostMeta(attachment, QL_ATTACHMENT_METADATA, new ObjectMapper().writeValueAsString(attachmentDTO.getAttachmentMetadata())));
-        } catch (IOException e) {
-            log.error("Error writing Obj to Json", e);
+    public DlAttachment attachmentDTOToAttachment(AttachmentDTO attachmentDTO) {
+        DlAttachment attachment = new DlAttachment();
+        attachment.setId(attachmentDTO.getId());
+        attachment.setFileName(attachmentDTO.getFileName());
+        attachment.setFileNameSlug(attachmentDTO.getFileNameSlug());
+        attachment.setMimeType(attachmentDTO.getAttachmentMetadata().getDetail().getMimeType());
+        attachment.setSize(attachmentDTO.getAttachmentMetadata().getDetail().getSize());
+        attachment.setWidth(attachmentDTO.getAttachmentMetadata().getDetail().getWidth());
+        attachment.setHeight(attachmentDTO.getAttachmentMetadata().getDetail().getHeight());
+        attachment.setPath(attachmentDTO.getAttachmentMetadata().getDetail().getFile());
+
+        AttachmentMetadata attachmentMetadata = attachmentDTO.getAttachmentMetadata();
+
+        if (attachmentMetadata.getBigImageResizeMeta() != null) {
+            DlAttachmentResize dlAttachmentResizeBig = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getBigImageResizeMeta(), DlAttachmentResize.SizeType.BIG, attachment);
+            attachment.addDlAttachmentResize(dlAttachmentResizeBig);
+        }
+
+        if (attachmentMetadata.getMediumImageResizeMeta() != null) {
+            DlAttachmentResize dlAttachmentResizeMedium = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getMediumImageResizeMeta(), DlAttachmentResize.SizeType.MEDIUM, attachment);
+            attachment.addDlAttachmentResize(dlAttachmentResizeMedium);
+        }
+
+        if (attachmentMetadata.getSmallImageResizeMeta() != null) {
+            DlAttachmentResize dlAttachmentResizeSmall = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getSmallImageResizeMeta(), DlAttachmentResize.SizeType.SMALL, attachment);
+            attachment.addDlAttachmentResize(dlAttachmentResizeSmall);
         }
 
         return attachment;
     }
 
-    public AttachmentDTO attachmentToAttachmentDTO(Attachment attachment) {
-        AttachmentDTO attachmentDTO = null;
-        try {
-            attachmentDTO = new AttachmentDTO();
-            attachmentDTO.setId(attachment.getId());
-            attachmentDTO.setName(attachment.getName());
-            attachmentDTO.setTitle(attachment.getTitle());
-            attachmentDTO.setCreated(attachment.getCreated());
-            attachmentDTO.setModified(attachment.getModified());
-            attachmentDTO.setMimeType(attachment.getMimeType());
-            attachmentDTO.setStatus(attachment.getStatus());
+    public AttachmentDTO attachmentToAttachmentDTO(DlAttachment attachment) {
+        AttachmentDTO attachmentDTO = new AttachmentDTO();
+        AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
+        AttachmentMetadata.DetailSize detailSize = new AttachmentMetadata.DetailSize();
+        attachmentMetadata.setDetail(detailSize);
 
-            String attachmentMetadataStr = attachment.getPostMetaValue(QL_ATTACHMENT_METADATA);
-            if (attachmentMetadataStr != null) {
-                AttachmentMetadata attachmentMetadata = new ObjectMapper().readValue(attachmentMetadataStr,
-                        AttachmentMetadata.class);
-                attachmentDTO.setAttachmentMetadata(attachmentMetadata);
+        attachmentDTO.setId(attachment.getId());
+        attachmentDTO.setFileName(attachment.getFileName());
+        attachmentDTO.setFileNameSlug(attachment.getFileNameSlug());
+
+        detailSize.setMimeType(attachment.getMimeType());
+        detailSize.setWidth(attachment.getWidth());
+        detailSize.setHeight(attachment.getHeight());
+        detailSize.setSize(attachment.getSize());
+        detailSize.setFile(attachment.getPath());
+
+        Set<DlAttachmentResize> dlAttachmentResizes = attachment.getDlAttachmentResizes();
+        if (dlAttachmentResizes != null) {
+            for (DlAttachmentResize dlAttachmentResize : dlAttachmentResizes) {
+                switch (dlAttachmentResize.getSizeType()) {
+                    case BIG:
+                        attachmentMetadata.setBigImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.BIG.name(), dlAttachmentResize));
+                        break;
+                    case MEDIUM:
+                        attachmentMetadata.setMediumImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.MEDIUM.name(), dlAttachmentResize));
+                        break;
+                    case SMALL:
+                        attachmentMetadata.setSmallImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.SMALL.name(), dlAttachmentResize));
+                        break;
+                    default:
+                        throw new RuntimeException("This should not happen");
+                }
             }
-
-            setAuthor(attachment, attachmentDTO);
-        } catch (IOException e) {
-            log.error("Error reading Json string to Obj", e);
         }
+        attachmentDTO.setAttachmentMetadata(attachmentMetadata);
 
         return attachmentDTO;
     }
 
-    private void setAuthor(Attachment attachment, AttachmentDTO attachmentDTO) {
-        User user = attachment.getUser();
-        attachmentDTO.setAuthor(new UserDTO(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
+    private AttachmentMetadata.ImageResizeMeta createImageResizeMeta(String name, DlAttachmentResize dlAttachmentResize) {
+        AttachmentMetadata.ImageResizeMeta imageResizeMeta = new AttachmentMetadata.ImageResizeMeta();
+        imageResizeMeta.setName(name);
+        AttachmentMetadata.DetailSize detail = new AttachmentMetadata.DetailSize();
+        detail.setFile(dlAttachmentResize.getPath());
+        detail.setWidth(dlAttachmentResize.getWidth());
+        detail.setHeight(dlAttachmentResize.getHeight());
+        detail.setSize(dlAttachmentResize.getSize());
+        detail.setMimeType(dlAttachmentResize.getMimeType());
+        imageResizeMeta.setDetail(detail);
+        return imageResizeMeta;
     }
+
 }

@@ -1,13 +1,11 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.builder.DlCategoryDTOBuilder;
-import com.manev.quislisting.service.taxonomy.dto.builder.TermDTOBuilder;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,23 +16,29 @@ import java.util.Set;
 @Component
 public class DlCategoryMapper {
 
-    public DlCategory dlCategoryDTOTodlCategory(DlCategoryDTO dlCategoryDTO) {
+    public DlCategory dlCategoryDtoToDlCategory(DlCategoryDTO dlCategoryDTO) {
         return DlCategoryBuilder.aDlCategory()
                 .withId(dlCategoryDTO.getId())
-                .withTerm(TermBuilder.aTerm()
-                        .withId(dlCategoryDTO.getTerm().getId())
-                        .withName(dlCategoryDTO.getTerm().getName())
-                        .withSlug(dlCategoryDTO.getTerm().getSlug())
-                        .build())
+                .withName(dlCategoryDTO.getName())
+                .withSlug(dlCategoryDTO.getSlug())
                 .withDescription(dlCategoryDTO.getDescription())
                 .withTranslation(
                         TranslationBuilder.aTranslation()
                                 .withLanguageCode(dlCategoryDTO.getLanguageCode())
+                                .withTranslationGroup(new TranslationGroup())
+                                .withSourceLanguageCode(dlCategoryDTO.getSourceLanguageCode())
                                 .build())
                 .build();
     }
 
-    public List<DlCategoryDTO> dlCategoryToDlCategoryDtoFlat(Page<DlCategory> page) {
+    public DlCategory dlCategoryDtoToDlCategory(DlCategory existingDlCategory, DlCategoryDTO dlCategoryDTO) {
+        existingDlCategory.setName(dlCategoryDTO.getName());
+        existingDlCategory.setDescription(dlCategoryDTO.getDescription());
+
+        return existingDlCategory;
+    }
+
+    public List<DlCategoryDTO> dlCategoryToDlCategoryDtoFlat(List<DlCategory> page) {
         Set<Long> ids = new HashSet<>();
 
         List<DlCategoryDTO> result = new ArrayList<>();
@@ -69,15 +73,14 @@ public class DlCategoryMapper {
     public DlCategoryDTO dlCategoryToDlCategoryDTO(DlCategory dlCategory) {
         return DlCategoryDTOBuilder.aDlCategoryDTO()
                 .withId(dlCategory.getId())
-                .withTerm(TermDTOBuilder.aTerm()
-                        .withId(dlCategory.getTerm().getId())
-                        .withName(dlCategory.getTerm().getName())
-                        .withSlug(dlCategory.getTerm().getSlug())
-                        .build())
+                .withName(dlCategory.getName())
+                .withSlug(dlCategory.getSlug())
                 .withDescription(dlCategory.getDescription())
                 .withParentId(dlCategory.getParent() != null ? dlCategory.getParent().getId() : null)
                 .withCount(dlCategory.getCount())
-                .withLanguageId(dlCategory.getTranslation() != null ? dlCategory.getTranslation().getLanguageCode() : null)
+                .withLanguageCode(dlCategory.getTranslation() != null ? dlCategory.getTranslation().getLanguageCode() : null)
+                .withSourceLanguageCode(dlCategory.getTranslation().getSourceLanguageCode())
+                .withTranslationGroupId(dlCategory.getTranslation().getTranslationGroup().getId())
                 .build();
     }
 

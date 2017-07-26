@@ -4,13 +4,13 @@ import java.util.List;
 
 public class NavMenuDTO extends TermTaxonomyDTO {
 
-    private List<NavMenuItemDTO> navMenuItemDTOs;
+    private List<StaticPageNavMenuDTO> staticPageNavMenuDTOS;
 
-    public List<NavMenuItemDTO> getNavMenuItemDTOs() {
-        return navMenuItemDTOs;
+    public List<StaticPageNavMenuDTO> getStaticPageNavMenuDTOS() {
+        return staticPageNavMenuDTOS;
     }
 
-    public void setNavMenuItemDTOs(List<NavMenuItemDTO> navMenuItemDTOs) {
-        this.navMenuItemDTOs = navMenuItemDTOs;
+    public void setStaticPageNavMenuDTOS(List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
+        this.staticPageNavMenuDTOS = staticPageNavMenuDTOS;
     }
 }

@@ -2,16 +2,11 @@ package com.manev.quislisting.web.rest.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.QuisListingApp;
-import com.manev.quislisting.domain.DlContentField;
-import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.TranslationGroup;
-import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.domain.post.PostMeta;
-import com.manev.quislisting.domain.post.discriminator.Attachment;
+import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.DlContentFieldRepository;
@@ -20,13 +15,13 @@ import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
+import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.post.DlListingService;
-import com.manev.quislisting.service.post.dto.AttachmentDTO;
-import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.DlListingField;
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
-import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
-import com.manev.quislisting.service.util.SlugUtil;
+import com.manev.quislisting.service.post.dto.*;
+import com.manev.quislisting.service.post.mapper.DlListingMapper;
+import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
+import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
+import com.manev.quislisting.web.rest.DlContentFieldResourceTest;
 import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
@@ -41,12 +36,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -54,15 +44,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.LocaleResolver;
 
-import javax.persistence.EntityManager;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static com.manev.quislisting.domain.post.PostMeta.*;
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LISTINGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -72,22 +61,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = QuisListingApp.class)
 public class DlListingResourceTest extends GenericResourceTest {
 
+    private static final String SHOULD_NOT_BE_THIS_NAME = "SHOULD_NOT_BE_THIS_NAME";
+    private static final long TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS = 10000L;
+    private static final ZonedDateTime ZONED_DATE_TIME_SHOULD_NOT_BE_THIS = ZonedDateTime.now();
+    private static final String LANGUAGE_CODE_SHOULD_NOT_BE_THIS = "LANGUAGE_CODE_SHOULD_NOT_BE_THIS";
+    private static final String SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS = "SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS";
+    private static final String UPDATE_CONTENT = "UPDATE_CONTENT";
     private static final String DEFAULT_TITLE = "DEFAULT_TITLE";
     private static final String DEFAULT_CONTENT = "DEFAULT_CONTENT";
     private static final String DEFAULT_NAME = "default_title";
     private static final String DEFAULT_LANGUAGE_CODE = "en";
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
     private static final ZonedDateTime DEFAULT_MODIFIED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
-    private static final DlListing.Status DEFAULT_STATUS = DlListing.Status.UNFINISHED;
-
+    private static final DlListing.Status DEFAULT_STATUS = DlListing.Status.DRAFT;
     private static final String META_VALUE_EXPIRATION_DATE = "1486908703";
-
     private static final String META_VALUE_ATTACHED_IMAGE_00 = "232";
     private static final String META_VALUE_ATTACHED_IMAGE_01 = "233";
     private static final String META_VALUE_ATTACHED_IMAGE_02 = "234";
     private static final String META_VALUE_ATTACHED_IMAGE_03 = "235";
-
-
     private static final String META_VALUE_CONTENT_FIELD_20 = "24";
     private static final String META_VALUE_CONTENT_FIELD_21 = "175";
     private static final String META_VALUE_CONTENT_FIELD_22 = "55";
@@ -103,9 +94,11 @@ public class DlListingResourceTest extends GenericResourceTest {
     private static final String META_KEY_MAP_ZOOM = "_map_zoom";
     private static final String META_VALUE_CLICKS_DATA = "{\"2017-01\", \"2\"}";
     private static final String META_VALUE_TOTAL_CLICKS = "2";
-
     @Autowired
     private DlListingService dlListingService;
+
+    @Autowired
+    private LocaleResolver localeResolver;
 
     @Autowired
     private DlListingRepository dlListingRepository;
@@ -126,22 +119,29 @@ public class DlListingResourceTest extends GenericResourceTest {
     private DlContentFieldRepository dlContentFieldRepository;
 
     @Autowired
+    private DlCategoryMapper dlCategoryMapper;
+
+    @Autowired
+    private DlLocationMapper dlLocationMapper;
+
+    @Autowired
+    private DlListingMapper dlListingMapper;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-    @Autowired
-    private EntityManager em;
 
     private MockMvc restDlListingMockMvc;
 
     private DlListing dlListing;
     private DlCategory dlCategory;
     private DlLocation dlLocation;
-    private User user;
+    private DlContentField dlPhoneCF;
+    private DlContentField dlHeightCF;
 
-    public static DlListing createEntity(EntityManager em) {
+    public static DlListing createEntity() {
         return DlListingBuilder.aDlListing()
                 .withTitle(DEFAULT_TITLE)
                 .withContent(DEFAULT_CONTENT)
@@ -150,119 +150,57 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .withModified(DEFAULT_MODIFIED)
                 .withStatus(DEFAULT_STATUS)
                 .withTranslation(TranslationBuilder.aTranslation()
-                        .withLanguageCode("en")
+                        .withLanguageCode(DEFAULT_LANGUAGE_CODE)
                         .withTranslationGroup(new TranslationGroup())
                         .build())
                 .build();
     }
 
-    public static Set<PostMeta> createPostMeta(AbstractPost abstractPost) {
-        Set<PostMeta> postMetas = new HashSet<>();
-        postMetas.add(new PostMeta(abstractPost, META_KEY_EXPIRATION_DATE, META_VALUE_EXPIRATION_DATE));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_00));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_01));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_02));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE, META_VALUE_ATTACHED_IMAGE_03));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CONTENT_FIELD_20, META_VALUE_CONTENT_FIELD_20));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CONTENT_FIELD_21, META_VALUE_CONTENT_FIELD_21));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CONTENT_FIELD_22, META_VALUE_CONTENT_FIELD_22));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ATTACHED_IMAGE_AS_LOGO, META_VALUE_ATTACHED_IMAGE_AS_LOGO));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_THUMBNAIL_ID, META_VALUE_THUMBNAIL_ID));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_LISTING_STATUS, META_VALUE_LISTING_STATUS));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_POST_VIEWS_COUNT, META_VALUE_POST_VIEWS_COUNT));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_LOCATION_ID, META_VALUE_LOCATION_ID));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ADDRESS_LINE_1, META_VALUE_ADDRESS_LINE_1));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_ADDRESS_LINE_2, META_VALUE_ADDRESS_LINE_2));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_MAP_COORDS_1, META_VALUE_MAP_COORDS_1));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_MAP_COORDS_2, META_VALUE_MAP_COORDS_2));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_MAP_ZOOM, META_VALUE_MAP_ZOOM));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_CLICKS_DATA, META_VALUE_CLICKS_DATA));
-        postMetas.add(new PostMeta(abstractPost, META_KEY_TOTAL_CLICKS, META_VALUE_TOTAL_CLICKS));
-
-        return postMetas;
-    }
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingResource dlListingResource = new DlListingResource(dlListingService);
+        DlListingResource dlListingResource = new DlListingResource(dlListingService, localeResolver);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
-        setupSecurityContext();
     }
 
     @Before
     public void initTest() {
-        dlListingRepository.deleteAll();
-
-        // setup user in security
-        user = userRepository.findOneByLogin("admin").get();
-
         // setup dlListing
-        dlListing = createEntity(em);
-        dlListing.setPostMeta(createPostMeta(dlListing));
+        dlListing = createEntity();
+        dlListing.setUser(userRepository.findOneByLogin("user").orElse(null));
 
         // setup dl category availability
-        dlCategoryRepository.deleteAllByParent(null);
         dlCategory = DlCategoryResourceIntTest.createEntity();
 
         // setup dl location availability
-        dlLocationRepository.deleteAllByParent(null);
         dlLocation = DlLocationResourceIntTest.createEntity();
 
-
-    }
-
-    private List<DlContentField> createContentFieldsForCategory(DlCategory dlCategory) {
-        List<DlContentField> dlContentFields = new ArrayList<>();
-
-        Set<DlCategory> dlCategories = new HashSet<>();
-        dlCategories.add(dlCategory);
-
-        dlContentFields.add(createNumberContentField("Height", 1, dlCategories));
-        dlContentFields.add(createNumberContentField("Phone", 2, dlCategories));
-
-        return dlContentFields;
-    }
-
-    private DlContentField createNumberContentField(String name, Integer orderNum, Set<DlCategory> dlCategories) {
-        DlContentField numberDlContentField = new DlContentField();
-        numberDlContentField.setCoreField(Boolean.FALSE);
-        numberDlContentField.setOrderNum(orderNum);
-        numberDlContentField.setName(name);
-        numberDlContentField.setSlug(SlugUtil.getFileNameSlug(name));
-        numberDlContentField.setDescription("Some description");
-        numberDlContentField.setType("number");
-        numberDlContentField.setRequired(Boolean.TRUE);
-        numberDlContentField.hasConfiguration(Boolean.FALSE);
-        numberDlContentField.hasSearchConfiguration(Boolean.FALSE);
-        numberDlContentField.canBeOrdered(Boolean.FALSE);
-        numberDlContentField.hideName(Boolean.FALSE);
-        numberDlContentField.onExcerptPage(Boolean.FALSE);
-        numberDlContentField.onListingPage(Boolean.FALSE);
-        numberDlContentField.onSearchForm(Boolean.FALSE);
-        numberDlContentField.onAdvancedSearchForm(Boolean.FALSE);
-        numberDlContentField.onMap(Boolean.FALSE);
-        numberDlContentField.options("");
-        numberDlContentField.searchOptions("");
-        numberDlContentField.setDlCategories(dlCategories);
-        return numberDlContentField;
+        // setup dl content fields
+        dlHeightCF = DlContentFieldResourceTest.createField(DlContentField.Type.NUMBER, "Height", 1,
+                Collections.singleton(dlCategory));
+        dlHeightCF.qlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-" + DlContentField.Type.NUMBER + "-" + dlHeightCF.getName()).value(dlHeightCF.getName()).status(0));
+        dlPhoneCF = DlContentFieldResourceTest.createField(DlContentField.Type.NUMBER, "Phone", 2,
+                Collections.singleton(dlCategory));
+        dlPhoneCF.qlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-" + DlContentField.Type.NUMBER + "-" + dlPhoneCF.getName()).value(dlPhoneCF.getName()).status(0));
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void getAllDlListings() throws Exception {
         // Initialize the database
         dlCategoryRepository.saveAndFlush(dlCategory);
-        dlListing.setUser(user);
+        Optional<User> user = userRepository.findOneByLogin("user");
+        dlListing.setUser(user.orElse(null));
         dlListing.setDlCategories(new HashSet<DlCategory>() {{
             add(dlCategory);
         }});
         dlListingRepository.saveAndFlush(dlListing);
 
         // Get all the navMenus
-        ResultActions resultActions = restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "?sort=id,desc&languageCode=en"));
+        ResultActions resultActions = restDlListingMockMvc.perform(get(RESOURCE_API_DL_LISTINGS + "?sort=id,desc&languageCode=en"));
         resultActions.andDo(MockMvcResultHandlers.print());
         resultActions
                 .andExpect(status().isOk())
@@ -272,20 +210,43 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].term.name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].term.slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
+                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void createDlListing() throws Exception {
         int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+        dlCategoryRepository.saveAndFlush(dlCategory);
+        dlLocationRepository.saveAndFlush(dlLocation);
+        dlContentFieldRepository.saveAndFlush(dlHeightCF);
+        dlContentFieldRepository.saveAndFlush(dlPhoneCF);
 
-        DlListingDTO dlListingDTO = new DlListingDTO();
-        dlListingDTO.setTitle(DEFAULT_TITLE);
-        dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+        DlListingDTO dlListingDTO = DlListingDTOBuilder.aDlListingDTO()
+                .withTitle(DEFAULT_TITLE)
+                .withContent(DEFAULT_CONTENT)
+                .withName(SHOULD_NOT_BE_THIS_NAME)
+                .withCreated(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS)
+                .withModified(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS)
+                .withAuthor(new UserDTO(10000L, "some_login", "some first name", "some last name"))
+                .withLanguageCode(LANGUAGE_CODE_SHOULD_NOT_BE_THIS)
+                .withSourceLanguageCode(SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS)
+                .withTranslationGroupId(TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS)
+                .addTranslation(TranslationDTOBuilder.aTranslationDTO()
+                        .withId(1000L)
+                        .build())
+                .withStatus(DlListing.Status.PUBLISH)
+                .addDlCategory(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory))
+                .addDlLocation(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation))
+                .addDlListingField(new DlListingFieldDTO(dlHeightCF.getId(), "180"))
+                .addDlListingField(new DlListingFieldDTO(dlPhoneCF.getId(), "+123 456 555"))
+                .withExpirationDate("2020-01-01")
+                .build();
 
-        restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+
+        restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated());
@@ -294,67 +255,78 @@ public class DlListingResourceTest extends GenericResourceTest {
         List<DlListing> dlListingList = dlListingRepository.findAll();
         assertThat(dlListingList).hasSize(databaseSizeBeforeCreate + 1);
 
+        Optional<User> optionalUser = userRepository.findOneByLogin("user");
+        User user = optionalUser.orElse(null);
+
         DlListing dlListingSaved = dlListingList.get(dlListingList.size() - 1);
         assertThat(dlListingSaved.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(dlListingSaved.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.UNFINISHED);
-        assertThat(dlListingSaved.getTranslation().getLanguageCode()).isEqualTo(DEFAULT_LANGUAGE_CODE);
+        assertThat(dlListingSaved.getContent()).isEqualTo(DEFAULT_CONTENT);
+        assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.DRAFT);
+        assertThat(dlListingSaved.getTranslation().getLanguageCode()).isEqualTo(user.getLangKey());
+        assertThat(dlListingSaved.getTranslation().getSourceLanguageCode()).isNull();
+        assertThat(dlListingSaved.getTranslation().getTranslationGroup().getId()).isNotEqualTo(TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS);
+        assertThat(dlListingSaved.getDlCategories().iterator().next().getId()).isEqualTo(dlCategory.getId());
+        assertThat(dlListingSaved.getDlListingLocationRels().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
+        assertThat(dlListingSaved.getUser().getId()).isEqualTo(user.getId());
+        assertThat(dlListingSaved.getCreated()).isNotEqualTo(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS);
+        assertThat(dlListingSaved.getModified()).isNotEqualTo(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS);
+        assertThat(dlListingSaved.getDlAttachments()).isNull();
+
+        Set<DlListingContentFieldRel> dlListingContentFieldRels = dlListingSaved.getDlListingContentFieldRels();
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
+                dlContentFieldRelationship.getDlContentField().getId().equals(dlHeightCF.getId()))
+                .findFirst()
+                .ifPresent(dlContentFieldRelationship -> {
+                    assertThat(dlContentFieldRelationship.getValue()).isEqualTo("180");
+                });
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
+                dlContentFieldRelationship.getDlContentField().getId().equals(dlPhoneCF.getId()))
+                .findFirst()
+                .ifPresent(dlContentFieldRelationship -> {
+                    assertThat(dlContentFieldRelationship.getValue()).isEqualTo("+123 456 555");
+                });
+
+        assertThat(dlListingSaved.getDlListingLocationRels().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void updateDlListing() throws Exception {
+        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
         // initialize categories and location
         dlCategoryRepository.saveAndFlush(dlCategory);
         dlLocationRepository.saveAndFlush(dlLocation);
+        dlContentFieldRepository.saveAndFlush(dlHeightCF);
+        dlContentFieldRepository.saveAndFlush(dlPhoneCF);
 
-        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+        DlListingContentFieldRel dlListingContentFieldRelHeight = new DlListingContentFieldRel();
+        dlListingContentFieldRelHeight.setDlContentField(dlHeightCF);
+        dlListingContentFieldRelHeight.setDlListing(dlListing);
+        dlListingContentFieldRelHeight.setValue("180");
+        dlListing.addDlContentFieldRelationships(dlListingContentFieldRelHeight);
 
-        DlListingDTO dlListingDTO = new DlListingDTO();
-        dlListingDTO.setTitle(DEFAULT_TITLE);
-        dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+        DlListingContentFieldRel dlListingContentFieldRelPhone = new DlListingContentFieldRel();
+        dlListingContentFieldRelPhone.setDlContentField(dlPhoneCF);
+        dlListingContentFieldRelPhone.setDlListing(dlListing);
+        dlListingContentFieldRelPhone.setValue("+123 456 666");
+        dlListing.addDlContentFieldRelationships(dlListingContentFieldRelHeight);
 
-        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
-                .andExpect(status().isCreated())
-                .andReturn();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
+        dlListingRepository.saveAndFlush(dlListing);
 
-        DlListingDTO createdDlListingDTO = new ObjectMapper().readValue(contentAsString,
-                DlListingDTO.class);
+        DlListingDTO createdDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing);
 
         // making updates to the dlListing so at the end object is updated and published
-        createdDlListingDTO.setContent(DEFAULT_CONTENT);
-
-        // set category
-        DlCategoryDTO dlCategoryDTO = new DlCategoryDTO();
-        dlCategoryDTO.setId(dlCategory.getId());
-        createdDlListingDTO.setDlCategories(Collections.singletonList(dlCategoryDTO));
-
-        // set location
-        DlLocationDTO dlLocationDTO = new DlLocationDTO();
-        dlLocationDTO.setId(dlLocation.getId());
-        createdDlListingDTO.setDlLocations(Collections.singletonList(dlLocationDTO));
-
-        // set content fields
-        List<DlContentField> contentFieldsForCategory = createContentFieldsForCategory(dlCategory);
-        List<DlContentField> savedDlContentFieldsForCategory = dlContentFieldRepository.save(contentFieldsForCategory);
-
-        // create logic to save values in metadata of the dlListing
-        Long heightContentFieldId = findDlContentFieldByName("Height",
-                savedDlContentFieldsForCategory).getId();
-        DlListingField dlListingFieldHeight = new DlListingField(heightContentFieldId, "180");
-        createdDlListingDTO.addDlListingField(dlListingFieldHeight);
-        Long phoneContentFieldId = findDlContentFieldByName("Phone",
-                savedDlContentFieldsForCategory).getId();
-        DlListingField dlListingFieldPhone = new DlListingField(phoneContentFieldId, "+123 456 555");
-        createdDlListingDTO.addDlListingField(dlListingFieldPhone);
-
-        // set attachment is not part of this test
+        createdDlListingDTO.setContent(UPDATE_CONTENT);
+        createdDlListingDTO.setDlCategories(Collections.singletonList(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory)));
+        createdDlListingDTO.setDlLocations(Collections.singletonList(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation)));
+        createdDlListingDTO.getDlListingFields().clear();
+        createdDlListingDTO.addDlListingField(new DlListingFieldDTO(dlHeightCF.getId(), "190"));
+        createdDlListingDTO.addDlListingField(new DlListingFieldDTO(dlPhoneCF.getId(), "+123 456 666"));
 
         // make the put request for updating the listing
-        restDlListingMockMvc.perform(put(RESOURCE_API_ADMIN_DL_LISTINGS)
+        restDlListingMockMvc.perform(put(RESOURCE_API_DL_LISTINGS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(createdDlListingDTO)))
                 .andExpect(status().isOk());
@@ -366,18 +338,30 @@ public class DlListingResourceTest extends GenericResourceTest {
         DlListing dlListingSaved = dlListingList.get(dlListingList.size() - 1);
         assertThat(dlListingSaved.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(dlListingSaved.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(dlListingSaved.getContent()).isEqualTo(DEFAULT_CONTENT);
-        assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.UNFINISHED);
+        assertThat(dlListingSaved.getContent()).isEqualTo(UPDATE_CONTENT);
+        assertThat(dlListingSaved.getStatus()).isEqualTo(DlListing.Status.DRAFT);
         assertThat(dlListingSaved.getTranslation().getLanguageCode()).isEqualTo(DEFAULT_LANGUAGE_CODE);
         assertThat(dlListingSaved.getDlCategories().iterator().next().getId()).isEqualTo(dlCategory.getId());
-        assertThat(dlListingSaved.getDlLocations().iterator().next().getId()).isEqualTo(dlLocation.getId());
+        assertThat(dlListingSaved.getDlListingLocationRels().iterator().next().getDlLocation().getId()).isEqualTo(dlLocation.getId());
 
-        assertThat(dlListingSaved.getPostMetaValue(SlugUtil.metaContentFieldId(dlListingFieldHeight.getId()))).isEqualTo("180");
-        assertThat(dlListingSaved.getPostMetaValue(SlugUtil.metaContentFieldId(dlListingFieldPhone.getId()))).isEqualTo("+123 456 555");
+        Set<DlListingContentFieldRel> dlListingContentFieldRels = dlListingSaved.getDlListingContentFieldRels();
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
+                dlContentFieldRelationship.getDlContentField().getId().equals(dlHeightCF.getId()))
+                .findFirst()
+                .ifPresent(dlContentFieldRelationship -> {
+                    assertThat(dlContentFieldRelationship.getValue()).isEqualTo("190");
+                });
+        dlListingContentFieldRels.stream().filter(dlContentFieldRelationship ->
+                dlContentFieldRelationship.getDlContentField().getId().equals(dlPhoneCF.getId()))
+                .findFirst()
+                .ifPresent(dlContentFieldRelationship -> {
+                    assertThat(dlContentFieldRelationship.getValue()).isEqualTo("+123 456 666");
+                });
     }
 
     @Test
     @Transactional
+    @WithUserDetails
     public void publishDlListing() throws Exception {
         int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
 
@@ -385,7 +369,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         dlListingDTO.setTitle(DEFAULT_TITLE);
         dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
 
-        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated())
@@ -400,7 +384,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                 DlListingDTO.class);
 
         // make the put request for updating the listing
-        restDlListingMockMvc.perform(put(RESOURCE_API_ADMIN_DL_LISTINGS + "/publish")
+        restDlListingMockMvc.perform(put(RESOURCE_API_DL_LISTINGS + "/publish")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(createdDlListingDTO)))
                 .andExpect(status().isOk());
@@ -411,6 +395,7 @@ public class DlListingResourceTest extends GenericResourceTest {
 
     @Test
     @Transactional
+    @WithUserDetails
     public void uploadAttachmentToDlListing() throws Exception {
         int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
 
@@ -418,7 +403,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         dlListingDTO.setTitle(DEFAULT_TITLE);
         dlListingDTO.setLanguageCode(DEFAULT_LANGUAGE_CODE);
 
-        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LISTINGS)
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated())
@@ -438,7 +423,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         AttachmentDTO attachmentDTO = updatedDlListingDTO.getAttachments().get(0);
 
         // test removal of attachments
-        MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_LISTINGS + "/" + createdDlListingDTO.getId() + "/attachments/" + attachmentDTO.getId())
+        MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RESOURCE_API_DL_LISTINGS + "/" + createdDlListingDTO.getId() + "/attachments/" + attachmentDTO.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -449,7 +434,7 @@ public class DlListingResourceTest extends GenericResourceTest {
 
         // verify it also in database
         DlListing updatedDlListing = dlListingRepository.findOne(deletedAttachmentDlListingDTO.getId());
-        assertThat(updatedDlListing.getAttachments()).isEmpty();
+        assertThat(updatedDlListing.getDlAttachments()).isEmpty();
     }
 
     private DlListingDTO doFileUpload(Long id) throws Exception {
@@ -458,14 +443,14 @@ public class DlListingResourceTest extends GenericResourceTest {
         MockMultipartFile multipartFile =
                 new MockMultipartFile("files[]", imageFile.getName(), contentType, new FileInputStream(imageFile));
 
-        ResultActions resultActions = this.restDlListingMockMvc.perform(fileUpload(RESOURCE_API_ADMIN_DL_LISTINGS + "/" + id + "/upload")
+        ResultActions resultActions = this.restDlListingMockMvc.perform(fileUpload(RESOURCE_API_DL_LISTINGS + "/" + id + "/upload")
                 .file(multipartFile))
                 .andExpect(status().isOk());
         // test get call to verify the resource
         DlListing updatedDlListing = dlListingRepository.findOne(id);
-        Set<Attachment> attachments = updatedDlListing.getAttachments();
+        Set<DlAttachment> attachments = updatedDlListing.getDlAttachments();
         assertThat(attachments.size()).isEqualTo(1);
-        Attachment attachment = attachments.iterator().next();
+        DlAttachment attachment = attachments.iterator().next();
         attachmentsToBeDeletedFromJcrInAfter.add(attachment);
 
         MvcResult mvcResult = resultActions.andReturn();
@@ -479,7 +464,6 @@ public class DlListingResourceTest extends GenericResourceTest {
     @Transactional
     public void getActiveLanguages() throws Exception {
         // Initialize the database
-        dlListing.setUser(user);
         dlListingRepository.saveAndFlush(dlListing);
 
         Language lanEn = new Language().code("en").active(true).englishName("English");
@@ -492,7 +476,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         languageRepository.saveAndFlush(lanRu);
 
         // Get active languages
-        restDlListingMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LISTINGS + "/active-languages"))
+        restDlListingMockMvc.perform(get(RESOURCE_API_DL_LISTINGS + "/active-languages"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
@@ -500,12 +484,4 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
     }
 
-    private DlContentField findDlContentFieldByName(String name, List<DlContentField> dlContentFields) {
-        for (DlContentField dlContentField : dlContentFields) {
-            if (dlContentField.getName().equals(name)) {
-                return dlContentField;
-            }
-        }
-        return null;
-    }
 }

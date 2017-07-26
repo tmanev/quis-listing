@@ -1,25 +1,18 @@
 package com.manev.quislisting.domain.post.discriminator.builder;
 
 import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.PostMeta;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
 import java.time.ZonedDateTime;
-import java.util.Set;
 
 public final class DlListingBuilder {
     private Long id;
     private String title;
     private String content;
     private String name;
-    private String type;
     private DlListing.Status status;
     private ZonedDateTime created;
     private ZonedDateTime modified;
-    private Long commentCount = 0L;
-    private User user;
-    private Set<PostMeta> postMeta;
     private Translation translation;
 
     private DlListingBuilder() {
@@ -49,11 +42,6 @@ public final class DlListingBuilder {
         return this;
     }
 
-    public DlListingBuilder withType(String type) {
-        this.type = type;
-        return this;
-    }
-
     public DlListingBuilder withStatus(DlListing.Status status) {
         this.status = status;
         return this;
@@ -69,21 +57,6 @@ public final class DlListingBuilder {
         return this;
     }
 
-    public DlListingBuilder withCommentCount(Long commentCount) {
-        this.commentCount = commentCount;
-        return this;
-    }
-
-    public DlListingBuilder withUser(User user) {
-        this.user = user;
-        return this;
-    }
-
-    public DlListingBuilder withPostMeta(Set<PostMeta> postMeta) {
-        this.postMeta = postMeta;
-        return this;
-    }
-
     public DlListingBuilder withTranslation(Translation translation) {
         this.translation = translation;
         return this;
@@ -95,13 +68,9 @@ public final class DlListingBuilder {
         dlListing.setTitle(title);
         dlListing.setContent(content);
         dlListing.setName(name);
-        dlListing.setType(type);
         dlListing.setStatus(status);
         dlListing.setCreated(created);
         dlListing.setModified(modified);
-        dlListing.setCommentCount(commentCount);
-        dlListing.setUser(user);
-        dlListing.setPostMeta(postMeta);
         dlListing.setTranslation(translation);
         return dlListing;
     }

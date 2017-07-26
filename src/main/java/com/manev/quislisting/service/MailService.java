@@ -2,7 +2,6 @@ package com.manev.quislisting.service;
 
 import com.manev.quislisting.config.QuisListingProperties;
 import com.manev.quislisting.domain.User;
-import com.manev.quislisting.service.util.StringAndClassLoaderResourceResolver;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +11,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
 import javax.mail.internet.MimeMessage;
 import java.util.Locale;
@@ -37,29 +34,12 @@ public class MailService {
 
     private final MessageSource messageSource;
 
-    private final SpringTemplateEngine templateEngine;
-
-    private SpringTemplateEngine springTemplateEngine;
-
     public MailService(QuisListingProperties quisListingProperties, JavaMailSender javaMailSender,
-                       MessageSource messageSource, SpringTemplateEngine templateEngine) {
+                       MessageSource messageSource) {
 
         this.quisListingProperties = quisListingProperties;
         this.javaMailSender = javaMailSender;
         this.messageSource = messageSource;
-        this.templateEngine = templateEngine;
-
-        TemplateResolver resolver = new TemplateResolver();
-        resolver.setResourceResolver(new StringAndClassLoaderResourceResolver());
-        resolver.setPrefix("mail/"); // src/main/resources/mail
-        resolver.setSuffix(".html");
-        resolver.setTemplateMode("HTML5");
-        resolver.setCharacterEncoding(CharEncoding.UTF_8);
-        resolver.setOrder(1);
-
-        this.springTemplateEngine = new SpringTemplateEngine();
-        this.springTemplateEngine.setTemplateEngineMessageSource(messageSource);
-        this.springTemplateEngine.setTemplateResolver(resolver);
     }
 
     @Async
@@ -89,7 +69,10 @@ public class MailService {
         Context context = new Context(locale);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-        String content = templateEngine.process("creationEmail", context);
+
+//        String content = templateEngine.process("creationEmail", context);
+        String content = "Empty";
+
         String subject = messageSource.getMessage("email.activation.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
@@ -101,7 +84,8 @@ public class MailService {
         Context context = new Context(locale);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-        String content = templateEngine.process("passwordResetEmail", context);
+//        String content = templateEngine.process("passwordResetEmail", context);
+        String content = "Empty";
         String subject = messageSource.getMessage("email.reset.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }

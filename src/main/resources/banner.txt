@@ -1,0 +1,27 @@
+${AnsiColor.BRIGHT_MAGENTA}
+                       .:+syhhyyyo/`
+                    `-/osssyyyyyssyhy:
+                   .-+so//::--:+shhsshh-
+           ``     .-s/-.` `:///:``/dyssm-         ___          _        _      _       _    _
+     `:+syyys+   `.s/.`  `+yhhyso  .dysyd`       / _ \  _   _ (_) ___  | |    (_) ___ | |_ (_) _ __    __ _
+   .sddhhyyooy.  ..h..    :yhyys+`  omooN-      | | | || | | || |/ __| | |    | |/ __|| __|| || '_ \  / _` |
+ `omhyhdho/:--   ..y-.     -//:.`   sdssm.      | |_| || |_| || |\__ \ | |___ | |\__ \| |_ | || | | || (_| |
+ ymyhmy-   ``    `.:-.             :dsshy        \__\_\ \__,_||_||___/ |_____||_||___/ \__||_||_| |_| \__, |
+/NyyNs   :osso+`                ``-+//:+-``                                                           |___/
+hmhhM`  -yddddho                +--++///++/-.`
+ymyyM.  `+hddyo:   .-:-.        `-..`````.:+o/:.
+-Nhymh.  `-::-`   `:+h:-                  `-+ys+/
+ /mhhdd+.`      `.:+y/-`           `/+++:`  :oysy:
+  -hmhhhhso/::://oso:.            `+hhhyyo  `ysyyy
+    :shdhhhyyyso+/:.`              :yyyyo/  `dsyhy
+      `./ohssss:``          `::`    .:/:.   odssm:
+         hhsyd:            .-::.:.       `:hhssdo
+        -msomo   `/oso+:    .:y./yyo+/+osyhssyd/
+        :Noom+   -yhhhyo:   ..h./yyssssssyyhy+`
+        `dysyd.  `+yyyo:.  `./o.-+osyyyyso/.`
+         :mssyd/` `.--`  `.-/o-.
+          -hhsshhy+/::://+os/-`
+            :yhyyssyyyyssso:.`
+              `:oyyhyyso+:.
+
+Spring Boot : ${spring-boot.version}

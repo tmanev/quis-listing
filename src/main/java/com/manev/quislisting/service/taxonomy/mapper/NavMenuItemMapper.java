@@ -1,90 +1,67 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
-import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
+import com.manev.quislisting.domain.StaticPage;
+import com.manev.quislisting.domain.StaticPageNavMenuRel;
+import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
+import com.manev.quislisting.repository.StaticPageRepository;
 import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.repository.post.PostRepository;
-import com.manev.quislisting.security.SecurityUtils;
-import com.manev.quislisting.service.dto.RefItem;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
-import com.manev.quislisting.service.taxonomy.dto.NavMenuItemDTO;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.manev.quislisting.service.taxonomy.dto.StaticPageNavMenuDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class NavMenuItemMapper {
 
-    private PostRepository<AbstractPost> postRepository;
-    private UserRepository userRepository;
+    private StaticPageRepository staticPageRepository;
 
-    public NavMenuItemMapper(PostRepository<AbstractPost> postRepository, UserRepository userRepository) {
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
+    public NavMenuItemMapper(StaticPageRepository staticPageRepository) {
+        this.staticPageRepository = staticPageRepository;
     }
 
-    private NavMenuItem navMenuItemDtoToNavMenuItem(NavMenuDTO navMenuDTO, NavMenuItemDTO navMenuItemDTO) {
-        NavMenuItem navMenuItem = new NavMenuItem();
+    private StaticPageNavMenuRel navMenuItemDtoToNavMenuItem(NavMenu navMenu, StaticPageNavMenuDTO staticPageNavMenuDTO) {
+        StaticPageNavMenuRel staticPageNavMenuRel = new StaticPageNavMenuRel();
 
-        navMenuItem.setId(navMenuItemDTO.getId());
-        navMenuItem.setTitle(navMenuItemDTO.getTitle());
-        navMenuItem.setName(navMenuDTO.getTerm().getSlug() + "-" + navMenuItemDTO.getRefItem().getId() + "-" + navMenuItemDTO.getOrder());
-        navMenuItem.setContent("");
-        navMenuItem.setStatus(NavMenuItem.Status.PUBLISH);
-        navMenuItem.setCommentCount(0L);
-        ZonedDateTime currentDateTime = ZonedDateTime.now();
-        navMenuItem.setCreated(currentDateTime);
-        navMenuItem.setModified(currentDateTime);
-        navMenuItem.setPostOrder(navMenuItemDTO.getOrder());
-        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
-        if (oneByLogin.isPresent()) {
-            navMenuItem.setUser(oneByLogin.get());
-        }else {
-            throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
-                    "database");
-        }
+        staticPageNavMenuRel.setId(staticPageNavMenuDTO.getId());
+        staticPageNavMenuRel.setNavMenu(navMenu);
 
-        AbstractPost abstractPost = postRepository.findOne(navMenuItemDTO.getRefItem().getId());
-        navMenuItem.setRefPost(abstractPost);
+        StaticPage staticPage = staticPageRepository.findOne(staticPageNavMenuDTO.getId());
+        staticPageNavMenuRel.setStaticPage(staticPage);
 
-        return navMenuItem;
+        return staticPageNavMenuRel;
     }
 
-    public Set<NavMenuItem> navMenuItemDtoToNavMenuItem(NavMenuDTO navMenuDTO, List<NavMenuItemDTO> navMenuItemDTOS) {
-        Set<NavMenuItem> navMenuItems = new HashSet<>();
+    public Set<StaticPageNavMenuRel> navMenuItemDtoToNavMenuItem(NavMenu navMenuDTO, List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
+        Set<StaticPageNavMenuRel> navMenuItems = new HashSet<>();
 
-        for (NavMenuItemDTO navMenuItemDTO : navMenuItemDTOS) {
-            navMenuItems.add(navMenuItemDtoToNavMenuItem(navMenuDTO, navMenuItemDTO));
+        for (StaticPageNavMenuDTO staticPageNavMenuDTO : staticPageNavMenuDTOS) {
+            navMenuItems.add(navMenuItemDtoToNavMenuItem(navMenuDTO, staticPageNavMenuDTO));
         }
 
         return navMenuItems;
     }
 
-    public NavMenuItemDTO navMenuItemToNavMenuItemDto(NavMenuItem navMenuItem) {
-        NavMenuItemDTO navMenuItemDTO = new NavMenuItemDTO();
-        navMenuItemDTO.setId(navMenuItem.getId());
-        navMenuItemDTO.setTitle(navMenuItem.getTitle());
-        navMenuItemDTO.setOrder(navMenuItem.getPostOrder());
-        AbstractPost refPost = navMenuItem.getRefPost();
-        if (refPost != null) {
-            navMenuItemDTO.setRefItem(new RefItem(refPost.getId(), refPost.getName(), refPost.getTitle()));
-        }
+    public StaticPageNavMenuDTO navMenuItemToNavMenuItemDto(StaticPageNavMenuRel staticPageNavMenuRel) {
+        StaticPageNavMenuDTO staticPageNavMenuDTO = new StaticPageNavMenuDTO();
+        staticPageNavMenuDTO.setId(staticPageNavMenuRel.getId());
+        staticPageNavMenuDTO.setTitle(staticPageNavMenuRel.getStaticPage().getTitle());
+        staticPageNavMenuDTO.setOrder(staticPageNavMenuRel.getMenuOrder());
 
-        return navMenuItemDTO;
+        return staticPageNavMenuDTO;
     }
 
-    public List<NavMenuItemDTO> navMenuItemToNavMenuItemDto(Set<NavMenuItem> navMenuItemList) {
-        List<NavMenuItemDTO> navMenuItemDTOS = new ArrayList<>();
-        if (navMenuItemList != null) {
-            for (NavMenuItem navMenuItem : navMenuItemList) {
-                navMenuItemDTOS.add(navMenuItemToNavMenuItemDto(navMenuItem));
+    public List<StaticPageNavMenuDTO> navMenuItemToNavMenuItemDto(Set<StaticPageNavMenuRel> staticPageNavMenuRels) {
+        List<StaticPageNavMenuDTO> staticPageNavMenuDTOS = new ArrayList<>();
+        if (staticPageNavMenuRels != null) {
+            for (StaticPageNavMenuRel staticPageNavMenuRel : staticPageNavMenuRels) {
+                staticPageNavMenuDTOS.add(navMenuItemToNavMenuItemDto(staticPageNavMenuRel));
             }
         }
-        return navMenuItemDTOS;
+        return staticPageNavMenuDTOS;
     }
 
 }

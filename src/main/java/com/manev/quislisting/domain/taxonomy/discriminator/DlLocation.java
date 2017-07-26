@@ -1,6 +1,5 @@
 package com.manev.quislisting.domain.taxonomy.discriminator;
 
-import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 
 import javax.persistence.*;
@@ -18,9 +17,6 @@ public class DlLocation extends TermTaxonomy {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DlLocation> children;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy="dlLocations")
-    private Set<DlListing> dlListings;
-
     public DlLocation getParent() {
         return parent;
     }
@@ -37,11 +33,4 @@ public class DlLocation extends TermTaxonomy {
         this.children = children;
     }
 
-    public Set<DlListing> getDlListings() {
-        return dlListings;
-    }
-
-    public void setDlListings(Set<DlListing> dlListings) {
-        this.dlListings = dlListings;
-    }
 }

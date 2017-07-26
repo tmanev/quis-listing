@@ -21,17 +21,21 @@ public class ContentController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/files/{year}/{month}/{filename:.+}")
+    @GetMapping("/files/{year}/{month}/{day}/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable(name = "year") String yearStr,
                                               @PathVariable(name = "month") String monthStr,
+                                              @PathVariable(name = "day") String dayStr,
                                               @PathVariable String filename) {
         Integer year = Integer.valueOf(yearStr);
         Integer month = Integer.valueOf(monthStr);
+        Integer day = Integer.valueOf(dayStr);
 
         AttachmentStreamResource attachmentStreamResource = storageService.loadAsResource("/"
                 + year + "/"
-                + String.format("%02d", month) + "/" + filename);
+                + String.format("%02d", month) + "/"
+                + String.format("%02d", day) + "/"
+                + filename);
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_TYPE, attachmentStreamResource.getMimeType())

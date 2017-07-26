@@ -1,5 +1,5 @@
 AddListing = {
-    init: function () {
+    init: function (dlCategoriesDtoFlat, commonVar) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
@@ -16,62 +16,7 @@ AddListing = {
 
         const touchMap = new WeakMap();
 
-        var nodes = JSON.parse('[{"id":1,"term":{"id":1,"name":"Work","slug":"work"},"parentId":null,"description":"Work Description","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":2,"term":{"id":2,"name":"Real Estate - Sales","slug":"real-estate-sales"},"parentId":null,"description":"Sales of Real Estate","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":3,"term":{"id":3,"name":"Real Estate - Rents","slug":"real-estate-rents"},"parentId":null,"description":"Rents of Real Estate","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":4,"term":{"id":4,"name":"Auto - Moto","slug":"auto-moto"},"parentId":null,"description":"Auto Moto","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":5,"term":{"id":5,"name":"Automobiles, Jeeps, Trucks","slug":"automobiles-jeeps-trucks"},"parentId":4,"description":"Automobiles, Jeeps, Pickups any car","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":1},{"id":6,"term":{"id":6,"name":"Trucks","slug":"trucks"},"parentId":4,"description":"Trucks for you","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":1},{"id":1,"term":{"id":1,"name":"Work","slug":"work"},"parentId":null,"description":"Work Description","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":2,"term":{"id":2,"name":"Real Estate - Sales","slug":"real-estate-sales"},"parentId":null,"description":"Sales of Real Estate","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":3,"term":{"id":3,"name":"Real Estate - Rents","slug":"real-estate-rents"},"parentId":null,"description":"Rents of Real Estate","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":4,"term":{"id":4,"name":"Auto - Moto","slug":"auto-moto"},"parentId":null,"description":"Auto Moto","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":0},{"id":5,"term":{"id":5,"name":"Automobiles, Jeeps, Trucks","slug":"automobiles-jeeps-trucks"},"parentId":4,"description":"Automobiles, Jeeps, Pickups any car","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":1},{"id":6,"term":{"id":6,"name":"Trucks","slug":"trucks"},"parentId":4,"description":"Trucks for you","count":0,"languageCode":"en","sourceLanguageCode":null,"translationGroupId":null,"translations":null,"depthLevel":1}]');
-
-        var map = {}, node, roots = [];
-        for (var i = 0; i < nodes.length; i += 1) {
-            node = nodes[i];
-            node.children = [];
-            node.active = false;
-            map[node.id] = i; // use map to look-up the parents
-            if (node.parentId !== null) {
-                nodes[map[node.parentId]].children.push(node);
-            } else {
-                roots.push(node);
-            }
-        }
-        console.log(roots);
-
-        // define the item component
-        Vue.component('item', {
-            template: '#item-template',
-            props: {
-                model: Object
-            },
-            data: function () {
-                return {
-                    open: false
-                }
-            },
-            computed: {
-                isFolder: function () {
-                    return this.model.children &&
-                        this.model.children.length
-                },
-                getPanelId: function () {
-                    return 'category-panel-' + this._uid
-                },
-                getPanelIdWithHashTag: function () {
-                    return '#category-panel-' + this._uid
-                },
-                getHeadingId: function () {
-                    return 'category-heading-' + this._uid
-                },
-                getBodyId: function () {
-                    return 'category-body-' + this._uid
-                },
-                getBodyIdWithHashTag: function () {
-                    return '#category-body-' + this._uid
-                }
-            },
-            methods: {
-                selectCategory: function () {
-                    if (!(this.model.children && this.model.children.length)) {
-                        addListingApp.$emit('id-selected', this.model);
-                    }
-                }
-            }
-        });
+        var roots = MyListingsComponent.Utils.flatItemsToTree(dlCategoriesDtoFlat);
 
         var addListingApp = new Vue({
             el: '#addListingApp',
@@ -113,10 +58,10 @@ AddListing = {
                     } else {
                         var payload = {};
                         payload.title = this.listing.title;
-                        payload.categoryId = this.listing.selectedCategory.id;
+                        payload.dlCategories = [this.listing.selectedCategory];
                         var $btn = $('#btnNext').button('loading');
                         this.$http({
-                            url: '/api/client/dl-listings',
+                            url: '/api/dl-listings',
                             body: payload,
                             method: 'POST'
                         }).then(function (response) {
@@ -124,7 +69,8 @@ AddListing = {
                             $btn.button('reset');
 
                             // move the user to the next page
-                            window.location.href = response.headers.get('Location');
+                            let editUrl = '/my-listings/edit/' + response.data.id;
+                            window.location.href = editUrl;
 
                         }, function (response) {
                             console.log('Error!:', response.data);
@@ -145,7 +91,7 @@ AddListing = {
             }
         });
 
-        // var bus = new Vue();
+        commonVar.addListingApp = addListingApp;
 
         addListingApp.$on('id-selected', function (category) {
             if (this.listing.selectedCategory) {
@@ -154,7 +100,7 @@ AddListing = {
             this.listing.selectedCategory = category;
             this.listing.selectedCategory.active = true;
             this.listing.category.id = category.id;
-            this.listing.category.name = category.term.name;
+            this.listing.category.name = category.name;
         });
     }
 };

@@ -14,37 +14,36 @@
     <!--
         security configuration
     -->
-    <Security appName="Jackrabbit">
+    <Security appName="QuisListingJcr">
         <!--
             security manager:
             class: FQN of class implementing the JackrabbitSecurityManager interface
         -->
-        <SecurityManager class="org.apache.jackrabbit.core.DefaultSecurityManager" workspaceName="security">
-            <!--
-            workspace access:
-            class: FQN of class implementing the WorkspaceAccessManager interface
-            -->
-            <!-- <WorkspaceAccessManager class="..."/> -->
-            <!-- <param name="config" value="${rep.home}/security.xml"/> -->
-        </SecurityManager>
+        <!--<SecurityManager class="org.apache.jackrabbit.core.DefaultSecurityManager" workspaceName="security">-->
+            <!--&lt;!&ndash;-->
+            <!--workspace access:-->
+            <!--class: FQN of class implementing the WorkspaceAccessManager interface-->
+            <!--&ndash;&gt;-->
+            <!--&lt;!&ndash; <WorkspaceAccessManager class="..."/> &ndash;&gt;-->
+            <!--&lt;!&ndash; <param name="config" value="${rep.home}/security.xml"/> &ndash;&gt;-->
+        <!--</SecurityManager>-->
 
         <!--
             access manager:
             class: FQN of class implementing the AccessManager interface
         -->
-        <AccessManager class="org.apache.jackrabbit.core.security.DefaultAccessManager">
+        <AccessManager class="org.apache.jackrabbit.core.security.SimpleAccessManager">
             <!-- <param name="config" value="${rep.home}/access.xml"/> -->
         </AccessManager>
 
-        <LoginModule class="org.apache.jackrabbit.core.security.authentication.DefaultLoginModule">
-            <!--
-               anonymous user name ('anonymous' is the default value)
-             -->
+        <LoginModule class="org.apache.jackrabbit.core.security.SimpleLoginModule">
+            <!-- anonymous user name ('anonymous' is the default value) -->
             <param name="anonymousId" value="anonymous"/>
             <!--
                administrator user id (default value if param is missing is 'admin')
              -->
             <param name="adminId" value="admin"/>
+            <param name="defaultUserId" value="admin"/>
         </LoginModule>
     </Security>
 

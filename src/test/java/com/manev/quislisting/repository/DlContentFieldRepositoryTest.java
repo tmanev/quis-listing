@@ -27,10 +27,11 @@ public class DlContentFieldRepositoryTest {
 
     @Test
     public void findAllByCategoryAndNoCategory() {
-        List<DlCategory> all = dlCategoryRepository.findAll();
-        dlContentFieldRepository.findAllByDlCategories_idOrDlCategoriesIsNull(all.get(0).getId());
+        System.out.println(dlContentFieldRepository.findAll().size());
+
+        DlCategory dlCategory = dlCategoryRepository.findOne(2L);
+        List<DlContentField> allByDlCategoriesOrDlCategoriesIsNull = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNull(dlCategory);
+        System.out.println(allByDlCategoriesOrDlCategoriesIsNull.size());
     }
-
-
 
 }

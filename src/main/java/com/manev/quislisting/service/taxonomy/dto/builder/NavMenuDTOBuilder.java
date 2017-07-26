@@ -1,19 +1,19 @@
 package com.manev.quislisting.service.taxonomy.dto.builder;
 
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
-import com.manev.quislisting.service.taxonomy.dto.NavMenuItemDTO;
-import com.manev.quislisting.service.taxonomy.dto.TermDTO;
+import com.manev.quislisting.service.taxonomy.dto.StaticPageNavMenuDTO;
 
 import java.util.List;
 
 public final class NavMenuDTOBuilder {
     private Long id;
-    private TermDTO term;
+    private String name;
+    private String slug;
     private Long parentId;
     private String description;
     private Long count;
     private String languageCode;
-    private List<NavMenuItemDTO> navMenuItemDTOList;
+    private List<StaticPageNavMenuDTO> staticPageNavMenuDTOList;
     private String sourceLanguageCode;
     private Long translationGroupId;
 
@@ -29,8 +29,13 @@ public final class NavMenuDTOBuilder {
         return this;
     }
 
-    public NavMenuDTOBuilder withTerm(TermDTO term) {
-        this.term = term;
+    public NavMenuDTOBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public NavMenuDTOBuilder withSlug(String slug) {
+        this.slug = slug;
         return this;
     }
 
@@ -54,20 +59,21 @@ public final class NavMenuDTOBuilder {
         return this;
     }
 
-    public NavMenuDTOBuilder withNavMenuItemDTOList(List<NavMenuItemDTO> navMenuItemDTOList) {
-        this.navMenuItemDTOList = navMenuItemDTOList;
+    public NavMenuDTOBuilder withNavMenuItemDTOList(List<StaticPageNavMenuDTO> staticPageNavMenuDTOList) {
+        this.staticPageNavMenuDTOList = staticPageNavMenuDTOList;
         return this;
     }
 
     public NavMenuDTO build() {
         NavMenuDTO navMenuDTO = new NavMenuDTO();
         navMenuDTO.setId(id);
-        navMenuDTO.setTerm(term);
+        navMenuDTO.setName(name);
+        navMenuDTO.setSlug(slug);
         navMenuDTO.setParentId(parentId);
         navMenuDTO.setDescription(description);
         navMenuDTO.setCount(count);
         navMenuDTO.setLanguageCode(languageCode);
-        navMenuDTO.setNavMenuItemDTOs(navMenuItemDTOList);
+        navMenuDTO.setStaticPageNavMenuDTOS(staticPageNavMenuDTOList);
         navMenuDTO.setSourceLanguageCode(sourceLanguageCode);
         navMenuDTO.setTranslationGroupId(translationGroupId);
         return navMenuDTO;

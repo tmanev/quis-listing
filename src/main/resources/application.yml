@@ -27,16 +27,19 @@ spring:
     mvc:
         favicon:
             enabled: true
-#    thymeleaf:
-#        prefix: /templates/
-#        suffix: .html
-#        mode: HTML5
-#        encoding: UTF-8
-#        template-resolver-order: 1
+    thymeleaf:
+        prefix: /templates/
+        suffix: .html
+        mode: HTML
+        encoding: UTF-8
+        template-resolver-order: 1
 
     http:
       multipart:
         max-file-size: 50MB
+    messages:
+      basename: messages, bean-validation-messages
+
 
 # ===================================================================
 # Quis Listing specific properties

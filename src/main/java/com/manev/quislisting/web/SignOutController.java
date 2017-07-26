@@ -4,7 +4,7 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.QlConfigService;
-import com.manev.quislisting.service.post.AbstractPostService;
+import com.manev.quislisting.service.post.StaticPageService;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Controller;
@@ -27,9 +27,9 @@ public class SignOutController extends BaseController {
     public SignOutController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                              LanguageRepository languageRepository, LocaleResolver localeResolver,
                              LanguageTranslationRepository languageTranslationRepository,
-                             AbstractPostService abstractPostService) {
+                             StaticPageService staticPageService) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                abstractPostService);
+                staticPageService);
     }
 
     @RequestMapping(method = RequestMethod.GET)

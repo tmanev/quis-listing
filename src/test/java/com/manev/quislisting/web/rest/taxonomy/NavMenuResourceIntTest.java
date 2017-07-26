@@ -4,7 +4,6 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.domain.taxonomy.builder.TermBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.NavMenuBuilder;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
@@ -84,10 +83,8 @@ public class NavMenuResourceIntTest {
 
     public static NavMenu createEntity() {
         return NavMenuBuilder.aNavMenu()
-                .withTerm(TermBuilder.aTerm()
-                        .withName(DEFAULT_NAME)
-                        .withSlug(DEFAULT_SLUG)
-                        .build())
+                .withName(DEFAULT_NAME)
+                .withSlug(DEFAULT_SLUG)
                 .withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -99,10 +96,8 @@ public class NavMenuResourceIntTest {
 
     public static NavMenu createEntity2() {
         return NavMenuBuilder.aNavMenu()
-                .withTerm(TermBuilder.aTerm()
-                        .withName(DEFAULT_NAME_2)
-                        .withSlug(DEFAULT_SLUG_2)
-                        .build())
+                .withName(DEFAULT_NAME_2)
+                .withSlug(DEFAULT_SLUG_2)
                 .withDescription(DEFAULT_DESCRIPTION_2)
                 .withCount(DEFAULT_COUNT_2)
                 .withTranslation(TranslationBuilder.aTranslation()
@@ -144,8 +139,8 @@ public class NavMenuResourceIntTest {
         List<NavMenu> navMenuList = navMenuRepository.findAll();
         assertThat(navMenuList).hasSize(databaseSizeBeforeCreate + 1);
         NavMenu navMenu = navMenuList.get(navMenuList.size() - 1);
-        assertThat(navMenu.getTerm().getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(navMenu.getTerm().getSlug()).isEqualTo(DEFAULT_SLUG);
+        assertThat(navMenu.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(navMenu.getSlug()).isEqualTo(DEFAULT_SLUG);
         assertThat(navMenu.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
 //        assertThat(navMenu.getParentId()).isEqualTo(DEFAULT_PARENT_ID);
         assertThat(navMenu.getCount()).isEqualTo(DEFAULT_COUNT);
@@ -183,7 +178,7 @@ public class NavMenuResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(navMenu.getId().intValue())))
-                .andExpect(jsonPath("$.[*].term.name").value(hasItem(DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
                 .andExpect(jsonPath("$.[*].parentId").value(hasItem(DEFAULT_PARENT_ID)))
                 .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT.intValue())));
@@ -200,7 +195,7 @@ public class NavMenuResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(navMenu.getId().intValue()))
-                .andExpect(jsonPath("$.term.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
                 .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
                 .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
@@ -224,7 +219,8 @@ public class NavMenuResourceIntTest {
 
         // Update the NavMenu
         NavMenu updatedNavMenu = navMenuRepository.findOne(navMenu.getId());
-        updatedNavMenu.getTerm().name(UPDATED_NAME).slug(UPDATED_SLUG);
+        updatedNavMenu.setName(UPDATED_NAME);
+        updatedNavMenu.setSlug(UPDATED_SLUG);
 
         updatedNavMenu.setDescription(UPDATED_DESCRIPTION);
         updatedNavMenu.setCount(UPDATED_COUNT);
@@ -239,8 +235,8 @@ public class NavMenuResourceIntTest {
         List<NavMenu> navMenuList = navMenuRepository.findAll();
         assertThat(navMenuList).hasSize(databaseSizeBeforeUpdate);
         NavMenu testNavMenu = navMenuRepository.findOne(updatedNavMenu.getId());
-        assertThat(testNavMenu.getTerm().getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testNavMenu.getTerm().getSlug()).isEqualTo(UPDATED_SLUG);
+        assertThat(testNavMenu.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testNavMenu.getSlug()).isEqualTo(UPDATED_SLUG);
         assertThat(testNavMenu.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testNavMenu.getCount()).isEqualTo(UPDATED_COUNT);
     }

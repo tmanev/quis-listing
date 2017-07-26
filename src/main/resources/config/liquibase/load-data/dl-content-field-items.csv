@@ -1,20 +1,20 @@
 id¦dl_content_field_id¦string_id¦value
-1¦19¦null¦4x4
-2¦19¦null¦ABS
-3¦19¦null¦Airbag
-4¦19¦null¦Alarm
+1¦19¦14¦4x4
+2¦19¦15¦ABS
+3¦19¦16¦Airbag
+4¦19¦17¦Alarm
 
-5¦23¦null¦Blond
-6¦23¦null¦Brown
-7¦23¦null¦Black
-8¦23¦null¦Red
+5¦23¦18¦Blond
+6¦23¦19¦Brown
+7¦23¦20¦Black
+8¦23¦21¦Red
 
-9¦24¦null¦Black
-10¦24¦null¦Brown
-11¦24¦null¦Green
-12¦24¦null¦Blue
-13¦24¦null¦Hazel
-14¦24¦null¦Gray
+9¦24¦22¦Black
+10¦24¦23¦Brown
+11¦24¦24¦Green
+12¦24¦25¦Blue
+13¦24¦26¦Hazel
+14¦24¦27¦Gray
 
-15¦27¦null¦EUR
-16¦27¦null¦BGN
+15¦27¦28¦EUR
+16¦27¦29¦BGN

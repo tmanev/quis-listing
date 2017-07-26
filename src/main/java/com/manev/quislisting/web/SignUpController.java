@@ -9,7 +9,7 @@ import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
-import com.manev.quislisting.service.post.AbstractPostService;
+import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.web.model.SignUpUserBean;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -37,9 +37,9 @@ public class SignUpController extends BaseController {
                             LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
                             LocaleResolver localeResolver, MessageSource messageSource,
                             UserRepository userRepository, UserService userService,
-                            AbstractPostService abstractPostService, EmailSendingService emailSendingService) {
+                            StaticPageService staticPageService, EmailSendingService emailSendingService) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                abstractPostService);
+                staticPageService);
         this.messageSource = messageSource;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -65,7 +65,7 @@ public class SignUpController extends BaseController {
         if (termsAndConditionsPageIdConfig != null) {
             String language = locale.getLanguage();
 
-            model.addAttribute("termsAndConditionsPage", abstractPostService.retrievePost(language,
+            model.addAttribute("termsAndConditionsPage", staticPageService.retrievePost(language,
                     termsAndConditionsPageIdConfig.getValue()));
         }
     }

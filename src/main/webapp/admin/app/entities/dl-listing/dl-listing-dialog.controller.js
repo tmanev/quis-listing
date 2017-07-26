@@ -228,7 +228,7 @@
                 if (dlListingFields) {
                     for (let dlListingField of dlListingFields) {
                         if (dlListingField.id == dlContentField.id) {
-                            if (dlContentField.type == 'checkbox') {
+                            if (dlContentField.type == 'CHECKBOX') {
                                 if (dlListingField.value) {
                                     return JSON.parse(dlListingField.value);
                                 }
@@ -260,7 +260,7 @@
             let dlListingFields = [];
             for (let dlContentField of vm.dlContentFields) {
                 let value;
-                if (dlContentField.type == 'checkbox') {
+                if (dlContentField.type == 'CHECKBOX') {
                     value = JSON.stringify(dlContentField.value);
                 } else {
                     value = dlContentField.value;

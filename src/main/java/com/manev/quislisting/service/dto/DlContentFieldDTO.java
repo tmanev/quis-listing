@@ -1,5 +1,6 @@
 package com.manev.quislisting.service.dto;
 
+import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class DlContentFieldDTO {
     private String name;
     private String slug;
     private String description;
-    private String type;
+    private DlContentField.Type type;
     private String iconImage;
     private Boolean required;
     private Boolean hasConfiguration;
@@ -107,15 +108,15 @@ public class DlContentFieldDTO {
         return this;
     }
 
-    public String getType() {
+    public DlContentField.Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DlContentField.Type type) {
         this.type = type;
     }
 
-    public DlContentFieldDTO type(String type) {
+    public DlContentFieldDTO type(DlContentField.Type type) {
         this.type = type;
         return this;
     }

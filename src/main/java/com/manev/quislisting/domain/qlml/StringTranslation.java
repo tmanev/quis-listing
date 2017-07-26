@@ -3,6 +3,7 @@ package com.manev.quislisting.domain.qlml;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -15,18 +16,22 @@ public class StringTranslation {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "string_id", nullable = false)
+    @JoinColumn(name = "string_id", nullable = false, updatable = false)
     private QlString qlString;
 
+    @NotNull
     @Column
     private String languageCode;
 
+    @NotNull
     @Column
     private Boolean status;
 
+    @NotNull
     @Column
     private String value;
 
+    @NotNull
     @Column
     private ZonedDateTime translationDate;
 

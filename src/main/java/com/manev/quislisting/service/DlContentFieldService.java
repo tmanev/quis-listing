@@ -3,7 +3,9 @@ package com.manev.quislisting.service;
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
 import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
+import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldMapper;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -25,12 +28,14 @@ public class DlContentFieldService {
     private DlContentFieldRepository dlContentFieldRepository;
     private DlContentFieldMapper dlContentFieldMapper;
     private DlContentFieldItemService dlContentFieldItemService;
+    private DlCategoryRepository dlCategoryRepository;
 
     public DlContentFieldService(DlContentFieldRepository dlContentFieldRepository,
-                                 DlContentFieldMapper dlContentFieldMapper, DlContentFieldItemService dlContentFieldItemService) {
+                                 DlContentFieldMapper dlContentFieldMapper, DlContentFieldItemService dlContentFieldItemService, DlCategoryRepository dlCategoryRepository) {
         this.dlContentFieldRepository = dlContentFieldRepository;
         this.dlContentFieldMapper = dlContentFieldMapper;
         this.dlContentFieldItemService = dlContentFieldItemService;
+        this.dlCategoryRepository = dlCategoryRepository;
     }
 
     public DlContentFieldDTO save(DlContentFieldDTO dlContentFieldDTO) {
@@ -44,20 +49,21 @@ public class DlContentFieldService {
             dlContentField = dlContentFieldMapper.dlContentFieldDTOToDlContentField(dlContentFieldDTO);
         }
 
-        DlContentField dlContentFieldSaved = dlContentFieldRepository.save(dlContentField);
-        DlContentField dlContentFieldWithQlString = saveQlString(dlContentFieldSaved);
+        setQlString(dlContentField);
+
+        dlContentFieldRepository.save(dlContentField);
 
         if (dlContentFieldDTO.getDlContentFieldItems() != null) {
-            List<DlContentFieldItem> dlContentFieldItemsSaved = dlContentFieldItemService.saveDlContentFieldItems(dlContentFieldWithQlString, dlContentFieldDTO.getDlContentFieldItems());
-            dlContentFieldWithQlString.setDlContentFieldItems(new HashSet<>(dlContentFieldItemsSaved));
+            List<DlContentFieldItem> dlContentFieldItemsSaved = dlContentFieldItemService.saveDlContentFieldItems(dlContentField, dlContentFieldDTO.getDlContentFieldItems());
+            dlContentField.setDlContentFieldItems(new HashSet<>(dlContentFieldItemsSaved));
         }
 
-        return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentFieldWithQlString);
+        return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
     }
 
-    private DlContentField saveQlString(DlContentField dlContentField) {
+    private void setQlString(DlContentField dlContentField) {
         if (dlContentField.getQlString() == null) {
-            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getId()).value(dlContentField.getName()).status(0));
+            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getName()).value(dlContentField.getName()).status(0));
         } else {
             QlString qlString = dlContentField.getQlString();
             if (!qlString.getValue().equals(dlContentField.getName())) {
@@ -65,13 +71,22 @@ public class DlContentFieldService {
                 qlString.setStatus(0);
             }
         }
-        return dlContentFieldRepository.save(dlContentField);
     }
 
     public Page<DlContentFieldDTO> findAll(Pageable pageable) {
         log.debug("Request to get all DlContentFieldDTO");
         Page<DlContentField> result = dlContentFieldRepository.findAll(pageable);
         return result.map(dlContentFieldMapper::dlContentFieldToDlContentFieldDTO);
+    }
+
+    public List<DlContentFieldDTO> findAllByCategoryId(Long categoryId) {
+        DlCategory dlCategory = dlCategoryRepository.findOne(categoryId);
+        List<DlContentField> dlContentFields = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNull(dlCategory);
+        List<DlContentFieldDTO> result = new ArrayList<>();
+        dlContentFields.forEach(dlContentField ->
+                result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField))
+        );
+        return result;
     }
 
     public DlContentFieldDTO findOne(Long id) {

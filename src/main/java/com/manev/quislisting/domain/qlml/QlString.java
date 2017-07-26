@@ -1,6 +1,7 @@
 package com.manev.quislisting.domain.qlml;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,18 +12,23 @@ public class QlString {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @Column
     private String languageCode;
 
+    @NotNull
     @Column
     private String context;
 
+    @NotNull
     @Column
     private String name;
 
+    @NotNull
     @Column
     private String value;
 
+    @NotNull
     @Column
     private Integer status;
 

@@ -1,21 +1,144 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
+import com.manev.quislisting.service.dto.UserDTO;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DlListingDTO extends AbstractPostDTO {
+public class DlListingDTO {
 
+    private Long id;
+    @NotEmpty(message = "dlListingDto.title.NotNull.message")
+    private String title;
+    private String content;
+    private String name;
+
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+    private ZonedDateTime created;
+    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+    private ZonedDateTime modified;
+
+    private UserDTO author;
+
+    private String languageCode;
+    private String sourceLanguageCode;
+
+    private Long translationGroupId;
+    private List<TranslationDTO> translations;
     private String expirationDate;
     private DlListing.Status status;
-    private String views;
+    @NotEmpty
     private List<DlCategoryDTO> dlCategories;
     private List<DlLocationDTO> dlLocations;
-    private List<DlListingField> dlListingFields;
+    private List<DlListingFieldDTO> dlListingFields;
     private List<AttachmentDTO> attachments;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
+    }
+
+    public ZonedDateTime getModified() {
+        return modified;
+    }
+
+    public void setModified(ZonedDateTime modified) {
+        this.modified = modified;
+    }
+
+    public UserDTO getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserDTO author) {
+        this.author = author;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+
+    public String getSourceLanguageCode() {
+        return sourceLanguageCode;
+    }
+
+    public void setSourceLanguageCode(String sourceLanguageCode) {
+        this.sourceLanguageCode = sourceLanguageCode;
+    }
+
+    public void addTranslationDTO(TranslationDTO translationDTO) {
+        if (translations == null) {
+            translations = new ArrayList<>();
+        }
+        translations.add(translationDTO);
+    }
+
+    public Long getTranslationGroupId() {
+        return translationGroupId;
+    }
+
+    public void setTranslationGroupId(Long translationGroupId) {
+        this.translationGroupId = translationGroupId;
+    }
+
+    public List<TranslationDTO> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<TranslationDTO> translations) {
+        this.translations = translations;
+    }
 
     public String getExpirationDate() {
         return expirationDate;
@@ -31,14 +154,6 @@ public class DlListingDTO extends AbstractPostDTO {
 
     public void setStatus(DlListing.Status status) {
         this.status = status;
-    }
-
-    public String getViews() {
-        return views;
-    }
-
-    public void setViews(String views) {
-        this.views = views;
     }
 
     public List<DlLocationDTO> getDlLocations() {
@@ -71,19 +186,19 @@ public class DlListingDTO extends AbstractPostDTO {
         dlLocations.add(dlLocationDTO);
     }
 
-    public List<DlListingField> getDlListingFields() {
+    public List<DlListingFieldDTO> getDlListingFields() {
         return dlListingFields;
     }
 
-    public void setDlListingFields(List<DlListingField> dlListingFields) {
+    public void setDlListingFields(List<DlListingFieldDTO> dlListingFields) {
         this.dlListingFields = dlListingFields;
     }
 
-    public void addDlListingField(DlListingField dlListingField) {
+    public void addDlListingField(DlListingFieldDTO dlListingFieldDTO) {
         if (dlListingFields == null) {
             dlListingFields = new ArrayList<>();
         }
-        dlListingFields.add(dlListingField);
+        dlListingFields.add(dlListingFieldDTO);
     }
 
     public List<AttachmentDTO> getAttachments() {

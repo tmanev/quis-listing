@@ -3,6 +3,7 @@ package com.manev.quislisting.domain.taxonomy;
 import com.manev.quislisting.domain.Translation;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ql_term_taxonomy")
@@ -14,9 +15,13 @@ public abstract class TermTaxonomy {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "term_id")
-    private Term term;
+    @NotNull
+    @Column
+    private String name;
+
+    @NotNull
+    @Column
+    private String slug;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "translation_id", nullable = false, updatable = false)
@@ -25,15 +30,12 @@ public abstract class TermTaxonomy {
     @Column(name = "taxonomy", insertable = false, updatable = false)
     private String taxonomy;
 
+    @NotNull
     @Column
     private String description;
 
     @Column
     private Long count = 0L;
-
-    public TermTaxonomy() {
-        this.term = new Term();
-    }
 
     public Long getId() {
         return id;
@@ -67,12 +69,20 @@ public abstract class TermTaxonomy {
         this.count = count;
     }
 
-    public Term getTerm() {
-        return term;
+    public String getName() {
+        return name;
     }
 
-    public void setTerm(Term term) {
-        this.term = term;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Translation getTranslation() {

@@ -15,18 +15,265 @@
 
 </head>
 <body>
-<div th:fragment="content" id="editListingApp" class="container-fluid">
-    <div class="row">
-        Edit Listing
+<div th:fragment="content" class="container">
+    <div id="editListingApp">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <ul class="nav nav-pills navbar-inverse" style="position: fixed; top: 0;">
+                    <li role="presentation" class="active"><a href="#description">Description</a></li>
+                    <li role="presentation"><a href="#details">Details</a></li>
+                    <li role="presentation"><a href="#location">Location</a></li>
+                    <li role="presentation"><a href="#gallery">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="description" class="container-fluid">
+            <form class="form-horizontal">
+                <div class="form-group"
+                     v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
+                    <label class="col-sm-2 control-label" for="field_title">Title</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title" id="field_title"
+                               v-model="listing.title"/>
+                        <span class="help-block"
+                              v-if="!$v.listing.title.required &amp;&amp; $v.listing.title.$dirty"
+                              th:text="#{validation.required}">Field is required</span>
+                        <span class="help-block"
+                              v-if="!$v.listing.title.TwoWordValidator &amp;&amp; $v.listing.title.$dirty"
+                              th:text="#{validation.title_two_words}">Title must have at least two words</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" data-translate="quisListingApp.dlListing.description"
+                           for="field_description">Description</label>
+                    <div class="col-sm-10">
+                    <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
+                              v-model="listing.content">
+                    </textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Category
+                    </label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" data-target="#myModal"
+                                    v-on:click="openCategorySelection($v)">Select</button>
+                        </span>
+                            <input type="text" class="form-control"
+                                   style="cursor: pointer;"
+                                   readonly="readonly"
+                                   v-model="selectedCategory.name"
+                                   v-on:click="openCategorySelection($v)"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr/>
+        <div id="details" class="container-fluid">
+            <form class="form-horizontal">
+                <fieldset v-for="(dlContentField, index) in dlContentFields">
+                    <div class="form-group" v-if="dlContentField.type == 'STRING'"
+                         v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="dlContentField.value"/>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                                  th:text="#{validation.required}">Field is required</span>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.minLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                                <span th:text="#{validation.min}">Min</span>
+                                {{ $v.dlContentFields[index].value.$params.minLength.min }}
+                                <span th:text="#{validation.letters}">letters</span>.
+                             </span>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.maxLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                            <span th:text="#{validation.max}">Max</span>
+                            {{ $v.dlContentFields[index].value.$params.maxLength.max }}
+                            <span th:text="#{validation.letters}">letters</span>.
+                        </span>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="dlContentField.type == 'SELECT' "
+                         v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" v-model="dlContentField.value">
+                                <option value="-1"> - Select -</option>
+                                <option v-for="selectionItem in dlContentField.dlContentFieldItems"
+                                        v-bind:value="selectionItem.id">{{selectionItem.value}}
+                                </option>
+                            </select>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].value.$dirty"
+                                  th:text="#{validation.selection_required}">Selection is required</span>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="dlContentField.type == 'CHECKBOX' ">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <div class="checkbox"
+                                 v-for="selectionItem in dlContentField.dlContentFieldItems">
+                                <label>
+                                    <input type="checkbox" v-bind:value="selectionItem.id"
+                                           v-model="dlContentField.value"/>
+                                    {{selectionItem.value}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" v-if="dlContentField.type == 'NUMBER'"
+                         v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
+                        <label class="col-sm-2 control-label">
+                            {{dlContentField.name}}</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" v-model="dlContentField.value"/>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                                  th:text="#{validation.required}">Field is required</span>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                                <span th:text="#{validation.must_be_between}">Must be between</span>
+                                {{ $v.dlContentFields[index].value.$params.between.min }}
+                                <span th:text="#{validation.and}">and</span>
+                                {{ $v.dlContentFields[index].value.$params.between.max }}
+                             </span>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <hr/>
+        <div id="location" class="container-fluid">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Country</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
+                            <option value="-1">- Select -</option>
+                            <option v-for="dlLocationCountry in dlLocationCountries"
+                                    v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">State</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState">
+                            <option value="-1">- Select -</option>
+                            <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
+                                dlLocationState.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"
+                     v-bind:class="{ 'has-error': $v.selectedCity.$error, 'has-success': $v.selectedCity.$dirty &amp;&amp; !$v.selectedCity.$invalid }">
+                    <label class="col-sm-2 control-label">City</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-model="selectedCity">
+                            <option value="-1">- Select -</option>
+                            <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
+                                dlLocationCity.name }}
+                            </option>
+                        </select>
+                        <span class="help-block"
+                              v-if="!$v.selectedCity.ListHasSelectionValidator &amp;&amp; $v.selectedCity.$dirty"
+                              th:text="#{validation.selection_required}">Selection is required</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr/>
+        <div id="gallery" class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6 col-md-4" v-for="attachment in listing.attachments">
+                    <div class="thumbnail">
+                        <img v-bind:src="'/content/files' + attachment.attachmentMetadata.smallImageResizeMeta.detail.file"
+                             data-holder-rendered="true"
+                             style="height: 200px; display: block;"
+                        />
+                        <div class="caption">
+                            <p>
+                                <a class="btn btn-danger btn-sm" v-on:click="removeImage(attachment)">
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                    <span class="hidden-sm-down">Remove</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop"
+                 v-on:click="onBoxClick">
+                Drop images here or click to upload
+                <input type="file" name="image" v-on:change="onChange" style="display: none"/>
+            </div>
+            <div id="upload_info" class="row" v-for="queueFile in queueFiles">
+                <div class="col-md-2">
+                    {{queueFile.file.name}}
+                </div>
+                <div class="col-md-10">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             v-bind:aria-valuenow="queueFile.progress"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             v-bind:style="{width: queueFile.progress+'%'}">
+                            {{queueFile.progress}}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <button type="button" class="btn btn-default col-sm-6"
+                        id="btnSave"
+                        v-on:click="onSave">
+                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span>Save</span>
+                </button>
+                <button type="button" class="btn btn-primary col-sm-6"
+                        id="btnPublish"
+                        v-on:click="onPublish">
+                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span>Publish</span>
+                </button>
+            </div>
+        </form>
+
+        <div th:replace="client/my-listings/components-category-modal :: category-modal"></div>
     </div>
+
+    <div th:replace="client/my-listings/components :: components"></div>
     <!-- Load current page javascript file -->
     <script src="../../../resources/js/my-listings/edit-listing.js"
             th:src="@{/resources/js/my-listings/edit-listing.js}"></script>
-    <script type="text/javascript">
+    <script src="../../../resources/js/my-listings/components.js"
+            th:src="@{/resources/js/my-listings/components.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            EditListing.init();
+            var commonVar = {};
+            MyListingsComponent.init(commonVar);
+            var dlListingDTO = [[${dlListingDTO}]];
+            var dlCategoriesDtoFlat = [[${dlCategoriesDtoFlat}]];
+            var dlContentFieldsDto = [[${dlContentFieldsDto}]];
+            var dlLocationCountries = [[${dlLocationCountries}]];
+            var dlLocationStates = [[${dlLocationStates}]];
+            var dlLocationCities = [[${dlLocationCities}]];
+            EditListing.init(dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, commonVar);
         };
     </script>
+
 </div>
 
 <!-- JavaScript libraries used to be able to open the html page itself in browser -->

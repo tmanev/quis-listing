@@ -20,7 +20,7 @@ public class JcrRepoTest {
 
     @Test
     public void testRepo() throws RepositoryException, IOException {
-        Repository repository = jcrConfiguration.repository();
+        Repository repository = jcrConfiguration.getRepositoryImpl();
         Session session = repository.login(new GuestCredentials());
         try {
             String user = session.getUserID();
@@ -34,7 +34,7 @@ public class JcrRepoTest {
 
     @Test
     public void testFirstHop() throws RepositoryException, IOException {
-        Repository repository = jcrConfiguration.repository();
+        Repository repository = jcrConfiguration.getRepositoryImpl();
         Session session = repository.login(
                 new SimpleCredentials("admin", "admin".toCharArray()));
         try {

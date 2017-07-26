@@ -1,7 +1,7 @@
 package com.manev.quislisting.web;
 
-import com.manev.quislisting.domain.post.AbstractPost;
-import com.manev.quislisting.domain.post.discriminator.NavMenuItem;
+import com.manev.quislisting.domain.StaticPage;
+import com.manev.quislisting.domain.StaticPageNavMenuRel;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 
 import java.util.List;
@@ -9,33 +9,34 @@ import java.util.Set;
 
 public class BaseModel {
 
-    private Set<NavMenuItem> topHeaderMenus;
-    private Set<NavMenuItem> footerMenus;
+    private Set<StaticPageNavMenuRel> topHeaderMenus;
+    private Set<StaticPageNavMenuRel> footerMenus;
     private List<ActiveLanguageBean> activeLanguages;
-    private AbstractPost profilePage;
+    private StaticPage profilePage;
+    private String baseUrl;
 
-    public Set<NavMenuItem> getTopHeaderMenus() {
+    public Set<StaticPageNavMenuRel> getTopHeaderMenus() {
         return topHeaderMenus;
     }
 
-    public void setTopHeaderMenus(Set<NavMenuItem> topHeaderMenus) {
+    public void setTopHeaderMenus(Set<StaticPageNavMenuRel> topHeaderMenus) {
         this.topHeaderMenus = topHeaderMenus;
     }
 
-    public BaseModel topHeaderMenus(Set<NavMenuItem> topHeaderMenus) {
+    public BaseModel topHeaderMenus(Set<StaticPageNavMenuRel> topHeaderMenus) {
         this.topHeaderMenus = topHeaderMenus;
         return this;
     }
 
-    public Set<NavMenuItem> getFooterMenus() {
+    public Set<StaticPageNavMenuRel> getFooterMenus() {
         return footerMenus;
     }
 
-    public void setFooterMenus(Set<NavMenuItem> footerMenus) {
+    public void setFooterMenus(Set<StaticPageNavMenuRel> footerMenus) {
         this.footerMenus = footerMenus;
     }
 
-    public BaseModel footerMenus(Set<NavMenuItem> footerMenus) {
+    public BaseModel footerMenus(Set<StaticPageNavMenuRel> footerMenus) {
         this.footerMenus = footerMenus;
         return this;
     }
@@ -53,11 +54,19 @@ public class BaseModel {
         return this;
     }
 
-    public AbstractPost getProfilePage() {
+    public StaticPage getProfilePage() {
         return profilePage;
     }
 
-    public void setProfilePage(AbstractPost profilePage) {
+    public void setProfilePage(StaticPage profilePage) {
         this.profilePage = profilePage;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

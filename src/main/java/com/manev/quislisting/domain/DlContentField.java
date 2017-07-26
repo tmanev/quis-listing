@@ -4,6 +4,7 @@ import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -14,63 +15,78 @@ public class DlContentField {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @Column
     private Boolean coreField;
 
+    @NotNull
     @Column
     private Integer orderNum;
 
+    @NotNull
     @Column
     private String name;
 
+    @NotNull
     @Column
     private String slug;
 
+    @NotNull
     @Column
     private String description;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column
-    private String type;
+    private Type type;
 
     @Column
     private String iconImage;
 
+    @NotNull
     @Column
     private Boolean required;
 
+    @NotNull
     @Column
     private Boolean hasConfiguration;
 
+    @NotNull
     @Column
     private Boolean hasSearchConfiguration;
 
+    @NotNull
     @Column
     private Boolean canBeOrdered;
 
+    @NotNull
     @Column
     private Boolean hideName;
 
+    @NotNull
     @Column
     private Boolean onExcerptPage;
 
+    @NotNull
     @Column
     private Boolean onListingPage;
 
+    @NotNull
     @Column
     private Boolean onSearchForm;
 
+    @NotNull
     @Column
     private Boolean onMap;
 
+    @NotNull
     @Column
     private Boolean onAdvancedSearchForm;
 
     @ManyToMany
-    @JoinTable(name = "ql_term_relationship",
-            joinColumns =
-            @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"),
-            inverseJoinColumns =
-            @JoinColumn(name = "object_id", referencedColumnName = "id"))
+    @JoinTable(name = "ql_dl_category_dl_content_field_relationship",
+            joinColumns = @JoinColumn(name = "dl_content_field_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "term_taxonomy_id", referencedColumnName = "id"))
     private Set<DlCategory> dlCategories;
 
     @Column
@@ -83,7 +99,8 @@ public class DlContentField {
     @JoinColumn(name = "string_id")
     private QlString qlString;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="dlContentField")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "dlContentField")
+    @OrderBy
     private Set<DlContentFieldItem> dlContentFieldItems;
 
     public Long getId() {
@@ -164,15 +181,15 @@ public class DlContentField {
         return this;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
-    public DlContentField type(String type) {
+    public DlContentField type(Type type) {
         this.type = type;
         return this;
     }
@@ -383,5 +400,9 @@ public class DlContentField {
     public DlContentField dlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
         return this;
+    }
+
+    public enum Type {
+        STRING, SELECT, CHECKBOX, NUMBER, WEBSITE, EXCERPT, ADDRESS, CONTENT, CATEGORIES, TAGS
     }
 }

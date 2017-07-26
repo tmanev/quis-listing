@@ -15,7 +15,8 @@
 <body>
 
 <!-- Navbar -->
-<div class="navbar navbar-inverse navbar-static-top" role="navigation" th:fragment="header">
+<div class="navbar navbar-inverse navbar-static-top" role="navigation" th:fragment="header"
+     >
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="/">
@@ -26,14 +27,14 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li th:each="navMenuItem : ${baseModel.topHeaderMenus}">
-                    <a th:href="@{${navMenuItem.refPost.name}}" th:text="${navMenuItem.title}"></a>
+                    <a th:href="'/'+${navMenuItem.staticPage.name}" th:text="${navMenuItem.staticPage.title}"></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false"
-                       th:text="#{fragment.header.language}">Language <span class="caret"></span></a>
+                       aria-expanded="false">
+                        <span th:text="#{fragment.header.language}">Language </span>&nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li th:each="activeLanguage : ${baseModel.activeLanguages}">
                             <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${activeLanguage.language.code}">
