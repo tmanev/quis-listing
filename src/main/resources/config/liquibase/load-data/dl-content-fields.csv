@@ -2,7 +2,7 @@ id¦core_field¦order_num¦name¦slug¦description¦type¦icon_image¦required¦
 6¦0¦6¦Phone¦phone¦¦STRING¦phone¦0¦1¦0¦0¦0¦1¦1¦0¦1¦0¦"{""maxLength"":25}"¦¦4
 19¦0¦0¦Additional information¦additional_information¦¦CHECKBOX¦¦0¦1¦1¦0¦0¦0¦1¦1¦0¦1¦¦¦6
 20¦0¦0¦Age¦age¦¦NUMBER¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""min"":""17"",""max"":""99""}"¦¦7
-21¦0¦0¦Height¦height¦¦NUMBER¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""min"":""0"",""max"":""0""}"¦""¦8
+21¦0¦0¦Height¦height¦¦NUMBER¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""min"":""0"",""max"":""""}"¦""¦8
 22¦0¦0¦Weight¦weight¦¦NUMBER¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦"{""min"":""0"",""max"":""""}"¦¦9
 23¦0¦0¦Hair¦hair¦¦SELECT¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦¦¦10
 24¦0¦0¦Eyes¦eyes¦¦SELECT¦¦1¦1¦1¦0¦0¦0¦1¦0¦0¦0¦¦¦11

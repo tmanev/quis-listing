@@ -396,28 +396,6 @@ public class DlListingResourceTest extends GenericResourceTest {
     @Test
     @Transactional
     @WithUserDetails
-    public void validateDlListingPublishing() throws Exception {
-        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
-        // initialize categories and location
-        dlCategoryRepository.saveAndFlush(dlCategory);
-        dlLocationRepository.saveAndFlush(dlLocation);
-
-        dlListingRepository.saveAndFlush(dlListing);
-
-        DlListingDTO dlListingDTO = new DlListingDTO();
-        dlListingDTO.setId(dlListing.getId());
-
-
-        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS + "/publish")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
-                .andExpect(status().isCreated())
-                .andReturn();
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails
     public void uploadAttachmentToDlListing() throws Exception {
         int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
 

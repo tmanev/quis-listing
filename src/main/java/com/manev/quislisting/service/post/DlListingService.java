@@ -82,9 +82,25 @@ public class DlListingService {
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
-        ZonedDateTime now = ZonedDateTime.now();
 
-        DlListing dlListingForSaving;
+        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+        return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+    }
+
+    public DlListingDTO saveAndPublish(DlListingDTO dlListingDTO) {
+        log.debug("Request to save DlListingDTO : {}", dlListingDTO);
+
+        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
+        dlListingForSaving.setStatus(DlListing.Status.PUBLISH);
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+        return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+    }
+
+    private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
+        DlListing dlListingForSaving;ZonedDateTime now = ZonedDateTime.now();
         if (dlListingDTO.getId() != null) {
             dlListingForSaving = dlListingRepository.findOne(dlListingDTO.getId());
 
@@ -113,9 +129,7 @@ public class DlListingService {
                 throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
             }
         }
-
-        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        return dlListingForSaving;
     }
 
     private void setCommonProperties(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
@@ -263,7 +277,7 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(result);
     }
 
-    public void validatePublish(DlListingDTO dlListingDTO) {
+    public void validateForPublishing(DlListingDTO dlListingDTO) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         javax.validation.Validator validator = factory.getValidator();
         Set<ConstraintViolation<DlListingDTO>> validate = validator.validate(dlListingDTO);

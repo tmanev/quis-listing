@@ -159,6 +159,39 @@ EditListing = {
                 return validation_dict;
             },
             methods: {
+                getPayload: function () {
+                    let dlListingFields = [];
+                    for (let dlContentField of this.dlContentFields) {
+                        let value;
+                        if (dlContentField.type === 'CHECKBOX') {
+                            if (dlContentField.value) {
+                                value = JSON.stringify(dlContentField.value);
+                            } else {
+                                value = JSON.stringify([]);
+                            }
+                        } else {
+                            value = dlContentField.value;
+                        }
+                        let listingField = {
+                            id: dlContentField.id,
+                            value: value
+                        };
+                        dlListingFields.push(listingField)
+                    }
+
+                    this.listing.dlListingFields = dlListingFields;
+                    if (this.selectedCity !== "-1") {
+                        this.listing.dlLocations = [{
+                            id: this.selectedCity
+                        }];
+                    } else {
+                        this.listing.dlLocations = [];
+                    }
+
+                    this.listing.dlCategories = [this.selectedCategory];
+
+                    return this.listing;
+                },
                 fileUpload: function (files) {
                     console.log(files);
 
@@ -327,37 +360,7 @@ EditListing = {
                 onSave: function (event) {
                     var $btn = $('#btnSave').button('loading');
 
-                    let dlListingFields = [];
-                    for (let dlContentField of this.dlContentFields) {
-                        let value;
-                        if (dlContentField.type == 'CHECKBOX') {
-                            if (dlContentField.value) {
-                                value = JSON.stringify(dlContentField.value);
-                            } else {
-                                value = JSON.stringify([]);
-                            }
-                        } else {
-                            value = dlContentField.value;
-                        }
-                        let listingField = {
-                            id: dlContentField.id,
-                            value: value
-                        };
-                        dlListingFields.push(listingField)
-                    }
-
-                    this.listing.dlListingFields = dlListingFields;
-                    if (this.selectedCity !== "-1") {
-                        this.listing.dlLocations = [{
-                            id: this.selectedCity
-                        }];
-                    } else {
-                        this.listing.dlLocations = [];
-                    }
-
-                    this.listing.dlCategories = [this.selectedCategory];
-
-                    var payload = this.listing;
+                    var payload = this.getPayload();
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
                         console.log('Success!:', response.data);
@@ -382,7 +385,26 @@ EditListing = {
                     if (this.$v.$invalid) {
                         this.$v.$touch();
                     } else {
+                        let payload = this.getPayload();
 
+                        this.$http({url: '/api/dl-listings/publish', body: payload, method: 'PUT'}).then(function (response) {
+                            console.log('Success!:', response.data);
+
+                            $.notify({
+                                message: response.headers.get('X-qlService-alert')
+                            }, {
+                                type: 'success'
+                            });
+                            $btn.button('reset');
+                        }, function (response) {
+                            console.log('Error!:', response.data);
+                            $.notify({
+                                message: response.data
+                            }, {
+                                type: 'danger'
+                            });
+                            $btn.button('reset');
+                        });
                     }
                 },
                 openCategorySelection: function ($v) {

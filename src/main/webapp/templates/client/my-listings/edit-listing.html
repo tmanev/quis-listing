@@ -143,9 +143,9 @@
                             <span class="help-block"
                                   v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
                                 <span th:text="#{validation.must_be_between}">Must be between</span>
-                                &nbsp;{{ $v.dlContentFields[index].value.$params.between.min }}
-                                &nbsp;<span th:text="#{validation.and}">and</span>
-                                &nbsp;{{ $v.dlContentFields[index].value.$params.between.max }}
+                                {{ $v.dlContentFields[index].value.$params.between.min }}
+                                <span th:text="#{validation.and}">and</span>
+                                {{ $v.dlContentFields[index].value.$params.between.max }}
                              </span>
                         </div>
                     </div>

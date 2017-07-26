@@ -77,7 +77,7 @@ public class DlAdminListingResource {
         }
 
         DlListingDTO result = dlListingService.save(dlListingDTO);
-        dlListingService.validatePublish(result);
+        dlListingService.validateForPublishing(result);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))
