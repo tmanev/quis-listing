@@ -105,9 +105,8 @@ public class StaticPageResourceTest {
 
     @Before
     public void initTest() {
-        staticPageRepository.deleteAll();
+//        staticPageRepository.deleteAll();
         staticPage = createEntity();
-
     }
 
     @Test
@@ -146,7 +145,7 @@ public class StaticPageResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
                 .andExpect(jsonPath("$.[*].englishName").value(hasItem("English")))
-                .andExpect(jsonPath("$.[*].count").value(hasItem(1)));
+                .andExpect(jsonPath("$.[*].count").value(hasItem(13)));
     }
 
     private List<Language> createActiveLanguages() {

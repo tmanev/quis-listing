@@ -72,7 +72,7 @@ public class DlListingResource {
                 .body(result);
     }
 
-    @RequestMapping(path = "/publish", method = RequestMethod.PUT,
+    @RequestMapping(path = "/publish", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO) {
         log.debug("REST request to publish DlListingDTO : {}", dlListingDTO);
@@ -80,8 +80,9 @@ public class DlListingResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
         }
 
+        dlListingService.validatePublish(dlListingDTO);
+
         DlListingDTO result = dlListingService.save(dlListingDTO);
-        dlListingService.publish(result);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))

@@ -33,6 +33,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -55,7 +58,6 @@ public class DlListingService {
     private LanguageService languageService;
     private DlContentFieldRepository dlContentFieldRepository;
     private DlContentFieldItemRepository dlContentFieldItemRepository;
-    private DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository;
     private DlAttachmentRepository dlAttachmentRepository;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
@@ -64,7 +66,6 @@ public class DlListingService {
                             StorageService storageService, LanguageService languageService,
                             DlContentFieldRepository dlContentFieldRepository,
                             DlContentFieldItemRepository dlContentFieldItemRepository,
-                            DlContentFieldRelationshipRepository dlContentFieldRelationshipRepository,
                             DlAttachmentRepository dlAttachmentRepository) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
@@ -76,7 +77,6 @@ public class DlListingService {
         this.languageService = languageService;
         this.dlContentFieldRepository = dlContentFieldRepository;
         this.dlContentFieldItemRepository = dlContentFieldItemRepository;
-        this.dlContentFieldRelationshipRepository = dlContentFieldRelationshipRepository;
         this.dlAttachmentRepository = dlAttachmentRepository;
     }
 
@@ -166,7 +166,7 @@ public class DlListingService {
                     }
                 }
             } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)) {
-                if (!StringUtils.isEmpty(dlListingFieldDTO.getValue())) {
+                if (!StringUtils.isEmpty(dlListingFieldDTO.getValue()) && !dlListingFieldDTO.getValue().equals("-1")) {
                     DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getValue()));
                     Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
                     dlContentFieldItemSet.add(dlContentFieldItem);
@@ -263,10 +263,19 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(result);
     }
 
-    public void publish(DlListingDTO dlListingDTO) {
-        DlListing dlListing = dlListingRepository.findOne(dlListingDTO.getId());
-        dlListing.setStatus(DlListing.Status.PUBLISH);
-        dlListingRepository.save(dlListing);
+    public void validatePublish(DlListingDTO dlListingDTO) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        javax.validation.Validator validator = factory.getValidator();
+        Set<ConstraintViolation<DlListingDTO>> validate = validator.validate(dlListingDTO);
+        if (!validate.isEmpty()) {
+            // return validation object and status 400
+            for (ConstraintViolation<DlListingDTO> dlListingDTOConstraintViolation : validate) {
+//                String message = messageByLocale.getMessage(dlListingDTOConstraintViolation.getMessage());
+//                System.out.println(message);
+            }
+        }
+
+
     }
 
     public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException, RepositoryException {

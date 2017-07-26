@@ -14,6 +14,13 @@ EditListing = {
             return s.split(' ').length >= 2;
         };
 
+        /**
+         * @return {boolean}
+         */
+        const ListHasSelectionValidator = function (value, component) {
+            return value != -1;
+        };
+
         const touchMap = new WeakMap();
 
         var roots = MyListingsComponent.Utils.flatItemsToTree(dlCategoriesDtoFlat);
@@ -47,6 +54,8 @@ EditListing = {
                 if (dlContentField.type == 'CHECKBOX') {
                     // return empty array to be able to operate checkbox
                     return [];
+                } else if (dlContentField.type == 'SELECT') {
+                    return -1;
                 }
             }
             return null;
@@ -95,8 +104,59 @@ EditListing = {
                 },
                 image: ''
             },
-            validations: {
-                listing: {}
+            validations: function () {
+                let validation_dict = {
+                    listing: {
+                        title: {
+                            required: required,
+                            TwoWordValidator: TwoWordValidator
+                        }
+                    },
+                    selectedCity: {
+                        ListHasSelectionValidator: ListHasSelectionValidator
+                    }
+                };
+
+                validation_dict.dlContentFields = {};
+
+                for (let index = 0; index < this.dlContentFields.length; index++) {
+                    validation_dict.dlContentFields[index] = {};
+                    validation_dict.dlContentFields[index].value = {};
+                    if (this.dlContentFields[index].required) {
+                        if (this.dlContentFields[index].type === 'SELECT') {
+                            validation_dict.dlContentFields[index].value.ListHasSelectionValidator = ListHasSelectionValidator;
+                        } else {
+                            validation_dict.dlContentFields[index].value.required = required;
+                        }
+                    }
+
+                    if (this.dlContentFields[index].type === 'NUMBER') {
+                        let min = Number.MIN_SAFE_INTEGER;
+                        let max = Number.MAX_SAFE_INTEGER;
+
+                        if (this.dlContentFields[index].optionsModel.min && this.dlContentFields[index].optionsModel.min !== '') {
+                            min = this.dlContentFields[index].optionsModel.min;
+                        }
+
+                        if (this.dlContentFields[index].optionsModel.max && this.dlContentFields[index].optionsModel.max !== '') {
+                            max = this.dlContentFields[index].optionsModel.max;
+                        }
+
+                        validation_dict.dlContentFields[index].value.between = between(min, max);
+                    }
+
+                    if (this.dlContentFields[index].type === 'STRING') {
+                        if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
+                            validation_dict.dlContentFields[index].value.minLength = minLength(this.dlContentFields[index].optionsModel.minLength);
+                        }
+
+                        if (this.dlContentFields[index].optionsModel.maxLength && this.dlContentFields[index].optionsModel.maxLength !== '') {
+                            validation_dict.dlContentFields[index].value.maxLength = maxLength(this.dlContentFields[index].optionsModel.maxLength);
+                        }
+                    }
+                }
+
+                return validation_dict;
             },
             methods: {
                 fileUpload: function (files) {
@@ -133,7 +193,7 @@ EditListing = {
 
                                     // widget.settings.onUploadProgress.call(widget.element, widget.queuePos, percent);
                                     console.log(percent);
-                                    local[index-1].progress = percent;
+                                    local[index - 1].progress = percent;
                                 }, false);
                             }
 
@@ -186,7 +246,10 @@ EditListing = {
                     reader.readAsDataURL(file);
                 },
                 removeImage: function (attachment) {
-                    this.$http({url: '/api/dl-listings/'+this.listing.id+'/attachments/'+attachment.id, method: 'DELETE'}).then(function (response) {
+                    this.$http({
+                        url: '/api/dl-listings/' + this.listing.id + '/attachments/' + attachment.id,
+                        method: 'DELETE'
+                    }).then(function (response) {
                         console.log('Success!:', response.data);
 
                         let index = this.listing.attachments.indexOf(attachment);
@@ -316,6 +379,11 @@ EditListing = {
                     });
                 },
                 onPublish: function (event) {
+                    if (this.$v.$invalid) {
+                        this.$v.$touch();
+                    } else {
+
+                    }
                 },
                 openCategorySelection: function ($v) {
                     // $v.$touch();

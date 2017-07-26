@@ -37,6 +37,9 @@ spring:
     http:
       multipart:
         max-file-size: 50MB
+    messages:
+      basename: messages, bean-validation-messages
+
 
 # ===================================================================
 # Quis Listing specific properties

@@ -31,11 +31,18 @@
 
         <div id="description" class="container-fluid">
             <form class="form-horizontal">
-                <div class="form-group">
+                <div class="form-group"
+                     v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
                     <label class="col-sm-2 control-label" for="field_title">Title</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" name="title" id="field_title"
                                v-model="listing.title"/>
+                        <span class="help-block"
+                              v-if="!$v.listing.title.required &amp;&amp; $v.listing.title.$dirty"
+                              th:text="#{validation.required}">Field is required</span>
+                        <span class="help-block"
+                              v-if="!$v.listing.title.TwoWordValidator &amp;&amp; $v.listing.title.$dirty"
+                              th:text="#{validation.title_two_words}">Title must have at least two words</span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -70,15 +77,32 @@
         <hr/>
         <div id="details" class="container-fluid">
             <form class="form-horizontal">
-                <fieldset v-for="dlContentField in dlContentFields">
-                    <div class="form-group" v-if="dlContentField.type == 'STRING' ">
+                <fieldset v-for="(dlContentField, index) in dlContentFields">
+                    <div class="form-group" v-if="dlContentField.type == 'STRING'"
+                         v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="dlContentField.value"/>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                                  th:text="#{validation.required}">Field is required</span>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.minLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                                <span th:text="#{validation.min}">Min</span>
+                                {{ $v.dlContentFields[index].value.$params.minLength.min }}
+                                <span th:text="#{validation.letters}">letters</span>.
+                             </span>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.maxLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                            <span th:text="#{validation.max}">Max</span>
+                            {{ $v.dlContentFields[index].value.$params.maxLength.max }}
+                            <span th:text="#{validation.letters}">letters</span>.
+                        </span>
                         </div>
                     </div>
-                    <div class="form-group" v-if="dlContentField.type == 'SELECT' ">
+                    <div class="form-group" v-if="dlContentField.type == 'SELECT' "
+                         v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">
@@ -88,6 +112,9 @@
                                         v-bind:value="selectionItem.id">{{selectionItem.value}}
                                 </option>
                             </select>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].value.$dirty"
+                                  th:text="#{validation.selection_required}">Selection is required</span>
                         </div>
                     </div>
                     <div class="form-group" v-if="dlContentField.type == 'CHECKBOX' ">
@@ -104,11 +131,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" v-if="dlContentField.type == 'NUMBER' ">
+                    <div class="form-group" v-if="dlContentField.type == 'NUMBER'"
+                         v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
                         <label class="col-sm-2 control-label">
                             {{dlContentField.name}}</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="dlContentField.value"/>
+                            <input type="number" class="form-control" v-model="dlContentField.value"/>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                                  th:text="#{validation.required}">Field is required</span>
+                            <span class="help-block"
+                                  v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                                <span th:text="#{validation.must_be_between}">Must be between</span>
+                                &nbsp;{{ $v.dlContentFields[index].value.$params.between.min }}
+                                &nbsp;<span th:text="#{validation.and}">and</span>
+                                &nbsp;{{ $v.dlContentFields[index].value.$params.between.max }}
+                             </span>
                         </div>
                     </div>
                 </fieldset>
@@ -139,7 +177,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group"
+                     v-bind:class="{ 'has-error': $v.selectedCity.$error, 'has-success': $v.selectedCity.$dirty &amp;&amp; !$v.selectedCity.$invalid }">
                     <label class="col-sm-2 control-label">City</label>
                     <div class="col-sm-10">
                         <select class="form-control" v-model="selectedCity">
@@ -148,6 +187,9 @@
                                 dlLocationCity.name }}
                             </option>
                         </select>
+                        <span class="help-block"
+                              v-if="!$v.selectedCity.ListHasSelectionValidator &amp;&amp; $v.selectedCity.$dirty"
+                              th:text="#{validation.selection_required}">Selection is required</span>
                     </div>
                 </div>
             </form>
@@ -201,7 +243,9 @@
                         v-on:click="onSave">
                     <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span>Save</span>
                 </button>
-                <button type="button" class="btn btn-primary col-sm-6" id="btnPublish">
+                <button type="button" class="btn btn-primary col-sm-6"
+                        id="btnPublish"
+                        v-on:click="onPublish">
                     <span class="glyphicon glyphicon-globe"></span>&nbsp;<span>Publish</span>
                 </button>
             </div>

@@ -83,7 +83,7 @@ public class QlStringResourceTest {
 
     @Before
     public void initTest() {
-        qlStringRepository.deleteAll();
+//        qlStringRepository.deleteAll();
         qlString = createEntity();
     }
 

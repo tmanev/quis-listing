@@ -24,8 +24,8 @@ import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import com.manev.quislisting.web.rest.DlContentFieldResourceTest;
 import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.taxonomy.DlLocationResourceIntTest;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
+import com.manev.quislisting.web.rest.taxonomy.DlLocationResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -391,6 +391,28 @@ public class DlListingResourceTest extends GenericResourceTest {
 
         DlListing publishedDlListing = dlListingRepository.findOne(createdDlListingDTO.getId());
         assertThat(publishedDlListing.getStatus()).isEqualTo(DlListing.Status.PUBLISH);
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails
+    public void validateDlListingPublishing() throws Exception {
+        int databaseSizeBeforeCreate = dlListingRepository.findAll().size();
+        // initialize categories and location
+        dlCategoryRepository.saveAndFlush(dlCategory);
+        dlLocationRepository.saveAndFlush(dlLocation);
+
+        dlListingRepository.saveAndFlush(dlListing);
+
+        DlListingDTO dlListingDTO = new DlListingDTO();
+        dlListingDTO.setId(dlListing.getId());
+
+
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS + "/publish")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
+                .andExpect(status().isCreated())
+                .andReturn();
     }
 
     @Test
