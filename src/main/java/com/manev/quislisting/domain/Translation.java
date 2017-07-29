@@ -1,19 +1,16 @@
 package com.manev.quislisting.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ql_translation")
 public class Translation {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "tr_group_id")
     private TranslationGroup translationGroup;

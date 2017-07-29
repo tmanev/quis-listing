@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class DlListingContentFieldRel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonBackReference(value = "dl_listing_content_field_listing_relationship")
     @ManyToOne(optional = false)
     @JoinColumn(name = "dl_listing_id", nullable = false, updatable = false)
     private DlListing dlListing;

@@ -1,5 +1,7 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ public class TranslationGroup {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonBackReference(value = "translation_group_translation_reference")
     @OneToMany(cascade = ALL, mappedBy = "translationGroup")
     private Set<Translation> translations;
 

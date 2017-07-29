@@ -3,6 +3,7 @@ package com.manev.quislisting.web.rest.post;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +50,14 @@ public class DlListingPublicResource {
         log.debug("Language from cookie: {}", language);
         Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, language);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_PUBLIC_DL_LISTINGS);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/_search")
+    public ResponseEntity<List<DlListingDTO>> searchBooks(@RequestParam String query, @ApiParam Pageable pageable) {
+        log.debug("REST request to search for a page of Books for query {}", query);
+        Page<DlListingDTO> page = dlListingService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RESOURCE_API_PUBLIC_DL_LISTINGS+"/_search");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

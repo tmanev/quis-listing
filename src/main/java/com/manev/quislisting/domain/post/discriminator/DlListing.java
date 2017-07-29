@@ -1,8 +1,13 @@
 package com.manev.quislisting.domain.post.discriminator;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
+import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
 import org.hibernate.annotations.Where;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_listing")
+@Document(indexName = "dl_listing")
 public class DlListing {
 
     @Id

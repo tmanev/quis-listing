@@ -7,6 +7,7 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.*;
 import com.manev.quislisting.repository.post.DlListingRepository;
+import com.manev.quislisting.repository.search.DlListingSearchRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
@@ -37,8 +38,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.*;
+
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 
 @Service
@@ -47,6 +51,8 @@ public class DlListingService {
 
     private static final String USER_S_WAS_NOT_FOUND_IN_THE_DATABASE = "User : %s was not found in the database";
     private final Logger log = LoggerFactory.getLogger(DlListingService.class);
+
+    private static Clock clock = Clock.systemUTC();
 
     private DlListingRepository dlListingRepository;
     private UserRepository userRepository;
@@ -59,6 +65,7 @@ public class DlListingService {
     private DlContentFieldRepository dlContentFieldRepository;
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlAttachmentRepository dlAttachmentRepository;
+    private DlListingSearchRepository dlListingSearchRepository;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
@@ -66,7 +73,7 @@ public class DlListingService {
                             StorageService storageService, LanguageService languageService,
                             DlContentFieldRepository dlContentFieldRepository,
                             DlContentFieldItemRepository dlContentFieldItemRepository,
-                            DlAttachmentRepository dlAttachmentRepository) {
+                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -78,6 +85,7 @@ public class DlListingService {
         this.dlContentFieldRepository = dlContentFieldRepository;
         this.dlContentFieldItemRepository = dlContentFieldItemRepository;
         this.dlAttachmentRepository = dlAttachmentRepository;
+        this.dlListingSearchRepository = dlListingSearchRepository;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -86,6 +94,7 @@ public class DlListingService {
         DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+        dlListingSearchRepository.save(dlListingForSaving);
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
     }
 
@@ -96,11 +105,12 @@ public class DlListingService {
         dlListingForSaving.setStatus(DlListing.Status.PUBLISH);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+        dlListingSearchRepository.save(dlListingForSaving);
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
     }
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
-        DlListing dlListingForSaving;ZonedDateTime now = ZonedDateTime.now();
+        DlListing dlListingForSaving;ZonedDateTime now = ZonedDateTime.now(clock);
         if (dlListingDTO.getId() != null) {
             dlListingForSaving = dlListingRepository.findOne(dlListingDTO.getId());
 
@@ -259,6 +269,13 @@ public class DlListingService {
     public void delete(Long id) {
         log.debug("Request to delete DlCategoryDTO : {}", id);
         dlListingRepository.delete(id);
+        dlListingSearchRepository.delete(id);
+    }
+
+    public Page<DlListingDTO> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Books for query {}", query);
+        Page<DlListing> result = dlListingSearchRepository.search(queryStringQuery(query), pageable);
+        return result.map(book -> dlListingMapper.dlListingToDlListingDTO(book));
     }
 
     public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException, RepositoryException {

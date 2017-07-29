@@ -83,6 +83,9 @@ public class StaticPageController extends BaseController {
                     myListingsViewModelComponent.fillViewModel(modelMap);
                     modelMap.addAttribute("view", "client/my-listings/my-listings");
                     break;
+                case "[dl-search]":
+                    modelMap.addAttribute("view", "client/search");
+                    break;
                 default:
                     modelMap.addAttribute("content", content);
                     modelMap.addAttribute("view", "client/post");
