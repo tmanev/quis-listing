@@ -65,6 +65,7 @@ public class DlListing {
     private Set<DlCategory> dlCategories = new HashSet<>();
 
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
+    @OrderBy
     private Set<DlAttachment> dlAttachments;
 
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
