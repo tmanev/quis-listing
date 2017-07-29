@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="${title}">Contacts</title>
+
+    <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <link href="../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
+</head>
+<body>
+<div th:fragment="content" id="listingApp" class="container">
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 th:text="${dlListingDTO.title}"></h2>
+                </div>
+                <div class="col-md-12">
+                    <p th:text="${dlListingDTO.content}"></p>
+                </div>
+                <div class="col-md-12" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
+                    <p th:text="${dlListingDTO.dlLocations[0].name}"></p>
+                </div>
+                <div class="col-md-12" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
+                    <p th:text="${dlListingDTO.dlCategories[0].name}"></p>
+                </div>
+                <hr/>
+                <div class="col-md-12">
+                    <ul>
+                        <li th:each="dlListingField : ${dlListingDTO.dlListingFields}">
+                            <span th:text="${dlListingField.name}"></span>
+                            <span th:if="${dlListingField.type} != 'CHECKBOX'" th:text="${dlListingField.previewValue}"></span>
+                            <div th:if="${dlListingField.type} == 'CHECKBOX'" >
+                                <span th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
+                                    [(${dlListingFieldItem.value})]
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
+                <div th:each="attachment : ${dlListingDTO.attachments}">
+                    <div class="thumbnail">
+                        <img th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
+                             data-holder-rendered="true"
+                             style="height: 200px; display: block;"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Load current page javascript file -->
+    <script src="../../resources/js/listing.js"
+            th:src="@{/resources/js/listing.js}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Listing.init();
+        };
+    </script>
+</div>
+
+<!-- JavaScript libraries used to be able to open the html page itself in browser -->
+<script src="../../resources/vendor/vue/vue.min.js"
+        th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+<script src="../../resources/vendor/vuelidate/vuelidate.min.js"
+        th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+<script src="../../resources/vendor/vuelidate/validators.min.js"
+        th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+<script src="../../resources/vendor/vue-resource/vue-resource.min.js"
+        th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+<script src="../../resources/vendor/jquery/jquery-3.2.1.min.js"
+        th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script src="../../resources/vendor/bootstrap/js/bootstrap.min.js"
+        th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script src="../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+        th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+</body>
+</html>

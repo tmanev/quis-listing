@@ -14,7 +14,7 @@
                         <div v-for="dlListing in dlListings"
                              class="col-sm-6 col-md-4 col-lg-3">
                             <div class="thumbnail">
-                                <a href="google.com">
+                                <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
                                     <div style="width: 242px; height: 200px; white-space: nowrap; text-align: center;">
                                         <span style="display: inline-block; height: 100%; vertical-align: middle;"></span>
                                         <img v-if="dlListing.attachments.length==0"

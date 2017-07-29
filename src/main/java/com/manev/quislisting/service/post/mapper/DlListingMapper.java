@@ -8,6 +8,7 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
+import com.manev.quislisting.service.post.dto.DlListingFieldItemDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import org.springframework.stereotype.Component;
@@ -60,12 +61,17 @@ public class DlListingMapper {
                 for (DlListingContentFieldRel dlListingContentFieldRel : dlListingContentFieldRels) {
                     DlContentField dlContentField = dlListingContentFieldRel.getDlContentField();
                     String value = "";
+                    String previewValue = "";
+                    List<DlListingFieldItemDTO> dlContentFieldItemDTOS = new ArrayList<>();
                     if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
                         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
                         List<Long> selectionIds = new ArrayList<>();
                         if (dlContentFieldItems != null) {
                             for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
                                 selectionIds.add(dlContentFieldItem.getId());
+                                dlContentFieldItemDTOS.add(new DlListingFieldItemDTO()
+                                        .id(dlContentFieldItem.getId())
+                                        .value(dlContentFieldItem.getQlString().getValue()));
                             }
                         }
                         value = new ObjectMapper().writeValueAsString(selectionIds);
@@ -73,11 +79,20 @@ public class DlListingMapper {
                         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
                         if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
                             value = String.valueOf(dlContentFieldItems.iterator().next().getId());
+                            previewValue = dlContentFieldItems.iterator().next().getQlString().getValue();
                         }
                     } else {
                         value = dlListingContentFieldRel.getValue();
+                        previewValue = dlListingContentFieldRel.getValue();
                     }
-                    dlListingDTO.addDlListingField(new DlListingFieldDTO(dlContentField.getId(), value));
+                    dlListingDTO.addDlListingField(new DlListingFieldDTO()
+                            .id(dlContentField.getId())
+                            .type(dlContentField.getType().name())
+                            .name(dlContentField.getName())
+                            .value(value)
+                            .previewValue(previewValue)
+                            .dlListingFieldItemDTOs(dlContentFieldItemDTOS));
+
                 }
             }
         } catch (JsonProcessingException e) {
