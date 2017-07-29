@@ -65,3 +65,7 @@ id¦title¦content¦name¦translation_id¦status
 53¦Listing edit¦[my-listings-edit-page]¦my-listings/edit¦58¦PUBLISH
 54¦Редактиране на обява¦[my-listings-edit-page]¦моите-обяви/редактиране¦59¦PUBLISH
 55¦Editare de editare¦[my-listings-edit-page]¦lista-mea/edit¦60¦PUBLISH
+
+56¦Listing¦[dl-listing]¦listings¦61¦PUBLISH
+57¦Oбяви¦[dl-listing]¦обяви¦62¦PUBLISH
+58¦Anunțurile¦[dl-listing]¦anunțurile¦63¦PUBLISH

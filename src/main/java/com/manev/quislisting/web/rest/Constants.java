@@ -3,6 +3,7 @@ package com.manev.quislisting.web.rest;
 public final class Constants {
 
     private static final String RESOURCE_API_BASE = "/api";
+    private static final String RESOURCE_PUBLIC = "/public";
     public static final String RESOURCE_API_NAV_MENUS = RESOURCE_API_BASE + "/nav-menus";
 
     private static final String RESOURCE_ADMIN = "/admin";
@@ -22,6 +23,7 @@ public final class Constants {
     private static final String RESOURCE_CLIENT = "/client";
     public static final String RESOURCE_API_USER_UPLOAD = RESOURCE_API_BASE + RESOURCE_CLIENT + "/upload";
     public static final String RESOURCE_API_CONTACTS = RESOURCE_API_BASE + "/contacts";
+    public static final String RESOURCE_API_PUBLIC_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_PUBLIC + "/dl-listings";
     public static final String RESOURCE_API_DL_LISTINGS = RESOURCE_API_BASE + "/dl-listings";
     public static final String RESOURCE_API_ADMIN_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-listings";
     public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";

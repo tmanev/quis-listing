@@ -1,9 +1,9 @@
-MyListings = {
+LandingPage = {
     init: function () {
         Vue.use(window.vuelidate.default);
 
-        var myListingsApp = new Vue({
-            el: '#myListingsApp',
+        var landingApp = new Vue({
+            el: '#landingApp',
             data: {
                 tableParams: {
                     page: {
@@ -13,7 +13,7 @@ MyListings = {
                         value: 'id,desc'
                     },
                     search: null,
-                    url: '/api/dl-listings?page&sort&search'
+                    url: '/api/public/dl-listings?page&sort&search'
                 },
                 dlListings: []
             },

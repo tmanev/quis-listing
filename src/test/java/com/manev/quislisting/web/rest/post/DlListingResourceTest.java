@@ -240,8 +240,8 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .withStatus(DlListing.Status.PUBLISH)
                 .addDlCategory(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory))
                 .addDlLocation(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation))
-                .addDlListingField(new DlListingFieldDTO(dlHeightCF.getId(), "180"))
-                .addDlListingField(new DlListingFieldDTO(dlPhoneCF.getId(), "+123 456 555"))
+                .addDlListingField(new DlListingFieldDTO().id(dlHeightCF.getId()).value("180"))
+                .addDlListingField(new DlListingFieldDTO().id(dlPhoneCF.getId()).value("+123 456 555"))
                 .withExpirationDate("2020-01-01")
                 .build();
 
@@ -322,8 +322,8 @@ public class DlListingResourceTest extends GenericResourceTest {
         createdDlListingDTO.setDlCategories(Collections.singletonList(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory)));
         createdDlListingDTO.setDlLocations(Collections.singletonList(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation)));
         createdDlListingDTO.getDlListingFields().clear();
-        createdDlListingDTO.addDlListingField(new DlListingFieldDTO(dlHeightCF.getId(), "190"));
-        createdDlListingDTO.addDlListingField(new DlListingFieldDTO(dlPhoneCF.getId(), "+123 456 666"));
+        createdDlListingDTO.addDlListingField(new DlListingFieldDTO().id(dlHeightCF.getId()).value("190"));
+        createdDlListingDTO.addDlListingField(new DlListingFieldDTO().id(dlPhoneCF.getId()).value("+123 456 666"));
 
         // make the put request for updating the listing
         restDlListingMockMvc.perform(put(RESOURCE_API_DL_LISTINGS)

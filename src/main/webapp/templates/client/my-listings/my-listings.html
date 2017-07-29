@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${title}">My Listings</title>
@@ -19,17 +19,15 @@
 <div th:fragment="content" class="container">
     <div id="myListingsApp">
         <div class="page-header">
-            <h1 >My Listings</h1>
+            <h1>My Listings</h1>
         </div>
 
-        <table>
+        <table class="table table-hover">
             <thead>
             <tr>
-                <th>
-                    <span>ID</span>
-                    <span>Title</span>
-                    <span>Action</span>
-                </th>
+                <th>#</th>
+                <th>Title</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -50,7 +48,6 @@
         };
     </script>
 </div>
-
 
 <!-- JavaScript libraries used to be able to open the html page itself in browser -->
 <script src="../../../resources/vendor/vue/vue.min.js"

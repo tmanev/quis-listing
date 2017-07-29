@@ -10,6 +10,7 @@ import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.exception.PostDifferentLanguageException;
 import com.manev.quislisting.service.post.exception.PostNotFoundException;
@@ -39,16 +40,18 @@ public class StaticPageController extends BaseController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final MyListingsViewModelComponent myListingsViewModelComponent;
+    private final DlListingService dlListingService;
 
     public StaticPageController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                                 StaticPageService staticPageService, LanguageRepository languageRepository,
                                 LocaleResolver localeResolver,
-                                LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent) {
+                                LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent, DlListingService dlListingService) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
                 staticPageService);
         this.userService = userService;
         this.userRepository = userRepository;
         this.myListingsViewModelComponent = myListingsViewModelComponent;
+        this.dlListingService = dlListingService;
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
@@ -107,12 +110,12 @@ public class StaticPageController extends BaseController {
         String slugName = name + "/" + secondName;
 
         try {
-            StaticPage post = staticPageService.findOneByName(slugName, language);
+            StaticPage page = staticPageService.findOneByName(slugName, language);
 
-            modelMap.addAttribute("title", post.getTitle());
+            modelMap.addAttribute("title", page.getTitle());
 
             // handle page
-            String content = post.getContent();
+            String content = page.getContent();
             switch (content) {
                 case "[activation-link-page]":
                     if (handleActivationLinkPage(modelMap, allRequestParams)) return redirectToPageNotFound();
@@ -123,9 +126,12 @@ public class StaticPageController extends BaseController {
                 case "[profile-page]":
                     handleProfilePage(modelMap);
                     break;
+                case "[dl-listing]":
+                    handleDlListingPage(modelMap);
+                    break;
                 default:
                     modelMap.addAttribute("content", content);
-                    modelMap.addAttribute("view", "client/post");
+                    modelMap.addAttribute("view", "client/page");
                     break;
             }
         } catch (PostNotFoundException e) {
@@ -138,6 +144,10 @@ public class StaticPageController extends BaseController {
         }
 
         return "client/index";
+    }
+
+    private void handleDlListingPage(ModelMap modelMap) {
+        modelMap.addAttribute("view", "client/listing");
     }
 
     private void handleProfilePage(ModelMap modelMap) throws UnsupportedEncodingException {
