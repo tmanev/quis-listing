@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain.taxonomy.discriminator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Set;
 public class DlLocation extends TermTaxonomy {
     public static final String TAXONOMY = "dl-location";
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private DlLocation parent;

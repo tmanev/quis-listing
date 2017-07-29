@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 
@@ -13,6 +14,7 @@ public class DlListingLocationRel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonBackReference(value = "dl_listing_location_listing_reference")
     @ManyToOne(optional = false)
     @JoinColumn(name = "dl_listing_id", nullable = false, updatable = false)
     private DlListing dlListing;

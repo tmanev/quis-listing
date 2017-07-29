@@ -9,6 +9,14 @@ spring:
         database-platform: com.manev.quislisting.domain.util.FixedH2Dialect
         database: H2
         show-sql: true
+    data:
+        elasticsearch:
+            cluster-name:
+            cluster-nodes:
+            properties:
+                path:
+                  logs: elasticsearch/log
+                  data: elasticsearch/data
     mail:
         host: smtp.gmail.com
         port: 587
@@ -42,3 +50,7 @@ quislisting:
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
                 token-validity-in-seconds-for-remember-me: 2592000
+    mail:
+        baseUrl: http://localhost:8181
+    jcr-repository:
+        home: ./ql_repo

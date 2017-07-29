@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
 import javax.persistence.*;
@@ -30,6 +31,8 @@ public class DlAttachment {
     private Long size;
     @Column
     private String mimeType;
+
+    @JsonBackReference(value = "dl_attachment_listing_reference")
     @ManyToOne(optional = false)
     @JoinColumn(name = "dl_listing_id", nullable = false, updatable = false)
     private DlListing dlListing;

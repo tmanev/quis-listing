@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class DlContentFieldItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "dl_content_field_id")
     private DlContentField dlContentField;

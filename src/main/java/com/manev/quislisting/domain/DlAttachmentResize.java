@@ -1,5 +1,7 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -25,6 +27,8 @@ public class DlAttachmentResize {
     private Long size;
     @Column
     private String mimeType;
+
+    @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "dl_attachment_id", nullable = false, updatable = false)
     private DlAttachment dlAttachment;

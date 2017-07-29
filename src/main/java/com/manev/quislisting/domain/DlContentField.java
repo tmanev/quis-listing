@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 
@@ -83,6 +84,7 @@ public class DlContentField {
     @Column
     private Boolean onAdvancedSearchForm;
 
+    @JsonBackReference
     @ManyToMany
     @JoinTable(name = "ql_dl_category_dl_content_field_relationship",
             joinColumns = @JoinColumn(name = "dl_content_field_id", referencedColumnName = "id"),

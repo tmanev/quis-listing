@@ -1,5 +1,6 @@
 package com.manev.quislisting.domain.taxonomy.discriminator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 public class DlCategory extends TermTaxonomy {
     public static final String TAXONOMY = "dl-category";
 
+    @JsonBackReference(value = "dl_category_parent_reference")
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private DlCategory parent;
@@ -18,6 +20,7 @@ public class DlCategory extends TermTaxonomy {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DlCategory> children;
 
+    @JsonBackReference(value = "dl_category_listing_reference")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy="dlCategories")
     private Set<DlListing> dlListings;
 
