@@ -4,7 +4,7 @@ spring:
         url: jdbc:mysql://localhost:3306/quis_listing?useUnicode=true&characterEncoding=utf8&useSSL=false
         name:
         username: ql_user
-        password: ql_user
+        password: Quis_stagin112358*
         hikari:
             data-source-properties:
                 cachePrepStmts: true
