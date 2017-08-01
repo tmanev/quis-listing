@@ -6,7 +6,7 @@
 	<groupId>com.manev</groupId>
 	<artifactId>quis-listing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>quis-listing</name>
 	<description>Any Listing</description>
