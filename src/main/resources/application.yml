@@ -39,7 +39,10 @@ spring:
         max-file-size: 50MB
     messages:
       basename: messages, bean-validation-messages
-
+endpoints:
+    shutdown:
+        enabled: true
+        sensitive: false
 
 # ===================================================================
 # Quis Listing specific properties
