@@ -44,6 +44,12 @@ endpoints:
         enabled: true
         sensitive: false
 
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.manev.quislisting: INFO
+  file: ./logs/quis.log
+
 # ===================================================================
 # Quis Listing specific properties
 # ===================================================================
