@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.jcr.RepositoryException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,11 +19,11 @@ import java.util.List;
 @Component
 public class StorageService {
 
+    private static final Logger logger = LoggerFactory.getLogger(StorageService.class);
 
     private static final String DL_SMALL_SIZE = "242x200";
     private static final String DL_MEDIUM_SIZE = "800x600";
     private static final String DL_BIG_SIZE = "1024x768";
-    private final Logger logger = LoggerFactory.getLogger(StorageService.class);
     private StoreComponent storeComponent;
 
     public StorageService(StoreComponent storeComponent) {
@@ -34,13 +33,13 @@ public class StorageService {
     public AttachmentStreamResource loadAsResource(String filename) {
         try {
             return storeComponent.getResource(filename);
-        } catch (RepositoryException e) {
+        } catch (IOException e) {
             logger.error("Resource {} cannot be retrieved", filename);
             throw new AttachmentStreamResourceException("Resource cannot be retrieved", e);
         }
     }
 
-    public AttachmentDTO store(MultipartFile file) throws IOException, RepositoryException {
+    public AttachmentDTO store(MultipartFile file) throws IOException {
         InputStream watermarkStream = this.getClass().getClassLoader()
                 .getResourceAsStream("images/ql-logo-01-50x50.png");
         BufferedImage inputWatermarked = ImageWatermarkUtil.addImageWatermark(watermarkStream, file.getInputStream());
@@ -63,7 +62,7 @@ public class StorageService {
         return null;
     }
 
-    public void delete(List<String> filePaths) throws RepositoryException {
+    public void delete(List<String> filePaths) {
         storeComponent.removeInRepository(filePaths);
     }
 }

@@ -169,8 +169,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- JCR -->
-		<!-- https://mvnrepository.com/artifact/javax.jcr/jcr -->
 		<dependency>
 			<groupId>javax.jcr</groupId>
 			<artifactId>jcr</artifactId>
@@ -220,6 +218,13 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
 		</dependency>
 
 		<dependency>

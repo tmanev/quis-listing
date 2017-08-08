@@ -5,7 +5,10 @@ import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
-import com.manev.quislisting.repository.*;
+import com.manev.quislisting.repository.DlAttachmentRepository;
+import com.manev.quislisting.repository.DlContentFieldItemRepository;
+import com.manev.quislisting.repository.DlContentFieldRepository;
+import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.search.DlListingSearchRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
@@ -33,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.jcr.RepositoryException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
@@ -50,10 +52,8 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 public class DlListingService {
 
     private static final String USER_S_WAS_NOT_FOUND_IN_THE_DATABASE = "User : %s was not found in the database";
-    private final Logger log = LoggerFactory.getLogger(DlListingService.class);
-
     private static Clock clock = Clock.systemUTC();
-
+    private final Logger log = LoggerFactory.getLogger(DlListingService.class);
     private DlListingRepository dlListingRepository;
     private UserRepository userRepository;
     private DlCategoryRepository dlCategoryRepository;
@@ -110,7 +110,8 @@ public class DlListingService {
     }
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
-        DlListing dlListingForSaving;ZonedDateTime now = ZonedDateTime.now(clock);
+        DlListing dlListingForSaving;
+        ZonedDateTime now = ZonedDateTime.now(clock);
         if (dlListingDTO.getId() != null) {
             dlListingForSaving = dlListingRepository.findOne(dlListingDTO.getId());
 
@@ -278,7 +279,7 @@ public class DlListingService {
         return result.map(book -> dlListingMapper.dlListingToDlListingDTO(book));
     }
 
-    public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException, RepositoryException {
+    public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException {
         log.debug("Request to delete attachment with id : {}, from DlCategoryDTO : {}", attachmentId, id);
         DlListing dlListing = dlListingRepository.findOne(id);
         DlAttachment attachment = dlListing.removeAttachment(attachmentId);
@@ -309,7 +310,7 @@ public class DlListingService {
 
     }
 
-    public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException, RepositoryException {
+    public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException {
         DlListing dlListing = dlListingRepository.findOne(id);
 
         String currentUserLogin = SecurityUtils.getCurrentUserLogin();

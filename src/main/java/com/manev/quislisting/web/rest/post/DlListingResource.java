@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.LocaleResolver;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
@@ -89,7 +88,7 @@ public class DlListingResource {
     }
 
     @PostMapping(value = "/{id}/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlListingDTO> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException, RepositoryException {
+    public ResponseEntity<DlListingDTO> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException {
 
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 
@@ -129,7 +128,7 @@ public class DlListingResource {
     }
 
     @DeleteMapping("/{id}/attachments/{attachmentId}")
-    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) throws IOException, RepositoryException {
+    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) throws IOException {
         log.debug("REST request to delete attachment with id : {} in DlListingDTO : {}", attachmentId, id);
         DlListingDTO result = dlListingService.deleteDlListingAttachment(id, attachmentId);
         return ResponseEntity.ok()

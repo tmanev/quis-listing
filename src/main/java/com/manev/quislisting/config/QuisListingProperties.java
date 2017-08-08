@@ -20,6 +20,7 @@ public class QuisListingProperties {
     private final QuisListingProperties.Mail mail = new QuisListingProperties.Mail();
     private final CorsConfiguration cors = new CorsConfiguration();
     private final JcrRepository jcrRepository = new JcrRepository();
+    private String attachmentStoragePath;
 
     public Security getSecurity() {
         return security;
@@ -39,6 +40,14 @@ public class QuisListingProperties {
 
     public CorsConfiguration getCors() {
         return this.cors;
+    }
+
+    public String getAttachmentStoragePath() {
+        return attachmentStoragePath;
+    }
+
+    public void setAttachmentStoragePath(String attachmentStoragePath) {
+        this.attachmentStoragePath = attachmentStoragePath;
     }
 
     public static class Security {

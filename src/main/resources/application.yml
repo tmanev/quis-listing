@@ -56,3 +56,4 @@ quislisting:
         displayOnActiveProfiles: dev
     mail:
         from: contact@quislisting.com
+    attachment-storage-path: ./attachment_storage
