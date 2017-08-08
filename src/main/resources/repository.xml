@@ -122,7 +122,7 @@
         <!--<Journal class="org.apache.jackrabbit.core.journal.MemoryJournal"/>-->
         <Journal class="org.apache.jackrabbit.core.journal.FileJournal">
             <param name="revision" value="${rep.home}/revision.log" />
-            <param name="directory" value="${rep.home}/nfs/myserver/myjournal" />
+            <param name="directory" value="./nfs/myserver/myjournal" />
         </Journal>
     </Cluster>
 </Repository>
