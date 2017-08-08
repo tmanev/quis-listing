@@ -127,7 +127,16 @@ public class QuisListingProperties {
     }
 
     public static class JcrRepository {
+        private String configFile;
         private String home;
+
+        public String getConfigFile() {
+            return configFile;
+        }
+
+        public void setConfigFile(String configFile) {
+            this.configFile = configFile;
+        }
 
         public String getHome() {
             return home;

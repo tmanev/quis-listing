@@ -23,7 +23,7 @@ public class JcrConfiguration {
     }
 
     private void jcrRepoConfig() throws RepositoryException {
-        RepositoryConfig repositoryConfig = RepositoryConfig.create(this.getClass().getResourceAsStream("/repository.xml"),
+        RepositoryConfig repositoryConfig = RepositoryConfig.create(this.getClass().getResourceAsStream("/" + quisListingProperties.getJcrRepository().getConfigFile()),
                 quisListingProperties.getJcrRepository().getHome());
         this.repositoryImpl = RepositoryImpl.create(repositoryConfig);
         this.session = repositoryImpl.login(new SimpleCredentials(ADMIN, ADMIN.toCharArray()));
