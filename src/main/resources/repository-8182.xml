@@ -78,7 +78,7 @@
             <param name="url" value="jdbc:mysql://localhost:3306/quis_listing_repo" />
             <param name="databaseType" value="mysql" />
             <param name="user" value="ql_repo_user" />
-            <param name="password" value="ql_repo" />
+            <param name="password" value="Quis_repo_staging112358*" />
             <param name="schemaObjectPrefix" value="${wsp.name}_" /><!-- read notes below to set this value properly -->
             <param name="externalBLOBs" value="false" />
         </PersistenceManager>
