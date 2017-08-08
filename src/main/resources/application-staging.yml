@@ -56,4 +56,4 @@ quislisting:
         baseUrl: http://192.168.1.64:8181
     jcr-repository:
         config-file: repository-8181.xml
-        home: ./ql_repo
+        home: ./ql_repo_8181

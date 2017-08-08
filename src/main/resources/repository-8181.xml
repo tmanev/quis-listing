@@ -8,8 +8,14 @@
         (e.g. registered namespaces, custom node types, etc.)
     -->
     <FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
-        <param name="path" value="${rep.home}/repository"/>
+        <param name="path" value="./ql_repo_main/repository"/>
     </FileSystem>
+
+
+    <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
+        <param name="path" value="./ql_repo_main/repository/datastore"/>
+        <param name="minRecordLength" value="100"/>
+    </DataStore>
 
     <!--
         security configuration
@@ -20,12 +26,12 @@
             class: FQN of class implementing the JackrabbitSecurityManager interface
         -->
         <!--<SecurityManager class="org.apache.jackrabbit.core.DefaultSecurityManager" workspaceName="security">-->
-            <!--&lt;!&ndash;-->
-            <!--workspace access:-->
-            <!--class: FQN of class implementing the WorkspaceAccessManager interface-->
-            <!--&ndash;&gt;-->
-            <!--&lt;!&ndash; <WorkspaceAccessManager class="..."/> &ndash;&gt;-->
-            <!--&lt;!&ndash; <param name="config" value="${rep.home}/security.xml"/> &ndash;&gt;-->
+        <!--&lt;!&ndash;-->
+        <!--workspace access:-->
+        <!--class: FQN of class implementing the WorkspaceAccessManager interface-->
+        <!--&ndash;&gt;-->
+        <!--&lt;!&ndash; <WorkspaceAccessManager class="..."/> &ndash;&gt;-->
+        <!--&lt;!&ndash; <param name="config" value="${rep.home}/security.xml"/> &ndash;&gt;-->
         <!--</SecurityManager>-->
 
         <!--
@@ -68,8 +74,8 @@
             class: FQN of class implementing the PersistenceManager interface
         -->
         <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager">
-          <param name="url" value="jdbc:derby:${wsp.home}/db;create=true"/>
-          <param name="schemaObjectPrefix" value="${wsp.name}_"/>
+            <param name="url" value="jdbc:derby:./ql_repo_main/db;create=true"/>
+            <param name="schemaObjectPrefix" value="${wsp.name}_"/>
         </PersistenceManager>
 
         <!--
@@ -77,8 +83,8 @@
            class: FQN of class implementing the QueryHandler interface
        -->
         <!--<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">-->
-            <!--<param name="path" value="${wsp.home}/index"/>-->
-            <!--<param name="supportHighlighting" value="true"/>-->
+        <!--<param name="path" value="${wsp.home}/index"/>-->
+        <!--<param name="supportHighlighting" value="true"/>-->
         <!--</SearchIndex>-->
     </Workspace>
 
@@ -101,8 +107,8 @@
             implementations.
         -->
         <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager">
-          <param name="url" value="jdbc:derby:${rep.home}/version/db;create=true"/>
-          <param name="schemaObjectPrefix" value="version_"/>
+            <param name="url" value="jdbc:derby:${rep.home}/version/db;create=true"/>
+            <param name="schemaObjectPrefix" value="version_"/>
         </PersistenceManager>
     </Versioning>
 
@@ -111,8 +117,8 @@
         (/jcr:system tree, contains mainly versions)
     -->
     <!--<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">-->
-        <!--<param name="path" value="${rep.home}/repository/index"/>-->
-        <!--<param name="supportHighlighting" value="true"/>-->
+    <!--<param name="path" value="${rep.home}/repository/index"/>-->
+    <!--<param name="supportHighlighting" value="true"/>-->
     <!--</SearchIndex>-->
 
     <!--
@@ -122,7 +128,7 @@
         <!--<Journal class="org.apache.jackrabbit.core.journal.MemoryJournal"/>-->
         <Journal class="org.apache.jackrabbit.core.journal.FileJournal">
             <param name="revision" value="${rep.home}/revision.log" />
-            <param name="directory" value="./nfs/myserver/myjournal" />
+            <param name="directory" value="./ql_repo_main/nfs/myserver/myjournal" />
         </Journal>
     </Cluster>
 </Repository>
