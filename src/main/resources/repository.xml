@@ -118,7 +118,11 @@
     <!--
         Run with a cluster journal
     -->
-    <!--<Cluster id="node1">-->
+    <Cluster id="node1">
         <!--<Journal class="org.apache.jackrabbit.core.journal.MemoryJournal"/>-->
-    <!--</Cluster>-->
+        <Journal class="org.apache.jackrabbit.core.journal.FileJournal">
+            <param name="revision" value="${rep.home}/revision.log" />
+            <param name="directory" value="${rep.home}/nfs/myserver/myjournal" />
+        </Journal>
+    </Cluster>
 </Repository>
