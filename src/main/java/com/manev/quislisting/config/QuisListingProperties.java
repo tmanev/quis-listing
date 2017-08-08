@@ -19,7 +19,6 @@ public class QuisListingProperties {
     private final Ribbon ribbon = new Ribbon();
     private final QuisListingProperties.Mail mail = new QuisListingProperties.Mail();
     private final CorsConfiguration cors = new CorsConfiguration();
-    private final JcrRepository jcrRepository = new JcrRepository();
     private String attachmentStoragePath;
 
     public Security getSecurity() {
@@ -32,10 +31,6 @@ public class QuisListingProperties {
 
     public QuisListingProperties.Mail getMail() {
         return this.mail;
-    }
-
-    public JcrRepository getJcrRepository() {
-        return jcrRepository;
     }
 
     public CorsConfiguration getCors() {
@@ -135,24 +130,4 @@ public class QuisListingProperties {
         }
     }
 
-    public static class JcrRepository {
-        private String configFile;
-        private String home;
-
-        public String getConfigFile() {
-            return configFile;
-        }
-
-        public void setConfigFile(String configFile) {
-            this.configFile = configFile;
-        }
-
-        public String getHome() {
-            return home;
-        }
-
-        public void setHome(String home) {
-            this.home = home;
-        }
-    }
 }
