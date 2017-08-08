@@ -129,7 +129,7 @@
     <!--
         Run with a cluster journal
     -->
-    <Cluster id="node1">
+    <Cluster id="node1" syncDelay="2000">
         <!--<Journal class="org.apache.jackrabbit.core.journal.MemoryJournal"/>-->
         <Journal class="org.apache.jackrabbit.core.journal.FileJournal">
             <param name="revision" value="${rep.home}/revision.log" />
