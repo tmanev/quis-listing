@@ -73,9 +73,14 @@
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-        <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager">
-            <param name="url" value="jdbc:derby:./ql_repo_main/db;create=true"/>
-            <param name="schemaObjectPrefix" value="${wsp.name}_"/>
+        <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
+            <param name="driver" value="com.mysql.jdbc.Driver" />
+            <param name="url" value="jdbc:mysql://localhost:3306/quis_listing_repo" />
+            <param name="databaseType" value="mysql" />
+            <param name="user" value="ql_repo_user" />
+            <param name="password" value="Quis_repo_staging112358*" />
+            <param name="schemaObjectPrefix" value="${wsp.name}_" /><!-- read notes below to set this value properly -->
+            <param name="externalBLOBs" value="false" />
         </PersistenceManager>
 
         <!--

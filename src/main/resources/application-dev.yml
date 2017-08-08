@@ -53,5 +53,5 @@ quislisting:
     mail:
         baseUrl: http://localhost:8181
     jcr-repository:
-        config-file: repository-8181.xml
-        home: ./ql_repo_8181
+        config-file: repository-dev.xml
+        home: ./ql_repo_dev

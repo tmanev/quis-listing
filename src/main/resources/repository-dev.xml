@@ -26,12 +26,12 @@
             class: FQN of class implementing the JackrabbitSecurityManager interface
         -->
         <!--<SecurityManager class="org.apache.jackrabbit.core.DefaultSecurityManager" workspaceName="security">-->
-            <!--&lt;!&ndash;-->
-            <!--workspace access:-->
-            <!--class: FQN of class implementing the WorkspaceAccessManager interface-->
-            <!--&ndash;&gt;-->
-            <!--&lt;!&ndash; <WorkspaceAccessManager class="..."/> &ndash;&gt;-->
-            <!--&lt;!&ndash; <param name="config" value="${rep.home}/security.xml"/> &ndash;&gt;-->
+        <!--&lt;!&ndash;-->
+        <!--workspace access:-->
+        <!--class: FQN of class implementing the WorkspaceAccessManager interface-->
+        <!--&ndash;&gt;-->
+        <!--&lt;!&ndash; <WorkspaceAccessManager class="..."/> &ndash;&gt;-->
+        <!--&lt;!&ndash; <param name="config" value="${rep.home}/security.xml"/> &ndash;&gt;-->
         <!--</SecurityManager>-->
 
         <!--
@@ -73,14 +73,9 @@
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-        <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
-            <param name="driver" value="com.mysql.jdbc.Driver" />
-            <param name="url" value="jdbc:mysql://localhost:3306/quis_listing_repo" />
-            <param name="databaseType" value="mysql" />
-            <param name="user" value="ql_repo_user" />
-            <param name="password" value="ql_repo" />
-            <param name="schemaObjectPrefix" value="${wsp.name}_" /><!-- read notes below to set this value properly -->
-            <param name="externalBLOBs" value="false" />
+        <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager">
+            <param name="url" value="jdbc:derby:./ql_repo_main/db;create=true"/>
+            <param name="schemaObjectPrefix" value="${wsp.name}_"/>
         </PersistenceManager>
 
         <!--
@@ -88,8 +83,8 @@
            class: FQN of class implementing the QueryHandler interface
        -->
         <!--<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">-->
-            <!--<param name="path" value="${wsp.home}/index"/>-->
-            <!--<param name="supportHighlighting" value="true"/>-->
+        <!--<param name="path" value="${wsp.home}/index"/>-->
+        <!--<param name="supportHighlighting" value="true"/>-->
         <!--</SearchIndex>-->
     </Workspace>
 
@@ -112,8 +107,8 @@
             implementations.
         -->
         <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager">
-          <param name="url" value="jdbc:derby:${rep.home}/version/db;create=true"/>
-          <param name="schemaObjectPrefix" value="version_"/>
+            <param name="url" value="jdbc:derby:${rep.home}/version/db;create=true"/>
+            <param name="schemaObjectPrefix" value="version_"/>
         </PersistenceManager>
     </Versioning>
 
@@ -122,14 +117,14 @@
         (/jcr:system tree, contains mainly versions)
     -->
     <!--<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">-->
-        <!--<param name="path" value="${rep.home}/repository/index"/>-->
-        <!--<param name="supportHighlighting" value="true"/>-->
+    <!--<param name="path" value="${rep.home}/repository/index"/>-->
+    <!--<param name="supportHighlighting" value="true"/>-->
     <!--</SearchIndex>-->
 
     <!--
         Run with a cluster journal
     -->
-    <Cluster id="node2">
+    <Cluster id="node1">
         <!--<Journal class="org.apache.jackrabbit.core.journal.MemoryJournal"/>-->
         <Journal class="org.apache.jackrabbit.core.journal.FileJournal">
             <param name="revision" value="${rep.home}/revision.log" />
