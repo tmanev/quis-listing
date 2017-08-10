@@ -25,6 +25,7 @@
 
 		<liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
 		<hibernate.version>5.2.10.Final</hibernate.version>
+		<hibernate-validator.version>5.4.1.Final</hibernate-validator.version>
 		<hikaricp.version>2.6.3</hikaricp.version>
 		<liquibase.version>3.5.3</liquibase.version>
 		<springfox.version>2.6.1</springfox.version>

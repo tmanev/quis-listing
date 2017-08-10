@@ -18,9 +18,3 @@ spring:
         properties:
             hibernate.cache.use_second_level_cache: true
             hibernate.enable_lazy_load_no_trans: true
-# ===================================================================
-# Quis Listing specific properties
-# ===================================================================
-quislisting:
-    jcr-repository:
-        home: ./ql_repo_itest
