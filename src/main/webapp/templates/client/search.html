@@ -18,11 +18,11 @@
     <div class="row">
         <form v-on:submit.prevent="onSearch($event)">
             <div class="col-md-10">
-                <input class="form-control" placeholder="Search"
+                <input class="form-control" placeholder="Search" th:placeholder="#{page.search.title}"
                        v-model="search"/>
             </div>
             <div class="col-md-2">
-                <button id="searchButton" class="btn btn-primary btn-block"
+                <button id="searchButton" class="btn btn-primary btn-block" th:text="#{page.search.btn_search}"
                         data-loading-text="Searching...">Search
                 </button>
             </div>
