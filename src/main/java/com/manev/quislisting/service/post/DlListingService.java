@@ -40,8 +40,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.Clock;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
@@ -111,7 +111,7 @@ public class DlListingService {
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
         DlListing dlListingForSaving;
-        ZonedDateTime now = ZonedDateTime.now(clock);
+        Timestamp now = new Timestamp(clock.millis());
         if (dlListingDTO.getId() != null) {
             dlListingForSaving = dlListingRepository.findOne(dlListingDTO.getId());
 
@@ -283,7 +283,7 @@ public class DlListingService {
         log.debug("Request to delete attachment with id : {}, from DlCategoryDTO : {}", attachmentId, id);
         DlListing dlListing = dlListingRepository.findOne(id);
         DlAttachment attachment = dlListing.removeAttachment(attachmentId);
-        dlListing.setModified(ZonedDateTime.now());
+        dlListing.setModified(new Timestamp(clock.millis()));
         DlListing result = dlListingRepository.save(dlListing);
 
         if (attachment != null) {

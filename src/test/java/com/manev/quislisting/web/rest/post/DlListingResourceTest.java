@@ -48,7 +48,9 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import java.io.FileInputStream;
 import java.nio.file.Files;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LISTINGS;
@@ -63,7 +65,6 @@ public class DlListingResourceTest extends GenericResourceTest {
 
     private static final String SHOULD_NOT_BE_THIS_NAME = "SHOULD_NOT_BE_THIS_NAME";
     private static final long TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS = 10000L;
-    private static final ZonedDateTime ZONED_DATE_TIME_SHOULD_NOT_BE_THIS = ZonedDateTime.now();
     private static final String LANGUAGE_CODE_SHOULD_NOT_BE_THIS = "LANGUAGE_CODE_SHOULD_NOT_BE_THIS";
     private static final String SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS = "SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS";
     private static final String UPDATE_CONTENT = "UPDATE_CONTENT";
@@ -71,29 +72,11 @@ public class DlListingResourceTest extends GenericResourceTest {
     private static final String DEFAULT_CONTENT = "DEFAULT_CONTENT";
     private static final String DEFAULT_NAME = "default_title";
     private static final String DEFAULT_LANGUAGE_CODE = "en";
-    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
-    private static final ZonedDateTime DEFAULT_MODIFIED = ZonedDateTime.parse("2007-12-03T10:15:30+01:00");
+    private static final Timestamp DEFAULT_CREATED = Timestamp.valueOf(LocalDateTime.parse("2007-12-03T10:15:30"));
+    private static final Timestamp DEFAULT_MODIFIED = Timestamp.valueOf(LocalDateTime.parse("2007-12-03T10:15:30"));
     private static final DlListing.Status DEFAULT_STATUS = DlListing.Status.DRAFT;
-    private static final String META_VALUE_EXPIRATION_DATE = "1486908703";
-    private static final String META_VALUE_ATTACHED_IMAGE_00 = "232";
-    private static final String META_VALUE_ATTACHED_IMAGE_01 = "233";
-    private static final String META_VALUE_ATTACHED_IMAGE_02 = "234";
-    private static final String META_VALUE_ATTACHED_IMAGE_03 = "235";
-    private static final String META_VALUE_CONTENT_FIELD_20 = "24";
-    private static final String META_VALUE_CONTENT_FIELD_21 = "175";
-    private static final String META_VALUE_CONTENT_FIELD_22 = "55";
-    private static final String META_VALUE_ATTACHED_IMAGE_AS_LOGO = "233";
-    private static final String META_VALUE_THUMBNAIL_ID = "233";
-    private static final String META_VALUE_LISTING_STATUS = "active";
-    private static final String META_VALUE_POST_VIEWS_COUNT = "0";
-    private static final String META_VALUE_LOCATION_ID = "233";
-    private static final String META_VALUE_ADDRESS_LINE_1 = "Times Square, New York, New York";
-    private static final String META_VALUE_ADDRESS_LINE_2 = "";
-    private static final String META_VALUE_MAP_COORDS_1 = "42.65418440000001";
-    private static final String META_VALUE_MAP_COORDS_2 = "23.371921499999985";
-    private static final String META_KEY_MAP_ZOOM = "_map_zoom";
-    private static final String META_VALUE_CLICKS_DATA = "{\"2017-01\", \"2\"}";
-    private static final String META_VALUE_TOTAL_CLICKS = "2";
+    private static Clock clock = Clock.systemUTC();
+    private static final Timestamp ZONED_DATE_TIME_SHOULD_NOT_BE_THIS = new Timestamp(clock.millis());
     @Autowired
     private DlListingService dlListingService;
 

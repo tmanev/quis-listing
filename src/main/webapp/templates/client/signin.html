@@ -19,8 +19,8 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <span th:text="${errMsg}">Your email and password seem to be incorrect. Please try again.</span>
         </div>
-        <form class="form-horizontal col-md-6 col-md-offset-3" action="/sign-in" method="post"
-              th:action="@{/sign-in}" name="loginVM">
+        <form class="form-horizontal col-md-6 col-md-offset-3" method="post"
+               name="loginVM">
             <fieldset>
                 <legend th:text="#{page.signin.form.legend}">Please Sign In</legend>
                 <div class="form-group">
@@ -64,7 +64,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
-                        <a href="signup" th:href="${forgotPasswordName}"
+                        <a href="signup" th:href="@{/forgot-password}"
                            th:text="#{page.signin.form.link.forgot_your_password}">Forgot your password?</a>
                     </div>
                 </div>

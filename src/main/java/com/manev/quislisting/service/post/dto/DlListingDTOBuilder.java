@@ -5,7 +5,7 @@ import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +20,8 @@ public final class DlListingDTOBuilder {
     private String content;
     private String name;
     private List<AttachmentDTO> attachments;
-    private ZonedDateTime created;
-    private ZonedDateTime modified;
+    private Timestamp created;
+    private Timestamp modified;
     private UserDTO author;
     private String languageCode;
     private String sourceLanguageCode;
@@ -109,12 +109,12 @@ public final class DlListingDTOBuilder {
         return this;
     }
 
-    public DlListingDTOBuilder withCreated(ZonedDateTime created) {
+    public DlListingDTOBuilder withCreated(Timestamp created) {
         this.created = created;
         return this;
     }
 
-    public DlListingDTOBuilder withModified(ZonedDateTime modified) {
+    public DlListingDTOBuilder withModified(Timestamp modified) {
         this.modified = modified;
         return this;
     }

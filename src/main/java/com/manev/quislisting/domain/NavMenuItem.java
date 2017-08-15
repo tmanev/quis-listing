@@ -6,20 +6,31 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "ql_static_page_nav_menu_relationship")
-public class StaticPageNavMenuRel {
+@Table(name = "ql_nav_menu_item")
+public class NavMenuItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "static_page_id", updatable = false, nullable = false)
+    @NotNull
+    @Column
+    private String title;
+
+    @Column
+    private String slug;
+
+    @ManyToOne
+    @JoinColumn(name = "static_page_id")
     private StaticPage staticPage;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "term_taxonomy_id", updatable = false, nullable = false)
     private NavMenu navMenu;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "translation_id")
+    private Translation translation;
 
     @NotNull
     @Column
@@ -31,6 +42,22 @@ public class StaticPageNavMenuRel {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public StaticPage getStaticPage() {
@@ -55,5 +82,13 @@ public class StaticPageNavMenuRel {
 
     public void setMenuOrder(Integer menuOrder) {
         this.menuOrder = menuOrder;
+    }
+
+    public Translation getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(Translation translation) {
+        this.translation = translation;
     }
 }

@@ -37,7 +37,6 @@ import java.util.Optional;
 @RequestMapping(value = "/listings")
 public class ListingsController extends BaseController {
 
-    private final MessageSource messageSource;
     private final DlListingService dlListingService;
     private final DlCategoryService dlCategoryService;
     private final DlContentFieldService dlContentFieldService;
@@ -48,8 +47,7 @@ public class ListingsController extends BaseController {
                               QlConfigService qlConfigService, LanguageRepository languageRepository,
                               LanguageTranslationRepository languageTranslationRepository,
                               LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource, DlListingService dlListingService, DlCategoryService dlCategoryService, DlContentFieldService dlContentFieldService, UserService userService, DlLocationService dlLocationService) {
-        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService);
-        this.messageSource = messageSource;
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService, messageSource);
         this.dlListingService = dlListingService;
         this.dlCategoryService = dlCategoryService;
         this.dlContentFieldService = dlContentFieldService;

@@ -1,0 +1,24 @@
+id;title;slug;static_page_id;term_taxonomy_id;translation_id;menu_order
+1;Home;;null;8;38;1
+2;Search;search;null;8;39;2
+3;Add Listing;my-listings/add;null;8;40;3
+4;My Listings;my-listings;null;8;41;4
+
+5;Начало;?lang=bg;null;19;42;1
+6;Търси;search;null;19;43;2
+7;Добави обява;my-listings/add;null;19;44;3
+8;Моите обяви;my-listings;null;19;45;4
+
+9;Acasă;?lang=ro;null;21;46;1
+10;Căutare;search;null;21;47;2
+11;Adăugați o listă;my-listings/add;null;21;48;3
+12;Anunțurile mele;my-listings;null;21;49;4
+
+13;Terms and Conditions;null;1;9;50;1
+14;Contact;contact;null;9;51;2
+
+15;Общи условия;null;2;18;52;1
+16;Контакт;contact;null;18;53;2
+
+17;Termeni si conditii;null;3;20;54;1
+18;Contact;contact;null;20;55;2

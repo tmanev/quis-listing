@@ -27,7 +27,8 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li th:each="navMenuItem : ${baseModel.topHeaderMenus}">
-                    <a th:href="'/'+${navMenuItem.staticPage.name}" th:text="${navMenuItem.staticPage.title}"></a>
+                    <a th:if="${navMenuItem.staticPage} != null" th:href="'/'+${navMenuItem.staticPage.name}" th:text="${navMenuItem.staticPage.title}"></a>
+                    <a th:if="${navMenuItem.staticPage} == null" th:href="'/'+${navMenuItem.slug}" th:text="${navMenuItem.title}"></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -63,7 +64,7 @@
                         <span sec:authentication="name">Bob</span> <b class="caret"></b>
                     </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" th:href="${baseModel.profilePage.name}">
+                            <li><a href="#" th:href="@{/account/profile}">
                                     <span class="glyphicon glyphicon-user"></span>
                                     <span th:text="#{fragment.header.account}">Account</span>
                                 </a>

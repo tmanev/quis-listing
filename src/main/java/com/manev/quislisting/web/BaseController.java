@@ -16,6 +16,7 @@ import com.manev.quislisting.service.post.dto.StaticPageDTO;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -29,8 +30,9 @@ import java.util.Locale;
 
 public class BaseController {
 
-    static final String REDIRECT = "redirect:/";
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
+
+    static final String REDIRECT = "redirect:/";
     protected NavMenuRepository navMenuRepository;
 
     protected QlConfigService qlConfigService;
@@ -38,17 +40,19 @@ public class BaseController {
     protected LanguageRepository languageRepository;
     protected LocaleResolver localeResolver;
     protected StaticPageService staticPageService;
-    private LanguageTranslationRepository languageTranslationRepository;
+    protected LanguageTranslationRepository languageTranslationRepository;
+    protected MessageSource messageSource;
 
     public BaseController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                           LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
-                          LocaleResolver localeResolver, StaticPageService staticPageService) {
+                          LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource) {
         this.navMenuRepository = navMenuRepository;
         this.qlConfigService = qlConfigService;
         this.languageRepository = languageRepository;
         this.languageTranslationRepository = languageTranslationRepository;
         this.localeResolver = localeResolver;
         this.staticPageService = staticPageService;
+        this.messageSource = messageSource;
     }
 
     @ModelAttribute("baseModel")
@@ -69,13 +73,13 @@ public class BaseController {
             Long topHeaderMenuRefId = qlMenuPosByLanguageCode.getTopHeaderMenuRefId();
             if (topHeaderMenuRefId != null) {
                 NavMenu topHeaderMenu = navMenuRepository.findOne(topHeaderMenuRefId);
-                baseModel.setTopHeaderMenus(topHeaderMenu.getStaticPageNavMenuRels());
+                baseModel.setTopHeaderMenus(topHeaderMenu.getNavMenuItems());
             }
 
             Long footerMenuRefId = qlMenuPosByLanguageCode.getFooterMenuRefId();
             if (footerMenuRefId != null) {
                 NavMenu footerMenu = navMenuRepository.findOne(footerMenuRefId);
-                baseModel.setFooterMenus(footerMenu.getStaticPageNavMenuRels());
+                baseModel.setFooterMenus(footerMenu.getNavMenuItems());
             }
         }
 
@@ -91,9 +95,6 @@ public class BaseController {
         } else {
             baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
         }
-
-        QlConfig accountProfilePageConfig = qlConfigService.findOneByKey("account-profile-page-id");
-        baseModel.setProfilePage(staticPageService.retrievePost(language, accountProfilePageConfig.getValue()));
 
         baseModel.setBaseUrl(qlConfigService.findOneByKey("base-url").getValue());
 

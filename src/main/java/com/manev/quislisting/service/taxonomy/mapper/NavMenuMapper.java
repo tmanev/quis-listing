@@ -1,6 +1,6 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
-import com.manev.quislisting.domain.StaticPageNavMenuRel;
+import com.manev.quislisting.domain.NavMenuItem;
 import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
@@ -48,7 +48,7 @@ public class NavMenuMapper {
                 .withLanguageCode(navMenu.getTranslation().getLanguageCode())
                 .withSourceLanguageCode(navMenu.getTranslation().getSourceLanguageCode())
                 .withTranslationGroupId(navMenu.getTranslation().getTranslationGroup().getId())
-                .withNavMenuItemDTOList(navMenuItemMapper.navMenuItemToNavMenuItemDto(navMenu.getStaticPageNavMenuRels()))
+                .withNavMenuItemDTOList(navMenuItemMapper.navMenuItemToNavMenuItemDto(navMenu.getNavMenuItems()))
                 .build();
 
         setTranslationsDTO(navMenu, navMenuDTO, activeLanguages);
@@ -97,15 +97,15 @@ public class NavMenuMapper {
 
         existingNavMenu.setDescription(navMenuDTO.getDescription());
 
-        Set<StaticPageNavMenuRel> existingNavMenuItems = existingNavMenu.getStaticPageNavMenuRels();
-        List<StaticPageNavMenuRel> toBeDeletedNavMenuItems = new ArrayList<>();
+        Set<NavMenuItem> existingNavMenuItems = existingNavMenu.getNavMenuItems();
+        List<NavMenuItem> toBeDeletedNavMenuItems = new ArrayList<>();
         if (existingNavMenuItems == null) {
-            existingNavMenu.setStaticPageNavMenuRels(navMenuItemMapper.navMenuItemDtoToNavMenuItem(existingNavMenu, navMenuDTO.getStaticPageNavMenuDTOS()));
+            existingNavMenu.setNavMenuItems(navMenuItemMapper.navMenuItemDtoToNavMenuItem(existingNavMenu, navMenuDTO.getStaticPageNavMenuDTOS()));
         } else {
             // search existing one
-            Iterator<StaticPageNavMenuRel> iterator = existingNavMenuItems.iterator();
+            Iterator<NavMenuItem> iterator = existingNavMenuItems.iterator();
             while (iterator.hasNext()) {
-                StaticPageNavMenuRel navMenuItem = iterator.next();
+                NavMenuItem navMenuItem = iterator.next();
                 StaticPageNavMenuDTO existingStaticPageNavMenuDto = findAndRemoveNavMenuItem(navMenuItem, navMenuDTO.getStaticPageNavMenuDTOS());
                 if (existingStaticPageNavMenuDto == null) {
                     // remove the item if not present in the list
@@ -121,7 +121,7 @@ public class NavMenuMapper {
         return existingNavMenu;
     }
 
-    private StaticPageNavMenuDTO findAndRemoveNavMenuItem(StaticPageNavMenuRel navMenuItem, List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
+    private StaticPageNavMenuDTO findAndRemoveNavMenuItem(NavMenuItem navMenuItem, List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
         Iterator<StaticPageNavMenuDTO> iterator = staticPageNavMenuDTOS.iterator();
         while (iterator.hasNext()) {
             StaticPageNavMenuDTO staticPageNavMenuDTO = iterator.next();

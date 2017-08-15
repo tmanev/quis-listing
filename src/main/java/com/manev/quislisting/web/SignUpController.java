@@ -28,7 +28,6 @@ import java.util.Optional;
 @RequestMapping("/sign-up")
 public class SignUpController extends BaseController {
 
-    private MessageSource messageSource;
     private UserRepository userRepository;
     private UserService userService;
     private EmailSendingService emailSendingService;
@@ -39,8 +38,7 @@ public class SignUpController extends BaseController {
                             UserRepository userRepository, UserService userService,
                             StaticPageService staticPageService, EmailSendingService emailSendingService) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                staticPageService);
-        this.messageSource = messageSource;
+                staticPageService, messageSource);
         this.userRepository = userRepository;
         this.userService = userService;
         this.emailSendingService = emailSendingService;

@@ -1,6 +1,7 @@
 package com.manev.quislisting.security.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.apache.catalina.connector.ResponseFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -41,11 +42,22 @@ public class JWTFilter extends GenericFilterBean {
             if (StringUtils.hasText(jwt) && this.tokenProvider.validateToken(jwt)) {
                 Authentication authentication = this.tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                if (!httpServletRequest.getRequestURL().toString().contains("/sign-in")
+                        && !httpServletRequest.getRequestURL().toString().contains("/api")) {
+                    httpServletRequest.setAttribute("quisRedirectUrl", httpServletRequest.getRequestURL());
+                    httpServletRequest.getRequestURL().append("trajche");
+                }
             }
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (ExpiredJwtException eje) {
             log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
-            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+            if (httpServletRequest.getRequestURL().toString().contains("/api")){
+                ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            } else {
+                httpServletRequest.setAttribute("quisRedirectUrl", httpServletRequest.getRequestURL());
+            }
         }
     }
 

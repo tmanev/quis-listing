@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.service.post.dto.serializer.TimestampDeserializer;
+import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
 import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
 import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
 import org.hibernate.annotations.Where;
@@ -11,6 +13,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,11 +39,15 @@ public class DlListing {
     @Column
     private String content;
 
+    @JsonSerialize(using = TimestampSerializer.class)
+    @JsonDeserialize(using = TimestampDeserializer.class)
     @Column
-    private ZonedDateTime created;
+    private Timestamp created;
 
+    @JsonSerialize(using = TimestampSerializer.class)
+    @JsonDeserialize(using = TimestampDeserializer.class)
     @Column
-    private ZonedDateTime modified;
+    private Timestamp modified;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -167,19 +174,19 @@ public class DlListing {
         this.content = content;
     }
 
-    public ZonedDateTime getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
-    public void setCreated(ZonedDateTime created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 
-    public ZonedDateTime getModified() {
+    public Timestamp getModified() {
         return modified;
     }
 
-    public void setModified(ZonedDateTime modified) {
+    public void setModified(Timestamp modified) {
         this.modified = modified;
     }
 

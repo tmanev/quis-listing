@@ -7,18 +7,13 @@ id;tr_group_id;language_code;source_language_code
 6;6;en;null
 
 8;8;en;null
-9;9;en;null
 
 10;10;en;null
 11;11;en;null
 12;12;en;null
 
 13;13;en;null
-14;14;en;null
 
-15;15;en;null
-16;16;en;null
-17;17;en;null
 
 18;18;en;null
 19;19;en;null
@@ -32,51 +27,35 @@ id;tr_group_id;language_code;source_language_code
 26;13;bg;en
 27;12;bg;en
 
-28;14;bg;en
 29;12;bg;en
 
 30;11;bg;en
-31;9;bg;en
-
-32;15;bg;en
-33;16;bg;en
-34;17;bg;en
 
 35;12;ro;en
 36;11;ro;en
 
 37;11;ro;en
-38;14;ro;en
 
-39;9;ro;en
-40;15;ro;en
-41;16;ro;en
-42;17;ro;en
+38;26;en;null
+39;27;en;null
+40;28;en;null
+41;29;en;null
 
-43;26;en;null
-44;26;bg;en
-45;26;ro;en
+42;26;bg;en
+43;27;bg;en
+44;28;bg;en
+45;29;bg;en
 
-46;27;en;null
-47;27;bg;en
-48;27;ro;en
+46;26;ro;en
+47;27;ro;en
+48;28;ro;en
+49;29;ro;en
 
-49;28;en;null
-50;28;bg;en
-51;28;ro;en
+50;30;en;null
+51;31;en;null
 
-52;29;en;null
-53;29;bg;en
-54;29;ro;en
+52;30;bg;en
+53;31;bg;en
 
-55;30;en;null
-56;30;bg;en
-57;30;ro;en
-
-58;31;en;null
-59;31;bg;en
-60;31;ro;en
-
-61;32;en;null
-62;32;bg;en
-63;32;ro;en
+54;30;ro;en
+55;31;ro;en

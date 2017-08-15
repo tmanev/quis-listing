@@ -16,24 +16,20 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @Controller
-@RequestMapping("/")
-public class HomeController extends BaseController {
+@RequestMapping("/search")
+public class SearchController extends BaseController {
 
-    public HomeController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
-                          StaticPageService staticPageService, LanguageRepository languageRepository,
-                          LocaleResolver localeResolver,
-                          LanguageTranslationRepository languageTranslationRepository, MessageSource messageSource) {
-        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                staticPageService, messageSource);
+    public SearchController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService, LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository, LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource) {
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService, messageSource);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(final ModelMap model, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
-        String title = messageSource.getMessage("page.home.title", null, locale);
-
+        String title = messageSource.getMessage("page.search.title", null, locale);
+        staticPageService.findOne(2L);
         model.addAttribute("title", title);
-        model.addAttribute("view", "client/default");
+        model.addAttribute("view", "client/search");
 
         return "client/index";
     }

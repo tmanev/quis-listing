@@ -11,6 +11,7 @@ import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,12 @@ public class DlListingDTO {
     private String content;
     private String name;
 
-    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-    private ZonedDateTime created;
-    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-    private ZonedDateTime modified;
+//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+//    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+    private Timestamp created;
+//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+//    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+    private Timestamp modified;
 
     private UserDTO author;
 
@@ -77,19 +78,19 @@ public class DlListingDTO {
         this.content = content;
     }
 
-    public ZonedDateTime getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
-    public void setCreated(ZonedDateTime created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 
-    public ZonedDateTime getModified() {
+    public Timestamp getModified() {
         return modified;
     }
 
-    public void setModified(ZonedDateTime modified) {
+    public void setModified(Timestamp modified) {
         this.modified = modified;
     }
 

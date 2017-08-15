@@ -9,7 +9,8 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li th:each="navMenuItem : ${baseModel.footerMenus}">
-                        <a th:href="@{/{path}(path=${navMenuItem.staticPage.name})}" th:text="${navMenuItem.staticPage.title}"></a>
+                        <a th:if="${navMenuItem.staticPage} != null" th:href="@{/{path}(path=${navMenuItem.staticPage.name})}" th:text="${navMenuItem.staticPage.title}"></a>
+                        <a th:if="${navMenuItem.staticPage} == null" th:href="@{/{path}(path=${navMenuItem.slug})}" th:text="${navMenuItem.title}"></a>
                     </li>
                 </ul>
             </div>

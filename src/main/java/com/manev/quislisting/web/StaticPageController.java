@@ -17,6 +17,7 @@ import com.manev.quislisting.service.post.exception.PostNotFoundException;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,9 +46,9 @@ public class StaticPageController extends BaseController {
     public StaticPageController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
                                 StaticPageService staticPageService, LanguageRepository languageRepository,
                                 LocaleResolver localeResolver,
-                                LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent, DlListingService dlListingService) {
+                                LanguageTranslationRepository languageTranslationRepository, UserService userService, UserRepository userRepository, MyListingsViewModelComponent myListingsViewModelComponent, DlListingService dlListingService, MessageSource messageSource) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver,
-                staticPageService);
+                staticPageService, messageSource);
         this.userService = userService;
         this.userRepository = userRepository;
         this.myListingsViewModelComponent = myListingsViewModelComponent;
@@ -67,9 +68,6 @@ public class StaticPageController extends BaseController {
             // handle page
             String content = post.getContent();
             switch (content) {
-                case "[contact-form]":
-                    modelMap.addAttribute("view", "client/contacts");
-                    break;
                 case "[not-found-page]":
                     QlConfig contactPageIdConfig = qlConfigService.findOneByKey("contact-page-id");
                     StaticPage contactPage = staticPageService.retrievePost(language, contactPageIdConfig.getValue());
@@ -78,13 +76,6 @@ public class StaticPageController extends BaseController {
                     break;
                 case "[forgot-password-page]":
                     modelMap.addAttribute("view", "client/forgot-password");
-                    break;
-                case "[my-listings-page]":
-                    myListingsViewModelComponent.fillViewModel(modelMap);
-                    modelMap.addAttribute("view", "client/my-listings/my-listings");
-                    break;
-                case "[dl-search]":
-                    modelMap.addAttribute("view", "client/search");
                     break;
                 default:
                     modelMap.addAttribute("content", content);
@@ -101,7 +92,7 @@ public class StaticPageController extends BaseController {
         return "client/index";
     }
 
-    @RequestMapping(value = "/{name}/{secondName}", method = RequestMethod.GET)
+//    @RequestMapping(value = "/{name}/{secondName}", method = RequestMethod.GET)
     public String showPage(@PathVariable String name,
                            @PathVariable String secondName,
                            final ModelMap modelMap, HttpServletRequest request,

@@ -1,6 +1,6 @@
 package com.manev.quislisting.domain.taxonomy.discriminator;
 
-import com.manev.quislisting.domain.StaticPageNavMenuRel;
+import com.manev.quislisting.domain.NavMenuItem;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
 
 import javax.persistence.*;
@@ -13,14 +13,14 @@ public class NavMenu extends TermTaxonomy {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "navMenu")
     @OrderBy("menuOrder ASC")
-    private Set<StaticPageNavMenuRel> staticPageNavMenuRels;
+    private Set<NavMenuItem> navMenuItems;
 
-    public Set<StaticPageNavMenuRel> getStaticPageNavMenuRels() {
-        return staticPageNavMenuRels;
+    public Set<NavMenuItem> getNavMenuItems() {
+        return navMenuItems;
     }
 
-    public void setStaticPageNavMenuRels(Set<StaticPageNavMenuRel> staticPageNavMenuRels) {
-        this.staticPageNavMenuRels = staticPageNavMenuRels;
+    public void setNavMenuItems(Set<NavMenuItem> navMenuItems) {
+        this.navMenuItems = navMenuItems;
     }
 
 }

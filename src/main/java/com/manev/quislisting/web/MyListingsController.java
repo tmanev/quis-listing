@@ -36,7 +36,6 @@ import java.util.Optional;
 @RequestMapping(value = "/my-listings")
 public class MyListingsController extends BaseController {
 
-    private final MessageSource messageSource;
     private final DlListingService dlListingService;
     private final DlCategoryService dlCategoryService;
     private final DlContentFieldService dlContentFieldService;
@@ -47,13 +46,22 @@ public class MyListingsController extends BaseController {
                                 QlConfigService qlConfigService, LanguageRepository languageRepository,
                                 LanguageTranslationRepository languageTranslationRepository,
                                 LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource, DlListingService dlListingService, DlCategoryService dlCategoryService, DlContentFieldService dlContentFieldService, UserService userService, DlLocationService dlLocationService) {
-        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService);
-        this.messageSource = messageSource;
+        super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService, messageSource);
         this.dlListingService = dlListingService;
         this.dlCategoryService = dlCategoryService;
         this.dlContentFieldService = dlContentFieldService;
         this.userService = userService;
         this.dlLocationService = dlLocationService;
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String showMyListingsPage(final ModelMap modelMap, HttpServletRequest request) {
+        Locale locale = localeResolver.resolveLocale(request);
+
+        modelMap.addAttribute("title", messageSource.getMessage("page.my_listings.title", null, locale));
+        modelMap.addAttribute("view", "client/my-listings/my-listings");
+
+        return "client/index";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)

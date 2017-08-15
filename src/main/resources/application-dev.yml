@@ -8,7 +8,7 @@ spring:
     jpa:
         database-platform: com.manev.quislisting.domain.util.FixedH2Dialect
         database: H2
-        show-sql: true
+        show-sql: false
     data:
         elasticsearch:
             cluster-name:
@@ -38,6 +38,12 @@ server:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
         min-response-size: 1024
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    com.manev.quislisting: DEBUG
+    org.hibernate: INFO
 
 # ===================================================================
 # Quis Listing specific properties

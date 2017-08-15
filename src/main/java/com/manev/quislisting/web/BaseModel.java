@@ -1,7 +1,7 @@
 package com.manev.quislisting.web;
 
 import com.manev.quislisting.domain.StaticPage;
-import com.manev.quislisting.domain.StaticPageNavMenuRel;
+import com.manev.quislisting.domain.NavMenuItem;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 
 import java.util.List;
@@ -9,34 +9,34 @@ import java.util.Set;
 
 public class BaseModel {
 
-    private Set<StaticPageNavMenuRel> topHeaderMenus;
-    private Set<StaticPageNavMenuRel> footerMenus;
+    private Set<NavMenuItem> topHeaderMenus;
+    private Set<NavMenuItem> footerMenus;
     private List<ActiveLanguageBean> activeLanguages;
     private StaticPage profilePage;
     private String baseUrl;
 
-    public Set<StaticPageNavMenuRel> getTopHeaderMenus() {
+    public Set<NavMenuItem> getTopHeaderMenus() {
         return topHeaderMenus;
     }
 
-    public void setTopHeaderMenus(Set<StaticPageNavMenuRel> topHeaderMenus) {
+    public void setTopHeaderMenus(Set<NavMenuItem> topHeaderMenus) {
         this.topHeaderMenus = topHeaderMenus;
     }
 
-    public BaseModel topHeaderMenus(Set<StaticPageNavMenuRel> topHeaderMenus) {
+    public BaseModel topHeaderMenus(Set<NavMenuItem> topHeaderMenus) {
         this.topHeaderMenus = topHeaderMenus;
         return this;
     }
 
-    public Set<StaticPageNavMenuRel> getFooterMenus() {
+    public Set<NavMenuItem> getFooterMenus() {
         return footerMenus;
     }
 
-    public void setFooterMenus(Set<StaticPageNavMenuRel> footerMenus) {
+    public void setFooterMenus(Set<NavMenuItem> footerMenus) {
         this.footerMenus = footerMenus;
     }
 
-    public BaseModel footerMenus(Set<StaticPageNavMenuRel> footerMenus) {
+    public BaseModel footerMenus(Set<NavMenuItem> footerMenus) {
         this.footerMenus = footerMenus;
         return this;
     }

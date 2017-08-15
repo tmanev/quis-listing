@@ -7,7 +7,9 @@ import com.manev.quislisting.security.jwt.TokenProvider;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +30,8 @@ import javax.annotation.PostConstruct;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+@Order(2)
+public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -40,9 +43,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
-    public SecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService,
-                                 TokenProvider tokenProvider, SessionRegistry sessionRegistry,
-                                 CorsFilter corsFilter) {
+    public ApiSecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService,
+                                    TokenProvider tokenProvider, SessionRegistry sessionRegistry,
+                                    CorsFilter corsFilter) {
 
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userDetailsService = userDetailsService;
@@ -51,16 +54,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.corsFilter = corsFilter;
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
-                    .passwordEncoder(passwordEncoder());
-        } catch (Exception e) {
-            throw new BeanInitializationException("Security configuration failed", e);
-        }
-    }
+//    @PostConstruct
+//    public void init() {
+//        try {
+//            authenticationManagerBuilder
+//                .userDetailsService(userDetailsService)
+//                    .passwordEncoder(passwordEncoder());
+//        } catch (Exception e) {
+//            throw new BeanInitializationException("Security configuration failed", e);
+//        }
+//    }
 
     @Bean
     public Http401UnauthorizedEntryPoint http401UnauthorizedEntryPoint() {
@@ -71,6 +74,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+//    @Bean
+//    public DaoAuthenticationProvider authProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(userDetailsService);
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -87,7 +98,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.antMatcher("/api/**")
+                .userDetailsService(userDetailsService)
             .sessionManagement()
             .maximumSessions(32) // maximum number of concurrent sessions for one user
             .sessionRegistry(sessionRegistry)
@@ -106,20 +118,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
-            .antMatchers("/content/**").permitAll()
-            .antMatchers("/api/register").permitAll()
-            .antMatchers("/api/activate").permitAll()
-            .antMatchers("/api/authenticate").permitAll()
-            .antMatchers("/api/account/reset_password/init").permitAll()
-            .antMatchers("/api/account/reset_password/finish").permitAll()
-            .antMatchers("/api/profile-info").permitAll()
-            .antMatchers("/api/contacts").permitAll()
-            .antMatchers("/api/public/**").permitAll()
-            .antMatchers("/api/**").authenticated()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
-            .antMatchers("/v2/api-docs/**").permitAll()
-            .antMatchers("/swagger-resources/configuration/ui").permitAll()
-            .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/api/register").permitAll()
+                .antMatchers("/api/activate").permitAll()
+                .antMatchers("/api/authenticate").permitAll()
+                .antMatchers("/api/account/reset_password/init").permitAll()
+                .antMatchers("/api/account/reset_password/finish").permitAll()
+                .antMatchers("/api/profile-info").permitAll()
+                .antMatchers("/api/contacts").permitAll()
+                .antMatchers("/api/public/**").permitAll()
+                .antMatchers("/api/**").authenticated()
         .and()
             .apply(securityConfigurerAdapter());
 

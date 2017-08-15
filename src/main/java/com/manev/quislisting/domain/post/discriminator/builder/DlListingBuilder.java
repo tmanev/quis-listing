@@ -3,7 +3,7 @@ package com.manev.quislisting.domain.post.discriminator.builder;
 import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 
 public final class DlListingBuilder {
     private Long id;
@@ -11,8 +11,8 @@ public final class DlListingBuilder {
     private String content;
     private String name;
     private DlListing.Status status;
-    private ZonedDateTime created;
-    private ZonedDateTime modified;
+    private Timestamp created;
+    private Timestamp modified;
     private Translation translation;
 
     private DlListingBuilder() {
@@ -47,12 +47,12 @@ public final class DlListingBuilder {
         return this;
     }
 
-    public DlListingBuilder withCreated(ZonedDateTime created) {
+    public DlListingBuilder withCreated(Timestamp created) {
         this.created = created;
         return this;
     }
 
-    public DlListingBuilder withModified(ZonedDateTime modified) {
+    public DlListingBuilder withModified(Timestamp modified) {
         this.modified = modified;
         return this;
     }

@@ -1,11 +1,9 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.StaticPage;
-import com.manev.quislisting.domain.StaticPageNavMenuRel;
+import com.manev.quislisting.domain.NavMenuItem;
 import com.manev.quislisting.domain.taxonomy.discriminator.NavMenu;
 import com.manev.quislisting.repository.StaticPageRepository;
-import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
 import com.manev.quislisting.service.taxonomy.dto.StaticPageNavMenuDTO;
 import org.springframework.stereotype.Component;
 
@@ -23,20 +21,20 @@ public class NavMenuItemMapper {
         this.staticPageRepository = staticPageRepository;
     }
 
-    private StaticPageNavMenuRel navMenuItemDtoToNavMenuItem(NavMenu navMenu, StaticPageNavMenuDTO staticPageNavMenuDTO) {
-        StaticPageNavMenuRel staticPageNavMenuRel = new StaticPageNavMenuRel();
+    private NavMenuItem navMenuItemDtoToNavMenuItem(NavMenu navMenu, StaticPageNavMenuDTO staticPageNavMenuDTO) {
+        NavMenuItem navMenuItem = new NavMenuItem();
 
-        staticPageNavMenuRel.setId(staticPageNavMenuDTO.getId());
-        staticPageNavMenuRel.setNavMenu(navMenu);
+        navMenuItem.setId(staticPageNavMenuDTO.getId());
+        navMenuItem.setNavMenu(navMenu);
 
         StaticPage staticPage = staticPageRepository.findOne(staticPageNavMenuDTO.getId());
-        staticPageNavMenuRel.setStaticPage(staticPage);
+        navMenuItem.setStaticPage(staticPage);
 
-        return staticPageNavMenuRel;
+        return navMenuItem;
     }
 
-    public Set<StaticPageNavMenuRel> navMenuItemDtoToNavMenuItem(NavMenu navMenuDTO, List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
-        Set<StaticPageNavMenuRel> navMenuItems = new HashSet<>();
+    public Set<NavMenuItem> navMenuItemDtoToNavMenuItem(NavMenu navMenuDTO, List<StaticPageNavMenuDTO> staticPageNavMenuDTOS) {
+        Set<NavMenuItem> navMenuItems = new HashSet<>();
 
         for (StaticPageNavMenuDTO staticPageNavMenuDTO : staticPageNavMenuDTOS) {
             navMenuItems.add(navMenuItemDtoToNavMenuItem(navMenuDTO, staticPageNavMenuDTO));
@@ -45,20 +43,20 @@ public class NavMenuItemMapper {
         return navMenuItems;
     }
 
-    public StaticPageNavMenuDTO navMenuItemToNavMenuItemDto(StaticPageNavMenuRel staticPageNavMenuRel) {
+    public StaticPageNavMenuDTO navMenuItemToNavMenuItemDto(NavMenuItem navMenuItem) {
         StaticPageNavMenuDTO staticPageNavMenuDTO = new StaticPageNavMenuDTO();
-        staticPageNavMenuDTO.setId(staticPageNavMenuRel.getId());
-        staticPageNavMenuDTO.setTitle(staticPageNavMenuRel.getStaticPage().getTitle());
-        staticPageNavMenuDTO.setOrder(staticPageNavMenuRel.getMenuOrder());
+        staticPageNavMenuDTO.setId(navMenuItem.getId());
+        staticPageNavMenuDTO.setTitle(navMenuItem.getStaticPage().getTitle());
+        staticPageNavMenuDTO.setOrder(navMenuItem.getMenuOrder());
 
         return staticPageNavMenuDTO;
     }
 
-    public List<StaticPageNavMenuDTO> navMenuItemToNavMenuItemDto(Set<StaticPageNavMenuRel> staticPageNavMenuRels) {
+    public List<StaticPageNavMenuDTO> navMenuItemToNavMenuItemDto(Set<NavMenuItem> navMenuItems) {
         List<StaticPageNavMenuDTO> staticPageNavMenuDTOS = new ArrayList<>();
-        if (staticPageNavMenuRels != null) {
-            for (StaticPageNavMenuRel staticPageNavMenuRel : staticPageNavMenuRels) {
-                staticPageNavMenuDTOS.add(navMenuItemToNavMenuItemDto(staticPageNavMenuRel));
+        if (navMenuItems != null) {
+            for (NavMenuItem navMenuItem : navMenuItems) {
+                staticPageNavMenuDTOS.add(navMenuItemToNavMenuItemDto(navMenuItem));
             }
         }
         return staticPageNavMenuDTOS;
