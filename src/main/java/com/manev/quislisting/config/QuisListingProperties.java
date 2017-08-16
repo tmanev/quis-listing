@@ -19,6 +19,7 @@ public class QuisListingProperties {
     private final Ribbon ribbon = new Ribbon();
     private final QuisListingProperties.Mail mail = new QuisListingProperties.Mail();
     private final CorsConfiguration cors = new CorsConfiguration();
+    private final QuisListingProperties.Async async = new QuisListingProperties.Async();
     private String attachmentStoragePath;
 
     public Security getSecurity() {
@@ -43,6 +44,10 @@ public class QuisListingProperties {
 
     public void setAttachmentStoragePath(String attachmentStoragePath) {
         this.attachmentStoragePath = attachmentStoragePath;
+    }
+
+    public QuisListingProperties.Async getAsync() {
+        return this.async;
     }
 
     public static class Security {
@@ -127,6 +132,40 @@ public class QuisListingProperties {
 
         public void setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
+        }
+    }
+
+    public static class Async {
+        private int corePoolSize = 2;
+        private int maxPoolSize = 50;
+        private int queueCapacity = 10000;
+
+        public Async() {
+            // default constructor
+        }
+
+        public int getCorePoolSize() {
+            return this.corePoolSize;
+        }
+
+        public void setCorePoolSize(int corePoolSize) {
+            this.corePoolSize = corePoolSize;
+        }
+
+        public int getMaxPoolSize() {
+            return this.maxPoolSize;
+        }
+
+        public void setMaxPoolSize(int maxPoolSize) {
+            this.maxPoolSize = maxPoolSize;
+        }
+
+        public int getQueueCapacity() {
+            return this.queueCapacity;
+        }
+
+        public void setQueueCapacity(int queueCapacity) {
+            this.queueCapacity = queueCapacity;
         }
     }
 

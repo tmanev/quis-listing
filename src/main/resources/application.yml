@@ -56,4 +56,8 @@ quislisting:
         displayOnActiveProfiles: dev
     mail:
         from: contact@quislisting.com
+    async:
+        core-pool-size: 2
+        max-pool-size: 50
+        queue-capacity: 10000
     attachment-storage-path: ./attachment_storage
