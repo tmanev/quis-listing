@@ -237,4 +237,12 @@ public class UserService {
             userSearchRepository.delete(user);
         }
     }
+
+    public Optional<User> findOneByResetKey(String key) {
+        return userRepository.findOneByResetKey(key);
+    }
+
+    public Optional<User> findOneByLogin(String currentUserLogin) {
+        return userRepository.findOneByLogin(currentUserLogin);
+    }
 }

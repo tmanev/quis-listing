@@ -1,4 +1,4 @@
-package com.manev.quislisting.web;
+package com.manev.quislisting.web.mvc;
 
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.User;
@@ -83,7 +83,7 @@ public class SignUpController extends BaseController {
         Optional<User> oneByEmail = userRepository.findOneByEmail(signUpUserBean.getEmail());
         if (oneByEmail.isPresent()) {
             // email address already in use
-            model.addAttribute("error", "some error");
+            model.addAttribute("errMsg", messageSource.getMessage("page.signup.error.email_already_registered", null, locale));
         } else {
             User user = userService.createUser(signUpUserBean.getEmail(), signUpUserBean.getPassword(),
                     signUpUserBean.getFirstName(), signUpUserBean.getLastName(),
@@ -93,7 +93,6 @@ public class SignUpController extends BaseController {
             model.addAttribute("success", "success");
             // redirect info for registration and verification email is sent
         }
-
 
         return "client/index";
     }

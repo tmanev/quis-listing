@@ -1,7 +1,10 @@
 package com.manev.quislisting.config;
 
+import com.manev.quislisting.web.mvc.MyErrorViewResolver;
+import com.manev.quislisting.web.mvc.PageNotFoundController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.web.ErrorViewResolver;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.MimeMappings;
@@ -29,9 +32,12 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
 
     private QuisListingProperties quisListingProperties;
 
-    public WebConfigurer(Environment env, QuisListingProperties quisListingProperties) {
+    private PageNotFoundController pageNotFoundController;
+
+    public WebConfigurer(Environment env, QuisListingProperties quisListingProperties, PageNotFoundController pageNotFoundController) {
         this.env = env;
         this.quisListingProperties = quisListingProperties;
+        this.pageNotFoundController = pageNotFoundController;
     }
 
     /**
@@ -110,6 +116,11 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
             source.registerCorsConfiguration("/v2/api-docs", config);
         }
         return new CorsFilter(source);
+    }
+
+    @Bean
+    public ErrorViewResolver errorViewResolver() {
+        return new MyErrorViewResolver(pageNotFoundController);
     }
 
 
