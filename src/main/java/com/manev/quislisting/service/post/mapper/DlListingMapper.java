@@ -39,6 +39,7 @@ public class DlListingMapper {
         dlListingDTO.setCreated(dlListing.getCreated());
         dlListingDTO.setModified(dlListing.getModified());
         dlListingDTO.setStatus(dlListing.getStatus());
+        dlListingDTO.setApproved(dlListing.getApproved());
         dlListingDTO.setLanguageCode(dlListing.getTranslation().getLanguageCode());
 
         setDlCategories(dlListing, dlListingDTO);
@@ -126,6 +127,7 @@ public class DlListingMapper {
             }
         }
     }
+
 
     private void setAuthor(DlListing dlListing, DlListingDTO dlListingDTO) {
         User user = dlListing.getUser();

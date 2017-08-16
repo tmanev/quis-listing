@@ -30,15 +30,14 @@
     </div>
     <hr/>
     <div class="row">
-        <div v-for="dlListing in dlListings"
-             class="col-sm-6 col-md-4 col-lg-3">
+        <div v-for="dlListing in dlListings" style="display: none;"
+             class="col-sm-6 col-md-4 col-lg-3" v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
             <div class="thumbnail">
                 <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
                     <div style="width: 242px; height: 200px; white-space: nowrap; text-align: center;">
                         <span style="display: inline-block; height: 100%; vertical-align: middle;"></span>
                         <img v-if="dlListing.attachments.length==0"
-                             alt="100%x200" data-src="holder.js/100%x200"
-                             src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTViN2RmMDRiNmUgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNWI3ZGYwNGI2ZSI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44MDQ2ODc1IiB5PSIxMDUuMSI+MjQyeDIwMDwvdGV4dD48L2c+PC9nPjwvc3ZnPg=="
+                             alt="100x200" data-src="holder.js/100%x200"
                              data-holder-rendered="true"
                              style="height: 200px; width: 100%; display: block;"/>
                         <img v-else

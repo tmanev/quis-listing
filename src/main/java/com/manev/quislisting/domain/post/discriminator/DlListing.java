@@ -54,6 +54,10 @@ public class DlListing {
     @Column
     private Status status;
 
+    @NotNull
+    @Column
+    private Boolean approved;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "translation_id")
     private Translation translation;
@@ -110,6 +114,14 @@ public class DlListing {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 
     public Set<DlListingContentFieldRel> getDlListingContentFieldRels() {

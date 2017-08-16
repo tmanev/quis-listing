@@ -363,6 +363,9 @@
             <column name="status" type="varchar(20)">
                 <constraints nullable="false"/>
             </column>
+            <column name="approved" type="tinyint(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
             <column name="created" type="timestamp">
                 <constraints nullable="false"/>
             </column>

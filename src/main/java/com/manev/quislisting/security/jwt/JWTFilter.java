@@ -42,12 +42,6 @@ public class JWTFilter extends GenericFilterBean {
             if (StringUtils.hasText(jwt) && this.tokenProvider.validateToken(jwt)) {
                 Authentication authentication = this.tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                if (!httpServletRequest.getRequestURL().toString().contains("/sign-in")
-                        && !httpServletRequest.getRequestURL().toString().contains("/api")) {
-                    httpServletRequest.setAttribute("quisRedirectUrl", httpServletRequest.getRequestURL());
-                    httpServletRequest.getRequestURL().append("trajche");
-                }
             }
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (ExpiredJwtException eje) {

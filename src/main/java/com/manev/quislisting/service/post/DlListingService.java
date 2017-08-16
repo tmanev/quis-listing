@@ -125,7 +125,6 @@ public class DlListingService {
 
                 setCommonProperties(dlListingDTO, dlListingForSaving);
 
-                dlListingForSaving.setStatus(DlListing.Status.DRAFT);
                 dlListingForSaving.setTranslation(
                         TranslationBuilder.aTranslation()
                                 .withLanguageCode(oneByLogin.get().getLangKey())
@@ -147,6 +146,8 @@ public class DlListingService {
         dlListingForSaving.setTitle(dlListingDTO.getTitle());
         dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingDTO.getTitle()));
         dlListingForSaving.setContent(dlListingDTO.getContent());
+        dlListingForSaving.setStatus(DlListing.Status.DRAFT);
+        dlListingForSaving.setApproved(Boolean.FALSE);
 
         setCategory(dlListingDTO, dlListingForSaving);
         setLocation(dlListingDTO, dlListingForSaving);

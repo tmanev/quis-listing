@@ -40,6 +40,7 @@ public class DlListingDTO {
     private List<TranslationDTO> translations;
     private String expirationDate;
     private DlListing.Status status;
+    private Boolean approved;
     @NotEmpty
     private List<DlCategoryDTO> dlCategories;
     private List<DlLocationDTO> dlLocations;
@@ -155,6 +156,14 @@ public class DlListingDTO {
 
     public void setStatus(DlListing.Status status) {
         this.status = status;
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 
     public List<DlLocationDTO> getDlLocations() {
