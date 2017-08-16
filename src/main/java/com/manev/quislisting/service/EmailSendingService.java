@@ -1,14 +1,16 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.config.QuisListingProperties;
-import com.manev.quislisting.domain.*;
+import com.manev.quislisting.domain.EmailTemplate;
+import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
-import com.manev.quislisting.repository.StaticPageRepository;
 import com.manev.quislisting.service.dto.ContactDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -31,15 +33,13 @@ public class EmailSendingService {
     private final QlConfigService qlConfigService;
     private final EmailTemplateService emailTemplateService;
     private MailService mailService;
-    private StaticPageRepository staticPageRepository;
 
     private TemplateEngineComponent templateEngineComponent;
 
-    public EmailSendingService(MailService mailService, StaticPageRepository staticPageRepository,
+    public EmailSendingService(MailService mailService,
                                MessageSource messageSource,
                                QuisListingProperties quisListingProperties, QlConfigService qlConfigService, EmailTemplateService emailTemplateService, TemplateEngineComponent templateEngineComponent) {
         this.mailService = mailService;
-        this.staticPageRepository = staticPageRepository;
         this.messageSource = messageSource;
         this.quisListingProperties = quisListingProperties;
         this.qlConfigService = qlConfigService;
@@ -47,7 +47,7 @@ public class EmailSendingService {
         this.templateEngineComponent = templateEngineComponent;
     }
 
-
+    @Async
     public void sendContactUs(ContactDTO contactDTO, String language) {
         QlConfig adminEmailConfig = qlConfigService.findOneByKey("admin_email");
 
@@ -65,6 +65,7 @@ public class EmailSendingService {
         mailService.sendEmail(adminEmailConfig.getValue(), contactDTO.getSubject(), emailContent, false, true);
     }
 
+    @Async
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset e-mail to '{}'", user.getEmail());
 
@@ -73,10 +74,8 @@ public class EmailSendingService {
         EmailTemplate passwordResetEmailTemplate = emailTemplateService.findOneByName("password-reset");
 
         QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
-        QlConfig resetFinishPageConfig = qlConfigService.findOneByKey("reset-password-finish-page-id");
 
         String html = getValueByLanguage(user.getLangKey(), passwordResetEmailTemplate.getQlString());
-
         String title = messageSource.getMessage("email.reset.title", new String[]{siteNameConfig.getValue()}, locale);
 
         Map<String, Object> variables = new HashMap<>();
@@ -91,6 +90,7 @@ public class EmailSendingService {
         mailService.sendEmail(user.getEmail(), title, emailContent, false, true);
     }
 
+    @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation e-mail to '{}'", user.getEmail());
         Locale locale = Locale.forLanguageTag(user.getLangKey());
@@ -115,30 +115,6 @@ public class EmailSendingService {
 
         String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
         mailService.sendEmail(user.getEmail(), subject, emailContent, false, true);
-    }
-
-    private String getPageSlug(User user, QlConfig activationPageConfig) {
-        StaticPage activationPage = staticPageRepository.findOne(Long.valueOf(activationPageConfig.getValue()));
-        Translation translation = activationPage.getTranslation();
-        String activationPageSlug = activationPage.getName();
-        if (!translation.getLanguageCode().equals(user.getLangKey())) {
-            // check if there is a translation
-            Translation translationForLanguage = translationExists(user.getLangKey(), translation.getTranslationGroup().getTranslations());
-            if (translationForLanguage != null) {
-                StaticPage oneByTranslation = staticPageRepository.findOneByTranslation(translationForLanguage);
-                activationPageSlug = oneByTranslation.getName();
-            }
-        }
-        return activationPageSlug;
-    }
-
-    private Translation translationExists(String languageCode, Set<Translation> translationList) {
-        for (Translation translation : translationList) {
-            if (translation.getLanguageCode().equals(languageCode)) {
-                return translation;
-            }
-        }
-        return null;
     }
 
     private String getValueByLanguage(String languageCode, QlString qlString) {
