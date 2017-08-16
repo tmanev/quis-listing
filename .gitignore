@@ -27,3 +27,5 @@ nbproject/private/
 /elasticsearch
 /node_modules
 /attachment_storage
+/logs
+/derby.log
