@@ -85,7 +85,7 @@ public class EmailSendingService {
         variables.put(BASE_NAME, siteNameConfig.getValue());
         variables.put("title", title);
         variables.put("resetText1", messageSource.getMessage("email.reset.text1", new String[]{siteNameConfig.getValue()}, locale));
-        variables.put("resetFinishPage", getPageSlug(user, resetFinishPageConfig));
+        variables.put("resetFinishPage", "password-reset");
 
         String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
         mailService.sendEmail(user.getEmail(), title, emailContent, false, true);
@@ -98,9 +98,6 @@ public class EmailSendingService {
         EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("activation_email");
 
         QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
-        QlConfig activationPageConfig = qlConfigService.findOneByKey("activation-page-id");
-
-        String activationPageSlug = getPageSlug(user, activationPageConfig);
 
         String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
         String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
@@ -112,7 +109,7 @@ public class EmailSendingService {
         variables.put(USER, user);
         variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
         variables.put(BASE_NAME, siteNameConfig.getValue());
-        variables.put(ACTIVATE_PAGE, activationPageSlug);
+        variables.put(ACTIVATE_PAGE, "account-activate");
         variables.put(SUBJECT, subject);
         variables.put(ACTIVATION_TEXT, activationText);
 

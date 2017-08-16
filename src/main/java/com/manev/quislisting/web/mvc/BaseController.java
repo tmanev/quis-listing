@@ -1,4 +1,4 @@
-package com.manev.quislisting.web;
+package com.manev.quislisting.web.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.QlConfig;
@@ -32,7 +32,7 @@ public class BaseController {
 
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
 
-    static final String REDIRECT = "redirect:/";
+    public static final String REDIRECT = "redirect:/";
     protected NavMenuRepository navMenuRepository;
 
     protected QlConfigService qlConfigService;
@@ -149,9 +149,7 @@ public class BaseController {
     }
 
     protected String redirectToPageNotFound() throws UnsupportedEncodingException {
-        QlConfig notFoundPageConfig = qlConfigService.findOneByKey("not-found-page-id");
-        StaticPageDTO notFoundPage = staticPageService.findOne(Long.valueOf(notFoundPageConfig.getValue()));
-        return REDIRECT + URLEncoder.encode(notFoundPage.getName(), "UTF-8");
+        return REDIRECT + URLEncoder.encode("page-not-found", "UTF-8");
     }
 
 }

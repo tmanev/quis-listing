@@ -1,4 +1,4 @@
-package com.manev.quislisting.web;
+package com.manev.quislisting.web.mvc;
 
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;

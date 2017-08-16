@@ -1,10 +1,8 @@
-package com.manev.quislisting.web;
+package com.manev.quislisting.web.mvc;
 
-import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
-import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
@@ -15,10 +13,7 @@ import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
-import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,10 +23,8 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/listings")

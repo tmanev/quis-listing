@@ -21,7 +21,7 @@ spring:
         host: smtp.gmail.com
         port: 587
         username: manevonjira@gmail.com
-        password: mypassword
+        password: manevonjira112358@
         properties:
             mail.smtp.auth: true
             mail.smtp.starttls.enable: true
@@ -41,8 +41,8 @@ server:
 
 logging:
   level:
-    org.springframework.web: DEBUG
-    com.manev.quislisting: DEBUG
+    org.springframework.web: INFO
+    com.manev.quislisting: INFO
     org.hibernate: INFO
 
 # ===================================================================
