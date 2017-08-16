@@ -23,8 +23,7 @@ nbproject/private/
 /nbdist/
 .nb-gradle/
 
-/ql_repo
-/ql_repo_itest
 /h2db
-/data
+/elasticsearch
 /node_modules
+/attachment_storage
