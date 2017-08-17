@@ -17,23 +17,24 @@
 <body>
 <div th:fragment="content" class="container">
     <div id="editListingApp">
-        <div class="row">
-            <div class="col-sm-12">
+        <!--<div class="row">-->
+            <!--<div class="col-sm-12">-->
 
-                <ul class="nav nav-pills navbar-inverse" style="position: fixed; top: 0;">
-                    <li role="presentation" class="active"><a href="#description">Description</a></li>
-                    <li role="presentation"><a href="#details">Details</a></li>
-                    <li role="presentation"><a href="#location">Location</a></li>
-                    <li role="presentation"><a href="#gallery">Gallery</a></li>
-                </ul>
-            </div>
-        </div>
+                <!--<ul class="nav nav-pills navbar-inverse" style="position: fixed; top: 0;">-->
+                    <!--<li role="presentation" class="active"><a href="#description">Description</a></li>-->
+                    <!--<li role="presentation"><a href="#details">Details</a></li>-->
+                    <!--<li role="presentation"><a href="#location">Location</a></li>-->
+                    <!--<li role="presentation"><a href="#gallery">Gallery</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+        <!--</div>-->
 
         <div id="description" class="container-fluid">
+            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.description}">Description</span>
             <form class="form-horizontal">
                 <div class="form-group"
                      v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
-                    <label class="col-sm-2 control-label" for="field_title">Title</label>
+                    <label class="col-sm-2 control-label" for="field_title" th:text="#{page.my_listings.edit_listing.label.title}">Title</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" name="title" id="field_title"
                                v-model="listing.title"/>
@@ -47,7 +48,7 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label" data-translate="quisListingApp.dlListing.description"
-                           for="field_description">Description</label>
+                           for="field_description" th:text="#{page.my_listings.edit_listing.label.description}">Description</label>
                     <div class="col-sm-10">
                     <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
                               v-model="listing.content">
@@ -55,14 +56,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">
+                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.category}">
                         Category
                     </label>
                     <div class="col-sm-10">
                         <div class="input-group">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" data-target="#myModal"
-                                    v-on:click="openCategorySelection($v)">Select</button>
+                                    v-on:click="openCategorySelection($v)" th:text="#{page.my_listings.edit_listing.label.select_category}">Select</button>
                         </span>
                             <input type="text" class="form-control"
                                    style="cursor: pointer;"
@@ -76,6 +77,7 @@
         </div>
         <hr/>
         <div id="details" class="container-fluid">
+            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.details}">Details</span>
             <form class="form-horizontal">
                 <fieldset v-for="(dlContentField, index) in dlContentFields">
                     <div class="form-group" v-if="dlContentField.type == 'STRING'"
@@ -154,12 +156,13 @@
         </div>
         <hr/>
         <div id="location" class="container-fluid">
+            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.location}">Location</span>
             <form class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Country</label>
+                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
                     <div class="col-sm-10">
                         <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
-                            <option value="-1">- Select -</option>
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
                             <option v-for="dlLocationCountry in dlLocationCountries"
                                     v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
                             </option>
@@ -167,10 +170,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">State</label>
+                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.state}">State</label>
                     <div class="col-sm-10">
                         <select class="form-control" v-on:change="onStateChange" v-model="selectedState">
-                            <option value="-1">- Select -</option>
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
                             <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
                                 dlLocationState.name }}
                             </option>
@@ -179,10 +182,10 @@
                 </div>
                 <div class="form-group"
                      v-bind:class="{ 'has-error': $v.selectedCity.$error, 'has-success': $v.selectedCity.$dirty &amp;&amp; !$v.selectedCity.$invalid }">
-                    <label class="col-sm-2 control-label">City</label>
+                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.city}">City</label>
                     <div class="col-sm-10">
                         <select class="form-control" v-model="selectedCity">
-                            <option value="-1">- Select -</option>
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
                             <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
                                 dlLocationCity.name }}
                             </option>
@@ -196,6 +199,7 @@
         </div>
         <hr/>
         <div id="gallery" class="container-fluid">
+            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.gallery}">Gallery</span>
             <div class="row">
                 <div class="col-sm-6 col-md-4" v-for="attachment in listing.attachments">
                     <div class="thumbnail">
@@ -221,7 +225,7 @@
             </div>
             <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop"
                  v-on:click="onBoxClick">
-                Drop images here or click to upload
+                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}">Drop images here or click to upload</span>
                 <input type="file" name="image" v-on:change="onChange" style="display: none"/>
             </div>
             <div id="upload_info" class="row" v-for="queueFile in queueFiles">
@@ -243,15 +247,16 @@
         </div>
         <form class="form-horizontal">
             <div class="form-group">
-                <button type="button" class="btn btn-default col-sm-6"
+                <button type="button" class="btn btn-default col-sm-5"
                         id="btnSave"
                         v-on:click="onSave">
-                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span>Save</span>
+                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
                 </button>
-                <button type="button" class="btn btn-primary col-sm-6"
+                <div class="col-sm-2"></div>
+                <button type="button" class="btn btn-primary col-sm-5"
                         id="btnPublish"
                         v-on:click="onPublish">
-                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span>Publish</span>
+                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_publish}">Publish</span>
                 </button>
             </div>
         </form>
