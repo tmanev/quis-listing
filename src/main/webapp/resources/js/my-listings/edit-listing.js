@@ -100,7 +100,8 @@ EditListing = {
                     dlCategories: dlListingDTO.dlCategories,
                     dlLocations: dlListingDTO.dlLocations,
                     dlListingFields: dlListingDTO.dlListingFields,
-                    attachments: dlListingDTO.attachments
+                    attachments: dlListingDTO.attachments,
+                    featuredAttachment: dlListingDTO.featuredAttachment
                 },
                 image: ''
             },

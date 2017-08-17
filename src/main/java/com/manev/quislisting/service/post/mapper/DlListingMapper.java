@@ -46,6 +46,7 @@ public class DlListingMapper {
 
         setDlLocations(dlListing, dlListingDTO);
 
+        dlListingDTO.setFeaturedAttachment(dlListing.getFeaturedAttachment() != null ? attachmentMapper.attachmentToAttachmentDTO(dlListing.getFeaturedAttachment()) : null);
         setAttachments(dlListing, dlListingDTO);
 
         setAuthor(dlListing, dlListingDTO);

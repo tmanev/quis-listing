@@ -209,6 +209,11 @@
                                     <span class="glyphicon glyphicon-remove-circle"></span>
                                     <span class="hidden-sm-down">Remove</span>
                                 </a>
+                                <label class="radio-inline">
+                                    <input type="radio" v-bind:value="attachment"
+                                           v-model="listing.featuredAttachment">
+                                    <span th:text="#{page.my_listings.edit_listing.set_featured_attachment}">Set the image as the main one</span>
+                                </label>
                             </p>
                         </div>
                     </div>

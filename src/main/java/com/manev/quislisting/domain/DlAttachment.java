@@ -13,22 +13,30 @@ public class DlAttachment {
 
     @OneToMany(mappedBy = "dlAttachment", cascade = CascadeType.ALL)
     public Set<DlAttachmentResize> dlAttachmentResizes;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column
     private String fileName;
+
     @Column
     private String fileNameSlug;
+
     @Column
     private String path;
+
     @Column
     private Integer width;
+
     @Column
     private Integer height;
+
     @Column
     private Long size;
+
     @Column
     private String mimeType;
 

@@ -151,6 +151,7 @@ public class DlListingService {
 
         setCategory(dlListingDTO, dlListingForSaving);
         setLocation(dlListingDTO, dlListingForSaving);
+        setFeaturedAttachment(dlListingDTO, dlListingForSaving);
 
         List<DlListingFieldDTO> dlListingFieldDTOS = dlListingDTO.getDlListingFields();
 
@@ -162,6 +163,12 @@ public class DlListingService {
 
                 updateDlContentFieldRelationship(dlListingForSaving, dlListingFieldDTO, dlContentField, dlListingContentFieldRel);
             }
+        }
+    }
+
+    private void setFeaturedAttachment(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
+        if (dlListingDTO.getFeaturedAttachment() != null) {
+            dlListingForSaving.setFeaturedAttachment(dlAttachmentRepository.findOne(dlListingDTO.getFeaturedAttachment().getId()));
         }
     }
 

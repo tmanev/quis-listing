@@ -372,6 +372,9 @@
             <column name="modified" type="timestamp">
                 <constraints nullable="false"/>
             </column>
+            <column name="featured_attachment_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <column name="translation_id" type="bigint">
                 <constraints nullable="false"
                              foreignKeyName="fk_dl_listing_translation"
@@ -417,6 +420,10 @@
                              referencedTableName="ql_dl_listing"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseTableName="ql_dl_listing" baseColumnNames="featured_attachment_id"
+                                 constraintName="fk_featured_dl_attachment"
+                                 referencedTableName="ql_dl_attachment"
+                                 referencedColumnNames="id" />
 
         <createTable tableName="ql_dl_attachment_resize">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">

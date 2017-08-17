@@ -46,6 +46,7 @@ public class DlListingDTO {
     private List<DlLocationDTO> dlLocations;
     private List<DlListingFieldDTO> dlListingFields;
     private List<AttachmentDTO> attachments;
+    private AttachmentDTO featuredAttachment;
 
     public Long getId() {
         return id;
@@ -224,5 +225,13 @@ public class DlListingDTO {
             attachments = new ArrayList<>();
         }
         attachments.add(attachmentDTO);
+    }
+
+    public AttachmentDTO getFeaturedAttachment() {
+        return featuredAttachment;
+    }
+
+    public void setFeaturedAttachment(AttachmentDTO featuredAttachment) {
+        this.featuredAttachment = featuredAttachment;
     }
 }

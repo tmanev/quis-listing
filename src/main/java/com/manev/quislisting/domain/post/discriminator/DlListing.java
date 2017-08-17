@@ -79,6 +79,10 @@ public class DlListing {
     @OrderBy
     private Set<DlAttachment> dlAttachments;
 
+    @OneToOne
+    @JoinColumn(name="featured_attachment_id")
+    public DlAttachment featuredAttachment;
+
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
     private Set<DlListingContentFieldRel> dlListingContentFieldRels;
 
@@ -122,6 +126,14 @@ public class DlListing {
 
     public void setApproved(Boolean approved) {
         this.approved = approved;
+    }
+
+    public DlAttachment getFeaturedAttachment() {
+        return featuredAttachment;
+    }
+
+    public void setFeaturedAttachment(DlAttachment featuredAttachment) {
+        this.featuredAttachment = featuredAttachment;
     }
 
     public Set<DlListingContentFieldRel> getDlListingContentFieldRels() {
