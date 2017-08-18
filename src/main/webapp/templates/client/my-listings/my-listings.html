@@ -26,18 +26,27 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Approved</th>
-                <th>Action</th>
+                <th th:text="#{page.my_listings.label.title}">Title</th>
+                <th th:text="#{page.my_listings.label.status}">Status</th>
+                <th th:text="#{page.my_listings.label.approved}">Approved</th>
+                <th th:text="#{page.my_listings.label.action}">Action</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="dlListing in dlListings">
                 <td>{{dlListing.id}}</td>
                 <td>{{dlListing.title}}</td>
-                <td>{{dlListing.status}}</td>
-                <td>{{dlListing.approved}}</td>
+                <td>
+                    <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
+                    <span v-if="dlListing.status==='PUBLISH'" th:text="#{page.my_listings.label.published}"></span>
+                </td>
+                <td>
+                    <span v-if="dlListing.approved" th:text="#{page.my_listings.label.approved}"></span>
+                    <span v-if="!dlListing.approved && dlListing.status==='PUBLISH'"
+                          th:text="#{page.my_listings.label.pending}"></span>
+                    <span v-if="!dlListing.approved && dlListing.status==='DRAFT'"
+                          th:text="#{page.my_listings.label.not_publishhed}"></span>
+                </td>
                 <td>
                     <a v-bind:href="'/my-listings/edit/' + dlListing.id">Preview</a>
                     <a v-bind:href="'/my-listings/' + dlListing.id">Edit</a>
