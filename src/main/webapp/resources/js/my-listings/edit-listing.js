@@ -96,6 +96,7 @@ EditListing = {
                     title: dlListingDTO.title,
                     content: dlListingDTO.content,
                     name: dlListingDTO.name,
+                    translatedName: dlListingDTO.translatedName,
                     status: dlListingDTO.status,
                     dlCategories: dlListingDTO.dlCategories,
                     dlLocations: dlListingDTO.dlLocations,

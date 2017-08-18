@@ -183,7 +183,7 @@ public class DlContentFieldResourceTest {
         });
 
         // Create the DlContentField
-        DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
+        DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
 
         restDlContentFieldMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -228,7 +228,7 @@ public class DlContentFieldResourceTest {
         // Create the DlContentField with an existing ID
         DlContentField existingDlContentField = new DlContentField();
         existingDlContentField.setId(1L);
-        DlContentFieldDTO existingDlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(existingDlContentField);
+        DlContentFieldDTO existingDlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(existingDlContentField, null);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restDlContentFieldMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
@@ -331,7 +331,7 @@ public class DlContentFieldResourceTest {
                 .options(UPDATED_OPTIONS)
                 .searchOptions(UPDATED_SEARCH_OPTIONS);
 
-        DlContentFieldDTO updateContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(updatedDlContentField);
+        DlContentFieldDTO updateContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(updatedDlContentField, null);
 
         restDlContentFieldMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -374,7 +374,7 @@ public class DlContentFieldResourceTest {
         int databaseSizeBeforeUpdate = dlContentFieldRepository.findAll().size();
 
         // Create the DTO
-        DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
+        DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
 
         // If the entity does not have an ID, it will be created instead of just being updated
         restDlContentFieldMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)

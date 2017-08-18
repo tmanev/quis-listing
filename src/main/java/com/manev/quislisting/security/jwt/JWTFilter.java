@@ -1,7 +1,6 @@
 package com.manev.quislisting.security.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import org.apache.catalina.connector.ResponseFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -47,10 +46,14 @@ public class JWTFilter extends GenericFilterBean {
         } catch (ExpiredJwtException eje) {
             log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            if (httpServletRequest.getRequestURL().toString().contains("/api")){
+            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+            httpServletResponse.addCookie(new Cookie("ql-auth", "")); // invalidate auth cookie
+
+            if (httpServletRequest.getRequestURL().toString().contains("/api")
+                    && !httpServletRequest.getRequestURL().toString().contains("/api/public")){
                 ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             } else {
-                httpServletRequest.setAttribute("quisRedirectUrl", httpServletRequest.getRequestURL());
+                filterChain.doFilter(servletRequest, servletResponse);
             }
         }
     }

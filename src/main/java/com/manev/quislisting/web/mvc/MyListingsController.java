@@ -76,7 +76,7 @@ public class MyListingsController extends BaseController {
         return "client/index";
     }
 
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String showEditListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
@@ -99,7 +99,7 @@ public class MyListingsController extends BaseController {
 
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 
-        List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId());
+        List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), locale.getLanguage());
         modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);
         List<DlCategoryDTO> dlCategories = dlCategoryService.findAllByLanguageCode(locale.getLanguage());
         modelMap.addAttribute("dlCategoriesDtoFlat", dlCategories);

@@ -69,7 +69,7 @@ AddListing = {
                             $btn.button('reset');
 
                             // move the user to the next page
-                            let editUrl = '/my-listings/edit/' + response.data.id;
+                            let editUrl = '/my-listings/' + response.data.id;
                             window.location.href = editUrl;
 
                         }, function (response) {

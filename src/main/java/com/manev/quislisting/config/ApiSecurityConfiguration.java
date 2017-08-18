@@ -1,6 +1,5 @@
 package com.manev.quislisting.config;
 
-import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.Http401UnauthorizedEntryPoint;
 import com.manev.quislisting.security.jwt.JWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,6 +24,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.PostConstruct;
+
+import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_PUBLIC_DL_LISTINGS;
 
 @Configuration
 @EnableWebSecurity
@@ -54,16 +54,16 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.corsFilter = corsFilter;
     }
 
-//    @PostConstruct
-//    public void init() {
-//        try {
-//            authenticationManagerBuilder
-//                .userDetailsService(userDetailsService)
-//                    .passwordEncoder(passwordEncoder());
-//        } catch (Exception e) {
-//            throw new BeanInitializationException("Security configuration failed", e);
-//        }
-//    }
+    @PostConstruct
+    public void init() {
+        try {
+            authenticationManagerBuilder
+                .userDetailsService(userDetailsService)
+                    .passwordEncoder(passwordEncoder());
+        } catch (Exception e) {
+            throw new BeanInitializationException("Security configuration failed", e);
+        }
+    }
 
     @Bean
     public Http401UnauthorizedEntryPoint http401UnauthorizedEntryPoint() {
@@ -74,14 +74,6 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public DaoAuthenticationProvider authProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userDetailsService);
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
-//    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -125,9 +117,9 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/account/reset_password/finish").permitAll()
                 .antMatchers("/api/profile-info").permitAll()
                 .antMatchers("/api/contacts").permitAll()
-                .antMatchers("/api/public/**").permitAll()
+                .antMatchers(RESOURCE_API_PUBLIC_DL_LISTINGS+"/**").permitAll()
                 .antMatchers("/api/**").authenticated()
-        .and()
+                .and()
             .apply(securityConfigurerAdapter());
 
     }

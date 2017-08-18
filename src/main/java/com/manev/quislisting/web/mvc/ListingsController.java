@@ -59,7 +59,7 @@ public class ListingsController extends BaseController {
             return redirectToPageNotFound();
         }
 
-        List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId());
+        List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), language);
         generateContentFieldsWithValues(dlContentFieldDTOS, dlListingDTO.getDlListingFields());
 
         modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);

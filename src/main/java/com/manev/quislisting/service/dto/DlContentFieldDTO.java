@@ -11,6 +11,7 @@ public class DlContentFieldDTO {
     private Boolean coreField;
     private Integer orderNum;
     private String name;
+    private String translatedName;
     private String slug;
     private String description;
     private DlContentField.Type type;
@@ -79,6 +80,19 @@ public class DlContentFieldDTO {
 
     public DlContentFieldDTO name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getTranslatedName() {
+        return translatedName;
+    }
+
+    public void setTranslatedName(String translatedName) {
+        this.translatedName = translatedName;
+    }
+
+    public DlContentFieldDTO translatedName(String translatedName) {
+        this.translatedName = translatedName;
         return this;
     }
 

@@ -11,8 +11,8 @@
             <div class="col-md-12">
                 <div class="container-fluid">
                     <div class="row">
-                        <div v-for="dlListing in dlListings"
-                             class="col-sm-6 col-md-4 col-lg-3">
+                        <div v-for="dlListing in dlListings" style="display: none;"
+                             class="col-sm-6 col-md-4 col-lg-3" v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
                             <div class="thumbnail">
                                 <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
                                     <div style="width: 242px; height: 200px; white-space: nowrap; text-align: center;">

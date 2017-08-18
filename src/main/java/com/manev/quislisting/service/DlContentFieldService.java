@@ -58,7 +58,7 @@ public class DlContentFieldService {
             dlContentField.setDlContentFieldItems(new HashSet<>(dlContentFieldItemsSaved));
         }
 
-        return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField);
+        return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
     }
 
     private void setQlString(DlContentField dlContentField) {
@@ -76,15 +76,15 @@ public class DlContentFieldService {
     public Page<DlContentFieldDTO> findAll(Pageable pageable) {
         log.debug("Request to get all DlContentFieldDTO");
         Page<DlContentField> result = dlContentFieldRepository.findAll(pageable);
-        return result.map(dlContentFieldMapper::dlContentFieldToDlContentFieldDTO);
+        return result.map(dlContentField -> dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null));
     }
 
-    public List<DlContentFieldDTO> findAllByCategoryId(Long categoryId) {
+    public List<DlContentFieldDTO> findAllByCategoryId(Long categoryId, String language) {
         DlCategory dlCategory = dlCategoryRepository.findOne(categoryId);
         List<DlContentField> dlContentFields = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNull(dlCategory);
         List<DlContentFieldDTO> result = new ArrayList<>();
         dlContentFields.forEach(dlContentField ->
-                result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField))
+                result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, language))
         );
         return result;
     }
@@ -92,7 +92,7 @@ public class DlContentFieldService {
     public DlContentFieldDTO findOne(Long id) {
         log.debug("Request to get DlContentFieldDTO: {}", id);
         DlContentField result = dlContentFieldRepository.findOne(id);
-        return result != null ? dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(result) : null;
+        return result != null ? dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(result, null) : null;
     }
 
     public void delete(Long id) {

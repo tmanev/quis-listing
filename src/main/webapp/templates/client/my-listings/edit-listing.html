@@ -83,7 +83,7 @@
                     <div class="form-group" v-if="dlContentField.type == 'STRING'"
                          v-bind:class="{ 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
                         <label class="col-sm-2 control-label">
-                            {{dlContentField.name}}</label>
+                            {{dlContentField.translatedName}}</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="dlContentField.value"/>
                             <span class="help-block"
