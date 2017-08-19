@@ -121,4 +121,36 @@ public class MyListingsController extends BaseController {
         return "client/index";
     }
 
+    @RequestMapping(value = "/{id}/preview", method = RequestMethod.GET)
+    public String showPreviewListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
+        Locale locale = localeResolver.resolveLocale(request);
+        String language = locale.getLanguage();
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
+
+        if (dlListingDTO == null) {
+            return redirectToPageNotFound();
+        }
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(currentUserLogin);
+
+        if (userWithAuthoritiesByLogin.isPresent()) {
+            if (!dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId())) {
+                return redirectToPageNotFound();
+            }
+        } else {
+            throw new UsernameNotFoundException("User " + currentUserLogin + " was not found in the " +
+                    "database");
+        }
+
+        List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), language);
+
+        modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);
+
+        modelMap.addAttribute("dlListingDTO", dlListingDTO);
+
+        modelMap.addAttribute("title", dlListingDTO.getTitle());
+        modelMap.addAttribute("view", "client/listing");
+
+        return "client/index";
+    }
 }

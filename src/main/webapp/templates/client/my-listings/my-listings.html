@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${title}">My Listings</title>
@@ -48,9 +49,9 @@
                           th:text="#{page.my_listings.label.not_publishhed}"></span>
                 </td>
                 <td>
-                    <a v-bind:href="'/my-listings/edit/' + dlListing.id">Preview</a>
-                    <a v-bind:href="'/my-listings/' + dlListing.id">Edit</a>
-                    <a v-bind:href="'/my-listings/' + dlListing.id">Delete</a>
+                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/my-listings/' + dlListing.id + '/preview'">Preview</a>
+                    <a class="btn btn-warning btn-sm" v-bind:href="'/my-listings/' + dlListing.id">Edit</a>
+                    <a class="btn btn-danger btn-sm" v-on:click="deleteListing(dlListing)">Delete</a>
                 </td>
             </tr>
             </tbody>

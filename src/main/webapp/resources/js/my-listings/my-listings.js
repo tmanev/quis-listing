@@ -18,7 +18,31 @@ MyListings = {
                 dlListings: []
             },
             validations: {},
-            methods: {},
+            methods: {
+                deleteListing: function (listing) {
+                    this.$http({
+                        url: '/api/dl-listings/' + listing.id,
+                        method: 'DELETE'
+                    }).then(function (response) {
+                        console.log('Success!:', response.data);
+
+                        let index = this.dlListings.indexOf(listing);
+                        this.dlListings.splice(index, 1);
+                        $.notify({
+                            message: response.headers.get('X-qlService-alert')
+                        }, {
+                            type: 'success'
+                        });
+                    }, function (response) {
+                        console.log('Error!:', response.data);
+                        $.notify({
+                            message: response.data
+                        }, {
+                            type: 'danger'
+                        });
+                    });
+                }
+            },
             created: function() {
                 this.$http({
                     url: this.tableParams.url,
