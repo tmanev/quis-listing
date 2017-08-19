@@ -422,7 +422,7 @@ EditListing = {
                 },
                 openCategorySelection: function ($v) {
                     // $v.$touch();
-                    this.delayTouch($v);
+                    // this.delayTouch($v);
                     $('#myModal').modal('toggle');
                 }
             }, computed: {
