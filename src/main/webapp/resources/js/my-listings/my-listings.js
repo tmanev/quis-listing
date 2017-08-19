@@ -15,24 +15,33 @@ MyListings = {
                     search: null,
                     url: '/api/dl-listings?page&sort&search'
                 },
-                dlListings: []
+                dlListings: [],
+                confirmModal: {
+                    listingToDelete: null
+                }
             },
             validations: {},
             methods: {
-                deleteListing: function (listing) {
+                confirmDeleteListing: function(dlListing) {
+                    this.confirmModal.listingToDelete = dlListing;
+                    $('#my-modal').modal('show');
+                },
+                deleteListing: function () {
                     this.$http({
-                        url: '/api/dl-listings/' + listing.id,
+                        url: '/api/dl-listings/' + this.confirmModal.listingToDelete.id,
                         method: 'DELETE'
                     }).then(function (response) {
                         console.log('Success!:', response.data);
 
-                        let index = this.dlListings.indexOf(listing);
+                        let index = this.dlListings.indexOf(this.confirmModal.listingToDelete);
                         this.dlListings.splice(index, 1);
                         $.notify({
                             message: response.headers.get('X-qlService-alert')
                         }, {
                             type: 'success'
                         });
+                        this.confirmModal.listingToDelete = null;
+                        $('#my-modal').modal('hide');
                     }, function (response) {
                         console.log('Error!:', response.data);
                         $.notify({
@@ -40,6 +49,8 @@ MyListings = {
                         }, {
                             type: 'danger'
                         });
+                        this.confirmModal.listingToDelete = null;
+                        $('#my-modal').modal('hide');
                     });
                 }
             },
