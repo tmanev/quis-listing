@@ -104,7 +104,10 @@ EditListing = {
                     attachments: dlListingDTO.attachments,
                     featuredAttachment: dlListingDTO.featuredAttachment
                 },
-                image: ''
+                image: '',
+                confirmRemoveImageModal: {
+                    attachment: null
+                }
             },
             validations: function () {
                 let validation_dict = {
@@ -280,6 +283,10 @@ EditListing = {
                     };
                     reader.readAsDataURL(file);
                 },
+                confirmRemoveImage: function(attachment) {
+                    this.confirmRemoveImageModal.attachment = attachment;
+                    $('#my-modal').modal('show');
+                },
                 removeImage: function (attachment) {
                     this.$http({
                         url: '/api/dl-listings/' + this.listing.id + '/attachments/' + attachment.id,
@@ -294,6 +301,8 @@ EditListing = {
                         }, {
                             type: 'success'
                         });
+                        this.confirmRemoveImageModal.attachment = null;
+                        $('#my-modal').modal('hide');
                     }, function (response) {
                         console.log('Error!:', response.data);
                         $.notify({
@@ -301,6 +310,8 @@ EditListing = {
                         }, {
                             type: 'danger'
                         });
+                        this.confirmRemoveImageModal.attachment = null;
+                        $('#my-modal').modal('hide');
                     });
                 },
                 onBoxClick: function (e) {
