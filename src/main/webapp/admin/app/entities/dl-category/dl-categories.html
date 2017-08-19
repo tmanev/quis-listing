@@ -55,8 +55,8 @@
             <tbody>
             <tr ng-repeat="dlCategories in vm.dlCategoriesFlat track by dlCategories.id">
                 <td><a ui-sref="dl-category-detail({id:dlCategories.id})">{{dlCategories.id}}</a></td>
-                <td><span ng-repeat="n in [] | range:dlCategories.depthLevel">—</span> {{dlCategories.term.name}}</td>
-                <td>{{dlCategories.term.slug}}</td>
+                <td><span ng-repeat="n in [] | range:dlCategories.depthLevel">—</span> {{dlCategories.name}}</td>
+                <td>{{dlCategories.slug}}</td>
                 <td>{{dlCategories.count}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

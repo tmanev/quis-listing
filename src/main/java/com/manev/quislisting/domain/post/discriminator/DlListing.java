@@ -66,7 +66,7 @@ public class DlListing {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "ql_dl_listing_dl_category_relationship",
             joinColumns =
             @JoinColumn(name = "dl_listing_id", nullable = false, updatable = false),
