@@ -4,6 +4,7 @@ import com.manev.quislisting.config.QuisListingProperties;
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.User;
+import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.service.dto.ContactDTO;
@@ -132,4 +133,14 @@ public class EmailSendingService {
         return qlString.getValue();
     }
 
+    public void sendPublishRequest(DlListing savedDlListing) {
+        log.debug("Sending publish request e-mail.");
+
+        QlConfig publishRequestAdmin = qlConfigService.findOneByKey("publish_request_admin");
+
+        String subject = String.format("Listing publish request! Id: %s", savedDlListing.getId());
+        String publishText = String.format("Listing with title: %s, </br> has requested publishing", savedDlListing.getTitle());
+
+        mailService.sendEmail(publishRequestAdmin.getValue(), subject, publishText, false, true);
+    }
 }

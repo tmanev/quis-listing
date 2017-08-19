@@ -14,6 +14,7 @@ import com.manev.quislisting.repository.search.DlListingSearchRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
@@ -66,6 +67,7 @@ public class DlListingService {
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlAttachmentRepository dlAttachmentRepository;
     private DlListingSearchRepository dlListingSearchRepository;
+    private final EmailSendingService emailSendingService;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
@@ -73,7 +75,7 @@ public class DlListingService {
                             StorageService storageService, LanguageService languageService,
                             DlContentFieldRepository dlContentFieldRepository,
                             DlContentFieldItemRepository dlContentFieldItemRepository,
-                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository) {
+                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository, EmailSendingService emailSendingService) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -86,6 +88,7 @@ public class DlListingService {
         this.dlContentFieldItemRepository = dlContentFieldItemRepository;
         this.dlAttachmentRepository = dlAttachmentRepository;
         this.dlListingSearchRepository = dlListingSearchRepository;
+        this.emailSendingService = emailSendingService;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO) {
@@ -106,6 +109,7 @@ public class DlListingService {
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         dlListingSearchRepository.save(dlListingForSaving);
+        emailSendingService.sendPublishRequest(savedDlListing);
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
     }
 
