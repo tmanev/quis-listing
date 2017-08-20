@@ -19,12 +19,18 @@
      >
     <div class="container">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a class="navbar-brand" href="/">
                 <img style="width: 24px; display: inline;" alt="Quis Listing"
                      src="../../../resources/images/logo-ql.png"
                      th:src="@{/resources/images/logo-ql.png}"/><span style="margin-left: 5px;">Quis Listing</span></a>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li th:each="navMenuItem : ${baseModel.topHeaderMenus}">
                     <a th:if="${navMenuItem.staticPage} != null" th:href="'/'+${navMenuItem.staticPage.name}" th:text="${navMenuItem.staticPage.title}"></a>
