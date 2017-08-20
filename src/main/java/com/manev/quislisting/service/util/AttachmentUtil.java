@@ -23,7 +23,7 @@ public class AttachmentUtil {
 
         AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = attachmentMetadata.getSmallImageResizeMeta();
         AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = attachmentMetadata.getMediumImageResizeMeta();
-        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getBigImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getLargeImageResizeMeta();
 
         addIfNotNull(filePaths, thumbnailImageResizeMeta);
         addIfNotNull(filePaths, mediumImageResizeMeta);

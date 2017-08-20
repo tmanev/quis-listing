@@ -4,7 +4,7 @@ public class AttachmentMetadata {
     private DetailSize detail;
     private ImageResizeMeta smallImageResizeMeta;
     private ImageResizeMeta mediumImageResizeMeta;
-    private ImageResizeMeta bigImageResizeMeta;
+    private ImageResizeMeta largeImageResizeMeta;
 
     public DetailSize getDetail() {
         return detail;
@@ -99,11 +99,11 @@ public class AttachmentMetadata {
         this.mediumImageResizeMeta = mediumImageResizeMeta;
     }
 
-    public ImageResizeMeta getBigImageResizeMeta() {
-        return bigImageResizeMeta;
+    public ImageResizeMeta getLargeImageResizeMeta() {
+        return largeImageResizeMeta;
     }
 
-    public void setBigImageResizeMeta(ImageResizeMeta bigImageResizeMeta) {
-        this.bigImageResizeMeta = bigImageResizeMeta;
+    public void setLargeImageResizeMeta(ImageResizeMeta largeImageResizeMeta) {
+        this.largeImageResizeMeta = largeImageResizeMeta;
     }
 }

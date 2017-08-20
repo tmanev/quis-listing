@@ -16,7 +16,7 @@
 <div th:fragment="content" id="listingApp" class="container">
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
                     <h2 th:text="${dlListingDTO.title}"></h2>
@@ -35,8 +35,9 @@
                     <ul>
                         <li th:each="dlListingField : ${dlListingDTO.dlListingFields}">
                             <span th:text="${dlListingField.name}"></span>
-                            <span th:if="${dlListingField.type} != 'CHECKBOX'" th:text="${dlListingField.previewValue}"></span>
-                            <div th:if="${dlListingField.type} == 'CHECKBOX'" >
+                            <span th:if="${dlListingField.type} != 'CHECKBOX'"
+                                  th:text="${dlListingField.previewValue}"></span>
+                            <div th:if="${dlListingField.type} == 'CHECKBOX'">
                                 <span th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
                                     [(${dlListingFieldItem.value})]
                                 </span>
@@ -46,16 +47,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="row" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
-                <div th:each="attachment : ${dlListingDTO.attachments}">
-                    <div class="thumbnail">
-                        <img th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
-                             data-holder-rendered="true"
-                             style="height: 200px; display: block;"
-                        />
-                    </div>
-                </div>
+        <div class="col-md-6">
+            <div id="gallery" class="row" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
+                <th:block th:each="attachment : ${dlListingDTO.attachments}">
+                    <img th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
+                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.largeImageResizeMeta.detail.file}"
+                         th:alt="${attachment.fileName}"
+                         style="display: none;"
+                    />
+                </th:block>
             </div>
         </div>
 
@@ -67,6 +67,7 @@
     <script type="text/javascript">
         window.onload = function () {
             Listing.init();
+            $("#gallery").unitegallery();
         };
     </script>
 </div>

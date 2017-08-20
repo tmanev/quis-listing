@@ -28,7 +28,7 @@ public class StoreComponent {
 
     public static final String QUIS_CONTENT_TYPE = "quisContentType";
     private static final String DL_MEDIUM = "medium";
-    private static final String DL_BIG = "big";
+    private static final String DL_LARGE = "large";
     private static final String DL_SMALL = "small";
     private QuisListingProperties quisListingProperties;
 
@@ -55,11 +55,11 @@ public class StoreComponent {
 
         AttachmentMetadata.ImageResizeMeta smallImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_SMALL, resizedImages.getSmall());
         AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_MEDIUM, resizedImages.getMedium());
-        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_BIG, resizedImages.getBig());
+        AttachmentMetadata.ImageResizeMeta largeImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_LARGE, resizedImages.getBig());
 
         attachmentMetadata.setSmallImageResizeMeta(smallImageResizeMeta);
         attachmentMetadata.setMediumImageResizeMeta(mediumImageResizeMeta);
-        attachmentMetadata.setBigImageResizeMeta(bigImageResizeMeta);
+        attachmentMetadata.setLargeImageResizeMeta(largeImageResizeMeta);
 
         attachmentDTO.setAttachmentMetadata(attachmentMetadata);
 

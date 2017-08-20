@@ -30,8 +30,8 @@ public class AttachmentMapper {
 
         AttachmentMetadata attachmentMetadata = attachmentDTO.getAttachmentMetadata();
 
-        if (attachmentMetadata.getBigImageResizeMeta() != null) {
-            DlAttachmentResize dlAttachmentResizeBig = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getBigImageResizeMeta(), DlAttachmentResize.SizeType.BIG, attachment);
+        if (attachmentMetadata.getLargeImageResizeMeta() != null) {
+            DlAttachmentResize dlAttachmentResizeBig = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getLargeImageResizeMeta(), DlAttachmentResize.SizeType.BIG, attachment);
             attachment.addDlAttachmentResize(dlAttachmentResizeBig);
         }
 
@@ -69,7 +69,7 @@ public class AttachmentMapper {
             for (DlAttachmentResize dlAttachmentResize : dlAttachmentResizes) {
                 switch (dlAttachmentResize.getSizeType()) {
                     case BIG:
-                        attachmentMetadata.setBigImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.BIG.name(), dlAttachmentResize));
+                        attachmentMetadata.setLargeImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.BIG.name(), dlAttachmentResize));
                         break;
                     case MEDIUM:
                         attachmentMetadata.setMediumImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.MEDIUM.name(), dlAttachmentResize));
