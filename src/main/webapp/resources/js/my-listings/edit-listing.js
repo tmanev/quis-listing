@@ -406,7 +406,7 @@ EditListing = {
                         });
                     } else {
                         let payload = this.getPayload();
-
+                        var $btn = $('#btnPublish').button('loading');
                         this.$http({
                             url: '/api/dl-listings/publish',
                             body: payload,
@@ -414,12 +414,13 @@ EditListing = {
                         }).then(function (response) {
                             console.log('Success!:', response.data);
 
-                            $.notify({
-                                message: response.headers.get('X-qlService-alert')
-                            }, {
-                                type: 'success'
-                            });
+                            // $.notify({
+                            //     message: response.headers.get('X-qlService-alert')
+                            // }, {
+                            //     type: 'success'
+                            // });
                             $btn.button('reset');
+                            window.location.href = "/my-listings/" + this.listing.id + "/publish-successful";
                         }, function (response) {
                             console.log('Error!:', response.data);
                             $.notify({

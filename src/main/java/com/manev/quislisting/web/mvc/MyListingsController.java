@@ -160,4 +160,15 @@ public class MyListingsController extends BaseController {
 
         return "client/index";
     }
+
+    @RequestMapping(value = "/{id}/publish-successful", method = RequestMethod.GET)
+    public String publishSuccessful(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
+        Locale locale = localeResolver.resolveLocale(request);
+
+        modelMap.addAttribute("title", messageSource.getMessage("page.my_listings.publish_successful.title", null, locale));
+
+        modelMap.addAttribute("view", "client/my-listings/publish-successful");
+
+        return "client/index";
+    }
 }
