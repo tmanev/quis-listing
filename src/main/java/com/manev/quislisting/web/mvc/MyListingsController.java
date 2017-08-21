@@ -16,6 +16,7 @@ import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
+import com.manev.quislisting.web.model.JsTranslations;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -104,6 +105,12 @@ public class MyListingsController extends BaseController {
         List<DlCategoryDTO> dlCategories = dlCategoryService.findAllByLanguageCode(locale.getLanguage());
         modelMap.addAttribute("dlCategoriesDtoFlat", dlCategories);
         modelMap.addAttribute("dlLocationCountries", dlLocationService.findAllByParentId(null, language));
+
+        JsTranslations jsTranslations = new JsTranslations();
+        jsTranslations.addTranslation("page.my_listings.edit_listing.notifications.publish_validation.title", messageSource.getMessage("page.my_listings.edit_listing.notifications.publish_validation.title", null, locale));
+        jsTranslations.addTranslation("page.my_listings.edit_listing.notifications.publish_validation.message", messageSource.getMessage("page.my_listings.edit_listing.notifications.publish_validation.message", null, locale));
+
+        modelMap.addAttribute("jsTranslations", jsTranslations.getTranslations());
 
         List<DlLocationDTO> dlLocations = dlListingDTO.getDlLocations();
         if (dlLocations != null && !dlLocations.isEmpty()) {

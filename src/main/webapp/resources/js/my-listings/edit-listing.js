@@ -1,5 +1,5 @@
 EditListing = {
-    init: function (dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, commonVar) {
+    init: function (dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, jsTranslations, commonVar) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
@@ -283,7 +283,7 @@ EditListing = {
                     };
                     reader.readAsDataURL(file);
                 },
-                confirmRemoveImage: function(attachment) {
+                confirmRemoveImage: function (attachment) {
                     this.confirmRemoveImageModal.attachment = attachment;
                     $('#my-modal').modal('show');
                 },
@@ -397,10 +397,21 @@ EditListing = {
                 onPublish: function (event) {
                     if (this.$v.$invalid) {
                         this.$v.$touch();
+                        $.notify({
+                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
+                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
+                        }, {
+                            type: 'danger',
+                            timer: 0
+                        });
                     } else {
                         let payload = this.getPayload();
 
-                        this.$http({url: '/api/dl-listings/publish', body: payload, method: 'PUT'}).then(function (response) {
+                        this.$http({
+                            url: '/api/dl-listings/publish',
+                            body: payload,
+                            method: 'PUT'
+                        }).then(function (response) {
                             console.log('Success!:', response.data);
 
                             $.notify({
