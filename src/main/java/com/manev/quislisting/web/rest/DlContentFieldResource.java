@@ -39,7 +39,7 @@ public class DlContentFieldResource {
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DlContentFieldDTO> createDlContentField(@RequestBody DlContentFieldDTO dlContentFieldDTO) throws URISyntaxException {
-        log.debug("REST request to save DlCategoryDTO : {}", dlContentFieldDTO);
+        log.debug("REST request to save DlContentFieldDTO : {}", dlContentFieldDTO);
         if (dlContentFieldDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
         }
@@ -51,7 +51,7 @@ public class DlContentFieldResource {
     }
 
     @PutMapping
-    public ResponseEntity<DlContentFieldDTO> updateDlCategory(@RequestBody DlContentFieldDTO dlContentFieldDTO) throws URISyntaxException {
+    public ResponseEntity<DlContentFieldDTO> updateDlContentField(@RequestBody DlContentFieldDTO dlContentFieldDTO) throws URISyntaxException {
         log.debug("REST request to update DlContentFieldDTO : {}", dlContentFieldDTO);
         if (dlContentFieldDTO.getId() == null) {
             return createDlContentField(dlContentFieldDTO);
@@ -71,14 +71,14 @@ public class DlContentFieldResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DlContentFieldDTO> getDlCategory(@PathVariable Long id) {
+    public ResponseEntity<DlContentFieldDTO> getDlContentField(@PathVariable Long id) {
         log.debug("REST request to get DlContentFieldDTO : {}", id);
         DlContentFieldDTO dlContentFieldDTO = dlContentFieldService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlContentFieldDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDlCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDlContentField(@PathVariable Long id) {
         log.debug("REST request to delete DlContentFieldDTO : {}", id);
         dlContentFieldService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

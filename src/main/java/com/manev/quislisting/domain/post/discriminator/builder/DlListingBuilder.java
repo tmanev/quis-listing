@@ -2,6 +2,7 @@ package com.manev.quislisting.domain.post.discriminator.builder;
 
 import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.sql.Timestamp;
 
@@ -11,6 +12,7 @@ public final class DlListingBuilder {
     private String content;
     private String name;
     private DlListing.Status status;
+    private Boolean approved;
     private Timestamp created;
     private Timestamp modified;
     private Translation translation;
@@ -47,6 +49,11 @@ public final class DlListingBuilder {
         return this;
     }
 
+    public DlListingBuilder withApproved(Boolean approved) {
+        this.approved = approved;
+        return this;
+    }
+
     public DlListingBuilder withCreated(Timestamp created) {
         this.created = created;
         return this;
@@ -69,6 +76,7 @@ public final class DlListingBuilder {
         dlListing.setContent(content);
         dlListing.setName(name);
         dlListing.setStatus(status);
+        dlListing.setApproved(approved);
         dlListing.setCreated(created);
         dlListing.setModified(modified);
         dlListing.setTranslation(translation);

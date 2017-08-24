@@ -101,7 +101,7 @@ public class DlContentField {
     @JoinColumn(name = "string_id")
     private QlString qlString;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "dlContentField")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dlContentField")
     @OrderBy
     private Set<DlContentFieldItem> dlContentFieldItems;
 
@@ -405,6 +405,6 @@ public class DlContentField {
     }
 
     public enum Type {
-        STRING, SELECT, CHECKBOX, NUMBER, WEBSITE, EXCERPT, ADDRESS, CONTENT, CATEGORIES, TAGS
+        STRING, TEXT_AREA, NUMBER, SELECT, DEPENDENT_SELECT, RADIO, CHECKBOX, WEBSITE, EMAIL, OPEN_HOURS
     }
 }

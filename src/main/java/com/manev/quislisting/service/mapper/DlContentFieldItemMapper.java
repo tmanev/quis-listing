@@ -20,4 +20,8 @@ public class DlContentFieldItemMapper {
                 .value(dlContentFieldItem.getValue());
     }
 
+    public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItem one, DlContentFieldItemDTO dlContentFieldItemDTO) {
+        one.setValue(dlContentFieldItemDTO.getValue());
+        return one;
+    }
 }

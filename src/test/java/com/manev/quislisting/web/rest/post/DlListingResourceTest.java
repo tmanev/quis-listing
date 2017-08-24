@@ -77,6 +77,7 @@ public class DlListingResourceTest extends GenericResourceTest {
     private static final DlListing.Status DEFAULT_STATUS = DlListing.Status.DRAFT;
     private static Clock clock = Clock.systemUTC();
     private static final Timestamp ZONED_DATE_TIME_SHOULD_NOT_BE_THIS = new Timestamp(clock.millis());
+    private static Boolean DEFAULT_APPROVED = Boolean.FALSE;
     @Autowired
     private DlListingService dlListingService;
 
@@ -132,6 +133,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .withCreated(DEFAULT_CREATED)
                 .withModified(DEFAULT_MODIFIED)
                 .withStatus(DEFAULT_STATUS)
+                .withApproved(DEFAULT_APPROVED)
                 .withTranslation(TranslationBuilder.aTranslation()
                         .withLanguageCode(DEFAULT_LANGUAGE_CODE)
                         .withTranslationGroup(new TranslationGroup())

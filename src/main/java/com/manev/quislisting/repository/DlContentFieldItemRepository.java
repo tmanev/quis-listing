@@ -2,6 +2,8 @@ package com.manev.quislisting.repository;
 
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,4 +16,6 @@ public interface DlContentFieldItemRepository extends JpaRepository<DlContentFie
     List<DlContentFieldItem> findAllByDlContentField(DlContentField dlContentField);
 
     Set<DlContentFieldItem> findByIdIn(Collection<Long> ids);
+
+    Page<DlContentFieldItem> findAllByDlContentFieldAndParent(Pageable pageable, DlContentField dlContentField, DlContentFieldItem parent);
 }

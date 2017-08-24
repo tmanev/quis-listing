@@ -37,17 +37,16 @@
 
         vm.contentTypes = [
             {key: '', value: '- Select field type -'},
-            {key: 'string', value: 'Text string'},
-            {key: 'textarea', value: 'Textarea'},
-            {key: 'number', value: 'Digital value'},
-            {key: 'select', value: 'Select list'},
-            {key: 'radio', value: 'Radio buttons'},
-            {key: 'checkbox', value: 'Checkboxes'},
-            {key: 'website', value: 'Website URL'},
-            {key: 'email', value: 'Email'},
-            {key: 'datetime', value: 'Date-Time'},
-            {key: 'price', value: 'Price'},
-            {key: 'hours', value: 'Opening hours'}
+            {key: 'STRING', value: 'Text string'},
+            {key: 'TEXT_AREA', value: 'Textarea'},
+            {key: 'NUMBER', value: 'Digital value'},
+            {key: 'SELECT', value: 'Select list'},
+            {key: 'DEPENDENT_SELECT', value: 'Dependent select list'},
+            {key: 'RADIO', value: 'Radio buttons'},
+            {key: 'CHECKBOX', value: 'Checkboxes'},
+            {key: 'WEBSITE', value: 'Website URL'},
+            {key: 'EMAIL', value: 'Email'},
+            {key: 'OPEN_HOURS', value: 'Opening hours'}
         ];
 
         loadActiveLanguages();

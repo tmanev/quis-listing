@@ -53,11 +53,6 @@ public class DlContentFieldService {
 
         dlContentFieldRepository.save(dlContentField);
 
-        if (dlContentFieldDTO.getDlContentFieldItems() != null) {
-            List<DlContentFieldItem> dlContentFieldItemsSaved = dlContentFieldItemService.saveDlContentFieldItems(dlContentField, dlContentFieldDTO.getDlContentFieldItems());
-            dlContentField.setDlContentFieldItems(new HashSet<>(dlContentFieldItemsSaved));
-        }
-
         return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
     }
 

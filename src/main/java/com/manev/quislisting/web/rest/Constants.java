@@ -8,6 +8,7 @@ public final class Constants {
 
     private static final String RESOURCE_ADMIN = "/admin";
     public static final String RESOURCE_API_ADMIN_DL_CONTENT_FIELDS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-content-fields";
+    public static final String RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS = RESOURCE_API_ADMIN_DL_CONTENT_FIELDS + "/{dlContentFieldId}" + "/dl-content-field-items";
 
     public static final String RESOURCE_API_ADMIN_ATTACHMENTS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/attachments";
     public static final String RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/content-field-groups";
