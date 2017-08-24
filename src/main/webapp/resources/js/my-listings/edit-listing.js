@@ -36,25 +36,40 @@ EditListing = {
         }
 
         function getValueFromContentField(dlContentField, dlListingFields) {
+
+            function findDlContentFieldItem(id, dlContentFieldItems) {
+                for (let dlContentFieldItem of dlContentFieldItems) {
+                    if (dlContentFieldItem.id == id) {
+                        return dlContentFieldItem.parent.id;
+                    }
+                }
+            }
+
             if (dlListingFields) {
                 for (let dlListingField of dlListingFields) {
                     if (dlListingField.id == dlContentField.id) {
-                        if (dlContentField.type == 'CHECKBOX') {
+                        if (dlContentField.type === 'CHECKBOX') {
                             if (dlListingField.value) {
                                 return JSON.parse(dlListingField.value);
                             } else {
                                 return [];
                             }
-                        } else {
+                        } else if(dlContentField.type === 'DEPENDENT_SELECT'){
+                            dlContentField.parentValue = findDlContentFieldItem(dlListingField.value, dlContentField.dlContentFieldItems);
+                            return dlListingField.value;
+                        }   else {
                             return dlListingField.value;
                         }
                     }
                 }
             } else {
-                if (dlContentField.type == 'CHECKBOX') {
+                if (dlContentField.type === 'CHECKBOX') {
                     // return empty array to be able to operate checkbox
                     return [];
-                } else if (dlContentField.type == 'SELECT') {
+                } else if (dlContentField.type === 'SELECT') {
+                    return -1;
+                } else if (dlContentField.type === 'DEPENDENT_SELECT') {
+                    dlContentField.parentValue = -1;
                     return -1;
                 }
             }
@@ -128,7 +143,7 @@ EditListing = {
                     validation_dict.dlContentFields[index] = {};
                     validation_dict.dlContentFields[index].value = {};
                     if (this.dlContentFields[index].required) {
-                        if (this.dlContentFields[index].type === 'SELECT') {
+                        if (this.dlContentFields[index].type === 'SELECT' || this.dlContentFields[index].type === 'DEPENDENT_SELECT') {
                             validation_dict.dlContentFields[index].value.ListHasSelectionValidator = ListHasSelectionValidator;
                         } else {
                             validation_dict.dlContentFields[index].value.required = required;
@@ -151,7 +166,7 @@ EditListing = {
                     }
 
                     if (this.dlContentFields[index].type === 'STRING') {
-                        if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
+                        if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
                             validation_dict.dlContentFields[index].value.minLength = minLength(this.dlContentFields[index].optionsModel.minLength);
                         }
 
@@ -316,6 +331,19 @@ EditListing = {
                 },
                 onBoxClick: function (e) {
                     $(e.target.firstElementChild).trigger('click');
+                },
+                rootContentFieldItem: function(dlContentFieldItems) {
+                    return dlContentFieldItems.filter(function (dlContentFieldItem) {
+                        return dlContentFieldItem.parent === null;
+                    });
+                },
+                childContentFieldItem: function(dlContentFieldItems, parentId) {
+                    return dlContentFieldItems.filter(function (dlContentFieldItem) {
+                        return dlContentFieldItem.parent !== null && dlContentFieldItem.parent.id == parentId;
+                    });
+                },
+                resetValue: function(dlContentField) {
+                    dlContentField.value = -1;
                 },
                 onCountryChange: function () {
                     if (this.selectedCountry === "-1") {

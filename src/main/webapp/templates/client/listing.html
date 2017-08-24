@@ -35,6 +35,7 @@
                     <ul>
                         <li th:each="dlListingField : ${dlListingDTO.dlListingFields}">
                             <span th:text="${dlListingField.name}"></span>
+
                             <span th:if="${dlListingField.type} != 'CHECKBOX'"
                                   th:text="${dlListingField.previewValue}"></span>
                             <div th:if="${dlListingField.type} == 'CHECKBOX'">

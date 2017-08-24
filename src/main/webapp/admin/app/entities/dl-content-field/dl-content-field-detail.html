@@ -127,10 +127,10 @@
                            multiple
                            theme="bootstrap"
                            on-select="vm.onSelectCallback($item, $model)">
-                    <ui-select-match placeholder="All categories...">{{$item.term.name}}</ui-select-match>
+                    <ui-select-match placeholder="All categories...">{{$item.name}}</ui-select-match>
                     <ui-select-choices repeat="item as item in vm.dlCategories | filter: $select.search">
                         <span ng-repeat="n in [] | range:item.depthLevel">—</span>
-                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
+                        <span ng-bind-html="item.name | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
                 <span class="input-group-btn">

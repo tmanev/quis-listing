@@ -10,9 +10,10 @@ public class DlContentFieldItemDTO {
     private String value;
     private DlContentFieldDTO dlContentFieldDTO;
 
-    @JsonBackReference(value = "dl_content_field_item_dto_parent_reference")
+//    @JsonBackReference(value = "dl_content_field_item_dto_parent_reference")
     private DlContentFieldItemDTO parent;
 
+    @JsonBackReference(value = "dl_content_field_item_dto_children_reference")
     private Set<DlContentFieldItemDTO> children;
 
     public Long getId() {
@@ -55,6 +56,11 @@ public class DlContentFieldItemDTO {
 
     public void setParent(DlContentFieldItemDTO parent) {
         this.parent = parent;
+    }
+
+    public DlContentFieldItemDTO parent(DlContentFieldItemDTO parent) {
+        this.parent = parent;
+        return this;
     }
 
     public Set<DlContentFieldItemDTO> getChildren() {

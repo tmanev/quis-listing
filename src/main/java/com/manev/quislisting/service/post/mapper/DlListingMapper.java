@@ -83,6 +83,15 @@ public class DlListingMapper {
                             value = String.valueOf(dlContentFieldItems.iterator().next().getId());
                             previewValue = dlContentFieldItems.iterator().next().getQlString().getValue();
                         }
+                    } else if (dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
+                        Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
+                        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+                            DlContentFieldItem dlContentFieldItem = dlContentFieldItems.iterator().next();
+                            DlContentFieldItem parentDlContentFieldItem = dlContentFieldItem.getParent();
+                            String parentPreviewValue = parentDlContentFieldItem.getQlString().getValue();
+                            value = String.valueOf(dlContentFieldItem.getId());
+                            previewValue = parentPreviewValue + " / " + dlContentFieldItem.getQlString().getValue();
+                        }
                     } else {
                         value = dlListingContentFieldRel.getValue();
                         previewValue = dlListingContentFieldRel.getValue();

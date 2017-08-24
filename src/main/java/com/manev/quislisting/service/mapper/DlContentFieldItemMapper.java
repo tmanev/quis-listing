@@ -17,7 +17,8 @@ public class DlContentFieldItemMapper {
     public DlContentFieldItemDTO dlContentFieldItemToDlContentFieldItemDTO(DlContentFieldItem dlContentFieldItem) {
         return new DlContentFieldItemDTO()
                 .id(dlContentFieldItem.getId())
-                .value(dlContentFieldItem.getValue());
+                .value(dlContentFieldItem.getValue())
+                .parent(dlContentFieldItem.getParent()!=null?dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem.getParent()):null);
     }
 
     public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItem one, DlContentFieldItemDTO dlContentFieldItemDTO) {

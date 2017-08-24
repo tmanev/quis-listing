@@ -202,7 +202,8 @@ public class DlListingService {
                         newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
                     }
                 }
-            } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)) {
+            } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)
+                    || dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
                 if (!StringUtils.isEmpty(dlListingFieldDTO.getValue()) && !dlListingFieldDTO.getValue().equals("-1")) {
                     DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getValue()));
                     Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
