@@ -3,6 +3,8 @@ package com.manev.quislisting.domain.taxonomy.discriminator;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -47,4 +49,5 @@ public class DlCategory extends TermTaxonomy {
     public void setDlListings(Set<DlListing> dlListings) {
         this.dlListings = dlListings;
     }
+
 }

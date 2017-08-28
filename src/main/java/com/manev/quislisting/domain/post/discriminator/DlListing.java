@@ -6,23 +6,22 @@ import com.manev.quislisting.domain.*;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.post.dto.serializer.TimestampDeserializer;
 import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
-import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
-import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
 import org.hibernate.annotations.Where;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "ql_dl_listing")
 @Document(indexName = "dl_listing")
 public class DlListing {
+
+    @OneToOne
+    @JoinColumn(name = "featured_attachment_id")
+    public DlAttachment featuredAttachment;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -79,12 +78,9 @@ public class DlListing {
     @OrderBy
     private Set<DlAttachment> dlAttachments;
 
-    @OneToOne
-    @JoinColumn(name="featured_attachment_id")
-    public DlAttachment featuredAttachment;
-
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
-    private Set<DlListingContentFieldRel> dlListingContentFieldRels;
+    @OrderBy
+    private SortedSet<DlListingContentFieldRel> dlListingContentFieldRels;
 
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
     private Set<DlListingLocationRel> dlListingLocationRels;
@@ -140,13 +136,13 @@ public class DlListing {
         return dlListingContentFieldRels;
     }
 
-    public void setDlListingContentFieldRels(Set<DlListingContentFieldRel> dlListingContentFieldRels) {
+    public void setDlListingContentFieldRels(SortedSet<DlListingContentFieldRel> dlListingContentFieldRels) {
         this.dlListingContentFieldRels = dlListingContentFieldRels;
     }
 
     public void addDlContentFieldRelationships(DlListingContentFieldRel dlListingContentFieldRelForSave) {
         if (this.dlListingContentFieldRels == null) {
-            this.dlListingContentFieldRels = new HashSet<>();
+            this.dlListingContentFieldRels = new TreeSet<>();
         }
         this.dlListingContentFieldRels.add(dlListingContentFieldRelForSave);
     }
@@ -248,4 +244,5 @@ public class DlListing {
         DRAFT,
         PUBLISH
     }
+
 }

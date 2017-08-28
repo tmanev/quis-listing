@@ -38,6 +38,7 @@
                 <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="name"><span data-translate="quisListingApp.dlContentField.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="type"><span data-translate="quisListingApp.dlContentField.type">Field type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="orderNum"><span data-translate="quisListingApp.dlContentField.orderNum">Order Num.</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="required"><span data-translate="quisListingApp.dlContentField.required">Required</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
@@ -47,6 +48,7 @@
                 <td><a ui-sref="dl-content-field-detail({id:dlContentField.id})">{{dlContentField.id}}</a></td>
                 <td>{{dlContentField.name}}</td>
                 <td>{{dlContentField.type}}</td>
+                <td>{{dlContentField.orderNum}}</td>
                 <td>{{dlContentField.required}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

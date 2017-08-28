@@ -3,6 +3,8 @@ package com.manev.quislisting.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -407,4 +409,5 @@ public class DlContentField {
     public enum Type {
         STRING, TEXT_AREA, NUMBER, SELECT, DEPENDENT_SELECT, RADIO, CHECKBOX, WEBSITE, EMAIL, OPEN_HOURS
     }
+
 }

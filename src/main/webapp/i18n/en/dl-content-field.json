@@ -27,6 +27,7 @@
             "hideName": "Hide name",
             "description": "Field description",
             "type": "Field type",
+            "orderNum": "Order Num.",
             "required": "Is this field required?",
             "order": "Can be ordered by this field?",
             "onExcerptPage": "On excerpt page",

@@ -3,6 +3,8 @@ package com.manev.quislisting.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -104,4 +106,5 @@ public class DlContentFieldItem {
     public void setChildren(Set<DlContentFieldItem> children) {
         this.children = children;
     }
+
 }

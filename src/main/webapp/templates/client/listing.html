@@ -14,38 +14,40 @@
 </head>
 <body>
 <div th:fragment="content" id="listingApp" class="container">
-
+    <div class="jumbotron" style="margin-bottom: 5px;">
+        <h2 th:text="${dlListingDTO.title}"></h2>
+        <p th:text="${dlListingDTO.content}"></p>
+    </div>
+    <div class="col-md-6">
+        <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">Category &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlCategories[0].name}">Work</span></h3>
+    </div>
+    <div class="col-md-6">
+        <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">Location &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlLocations[0].name}">Orlando, Miami, USA</span></h3>
+    </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 th:text="${dlListingDTO.title}"></h2>
-                </div>
-                <div class="col-md-12">
-                    <p th:text="${dlListingDTO.content}"></p>
-                </div>
-                <div class="col-md-12" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
-                    <p th:text="${dlListingDTO.dlLocations[0].name}"></p>
-                </div>
-                <div class="col-md-12" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
-                    <p th:text="${dlListingDTO.dlCategories[0].name}"></p>
-                </div>
-                <hr/>
-                <div class="col-md-12">
-                    <ul>
-                        <li th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                            <span th:text="${dlListingField.name}"></span>
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Details</div>
 
-                            <span th:if="${dlListingField.type} != 'CHECKBOX'"
-                                  th:text="${dlListingField.previewValue}"></span>
-                            <div th:if="${dlListingField.type} == 'CHECKBOX'">
+                <!-- Table -->
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                    <tr th:each="dlListingField : ${dlListingDTO.dlListingFields}">
+                        <td style="text-align: right; font-size: large;" th:text="${dlListingField.name}"></td>
+
+                        <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} != 'CHECKBOX'"
+                              th:text="${dlListingField.previewValue}"></td>
+
+                        <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} == 'CHECKBOX'">
                                 <span th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
                                     [(${dlListingFieldItem.value})]
                                 </span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="col-md-6">

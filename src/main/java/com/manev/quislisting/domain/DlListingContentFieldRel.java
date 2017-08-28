@@ -2,6 +2,8 @@ package com.manev.quislisting.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_listing_dl_content_field_relationship")
-public class DlListingContentFieldRel {
+public class DlListingContentFieldRel implements Comparable<DlListingContentFieldRel> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -71,5 +73,38 @@ public class DlListingContentFieldRel {
 
     public void setDlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DlListingContentFieldRel that = (DlListingContentFieldRel) o;
+
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(dlContentField, that.dlContentField)
+                .append(value, that.value)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(dlContentField)
+                .append(value)
+                .toHashCode();
+    }
+
+    @Override
+    public int compareTo(DlListingContentFieldRel o) {
+        if (this.dlContentField.getOrderNum().equals(o.getDlContentField().getOrderNum())) {
+            return this.dlContentField.getId().compareTo(o.getDlContentField().getId());
+        } else {
+            return this.dlContentField.getOrderNum() - o.getDlContentField().getOrderNum();
+        }
     }
 }
