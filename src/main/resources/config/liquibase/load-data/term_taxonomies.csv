@@ -1,0 +1,10 @@
+id;name;slug;translation_id;taxonomy;description;parent_id;count
+7;Top Menu;top-menu;10;nav-menu;Top Menu;null;0
+8;Top Header Menu;top-header-menu;11;nav-menu;Top Header Menu;null;0
+9;Footer Menu;footer-menu;12;nav-menu;Footer Menu;null;0
+
+18;Footer Menu BG;footer-menu-bg;27;nav-menu;Footer Menu BG;null;0
+19;Top Header Menu BG;top-header-menu-bg;30;nav-menu;Top Header Menu BG;null;0
+
+20;Footer Menu RO;footer-menu-ro;35;nav-menu;Footer Menu RO;null;0
+21;Top Header Menu RO;top-header-menu-ro;36;nav-menu;Top Header Menu RO;null;0

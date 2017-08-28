@@ -120,7 +120,8 @@
             "config": "Configure",
             "searchConfig": "Search Config.",
             "ok": "Ok",
-            "translate": "Translate"
+            "translate": "Translate",
+            "slugify": "Slugify"
         },
         "detail": {
             "field": "Field",

@@ -23,8 +23,13 @@
         vm.dlCategory = entity;
         vm.clear = clear;
         vm.save = save;
+        vm.doSlugify = doSlugify;
 
         loadAll();
+
+        function doSlugify() {
+            vm.dlCategory.slug = slugify(vm.dlCategory.name);
+        }
 
         vm.onSelectCallback = function ($item, $model) {
             console.log("Item:");

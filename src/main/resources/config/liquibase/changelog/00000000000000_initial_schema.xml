@@ -705,29 +705,29 @@
                   tableName="ql_translation"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/term-taxonomies.csv"
+                  file="config/liquibase/load-data/term_taxonomies.csv"
                   separator=";"
                   tableName="ql_term_taxonomy"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-strings.csv"
+                  file="config/liquibase/load-data/ql_strings.csv"
                   separator="¦"
                   quotchar="'"
                   tableName="ql_string"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/ql-string-translations.csv"
+                  file="config/liquibase/load-data/ql_string_translations.csv"
                   separator="¦"
                   quotchar="'"
                   tableName="ql_string_translation"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-content-fields.csv"
+                  file="config/liquibase/load-data/dl_content_fields.csv"
                   separator="¦"
                   tableName="ql_dl_content_field"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/load-data/dl-content-field-items.csv"
+                  file="config/liquibase/load-data/dl_content_field_items.csv"
                   separator="¦"
                   tableName="ql_dl_content_field_item"/>
 

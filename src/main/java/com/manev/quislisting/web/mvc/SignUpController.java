@@ -51,7 +51,6 @@ public class SignUpController extends BaseController {
 
         setTermsAndConditionPageInModel(model, locale);
 
-
         model.addAttribute("signUpUserBean", new SignUpUserBean());
 
         return "client/index";
@@ -62,9 +61,13 @@ public class SignUpController extends BaseController {
         QlConfig termsAndConditionsPageIdConfig = qlConfigService.findOneByKey("terms-and-conditions-page-id");
         if (termsAndConditionsPageIdConfig != null) {
             String language = locale.getLanguage();
-
             model.addAttribute("termsAndConditionsPage", staticPageService.retrievePost(language,
                     termsAndConditionsPageIdConfig.getValue()));
+        }
+
+        QlConfig sineNameConfig = qlConfigService.findOneByKey("site-name");
+        if (sineNameConfig != null) {
+            model.addAttribute("siteName", sineNameConfig.getValue());
         }
     }
 

@@ -28,7 +28,7 @@ public class DlCategoryRepositoryTest {
     @Test
     public void findAllTest() {
         List<DlCategory> all = dlCategoryRepository.findAll();
-        Assert.assertEquals(6, all.size());
+        Assert.assertEquals(0, all.size());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DlCategoryRepositoryTest {
     @Test
     public void findAllByLanguageCode() {
         Page<DlCategory> translationsEn = dlCategoryRepository.findAllByTranslation_languageCode(new PageRequest(0, 20), "en");
-        Assert.assertEquals(6, translationsEn.getContent().size());
+        Assert.assertEquals(0, translationsEn.getContent().size());
         Page<DlCategory> translationsBg = dlCategoryRepository.findAllByTranslation_languageCode(new PageRequest(0, 20), "bg");
         Assert.assertEquals(0, translationsBg.getContent().size());
         Page<DlCategory> translationsNull = dlCategoryRepository.findAllByTranslation_languageCode(new PageRequest(0, 20), null);
@@ -58,7 +58,7 @@ public class DlCategoryRepositoryTest {
     @Test
     public void countByLanguageCode() {
         Long count = dlCategoryRepository.countByTranslation_languageCode("en");
-        assertEquals(6L, count.longValue());
+        assertEquals(0L, count.longValue());
     }
 
 }

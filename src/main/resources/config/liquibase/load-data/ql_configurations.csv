@@ -1,15 +1,7 @@
 id;key;value
-1;analytics;Some text example
-2;bing-analytics;text example 2
 3;ql-menu-configurations;{"qlMenuPosConfigs":[{"languageCode":"en","topMenuRefId":null,"topHeaderMenuRefId":8,"footerMenuRefId":9},{"languageCode":"bg","topMenuRefId":null,"topHeaderMenuRefId":19,"footerMenuRefId":18},{"languageCode":"ro","topMenuRefId":null,"topHeaderMenuRefId":21,"footerMenuRefId":20}]}
 4;admin_email;trajche.manev@gmail.com
 5;terms-and-conditions-page-id;1
 6;site-name;Quis Listing
-7;activation-page-id;38
-9;contact-page-id;6
-10;forgot-password-page-id;44
-11;reset-password-finish-page-id;47
-12;my-listings-page-id;12
-13;my-listings-edit-page-id;53
 14;base-url;http://localhost:8181
 15;publish_request_admin;trajche.manev@gmail.com
