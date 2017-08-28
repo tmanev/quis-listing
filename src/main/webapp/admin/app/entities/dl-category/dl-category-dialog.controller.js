@@ -28,7 +28,8 @@
         loadAll();
 
         function doSlugify() {
-            vm.dlCategory.slug = slugify(vm.dlCategory.name);
+            slug.defaults.mode ='rfc3986';
+            vm.dlCategory.slug = slug(vm.dlCategory.name);
         }
 
         vm.onSelectCallback = function ($item, $model) {
