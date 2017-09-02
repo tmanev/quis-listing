@@ -55,8 +55,8 @@
             <tbody>
             <tr ng-repeat="dlLocation in vm.dlLocationsFlat track by dlLocation.id">
                 <td><a ui-sref="dl-location-detail({id:dlLocation.id})">{{dlLocation.id}}</a></td>
-                <td><span ng-repeat="n in [] | range:dlLocation.depthLevel">—</span> {{dlLocation.term.name}}</td>
-                <td>{{dlLocation.term.slug}}</td>
+                <td><span ng-repeat="n in [] | range:dlLocation.depthLevel">—</span> {{dlLocation.name}}</td>
+                <td>{{dlLocation.slug}}</td>
                 <td>{{dlLocation.count}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

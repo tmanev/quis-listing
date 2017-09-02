@@ -16,12 +16,12 @@
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.dlLocation.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                   ng-model="vm.dlLocation.term.name"/>
+                   ng-model="vm.dlLocation.name"/>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.dlLocation.slug" for="field_slug">Slug</label>
             <input type="text" class="form-control" name="slug" id="field_slug"
-                   ng-model="vm.dlLocation.term.slug"
+                   ng-model="vm.dlLocation.slug"
             />
         </div>
         <div class="form-group">
@@ -39,11 +39,11 @@
                 <ui-select allow-clear ng-model="vm.dlLocation.parentId" on-select="vm.onSelectCallback($item, $model)"
                            theme="bootstrap">
                     <ui-select-match placeholder="Select or search a location in the list...">
-                        {{$select.selected.term.name}}
+                        {{$select.selected.name}}
                     </ui-select-match>
                     <ui-select-choices repeat="item.id as item in vm.dlLocations | filter: $select.search">
                         <span ng-repeat="n in [] | range:item.depthLevel">—</span>
-                        <span ng-bind-html="item.term.name | highlight: $select.search"></span>
+                        <span ng-bind-html="item.name | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
 
