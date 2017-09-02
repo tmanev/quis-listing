@@ -19,7 +19,7 @@
         QUIS Listing service core tables.
         The initial schema has the '00000000000001' id, so that it is over-written if we re-generate it.
     -->
-    <changeSet id="00000000000001" author="tmanev">
+    <changeSet id="1504310213213" author="tmanev">
         <comment>Core tables for the users</comment>
         <createTable tableName="ql_user">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
@@ -656,7 +656,7 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="key" type="varchar(255)">
+            <column name="ql_key" type="varchar(255)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="value" type="text">
@@ -665,7 +665,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="00000000000003" author="tmanev">
+    <changeSet id="1504310266241" author="tmanev">
         <comment>Loading of simple data</comment>
         <loadData encoding="UTF-8"
                   file="config/liquibase/load-data/languages.csv"

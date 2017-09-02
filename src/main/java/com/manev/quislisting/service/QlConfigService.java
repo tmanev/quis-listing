@@ -59,7 +59,7 @@ public class QlConfigService {
     }
 
     public QlConfig findOneByKey(String key) {
-        QlConfig qlConfig = qlConfigRepository.findOneByKey(key);
+        QlConfig qlConfig = qlConfigRepository.findOneByQlKey(key);
         if (qlConfig == null) {
             throw new MissingConfigurationException(String.format("Missing configuration for key: %s", key));
         }

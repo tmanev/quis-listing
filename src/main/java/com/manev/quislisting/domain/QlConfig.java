@@ -11,7 +11,7 @@ public class QlConfig {
     private Long id;
 
     @Column
-    private String key;
+    private String qlKey;
 
     @Column
     private String value;
@@ -24,12 +24,12 @@ public class QlConfig {
         this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getQlKey() {
+        return qlKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setQlKey(String qlKey) {
+        this.qlKey = qlKey;
     }
 
     public String getValue() {

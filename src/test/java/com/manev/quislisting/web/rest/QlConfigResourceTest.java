@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class QlConfigIntTest {
+public class QlConfigResourceTest {
 
     public static final String DEFAULT_KEY = "DEFAULT_KEY";
     public static final String DEFAULT_NAME = "DEFAULT_NAME";
@@ -66,7 +66,7 @@ public class QlConfigIntTest {
     public static QlConfig createEntity(){
 
         QlConfig qlConfig = new QlConfig();
-        qlConfig.setKey(DEFAULT_KEY);
+        qlConfig.setQlKey(DEFAULT_KEY);
         qlConfig.setValue(DEFAULT_NAME);
         return qlConfig;
 
@@ -106,7 +106,7 @@ public class QlConfigIntTest {
         assertThat(qlConfigs).hasSize(databaseSizeBeforeCreate + 1);
 
         QlConfig qlConfigSaved = qlConfigs.get(qlConfigs.size() - 1);
-        assertThat(qlConfigSaved.getKey()).isEqualTo(DEFAULT_KEY);
+        assertThat(qlConfigSaved.getQlKey()).isEqualTo(DEFAULT_KEY);
         assertThat(qlConfigSaved.getValue()).isEqualTo(DEFAULT_NAME);
 
 
@@ -123,7 +123,7 @@ public class QlConfigIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(qlConfig.getId().intValue()))
-                .andExpect(jsonPath("$.key").value(qlConfig.getKey()))
+                .andExpect(jsonPath("$.qlKey").value(qlConfig.getQlKey()))
                 .andExpect(jsonPath("$.value").value(qlConfig.getValue()));
 
     }
@@ -144,7 +144,7 @@ public class QlConfigIntTest {
 
         QlConfig updatedQlConfig = qlConfigRepository.findOne(this.qlConfig.getId());
 
-        updatedQlConfig.setKey(UPDATED_KEY);
+        updatedQlConfig.setQlKey(UPDATED_KEY);
         updatedQlConfig.setValue(UPDATED_VALUE);
 
         QlConfigDTO updateQlConfigDTO = qlConfigMapper.qlConfigToQlConfigDTO(updatedQlConfig);
@@ -158,7 +158,7 @@ public class QlConfigIntTest {
         assertThat(all).hasSize(databaseBeforeUpdate);
 
         QlConfig qlConfigSaved = qlConfigRepository.findOne(updatedQlConfig.getId());
-        assertThat(qlConfigSaved.getKey()).isEqualTo(UPDATED_KEY);
+        assertThat(qlConfigSaved.getQlKey()).isEqualTo(UPDATED_KEY);
         assertThat(qlConfigSaved.getValue()).isEqualTo(UPDATED_VALUE);
 
     }

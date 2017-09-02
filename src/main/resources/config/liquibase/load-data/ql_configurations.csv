@@ -1,4 +1,4 @@
-id;key;value
+id;ql_key;value
 3;ql-menu-configurations;{"qlMenuPosConfigs":[{"languageCode":"en","topMenuRefId":null,"topHeaderMenuRefId":8,"footerMenuRefId":9},{"languageCode":"bg","topMenuRefId":null,"topHeaderMenuRefId":19,"footerMenuRefId":18},{"languageCode":"ro","topMenuRefId":null,"topHeaderMenuRefId":21,"footerMenuRefId":20}]}
 4;admin_email;trajche.manev@gmail.com
 5;terms-and-conditions-page-id;1

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface QlConfigRepository extends JpaRepository<QlConfig, Long> {
 
-    QlConfig findOneByKey(String key);
+    QlConfig findOneByQlKey(String qlKey);
 }

@@ -15,7 +15,7 @@ public class QlConfigMapper {
 
         QlConfigDTO qlConfigDTO = new QlConfigDTO();
         qlConfigDTO.setId(qlConfig.getId());
-        qlConfigDTO.setKey(qlConfig.getKey());
+        qlConfigDTO.setQlKey(qlConfig.getQlKey());
         qlConfigDTO.setValue(qlConfig.getValue());
 
         return qlConfigDTO;
@@ -25,7 +25,7 @@ public class QlConfigMapper {
 
         QlConfig qlConfig = new QlConfig();
         qlConfig.setId(qlConfigDTO.getId());
-        qlConfig.setKey(qlConfigDTO.getKey());
+        qlConfig.setQlKey(qlConfigDTO.getQlKey());
         qlConfig.setValue(qlConfigDTO.getValue());
 
         return qlConfig;

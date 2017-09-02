@@ -45,7 +45,7 @@
             <tbody>
             <tr ng-repeat="qlConfiguration in vm.qlConfigurations track by qlConfiguration.id">
                 <td><a ui-sref="ql-configuration-detail({id:qlConfiguration.id})">{{qlConfiguration.id}}</a></td>
-                <td>{{qlConfiguration.key}}</td>
+                <td>{{qlConfiguration.qlKey}}</td>
                 <td>{{qlConfiguration.value}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

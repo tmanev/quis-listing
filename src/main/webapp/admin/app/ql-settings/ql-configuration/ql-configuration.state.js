@@ -70,7 +70,7 @@
                                 entity: function () {
                                     return {
                                         id: null,
-                                        key: null,
+                                        qlKey: null,
                                         value: null
 
                                     };
