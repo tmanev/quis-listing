@@ -1,0 +1,57 @@
+spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:mariadb://localhost:3306/quis_listing?useUnicode=true&characterEncoding=utf8&useSSL=false
+        name:
+        username: ql_user
+        password: ql_user
+        driver-class-name: org.mariadb.jdbc.Driver
+        hikari:
+            data-source-properties:
+                cachePrepStmts: true
+                prepStmtCacheSize: 250
+                prepStmtCacheSqlLimit: 2048
+                useServerPrepStmts: true
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: mysql
+        show-sql: false
+    data:
+        elasticsearch:
+            cluster-name:
+            cluster-nodes:
+            properties:
+                path:
+                  logs: elasticsearch/log
+                  data: elasticsearch/data
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: manevonjira@gmail.com
+        password: changemeonstart
+        properties:
+            mail.smtp.auth: true
+            mail.smtp.starttls.enable: true
+liquibase:
+    contexts: staging
+
+server:
+    port: 8181
+    compression:
+        enabled: true
+        mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+        min-response-size: 1024
+
+# ===================================================================
+# Quis Listing specific properties
+# ===================================================================
+quislisting:
+    security:
+        authentication:
+            jwt:
+                secret: my-secret-token-to-change-in-production
+                # Token is valid 24 hours
+                token-validity-in-seconds: 86400
+                token-validity-in-seconds-for-remember-me: 2592000
+    mail:
+        baseUrl: http://192.168.1.64:8181
