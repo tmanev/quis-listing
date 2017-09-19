@@ -4,7 +4,7 @@
 
 	<groupId>com.manev</groupId>
 	<artifactId>quis-listing</artifactId>
-	<version>17.1.1</version>
+	<version>17.1.2</version>
 	<packaging>war</packaging>
 
 	<name>quis-listing</name>
@@ -327,9 +327,21 @@
 				<groupId>external.atlassian.jgitflow</groupId>
 				<artifactId>jgitflow-maven-plugin</artifactId>
 				<version>1.0-m5.1</version>
-				<configuration>
-					<noDeploy>true</noDeploy>
-				</configuration>
+                <configuration>
+                    <flowInitContext>
+                        <masterBranchName>master</masterBranchName>
+                        <developBranchName>development</developBranchName>
+                        <featureBranchPrefix>feature-</featureBranchPrefix>
+                        <releaseBranchPrefix>release-</releaseBranchPrefix>
+                        <hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
+                        <versionTagPrefix>version-</versionTagPrefix>
+                    </flowInitContext>
+                    <!--<username>USERNAME_FOR_A_GIT_USER</username>-->
+                    <!--<password>PASSWORD_FOR_A_GIT_USER</password>-->
+                    <noDeploy>true</noDeploy>
+                    <squash>true</squash>
+                    <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
+                </configuration>
 			</plugin>
 			<!-- JaCoCo configuration -->
 			<plugin>
