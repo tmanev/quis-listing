@@ -8,10 +8,10 @@ spring:
                   logs: elasticsearch/log
                   data: elasticsearch/data
     mail:
-        host: smtp.gmail.com
+        host: smtp.mailgun.org
         port: 587
-        username: manevonjira@gmail.com
-        password: manevonjira112358@
+        username: postmaster@sandbox67303042665e45ce9550a1b47cd7e83f.mailgun.org
+        password: 31491b269a32eb8b557d7f7b899038ac
         properties:
             mail.smtp.auth: true
             mail.smtp.starttls.enable: true

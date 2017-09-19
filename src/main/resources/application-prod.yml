@@ -25,15 +25,15 @@ spring:
                   logs: elasticsearch/log
                   data: elasticsearch/data
     mail:
-        host: smtp.gmail.com
+        host: smtp.mailgun.org
         port: 587
-        username: manevonjira@gmail.com
+        username: postmaster@mg.quislisting.com
         password: changemeonstart
         properties:
             mail.smtp.auth: true
             mail.smtp.starttls.enable: true
 liquibase:
-    contexts: staging
+    contexts: prod
 
 server:
     port: 8181
@@ -54,4 +54,4 @@ quislisting:
                 token-validity-in-seconds: 86400
                 token-validity-in-seconds-for-remember-me: 2592000
     mail:
-        baseUrl: http://192.168.1.64:8181
+        baseUrl: http://quislisting.com
