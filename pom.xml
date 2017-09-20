@@ -4,7 +4,7 @@
 
 	<groupId>com.manev</groupId>
 	<artifactId>quis-listing</artifactId>
-	<version>17.1.11</version>
+	<version>17.1.12-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>quis-listing</name>
