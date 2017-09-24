@@ -20,7 +20,17 @@
         vm.predicate = 'id';
         vm.reverse = true;
 
+        vm.dlLocation = entity;
+        vm.clear = clear;
+        vm.save = save;
+        vm.doSlugify = doSlugify;
+
         loadAll();
+
+        function doSlugify() {
+            slug.defaults.mode ='rfc3986';
+            vm.dlLocation.slug = slug(vm.dlLocation.name);
+        }
 
         vm.onSelectCallback = function ($item, $model) {
             console.log("Item:");
@@ -54,10 +64,6 @@
                 AlertService.error(error.data.message);
             }
         }
-
-        vm.dlLocation = entity;
-        vm.clear = clear;
-        vm.save = save;
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
