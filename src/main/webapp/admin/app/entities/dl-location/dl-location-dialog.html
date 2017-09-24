@@ -23,6 +23,9 @@
             <input type="text" class="form-control" name="slug" id="field_slug"
                    ng-model="vm.dlLocation.slug"
             />
+            <button type="button" class="btn btn-default" ng-click="vm.doSlugify()">
+                <span data-translate="entity.action.slugify">Slugify</span>
+            </button>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="quisListingApp.dlLocation.description" for="field_description">Description</label>
