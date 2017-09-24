@@ -7,4 +7,6 @@
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <!-- Add liquibase changelogs here -->
 
+    <include file="classpath:config/liquibase/changelog/1506267846740_removing_unnecessary_strings.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>
