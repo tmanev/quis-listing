@@ -1,7 +1,6 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.domain.DlContentField;
-import com.manev.quislisting.domain.DlContentFieldItem;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -49,16 +47,16 @@ public class DlContentFieldService {
             dlContentField = dlContentFieldMapper.dlContentFieldDTOToDlContentField(dlContentFieldDTO);
         }
 
-        setQlString(dlContentField);
-
         dlContentFieldRepository.save(dlContentField);
+
+        saveQlString(dlContentField);
 
         return dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
     }
 
-    private void setQlString(DlContentField dlContentField) {
+    private void saveQlString(DlContentField dlContentField) {
         if (dlContentField.getQlString() == null) {
-            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getName()).value(dlContentField.getName()).status(0));
+            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getId()).value(dlContentField.getName()).status(0));
         } else {
             QlString qlString = dlContentField.getQlString();
             if (!qlString.getValue().equals(dlContentField.getName())) {
@@ -66,6 +64,8 @@ public class DlContentFieldService {
                 qlString.setStatus(0);
             }
         }
+
+        dlContentFieldRepository.save(dlContentField);
     }
 
     public Page<DlContentFieldDTO> findAll(Pageable pageable) {
