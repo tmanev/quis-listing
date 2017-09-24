@@ -46,7 +46,7 @@ public class NavMenuItemMapper {
     public StaticPageNavMenuDTO navMenuItemToNavMenuItemDto(NavMenuItem navMenuItem) {
         StaticPageNavMenuDTO staticPageNavMenuDTO = new StaticPageNavMenuDTO();
         staticPageNavMenuDTO.setId(navMenuItem.getId());
-        staticPageNavMenuDTO.setTitle(navMenuItem.getStaticPage().getTitle());
+        staticPageNavMenuDTO.setTitle(navMenuItem.getTitle());
         staticPageNavMenuDTO.setOrder(navMenuItem.getMenuOrder());
 
         return staticPageNavMenuDTO;

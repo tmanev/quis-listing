@@ -56,8 +56,8 @@
             <tbody>
             <tr ng-repeat="navMenu in vm.navMenusFlat track by navMenu.id">
                 <td><a ui-sref="nav-menu-detail({id:navMenu.id})">{{navMenu.id}}</a></td>
-                <td><span ng-repeat="n in [] | range:navMenu.depthLevel">—</span> {{navMenu.term.name}}</td>
-                <td>{{navMenu.term.slug}}</td>
+                <td><span ng-repeat="n in [] | range:navMenu.depthLevel">—</span> {{navMenu.name}}</td>
+                <td>{{navMenu.slug}}</td>
                 <td>{{navMenu.count}}</td>
                 <td>
                     <button ng-repeat="translation in navMenu.translations"

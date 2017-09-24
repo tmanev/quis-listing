@@ -21,7 +21,7 @@ public class NavMenuItem {
     private String slug;
 
     @ManyToOne
-    @JoinColumn(name = "static_page_id")
+    @JoinColumn(name = "static_page_id", referencedColumnName = "id")
     private StaticPage staticPage;
 
     @ManyToOne(optional = false)
