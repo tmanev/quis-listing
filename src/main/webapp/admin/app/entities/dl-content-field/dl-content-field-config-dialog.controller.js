@@ -119,12 +119,13 @@
             let parentId = vm.parentDlContentFieldItem !== null ? vm.parentDlContentFieldItem : null;
             DlContentFieldItem.query({
                 dlContentFieldId: vm.dlContentField.id,
-                parentId: parentId
+                parentId: parentId,
+                size: 100
             }, onItemsSuccess, onItemsError);
         }
 
         function loadRootItems() {
-            DlContentFieldItem.query({dlContentFieldId: vm.dlContentField.id, parentId: null}, onRootItemsSuccess, onRootItemsError);
+            DlContentFieldItem.query({dlContentFieldId: vm.dlContentField.id, parentId: null, size: 100}, onRootItemsSuccess, onRootItemsError);
 
             function onRootItemsSuccess(data, headers) {
                 vm.rootDlContentFieldItems = data;

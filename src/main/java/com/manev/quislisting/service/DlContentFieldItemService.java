@@ -37,9 +37,9 @@ public class DlContentFieldItemService {
 
         setDlContentField(dlContentFieldId, dlContentFieldItem);
         setParent(dlContentFieldItemDTO, dlContentFieldItem);
-        saveQlString(dlContentFieldItem);
-
         dlContentFieldItemRepository.save(dlContentFieldItem);
+
+        saveQlString(dlContentFieldItem);
 
         return dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem);
     }

@@ -8,5 +8,6 @@
     <!-- Add liquibase changelogs here -->
 
     <include file="classpath:config/liquibase/changelog/1506267846740_removing_unnecessary_strings.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/1506278675809_dl_content_field_allow_nulls_string_id.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
