@@ -28,6 +28,7 @@
         vm.onLanguageChange = onLanguageChange;
         vm.onLanguageClick = onLanguageClick;
         vm.clearDlCategorySelection = clearDlCategorySelection;
+        vm.doSlugify = doSlugify;
 
         vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
         vm.selectedCategories = [];
@@ -51,6 +52,11 @@
 
         loadActiveLanguages();
         loadAllCategoriesByLanguage();
+
+        function doSlugify() {
+            slug.defaults.mode ='rfc3986';
+            vm.dlContentField.slug = slug(vm.dlContentField.name);
+        }
 
         function loadActiveLanguages() {
             DlCategory.activeLanguages({}, onSuccess, onError);
