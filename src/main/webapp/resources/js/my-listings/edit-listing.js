@@ -166,7 +166,7 @@ EditListing = {
                     }
 
                     if (this.dlContentFields[index].type === 'STRING') {
-                        if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
+                        if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
                             validation_dict.dlContentFields[index].value.minLength = minLength(this.dlContentFields[index].optionsModel.minLength);
                         }
 
