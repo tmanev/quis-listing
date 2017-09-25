@@ -17,15 +17,15 @@
                                 <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
                                     <div style="width: 242px; height: 200px; white-space: nowrap; text-align: center;">
                                         <span style="display: inline-block; height: 100%; vertical-align: middle;"></span>
-                                        <img v-if="dlListing.attachments.length==0"
-                                             alt="100x200" data-src="holder.js/100%x200"
+                                        <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
+                                             th:src="@{/resources/images/no-image-available.jpg}"
+                                             alt="No image available"
                                              data-holder-rendered="true"
-                                             style="height: 200px; width: 100%; display: block;"/>
+                                             style="vertical-align: middle; max-width: 242px; max-height: 200px; margin-left: -2px;"/>
                                         <img v-else
                                              v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
                                              data-holder-rendered="true"
-                                             style="vertical-align: middle; max-width: 242px; max-height: 200px; margin-left: -2px;"
-                                        />
+                                             style="vertical-align: middle; max-width: 242px; max-height: 200px; margin-left: -2px;"/>
                                     </div>
                                     <div class="caption"><h4>{{dlListing.title}}</h4></div>
                                 </a>
