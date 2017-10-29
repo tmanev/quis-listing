@@ -18,12 +18,12 @@
 </head>
 <body>
 <div th:fragment="content" class="container">
-    <div id="myListingsApp">
+    <div id="myListingsApp" >
         <div class="page-header">
             <h1 th:text="#{page.my_listings.title}">My Listings</h1>
         </div>
 
-        <table class="table table-hover" v-bind:class="{loading: isLoading}">
+        <table class="table table-hover" v-bind:class="{loading: isLoading}" v-cloak>
             <thead>
             <tr>
                 <th>#</th>
@@ -60,7 +60,7 @@
             </tbody>
         </table>
 
-        <div class="text-center">
+        <div class="text-center" v-cloak>
             <div class="info">
                 Showing {{((pagingParams.page - 1) * pagingParams.itemsPerPage) == 0 ? 1 : ((pagingParams.page - 1) * pagingParams.itemsPerPage + 1)}} -
                 {{(pagingParams.page * pagingParams.itemsPerPage) < pagingParams.info.queryCount ? (pagingParams.page * pagingParams.itemsPerPage) : pagingParams.info.queryCount}}
