@@ -160,8 +160,8 @@
                             onMap: false,
                             onAdvancedSearchForm: false,
                             dlCategories: null,
-                            options: null,
-                            searchOptions: null
+                            options: JSON.stringify({}),
+                            searchOptions: JSON.stringify({})
                         };
                     }],
                     previousState: ["$state", function ($state) {
