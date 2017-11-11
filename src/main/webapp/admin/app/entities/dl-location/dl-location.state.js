@@ -32,6 +32,7 @@
                     value: 'id,asc',
                     squash: true
                 },
+                dlLocationParentId: null,
                 search: null
             },
             resolve: {
@@ -43,6 +44,9 @@
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
                         search: $stateParams.search
                     };
+                }],
+                dlLocationParentId: ['$stateParams', function ($stateParams) {
+                    return $stateParams.dlLocationParentId;
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('dl-location');
@@ -117,7 +121,7 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            params: {selectedLanguageCode: null},
+            params: {selectedLanguageCode: null, dlLocationParentId: null},
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
                     templateUrl: 'admin/app/entities/dl-location/dl-location-dialog.html',
@@ -132,14 +136,14 @@
                                 name: null,
                                 slug: null,
                                 description: "",
-                                parentId: null,
+                                parentId: $stateParams.dlLocationParentId,
                                 count: null,
                                 languageCode: $stateParams.selectedLanguageCode
                             };
                         }
                     }
-                }).result.then(function() {
-                    $state.go('dl-locations', null, { reload: 'dl-locations' });
+                }).result.then(function(result) {
+                    $state.go('dl-locations', {dlLocationParentId: result.parentId}, { reload: 'dl-locations' });
                 }, function() {
                     $state.go('dl-locations');
                 });

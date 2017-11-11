@@ -71,7 +71,16 @@ public class DlLocationService {
     public Page<DlLocationDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all DlLocationDTO");
         String languageCode = allRequestParams.get("languageCode");
-        Page<DlLocation> result = dlLocationRepository.findAllByTranslation_languageCode(pageable, languageCode);
+        String parentId = allRequestParams.get("parentId");
+        DlLocation parentLocation = null;
+        Page<DlLocation> result;
+        if (parentId != null) {
+            parentLocation = dlLocationRepository.findOne(Long.valueOf(parentId));
+            result = dlLocationRepository.findAllByParentAndTranslation_languageCode(pageable, parentLocation, languageCode);
+        } else {
+            result = dlLocationRepository.findAllByTranslation_languageCode(pageable, languageCode);
+        }
+
         List<DlLocationDTO> dlLocationDTOS = dlLocationMapper.dlLocationToDlLocationDtoFlat(result.getContent());
         return new PageImpl<>(dlLocationDTOS, pageable, result.getTotalElements());
     }
