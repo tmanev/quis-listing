@@ -90,7 +90,7 @@
                 vm.dlContentFieldOption = {
                     maxLength: 25,
                     regex: ''
-                }
+                };
             } else if (vm.dlContentField.type === 'NUMBER') {
                 vm.dlContentFieldOption = {
                     isInteger: true,
@@ -106,9 +106,9 @@
                     useLinkText: true,
                     defaultLinkText: '',
                     useDefaultLinkText: false
-                }
+                };
             } else if (vm.dlContentField.type === 'SELECT' || vm.dlContentField.type === 'CHECKBOX') {
-                vm.loadItems()
+                vm.loadItems();
             } else if (vm.dlContentField.type === 'DEPENDENT_SELECT') {
                 vm.loadItems();
                 vm.loadRootItems();
@@ -120,7 +120,7 @@
             DlContentFieldItem.query({
                 dlContentFieldId: vm.dlContentField.id,
                 parentId: parentId,
-                size: 100
+                size: 500
             }, onItemsSuccess, onItemsError);
         }
 
@@ -137,7 +137,7 @@
         }
 
         function onSelectParentItemCallback($item, $model) {
-            vm.loadItems()
+            vm.loadItems();
         }
         
         function clearParent() {

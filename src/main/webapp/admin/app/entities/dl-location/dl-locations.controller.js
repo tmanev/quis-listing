@@ -14,10 +14,10 @@
         });
 
     DlLocationsController.$inject = ['$scope', '$state', 'DlLocation', 'DlLocationSearch', 'ParseLinks', 'AlertService',
-        'paginationConstants', 'pagingParams', 'TreeUtils', 'DataLanguageHub'];
+        'paginationConstants', 'pagingParams', 'dlLocationParentId', 'TreeUtils', 'DataLanguageHub'];
 
     function DlLocationsController($scope, $state, DlLocation, DlLocationSearch, ParseLinks, AlertService,
-                                   paginationConstants, pagingParams, TreeUtils, DataLanguageHub) {
+                                   paginationConstants, pagingParams, dlLocationParentId, TreeUtils, DataLanguageHub) {
         var vm = this;
         vm.dataLanguageHub = DataLanguageHub.get();
         vm.loadPage = loadPage;
@@ -28,9 +28,22 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
+        vm.loadParentFilter = loadParentFilter;
+        vm.loadTable = loadTable;
         vm.searchQuery = pagingParams.search;
         vm.currentSearch = pagingParams.search;
         vm.onLanguageChange = onLanguageChange;
+        vm.clearParentLocationFilter = clearParentLocationFilter;
+
+        vm.filter = {            dlLocationParentId: dlLocationParentId        };
+
+        vm.onSelectCallback = function ($item, $model) {
+            console.log("Item:");
+            console.log($item);
+            console.log("Model:");
+            console.log($model);
+            vm.loadTable();
+        };
 
         vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
         vm.activeLanguages = [
@@ -51,7 +64,32 @@
             }
         }
 
-        function loadAll() {
+        function loadParentFilter() {
+            DlLocation.query({
+                sort: sort(),
+                languageCode: vm.selectedLanguageCode
+            }, onSuccess, onError);
+
+            function sort() {
+                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
+                if (vm.predicate !== 'id') {
+                    result.push('id');
+                }
+                return result;
+                // return ['id'];
+            }
+
+            function onSuccess(data) {
+                var dlLocationsTree = TreeUtils.getTree(data, "id", "parentId");
+                vm.dlLocationsFilter = TreeUtils.getFlat(dlLocationsTree);
+            }
+
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
+
+        function loadTable() {
             if (pagingParams.search) {
                 DlLocationSearch.query({
                     query: pagingParams.search,
@@ -64,7 +102,8 @@
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort(),
-                    languageCode: vm.selectedLanguageCode
+                    languageCode: vm.selectedLanguageCode,
+                    parentId: vm.filter.dlLocationParentId
                 }, onSuccess, onError);
             }
             function sort() {
@@ -88,6 +127,11 @@
             function onError(error) {
                 AlertService.error(error.data.message);
             }
+        }
+
+        function loadAll() {
+            vm.loadParentFilter();
+            vm.loadTable();
         }
 
         function loadPage(page) {
@@ -127,6 +171,11 @@
         function onLanguageChange() {
             loadAll();
             vm.dataLanguageHub.selectedLanguageCode = vm.selectedLanguageCode;
+        }
+
+        function clearParentLocationFilter() {
+            vm.filter.dlLocationParentId = null;
+            vm.loadTable();
         }
     }
 })();

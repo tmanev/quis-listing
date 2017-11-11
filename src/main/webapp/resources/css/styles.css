@@ -306,3 +306,7 @@ table.loading tbody:after {
 }
 
 /** Load spinner end ***/
+
+[v-cloak] {
+    display: none;
+}

@@ -21,7 +21,7 @@
         <div class="page-header">
             <h1 th:text="#{page.my_listings.add_listing.title}">Add listing</h1>
         </div>
-        <form class="form-horizontal" v-on:submit.prevent="onSubmit($event)">
+        <form class="form-horizontal" v-on:submit.prevent="onSubmit($event)" v-cloak>
             <div class="form-group"
                  v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
                 <label for="inputTitle" class="col-xs-12 col-sm-1 control-label"

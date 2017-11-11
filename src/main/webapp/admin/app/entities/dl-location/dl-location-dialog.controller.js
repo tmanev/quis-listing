@@ -13,9 +13,9 @@
             };
         });
 
-    DlLocationDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DlLocation', 'AlertService'];
+    DlLocationDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DlLocation', 'AlertService', 'TreeUtils'];
 
-    function DlLocationDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, DlLocation, AlertService) {
+    function DlLocationDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, DlLocation, AlertService, TreeUtils) {
         var vm = this;
         vm.predicate = 'id';
         vm.reverse = true;
@@ -57,7 +57,8 @@
             function onSuccess(data, headers) {
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.dlLocations = data;
+                var dlLocationsTree = TreeUtils.getTree(data, "id", "parentId");
+                vm.dlLocations = TreeUtils.getFlat(dlLocationsTree);
             }
 
             function onError(error) {
