@@ -79,6 +79,7 @@ public class DlLocationMapper {
     public DlLocation dlLocationDTOTodlLocation(DlLocation existingDlLocation, DlLocationDTO dlLocationDTO) {
         existingDlLocation.setName(dlLocationDTO.getName());
         existingDlLocation.setDescription(dlLocationDTO.getDescription());
+        existingDlLocation.setSlug(dlLocationDTO.getSlug());
 
         return existingDlLocation;
     }

@@ -34,6 +34,7 @@ public class DlCategoryMapper {
     public DlCategory dlCategoryDtoToDlCategory(DlCategory existingDlCategory, DlCategoryDTO dlCategoryDTO) {
         existingDlCategory.setName(dlCategoryDTO.getName());
         existingDlCategory.setDescription(dlCategoryDTO.getDescription());
+        existingDlCategory.setSlug(dlCategoryDTO.getSlug());
 
         return existingDlCategory;
     }
