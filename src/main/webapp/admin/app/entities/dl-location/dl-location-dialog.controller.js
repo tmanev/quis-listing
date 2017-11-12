@@ -43,6 +43,7 @@
 
             DlLocation.query({
                 sort: sort(),
+                size: 9999,
                 languageCode: entity.languageCode
             }, onSuccess, onError);
 

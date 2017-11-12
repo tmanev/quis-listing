@@ -67,6 +67,7 @@
         function loadParentFilter() {
             DlLocation.query({
                 sort: sort(),
+                size: 9999,
                 languageCode: vm.selectedLanguageCode
             }, onSuccess, onError);
 
