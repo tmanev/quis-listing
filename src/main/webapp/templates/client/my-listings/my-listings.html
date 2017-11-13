@@ -62,17 +62,17 @@
 
         <div class="text-center" v-cloak>
             <div class="info">
-                Showing {{((pagingParams.page - 1) * pagingParams.itemsPerPage) == 0 ? 1 : ((pagingParams.page - 1) * pagingParams.itemsPerPage + 1)}} -
+                <span th:text="#{page.my_listings.label.showing}">Showing</span> {{((pagingParams.page - 1) * pagingParams.itemsPerPage) == 0 ? 1 : ((pagingParams.page - 1) * pagingParams.itemsPerPage + 1)}} -
                 {{(pagingParams.page * pagingParams.itemsPerPage) < pagingParams.info.queryCount ? (pagingParams.page * pagingParams.itemsPerPage) : pagingParams.info.queryCount}}
-                of {{pagingParams.info.queryCount}} items.
+                <span th:text="#{page.my_listings.label.of}">of</span> {{pagingParams.info.queryCount}} <span th:text="#{page.my_listings.label.items}">items</span>.
             </div>
 
             <ul class="pagination">
-                <li role="menuitem" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noPrevious()}" class="pagination-first"><a href v-on:click="selectPage(1, $event)" v-bind:disabled="noPrevious()||'disabled'" >First</a></li>
-                <li role="menuitem" v-if="pagination.directionLinks" v-bind:class="{disabled: noPrevious()}" class="pagination-prev"><a href v-on:click="selectPage(pagingParams.page - 1, $event)" v-bind:disabled="noPrevious()" >Previous</a></li>
+                <li role="menuitem" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noPrevious()}" class="pagination-first"><a href v-on:click="selectPage(1, $event)" v-bind:disabled="noPrevious()||'disabled'" th:text="#{page.my_listings.label.first}">First</a></li>
+                <li role="menuitem" v-if="pagination.directionLinks" v-bind:class="{disabled: noPrevious()}" class="pagination-prev"><a href v-on:click="selectPage(pagingParams.page - 1, $event)" v-bind:disabled="noPrevious()" th:text="#{page.my_listings.label.previous}">Previous</a></li>
                 <li role="menuitem" v-for="page in pages" v-bind:class="{active: page.active}" class="pagination-page"><a href v-on:click="selectPage(page.number, $event)" v-bind:disabled="page.active" >{{page.text}}</a></li>
-                <li role="menuitem" v-if="pagination.directionLinks" v-bind:class="{disabled: noNext()}" class="pagination-next"><a href v-on:click="selectPage(pagingParams.page + 1, $event)" v-bind:disabled="noNext()">Next</a></li>
-                <li role="menuitem" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noNext()}" class="pagination-last"><a href v-on:click="selectPage(pagingParams.info.totalPages, $event)" v-bind:disabled="noNext()||'disabled'" >Last</a></li>
+                <li role="menuitem" v-if="pagination.directionLinks" v-bind:class="{disabled: noNext()}" class="pagination-next"><a href v-on:click="selectPage(pagingParams.page + 1, $event)" v-bind:disabled="noNext()" th:text="#{page.my_listings.label.next}">Next</a></li>
+                <li role="menuitem" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noNext()}" class="pagination-last"><a href v-on:click="selectPage(pagingParams.info.totalPages, $event)" v-bind:disabled="noNext()||'disabled'" th:text="#{page.my_listings.label.last}">Last</a></li>
             </ul>
         </div>
 
