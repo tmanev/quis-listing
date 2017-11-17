@@ -67,6 +67,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/**")
                 .sessionManagement()
+                .sessionFixation().none()
                 .maximumSessions(32) // maximum number of concurrent sessions for one user
                 .sessionRegistry(sessionRegistry)
                 .and().and()
