@@ -39,11 +39,11 @@
                 <td>{{dlListing.title}}</td>
                 <td>
                     <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
-                    <span v-if="dlListing.status==='PUBLISH'" th:text="#{page.my_listings.label.published}"></span>
+                    <span v-if="dlListing.status==='PUBLISHED'" th:text="#{page.my_listings.label.published}"></span>
                 </td>
                 <td>
                     <span v-if="dlListing.approved" th:text="#{page.my_listings.label.approved}"></span>
-                    <span v-if="!dlListing.approved && dlListing.status==='PUBLISH'"
+                    <span v-if="!dlListing.approved && dlListing.status==='PUBLISHED'"
                           th:text="#{page.my_listings.label.pending}"></span>
                     <span v-if="!dlListing.approved && dlListing.status==='DRAFT'"
                           th:text="#{page.my_listings.label.not_publishhed}"></span>

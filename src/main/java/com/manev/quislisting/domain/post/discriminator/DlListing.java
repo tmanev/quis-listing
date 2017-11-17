@@ -242,7 +242,7 @@ public class DlListing {
 
     public enum Status {
         DRAFT,
-        PUBLISH
+        PUBLISHED
     }
 
 }
