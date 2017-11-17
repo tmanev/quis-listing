@@ -235,7 +235,7 @@
                             <p>
                                 <a class="btn btn-danger btn-sm" v-on:click="confirmRemoveImage(attachment)">
                                     <span class="glyphicon glyphicon-remove-circle"></span>
-                                    <span class="hidden-sm-down">Remove</span>
+                                    <span class="hidden-sm-down" th:text="#{page.my_listings.edit_listing.btn_remove}">Remove</span>
                                 </a>
                                 <label class="radio-inline">
                                     <input type="radio" v-bind:value="attachment"
