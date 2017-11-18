@@ -30,12 +30,13 @@
                 <th th:text="#{page.my_listings.label.title}">Title</th>
                 <th th:text="#{page.my_listings.label.status}">Status</th>
                 <th th:text="#{page.my_listings.label.approved}">Approved</th>
+                <th th:text="#{page.my_listings.label.validity}">Validity</th>
                 <th th:text="#{page.my_listings.label.action}">Action</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="dlListing in dlListings">
-                <td>{{dlListing.id}}</td>
+                <th scope="row">{{dlListing.id}}</th>
                 <td>{{dlListing.title}}</td>
                 <td>
                     <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
@@ -49,6 +50,9 @@
                           th:text="#{page.my_listings.label.not_publishhed}"></span>
                 </td>
                 <td>
+                    <span>Last modified on {{dlListing.modified | fullTime}}</span>
+                </td>
+                <td>
                     <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/my-listings/' + dlListing.id + '/preview'"
                        th:text="#{page.my_listings.label.preview}">Preview</a>
                     <a class="btn btn-warning btn-sm" v-bind:href="'/my-listings/' + dlListing.id"
@@ -56,6 +60,32 @@
                     <a class="btn btn-danger btn-sm" v-on:click="confirmDeleteListing(dlListing)"
                        th:text="#{page.my_listings.label.delete}">Delete</a>
                 </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>John</td>
+                <td>Doe</td>
+                <td>john@example.com</td>
+            </tr>
+            <tr>
+                <td>Mary</td>
+                <td>Moe</td>
+                <td>mary@example.com</td>
+            </tr>
+            <tr>
+                <td>July</td>
+                <td>Dooley</td>
+                <td>july@example.com</td>
             </tr>
             </tbody>
         </table>

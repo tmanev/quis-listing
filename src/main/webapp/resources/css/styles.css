@@ -211,22 +211,6 @@
 /** Load spinner ***/
 /* https://projects.lukehaas.me/css-loaders/ */
 
-/** Other loader **/
-
-table {
-    width: 100%;
-}
-
-table thead,
-table tbody {
-    display: table;
-    width: 100%;
-}
-
-table.loading tbody {
-    position: relative;
-}
-
 table.loading tbody:after {
     position: absolute;
     top: 0;

@@ -125,6 +125,11 @@ var MyListings = {
 
         var myListingsApp = new Vue({
             el: '#myListingsApp',
+            filters: {
+                fullTime: function(date) {
+                    return moment(date, moment.ISO_8601).format('MMMM Do YYYY, h:mm');
+                }
+            },
             data: {
                 pages: [],
                 pagination: {
