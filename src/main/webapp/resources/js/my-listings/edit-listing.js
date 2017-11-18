@@ -100,6 +100,8 @@ EditListing = {
                 categories: roots,
                 dlContentFields: dlContentFieldsDto,
                 selectedCountry: selectedCountryId,
+                isStateSelectLoading: false,
+                isCitySelectLoading: false,
                 selectedState: selectedStateId,
                 selectedCity: selectedCityId,
                 selectedCategory: selectedCategory,
@@ -168,10 +170,14 @@ EditListing = {
                     if (this.dlContentFields[index].type === 'STRING') {
                         if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
                             validation_dict.dlContentFields[index].value.minLength = minLength(this.dlContentFields[index].optionsModel.minLength);
+                        } else {
+                            validation_dict.dlContentFields[index].value.minLength = minLength(0);
                         }
 
                         if (this.dlContentFields[index].optionsModel.maxLength && this.dlContentFields[index].optionsModel.maxLength !== '') {
                             validation_dict.dlContentFields[index].value.maxLength = maxLength(this.dlContentFields[index].optionsModel.maxLength);
+                        } else {
+                            validation_dict.dlContentFields[index].value.maxLength = maxLength(4096);
                         }
                     }
                 }
@@ -355,10 +361,11 @@ EditListing = {
                         var params = {
                             parentId: this.selectedCountry
                         };
-
+                        this.isStateSelectLoading = true;
                         this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
                             console.log('Success!:', response.data);
                             this.dlLocationStates = response.data;
+                            this.isStateSelectLoading = false;
                         }, function (response) {
                             console.log('Error!:', response.data);
                             $.notify({
@@ -366,6 +373,7 @@ EditListing = {
                             }, {
                                 type: 'danger'
                             });
+                            this.isStateSelectLoading = false;
                         });
                     }
 
@@ -378,9 +386,11 @@ EditListing = {
                         var params = {
                             parentId: this.selectedState
                         };
+                        this.isCitySelectLoading = true;
                         this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
                             console.log('Success!:', response.data);
                             this.dlLocationCities = response.data;
+                            this.isCitySelectLoading = false;
                         }, function (response) {
                             console.log('Error!:', response.data);
                             $.notify({
@@ -388,6 +398,7 @@ EditListing = {
                             }, {
                                 type: 'danger'
                             });
+                            this.isCitySelectLoading = false;
                         });
                     }
                 },
@@ -470,7 +481,7 @@ EditListing = {
                     return attachments.filter(function (attachment) {
                         for (let imageResizeMeta of attachment.attachmentMetadata.imageResizeMetas) {
                             if (imageResizeMeta.name === 'dl-thumbnail') {
-                                return true
+                                return true;
                             }
                         }
 

@@ -76,7 +76,7 @@ public class DlContentFieldService {
 
     public List<DlContentFieldDTO> findAllByCategoryId(Long categoryId, String language) {
         DlCategory dlCategory = dlCategoryRepository.findOne(categoryId);
-        List<DlContentField> dlContentFields = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNull(dlCategory);
+        List<DlContentField> dlContentFields = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNullOrderByOrderNum(dlCategory);
         List<DlContentFieldDTO> result = new ArrayList<>();
         dlContentFields.forEach(dlContentField ->
                 result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, language))

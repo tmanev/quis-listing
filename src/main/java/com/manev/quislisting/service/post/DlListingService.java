@@ -105,7 +105,7 @@ public class DlListingService {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
         DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
-        dlListingForSaving.setStatus(DlListing.Status.PUBLISH);
+        dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         dlListingSearchRepository.save(dlListingForSaving);
@@ -357,7 +357,7 @@ public class DlListingService {
     }
 
     public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
-        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCode(pageable, language);
+        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED);
         return result.map(dlListingMapper::dlListingToDlListingDTO);
     }
 }

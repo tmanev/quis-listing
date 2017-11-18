@@ -10,5 +10,5 @@ import java.util.List;
 @Transactional
 public interface DlContentFieldRepository extends JpaRepository<DlContentField, Long> {
 
-    List<DlContentField> findAllByDlCategoriesOrDlCategoriesIsNull(DlCategory dlCategory);
+    List<DlContentField> findAllByDlCategoriesOrDlCategoriesIsNullOrderByOrderNum(DlCategory dlCategory);
 }

@@ -222,7 +222,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .addTranslation(TranslationDTOBuilder.aTranslationDTO()
                         .withId(1000L)
                         .build())
-                .withStatus(DlListing.Status.PUBLISH)
+                .withStatus(DlListing.Status.PUBLISHED)
                 .addDlCategory(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory))
                 .addDlLocation(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation))
                 .addDlListingField(new DlListingFieldDTO().id(dlHeightCF.getId()).value("180"))
@@ -375,7 +375,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(status().isOk());
 
         DlListing publishedDlListing = dlListingRepository.findOne(createdDlListingDTO.getId());
-        assertThat(publishedDlListing.getStatus()).isEqualTo(DlListing.Status.PUBLISH);
+        assertThat(publishedDlListing.getStatus()).isEqualTo(DlListing.Status.PUBLISHED);
     }
 
     @Test
