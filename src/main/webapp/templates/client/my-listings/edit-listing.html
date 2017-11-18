@@ -185,7 +185,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
                     <div class="col-sm-10">
-                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
+                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry" >
                             <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
                             <option v-for="dlLocationCountry in dlLocationCountries"
                                     v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
@@ -196,7 +196,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.state}">State</label>
                     <div class="col-sm-10">
-                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState">
+                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState" v-bind:class="{loadinggif: isStateSelectLoading}">
                             <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
                             <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
                                 dlLocationState.name }}
@@ -208,7 +208,7 @@
                      v-bind:class="{ 'has-error': $v.selectedCity.$error, 'has-success': $v.selectedCity.$dirty &amp;&amp; !$v.selectedCity.$invalid }">
                     <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.city}">City</label>
                     <div class="col-sm-10">
-                        <select class="form-control" v-model="selectedCity">
+                        <select class="form-control" v-model="selectedCity" v-bind:class="{loadinggif: isCitySelectLoading}">
                             <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
                             <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
                                 dlLocationCity.name }}

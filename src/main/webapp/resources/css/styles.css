@@ -230,3 +230,7 @@ table.loading tbody:after {
 [v-cloak] {
     display: none;
 }
+
+.loadinggif {
+    background: url('/resources/images/loader/ajax-loader.gif') no-repeat center;
+}
