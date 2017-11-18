@@ -170,10 +170,14 @@ EditListing = {
                     if (this.dlContentFields[index].type === 'STRING') {
                         if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
                             validation_dict.dlContentFields[index].value.minLength = minLength(this.dlContentFields[index].optionsModel.minLength);
+                        } else {
+                            validation_dict.dlContentFields[index].value.minLength = minLength(0);
                         }
 
                         if (this.dlContentFields[index].optionsModel.maxLength && this.dlContentFields[index].optionsModel.maxLength !== '') {
                             validation_dict.dlContentFields[index].value.maxLength = maxLength(this.dlContentFields[index].optionsModel.maxLength);
+                        } else {
+                            validation_dict.dlContentFields[index].value.maxLength = maxLength(4096);
                         }
                     }
                 }
@@ -477,7 +481,7 @@ EditListing = {
                     return attachments.filter(function (attachment) {
                         for (let imageResizeMeta of attachment.attachmentMetadata.imageResizeMetas) {
                             if (imageResizeMeta.name === 'dl-thumbnail') {
-                                return true
+                                return true;
                             }
                         }
 
