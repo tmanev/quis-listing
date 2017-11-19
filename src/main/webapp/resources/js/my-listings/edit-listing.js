@@ -54,10 +54,21 @@ EditListing = {
                             } else {
                                 return [];
                             }
-                        } else if(dlContentField.type === 'DEPENDENT_SELECT'){
-                            dlContentField.parentValue = findDlContentFieldItem(dlListingField.value, dlContentField.dlContentFieldItems);
-                            return dlListingField.value;
-                        }   else {
+                        } else if (dlContentField.type === 'DEPENDENT_SELECT') {
+                            if (dlListingField.value) {
+                                dlContentField.parentValue = findDlContentFieldItem(dlListingField.value, dlContentField.dlContentFieldItems);
+                                return dlListingField.value;
+                            } else {
+                                dlContentField.parentValue = -1;
+                                return -1;
+                            }
+                        } else if (dlContentField.type === 'SELECT') {
+                            if (dlListingField.value) {
+                                return dlListingField.value;
+                            } else {
+                                return -1;
+                            }
+                        } else {
                             return dlListingField.value;
                         }
                     }
@@ -202,7 +213,7 @@ EditListing = {
                             id: dlContentField.id,
                             value: value
                         };
-                        dlListingFields.push(listingField)
+                        dlListingFields.push(listingField);
                     }
 
                     this.listing.dlListingFields = dlListingFields;
