@@ -54,10 +54,21 @@ EditListing = {
                             } else {
                                 return [];
                             }
-                        } else if(dlContentField.type === 'DEPENDENT_SELECT'){
-                            dlContentField.parentValue = findDlContentFieldItem(dlListingField.value, dlContentField.dlContentFieldItems);
-                            return dlListingField.value;
-                        }   else {
+                        } else if (dlContentField.type === 'DEPENDENT_SELECT') {
+                            if (dlListingField.value) {
+                                dlContentField.parentValue = findDlContentFieldItem(dlListingField.value, dlContentField.dlContentFieldItems);
+                                return dlListingField.value;
+                            } else {
+                                dlContentField.parentValue = -1;
+                                return -1;
+                            }
+                        } else if (dlContentField.type === 'SELECT') {
+                            if (dlListingField.value) {
+                                return dlListingField.value;
+                            } else {
+                                return -1;
+                            }
+                        } else {
                             return dlListingField.value;
                         }
                     }
@@ -202,7 +213,7 @@ EditListing = {
                             id: dlContentField.id,
                             value: value
                         };
-                        dlListingFields.push(listingField)
+                        dlListingFields.push(listingField);
                     }
 
                     this.listing.dlListingFields = dlListingFields;
@@ -362,6 +373,8 @@ EditListing = {
                             parentId: this.selectedCountry
                         };
                         this.isStateSelectLoading = true;
+                        this.selectedState = -1;
+                        this.selectedCity = -1;
                         this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
                             console.log('Success!:', response.data);
                             this.dlLocationStates = response.data;
@@ -387,6 +400,7 @@ EditListing = {
                             parentId: this.selectedState
                         };
                         this.isCitySelectLoading = true;
+                        this.selectedCity = -1;
                         this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
                             console.log('Success!:', response.data);
                             this.dlLocationCities = response.data;
@@ -407,11 +421,17 @@ EditListing = {
                     if (touchMap.has($v)) {
                         clearTimeout(touchMap.get($v));
                     }
-                    touchMap.set($v, setTimeout($v.$touch, 1000))
+                    touchMap.set($v, setTimeout($v.$touch, 1000));
+                },
+                onSaveAndGoBack: function (event) {
+                    var $btn = $('#btnSaveAndGoBack').button('loading');
+                    this.doSave($btn, "/my-listings");
                 },
                 onSave: function (event) {
                     var $btn = $('#btnSave').button('loading');
-
+                    this.doSave($btn, false);
+                },
+                doSave: function ($btn, locationAfterSave) {
                     var payload = this.getPayload();
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
@@ -423,6 +443,9 @@ EditListing = {
                             type: 'success'
                         });
                         $btn.button('reset');
+                        if (locationAfterSave) {
+                            window.location.href = locationAfterSave;
+                        }
                     }, function (response) {
                         console.log('Error!:', response.data);
                         $.notify({
@@ -470,6 +493,9 @@ EditListing = {
                             $btn.button('reset');
                         });
                     }
+                },
+                onGoBack: function (event) {
+                    window.location.href = "/my-listings";
                 },
                 openCategorySelection: function ($v) {
                     // $v.$touch();

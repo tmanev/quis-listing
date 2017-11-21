@@ -12,7 +12,7 @@ public interface DlListingRepository extends JpaRepository<DlListing, Long> {
 
     Page<DlListing> findAllByTranslation_languageCode(Pageable pageable, String languageCode);
 
-    Page<DlListing> findAllByTranslation_languageCodeAndStatusOrderByModifiedDesc(Pageable pageable, String languageCode, DlListing.Status status);
+    Page<DlListing> findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(Pageable pageable, String languageCode, DlListing.Status status, Boolean approved);
 
     Long countByTranslation_languageCode(String languageCode);
 
