@@ -373,6 +373,8 @@ EditListing = {
                             parentId: this.selectedCountry
                         };
                         this.isStateSelectLoading = true;
+                        this.selectedState = -1;
+                        this.selectedCity = -1;
                         this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
                             console.log('Success!:', response.data);
                             this.dlLocationStates = response.data;
@@ -398,6 +400,7 @@ EditListing = {
                             parentId: this.selectedState
                         };
                         this.isCitySelectLoading = true;
+                        this.selectedCity = -1;
                         this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
                             console.log('Success!:', response.data);
                             this.dlLocationCities = response.data;
