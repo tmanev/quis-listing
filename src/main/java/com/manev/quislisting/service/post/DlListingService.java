@@ -101,7 +101,7 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
     }
 
-    public DlListingDTO saveAndPublish(DlListingDTO dlListingDTO) {
+    public DlListingDTO saveAndApplyForPublishing(DlListingDTO dlListingDTO) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
         DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
@@ -336,6 +336,7 @@ public class DlListingService {
                 dlListing.addDlAttachment(dlAttachment);
             }
 
+            dlListing.setStatus(DlListing.Status.DRAFT);
             DlListing result = dlListingRepository.save(dlListing);
             return dlListingMapper.dlListingToDlListingDTO(result);
         } else {
@@ -357,7 +358,7 @@ public class DlListingService {
     }
 
     public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
-        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED);
+        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED, Boolean.TRUE);
         return result.map(dlListingMapper::dlListingToDlListingDTO);
     }
 }
