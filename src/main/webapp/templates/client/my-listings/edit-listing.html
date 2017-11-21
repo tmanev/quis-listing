@@ -18,23 +18,49 @@
 <div th:fragment="content" class="container">
     <div id="editListingApp" v-cloak>
         <!--<div class="row">-->
-            <!--<div class="col-sm-12">-->
+        <!--<div class="col-sm-12">-->
 
-                <!--<ul class="nav nav-pills navbar-inverse" style="position: fixed; top: 0;">-->
-                    <!--<li role="presentation" class="active"><a href="#description">Description</a></li>-->
-                    <!--<li role="presentation"><a href="#details">Details</a></li>-->
-                    <!--<li role="presentation"><a href="#location">Location</a></li>-->
-                    <!--<li role="presentation"><a href="#gallery">Gallery</a></li>-->
-                <!--</ul>-->
-            <!--</div>-->
+        <!--<ul class="nav nav-pills navbar-inverse" style="position: fixed; top: 0;">-->
+        <!--<li role="presentation" class="active"><a href="#description">Description</a></li>-->
+        <!--<li role="presentation"><a href="#details">Details</a></li>-->
+        <!--<li role="presentation"><a href="#location">Location</a></li>-->
+        <!--<li role="presentation"><a href="#gallery">Gallery</a></li>-->
+        <!--</ul>-->
         <!--</div>-->
+        <!--</div>-->
+        <form class="form-horizontal">
+            <div class="form-group">
+                <button type="button" class="btn btn-default col-sm-5 col-xs-5"
+                        id="btnGoBack"
+                        v-on:click="onGoBack">
+                    <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span
+                        th:text="#{page.my_listings.edit_listing.btn_go_back}">Go back</span>
+                </button>
+                <div class="col-sm-2 col-xs-2"></div>
+                <button type="button" class="btn btn-default col-sm-2 col-xs-2"
+                        id="btnSave"
+                        v-on:click="onSave"
+                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_save}">
+                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span
+                        th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
+                </button>
 
+                <a id="previewLink" target="_blank" class="btn btn-default col-sm-3 col-xs-3"
+                   th:href="@{/my-listings/{id}/preview(id=${dlListingDTO.id})}">
+                    <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span
+                        th:text="#{page.my_listings.edit_listing.btn_preview}">Preview</span>
+                </a>
+
+            </div>
+        </form>
         <div id="description" class="container-fluid">
-            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.description}">Description</span>
+            <span class="label label-default"
+                  th:text="#{page.my_listings.edit_listing.label.description}">Description</span>
             <form class="form-horizontal">
                 <div class="form-group"
                      v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
-                    <label class="col-sm-2 control-label" for="field_title" th:text="#{page.my_listings.edit_listing.label.title}">Title</label>
+                    <label class="col-sm-2 control-label" for="field_title"
+                           th:text="#{page.my_listings.edit_listing.label.title}">Title</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" name="title" id="field_title"
                                v-model="listing.title"/>
@@ -63,7 +89,8 @@
                         <div class="input-group">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" data-target="#myModal"
-                                    v-on:click="openCategorySelection($v)" th:text="#{page.my_listings.edit_listing.label.select_category}">Select</button>
+                                    v-on:click="openCategorySelection($v)"
+                                    th:text="#{page.my_listings.edit_listing.label.select_category}">Select</button>
                         </span>
                             <input type="text" class="form-control"
                                    style="cursor: pointer;"
@@ -109,7 +136,8 @@
                             {{dlContentField.translatedName}}</label>
                         <div class="col-sm-10">
                             <select class="form-control" v-model="dlContentField.value">
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -</option>
+                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                                </option>
                                 <option v-for="selectionItem in dlContentField.dlContentFieldItems"
                                         v-bind:value="selectionItem.id">{{selectionItem.value}}
                                 </option>
@@ -126,14 +154,16 @@
                         <div class="col-sm-10">
                             <select class="form-control" v-model="dlContentField.parentValue"
                                     v-on:change="resetValue(dlContentField)"
-                                    style="margin-bottom: 2px;" >
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -</option>
+                                    style="margin-bottom: 2px;">
+                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                                </option>
                                 <option v-for="selectionItem in rootContentFieldItem(dlContentField.dlContentFieldItems)"
                                         v-bind:value="selectionItem.id">{{selectionItem.value}}
                                 </option>
                             </select>
                             <select class="form-control" v-model="dlContentField.value">
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -</option>
+                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                                </option>
                                 <option v-for="selectionItem in childContentFieldItem(dlContentField.dlContentFieldItems, dlContentField.parentValue)"
                                         v-bind:value="selectionItem.id">{{selectionItem.value}}
                                 </option>
@@ -185,8 +215,9 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
                     <div class="col-sm-10">
-                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry" >
-                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
+                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                            </option>
                             <option v-for="dlLocationCountry in dlLocationCountries"
                                     v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
                             </option>
@@ -194,10 +225,13 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.state}">State</label>
+                    <label class="col-sm-2 control-label"
+                           th:text="#{page.my_listings.edit_listing.label.state}">State</label>
                     <div class="col-sm-10">
-                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState" v-bind:class="{loadinggif: isStateSelectLoading}">
-                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
+                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState"
+                                v-bind:class="{loadinggif: isStateSelectLoading}">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                            </option>
                             <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
                                 dlLocationState.name }}
                             </option>
@@ -206,10 +240,13 @@
                 </div>
                 <div class="form-group"
                      v-bind:class="{ 'has-error': $v.selectedCity.$error, 'has-success': $v.selectedCity.$dirty &amp;&amp; !$v.selectedCity.$invalid }">
-                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.city}">City</label>
+                    <label class="col-sm-2 control-label"
+                           th:text="#{page.my_listings.edit_listing.label.city}">City</label>
                     <div class="col-sm-10">
-                        <select class="form-control" v-model="selectedCity" v-bind:class="{loadinggif: isCitySelectLoading}">
-                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -</option>
+                        <select class="form-control" v-model="selectedCity"
+                                v-bind:class="{loadinggif: isCitySelectLoading}">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                            </option>
                             <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
                                 dlLocationCity.name }}
                             </option>
@@ -271,16 +308,20 @@
         </div>
         <form class="form-horizontal">
             <div class="form-group">
-                <button type="button" class="btn btn-default col-sm-5"
-                        id="btnSave"
-                        v-on:click="onSave">
-                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
+                <button type="button" class="btn btn-default col-sm-5 col-xs-5"
+                        id="btnSaveAndGoBack"
+                        v-on:click="onSaveAndGoBack"
+                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_save_and_go_back}">
+                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span
+                        th:text="#{page.my_listings.edit_listing.btn_save_and_go_back}">Save and go back</span>
                 </button>
-                <div class="col-sm-2"></div>
-                <button type="button" class="btn btn-primary col-sm-5"
+                <div class="col-sm-2 col-xs-2"></div>
+                <button type="button" class="btn btn-primary col-sm-5 col-xs-5"
                         id="btnPublish"
-                        v-on:click="onPublish">
-                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_publish}">Publish</span>
+                        v-on:click="onPublish"
+                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_publish}">
+                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span
+                        th:text="#{page.my_listings.edit_listing.btn_publish}">Publish</span>
                 </button>
             </div>
         </form>
@@ -291,17 +332,22 @@
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title"><i class="fa fa-warning"></i> <span th:text="#{page.my_listings.label.delete}">Delete</span></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+                        <h4 class="modal-title"><i class="fa fa-warning"></i> <span
+                                th:text="#{page.my_listings.label.delete}">Delete</span></h4>
                     </div>
 
                     <!--<div class="modal-body"><slot></slot></div>-->
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" v-on:click="removeImage(confirmRemoveImageModal.attachment)"
-                                th:text="#{page.my_listings.label.yes}">Yes</button>
-                        <button type="button" class="btn btn-default"  data-dismiss="modal"
-                                th:text="#{page.my_listings.label.no}">No</button>
+                        <button type="button" class="btn btn-danger"
+                                v-on:click="removeImage(confirmRemoveImageModal.attachment)"
+                                th:text="#{page.my_listings.label.yes}">Yes
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                th:text="#{page.my_listings.label.no}">No
+                        </button>
                     </div>
                 </div>
             </div>
@@ -324,7 +370,7 @@
             var dlLocationCountries = [[${dlLocationCountries}]];
             var dlLocationStates = [[${dlLocationStates}]];
             var dlLocationCities = [[${dlLocationCities}]];
-            var jsTranslations = [[${jsTranslations}]]
+            var jsTranslations = [[${jsTranslations}]];
             EditListing.init(dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, jsTranslations, commonVar);
         };
     </script>

@@ -421,11 +421,17 @@ EditListing = {
                     if (touchMap.has($v)) {
                         clearTimeout(touchMap.get($v));
                     }
-                    touchMap.set($v, setTimeout($v.$touch, 1000))
+                    touchMap.set($v, setTimeout($v.$touch, 1000));
+                },
+                onSaveAndGoBack: function (event) {
+                    var $btn = $('#btnSaveAndGoBack').button('loading');
+                    this.doSave($btn, "/my-listings");
                 },
                 onSave: function (event) {
                     var $btn = $('#btnSave').button('loading');
-
+                    this.doSave($btn, false);
+                },
+                doSave: function ($btn, locationAfterSave) {
                     var payload = this.getPayload();
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
@@ -437,6 +443,9 @@ EditListing = {
                             type: 'success'
                         });
                         $btn.button('reset');
+                        if (locationAfterSave) {
+                            window.location.href = locationAfterSave;
+                        }
                     }, function (response) {
                         console.log('Error!:', response.data);
                         $.notify({
@@ -484,6 +493,9 @@ EditListing = {
                             $btn.button('reset');
                         });
                     }
+                },
+                onGoBack: function (event) {
+                    window.location.href = "/my-listings";
                 },
                 openCategorySelection: function ($v) {
                     // $v.$touch();
