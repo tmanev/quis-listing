@@ -49,6 +49,7 @@
                     <th jh-sort-by="title"><span data-translate="quisListingApp.dlListing.title">Title</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="expirationDate"><span data-translate="quisListingApp.dlListing.expirationDate">Expiration Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="quisListingApp.dlListing.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="quisListingApp.dlListing.approved">Approved</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="author.login"><span data-translate="quisListingApp.dlListing.author">Author</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="views"><span data-translate="quisListingApp.dlListing.views">Views</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -60,6 +61,7 @@
                     <td>{{dlListing.title}}</td>
                     <td>{{dlListing.expirationDate | date:'medium'}}</td>
                     <td>{{dlListing.status}}</td>
+                    <td>{{dlListing.approved}}</td>
                     <td>
                         <a ui-sref="author-detail({id:dlListing.author.login})">{{dlListing.author.login}}</a>
                     </td>

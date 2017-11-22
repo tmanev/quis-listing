@@ -189,6 +189,18 @@
         </div>
 
         <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"
+                    ng-if="vm.dlListing.approved===false"
+                    ng-disabled="!vm.dlListing.id===null"
+                    ng-click="vm.approve()">
+                <span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span data-translate="entity.action.approve">Approve</span>
+            </button>
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"
+                    ng-if="vm.dlListing.approved===true"
+                    ng-disabled="!vm.dlListing.id===null"
+                    ng-click="vm.disapprove()">
+                <span class="glyphicon glyphicon-thumbs-down"></span>&nbsp;<span data-translate="entity.action.disapprove">Disapprove</span>
+            </button>
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
                 <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
                     data-translate="entity.action.cancel">Cancel</span>

@@ -1,7 +1,14 @@
 package com.manev.quislisting.service.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.manev.quislisting.domain.*;
+import com.manev.quislisting.domain.DlAttachment;
+import com.manev.quislisting.domain.DlContentField;
+import com.manev.quislisting.domain.DlContentFieldItem;
+import com.manev.quislisting.domain.DlListingContentFieldRel;
+import com.manev.quislisting.domain.DlListingLocationRel;
+import com.manev.quislisting.domain.TranslationBuilder;
+import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
@@ -43,7 +50,12 @@ import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Clock;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
@@ -55,6 +67,7 @@ public class DlListingService {
     private static final String USER_S_WAS_NOT_FOUND_IN_THE_DATABASE = "User : %s was not found in the database";
     private static Clock clock = Clock.systemUTC();
     private final Logger log = LoggerFactory.getLogger(DlListingService.class);
+    private final EmailSendingService emailSendingService;
     private DlListingRepository dlListingRepository;
     private UserRepository userRepository;
     private DlCategoryRepository dlCategoryRepository;
@@ -67,7 +80,6 @@ public class DlListingService {
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlAttachmentRepository dlAttachmentRepository;
     private DlListingSearchRepository dlListingSearchRepository;
-    private final EmailSendingService emailSendingService;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
@@ -111,6 +123,22 @@ public class DlListingService {
         dlListingSearchRepository.save(dlListingForSaving);
         emailSendingService.sendPublishRequest(savedDlListing);
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+    }
+
+    public DlListingDTO approveListing(Long id) {
+        DlListing dlListing = dlListingRepository.findOne(id);
+
+        // TODO: If validation is okay make the approve
+        dlListing.setApproved(Boolean.TRUE);
+        return dlListingMapper.dlListingToDlListingDTO(dlListingRepository.save(dlListing));
+    }
+
+    public DlListingDTO disapproveListing(Long id) {
+        DlListing dlListing = dlListingRepository.findOne(id);
+
+        // TODO: If validation is okay make the approve
+        dlListing.setApproved(Boolean.FALSE);
+        return dlListingMapper.dlListingToDlListingDTO(dlListingRepository.save(dlListing));
     }
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
