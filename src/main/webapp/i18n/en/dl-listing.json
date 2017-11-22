@@ -19,6 +19,7 @@
             "title": "Title",
             "expirationDate": "Expiration Date",
             "status": "Status",
+            "approved": "Approved",
             "views": "Views",
             "description": "Description",
             "author": "Author",

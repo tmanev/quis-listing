@@ -7,7 +7,7 @@
     DlListing.$inject = ['$resource', 'DateUtils'];
 
     function DlListing ($resource, DateUtils) {
-        var resourceUrl =  'api/dl-listings/:id';
+        var resourceUrl =  'api/admin/dl-listings/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
@@ -33,6 +33,16 @@
                     copy.publicationDate = DateUtils.convertLocalDateToServer(copy.publicationDate);
                     return angular.toJson(copy);
                 }
+            },
+            'approve': {
+                method: 'PUT',
+                url: resourceUrl + '/approve',
+                params: {id: "@id"}
+            },
+            'disapprove': {
+                method: 'PUT',
+                url: resourceUrl + '/disapprove',
+                params: {id: "@id"}
             },
             'save': {
                 method: 'POST',

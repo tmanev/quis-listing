@@ -41,7 +41,17 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+        vm.approve = approve;
+        vm.disapprove = disapprove;
 
+        function approve() {
+            DlListing.approve({id: vm.dlListing.id}, onSaveSuccessUpdate, onSaveError);
+        }
+        
+        function disapprove() {
+            DlListing.disapprove({id: vm.dlListing.id}, onSaveSuccessUpdate, onSaveError);
+        }
+        
         function deleteAttachment(attachmentId) {
 
             var confirm = $window.confirm("Confirm deletion of image!");

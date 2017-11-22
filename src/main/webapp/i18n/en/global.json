@@ -121,7 +121,9 @@
             "searchConfig": "Search Config.",
             "ok": "Ok",
             "translate": "Translate",
-            "slugify": "Slugify"
+            "slugify": "Slugify",
+            "approve": "Approve",
+            "disapprove": "Disapprove"
         },
         "detail": {
             "field": "Field",
