@@ -29,7 +29,6 @@
                 <th>#</th>
                 <th th:text="#{page.my_listings.label.title}">Title</th>
                 <th th:text="#{page.my_listings.label.status}">Status</th>
-                <th th:text="#{page.my_listings.label.approved}">Approved</th>
                 <th th:text="#{page.my_listings.label.validity}">Validity</th>
                 <th th:text="#{page.my_listings.label.action}">Action</th>
             </tr>
@@ -40,14 +39,10 @@
                 <td>{{dlListing.title}}</td>
                 <td>
                     <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
+                    <span v-if="dlListing.status==='PUBLISH_REQUEST'" th:text="#{page.my_listings.label.publish_requested}"></span>
+                    <span v-if="dlListing.status==='PUBLISH_DISAPPROVED'" th:text="#{page.my_listings.label.publish_disapproved}"></span>
                     <span v-if="dlListing.status==='PUBLISHED'" th:text="#{page.my_listings.label.published}"></span>
-                </td>
-                <td>
-                    <span v-if="dlListing.approved" th:text="#{page.my_listings.label.approved}"></span>
-                    <span v-if="!dlListing.approved && dlListing.status==='PUBLISHED'"
-                          th:text="#{page.my_listings.label.pending}"></span>
-                    <span v-if="!dlListing.approved && dlListing.status==='DRAFT'"
-                          th:text="#{page.my_listings.label.not_publishhed}"></span>
+                    <span v-if="dlListing.status==='PUBLISH_EXPIRED'" th:text="#{page.my_listings.label.publish_expired}"></span>
                 </td>
                 <td>
                     <span>Last modified on {{dlListing.modified | fullTime}}</span>
