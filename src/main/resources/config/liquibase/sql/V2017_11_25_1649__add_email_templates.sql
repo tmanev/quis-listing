@@ -1,5 +1,5 @@
 -- Add now strings
-INSERT INTO quis_listing.ql_string (language_code, context, name, value, status) VALUES ('en', 'email-template', 'email-template-#listing-approved', '<!DOCTYPE html>
+INSERT INTO ql_string (language_code, context, name, value, status) VALUES ('en', 'email-template', 'email-template-#listing-approved', '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -18,7 +18,7 @@ INSERT INTO quis_listing.ql_string (language_code, context, name, value, status)
         </p>
     </body>
 </html>', 0);
-INSERT INTO quis_listing.ql_string (language_code, context, name, value, status) VALUES ('en', 'email-template', 'email-template-#listing-disapproved', '<!DOCTYPE html>
+INSERT INTO ql_string (language_code, context, name, value, status) VALUES ('en', 'email-template', 'email-template-#listing-disapproved', '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -51,7 +51,7 @@ INSERT INTO quis_listing.ql_string (language_code, context, name, value, status)
 
 -- Add now translations
 
-INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-approved'), 'ro', 0, '<!DOCTYPE html>
+INSERT INTO ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-approved'), 'ro', 0, '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -70,7 +70,7 @@ INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status
         </p>
     </body>
 </html>', '2017-11-25 16:37:30');
-INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-approved'), 'bg', 0, '<!DOCTYPE html>
+INSERT INTO ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-approved'), 'bg', 0, '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -89,7 +89,7 @@ INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status
         </p>
     </body>
 </html>', '2017-11-25 16:37:30');
-INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-disapproved'), 'bg', 0, '<!DOCTYPE html>
+INSERT INTO ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-disapproved'), 'bg', 0, '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -119,7 +119,7 @@ INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status
         </div>
     </body>
 </html>', '2017-11-25 16:37:41');
-INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-disapproved'), 'ro', 0, '<!DOCTYPE html>
+INSERT INTO ql_string_translation (string_id, language_code, status, value, translation_date) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-disapproved'), 'ro', 0, '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -151,7 +151,7 @@ INSERT INTO quis_listing.ql_string_translation (string_id, language_code, status
 </html>', '2017-11-25 16:37:41');
 
 -- Add now email template
-INSERT INTO quis_listing.ql_email_template (string_id, name, text) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-approved'), 'listing-approved', '<!DOCTYPE html>
+INSERT INTO ql_email_template (string_id, name, text) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-approved'), 'listing-approved', '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
@@ -170,7 +170,7 @@ INSERT INTO quis_listing.ql_email_template (string_id, name, text) VALUES ((SELE
         </p>
     </body>
 </html>');
-INSERT INTO quis_listing.ql_email_template (string_id, name, text) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-disapproved'), 'listing-disapproved', '<!DOCTYPE html>
+INSERT INTO ql_email_template (string_id, name, text) VALUES ((SELECT ID FROM ql_string s WHERE s.name='email-template-#listing-disapproved'), 'listing-disapproved', '<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         <p>
