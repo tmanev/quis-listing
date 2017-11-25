@@ -13,6 +13,13 @@
             "delete": {
                 "question": "Are you sure you want to delete Dl Listing {{ id }}?"
             },
+            "disapprove": {
+                "question": "Are you sure you want to disapprove Dl Listing {{ id }}?",
+                "reason": "Reason"
+            },
+            "approve": {
+                "question": "Are you sure you want to approve Dl Listing {{ id }}?"
+            },
             "detail": {
                 "title": "Dl Listing"
             },

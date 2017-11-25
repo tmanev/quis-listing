@@ -190,6 +190,54 @@
                 });
             }]
         })
+            .state('dl-listings.approve', {
+                parent: 'dl-listings',
+                url: '/{id}/approve',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/entities/dl-listing/dl-listing-approve-dialog.html',
+                        controller: 'DlListingApproveController',
+                        controllerAs: 'vm',
+                        size: 'md',
+                        resolve: {
+                            entity: ['DlListing', function(DlListing) {
+                                return DlListing.get({id : $stateParams.id}).$promise;
+                            }]
+                        }
+                    }).result.then(function() {
+                        $state.go('dl-listings', null, { reload: 'dl-listings' });
+                    }, function() {
+                        $state.go('^');
+                    });
+                }]
+            })
+            .state('dl-listings.disapprove', {
+                parent: 'dl-listings',
+                url: '/{id}/disapprove',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/entities/dl-listing/dl-listing-disapprove-dialog.html',
+                        controller: 'DlListingDisapproveController',
+                        controllerAs: 'vm',
+                        size: 'md',
+                        resolve: {
+                            entity: ['DlListing', function(DlListing) {
+                                return DlListing.get({id : $stateParams.id}).$promise;
+                            }]
+                        }
+                    }).result.then(function() {
+                        $state.go('dl-listings', null, { reload: 'dl-listings' });
+                    }, function() {
+                        $state.go('^');
+                    });
+                }]
+            })
         ;
     }
 

@@ -80,7 +80,7 @@ public class DlListingResource {
         }
 
         dlListingService.validateForPublishing(dlListingDTO);
-        DlListingDTO result = dlListingService.saveAndApplyForPublishing(dlListingDTO);
+        DlListingDTO result = dlListingService.saveAndRequestPublishing(dlListingDTO);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))

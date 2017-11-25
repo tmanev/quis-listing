@@ -1,0 +1,26 @@
+<form name="disapproveForm" ng-submit="vm.confirmDisapprove(vm.dlListing.id)">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" data-translate="entity.disapprove.title">Confirm disapprove operation</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <p data-translate="quisListingApp.dlListing.disapprove.question" translate-values="{id: '{{vm.dlListing.id}}'}">Are you sure you want to disapprove this Dl Listing?</p>
+        <div class="form-group">
+            <label class="control-label" data-translate="quisListingApp.dlListing.disapprove.reason"
+                   for="field_reason">Reason</label>
+            <textarea rows="4" type="text" class="form-control" name="description" id="field_reason"
+                      ng-model="vm.message"
+                      ui-tinymce="tinymceOptions"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="disapproveForm.$invalid" class="btn btn-danger">
+            <span class="glyphicon glyphicon-thumbs-down"></span>&nbsp;<span data-translate="entity.action.disapprove">Disapprove</span>
+        </button>
+    </div>
+</form>

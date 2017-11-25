@@ -29,6 +29,20 @@ public final class Constants {
     public static final String RESOURCE_API_ADMIN_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-listings";
     public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";
 
+    public class Mvc {
+        public class Listings {
+            public static final String BASE = "/listings";
+            public static final String VIEW = BASE + "/{id}/{slug}";
+        }
+
+        public class MyListings {
+            public static final String BASE = "/my-listings";
+            public static final String ADD = BASE + "/add";
+            public static final String EDIT = BASE + "/{id}";
+            public static final String PREVIEW = BASE + "/{id}/preview";
+            public static final String PUBLISH_REQUEST_SUCCESS = BASE + "/{id}/publish-successful";
+        }
+    }
 
     private Constants() {
     }
