@@ -21,7 +21,7 @@ public class DlListing {
 
     @OneToOne
     @JoinColumn(name = "featured_attachment_id")
-    public DlAttachment featuredAttachment;
+    private DlAttachment featuredAttachment;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,9 +53,11 @@ public class DlListing {
     @Column
     private Status status;
 
-    @NotNull
     @Column
     private Boolean approved;
+
+    @Column
+    private Timestamp approvedModified;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "translation_id")
@@ -122,6 +124,14 @@ public class DlListing {
 
     public void setApproved(Boolean approved) {
         this.approved = approved;
+    }
+
+    public Timestamp getApprovedModified() {
+        return approvedModified;
+    }
+
+    public void setApprovedModified(Timestamp approvedModified) {
+        this.approvedModified = approvedModified;
     }
 
     public DlAttachment getFeaturedAttachment() {
@@ -242,7 +252,10 @@ public class DlListing {
 
     public enum Status {
         DRAFT,
-        PUBLISHED
+        PUBLISH_REQUEST,
+        PUBLISHED,
+        PUBLISH_DISAPPROVED,
+        PUBLISH_EXPIRED
     }
 
 }

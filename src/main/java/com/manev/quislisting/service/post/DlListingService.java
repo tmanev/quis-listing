@@ -22,6 +22,7 @@ import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.EmailSendingService;
+import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
@@ -113,11 +114,11 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
     }
 
-    public DlListingDTO saveAndApplyForPublishing(DlListingDTO dlListingDTO) {
+    public DlListingDTO saveAndRequestPublishing(DlListingDTO dlListingDTO) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
         DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
-        dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
+        dlListingForSaving.setStatus(DlListing.Status.PUBLISH_REQUEST);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         dlListingSearchRepository.save(dlListingForSaving);
@@ -130,15 +131,26 @@ public class DlListingService {
 
         // TODO: If validation is okay make the approve
         dlListing.setApproved(Boolean.TRUE);
-        return dlListingMapper.dlListingToDlListingDTO(dlListingRepository.save(dlListing));
+        dlListing.setApprovedModified(new Timestamp(clock.millis()));
+        dlListing.setStatus(DlListing.Status.PUBLISHED);
+        DlListing save = dlListingRepository.save(dlListing);
+
+        emailSendingService.sendListingApprovedEmail(save);
+
+        return dlListingMapper.dlListingToDlListingDTO(save);
     }
 
-    public DlListingDTO disapproveListing(Long id) {
+    public DlListingDTO disapproveListing(Long id, ApproveDTO approveDTO) {
         DlListing dlListing = dlListingRepository.findOne(id);
 
-        // TODO: If validation is okay make the approve
         dlListing.setApproved(Boolean.FALSE);
-        return dlListingMapper.dlListingToDlListingDTO(dlListingRepository.save(dlListing));
+        dlListing.setApprovedModified(new Timestamp(clock.millis()));
+        dlListing.setStatus(DlListing.Status.PUBLISH_DISAPPROVED);
+        DlListing save = dlListingRepository.save(dlListing);
+
+        emailSendingService.sendListingDisapprovedEmail(save, approveDTO.getMessage());
+
+        return dlListingMapper.dlListingToDlListingDTO(save);
     }
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
@@ -179,7 +191,8 @@ public class DlListingService {
         dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingDTO.getTitle()));
         dlListingForSaving.setContent(dlListingDTO.getContent());
         dlListingForSaving.setStatus(DlListing.Status.DRAFT);
-        dlListingForSaving.setApproved(Boolean.FALSE);
+        dlListingForSaving.setApproved(null);
+        dlListingForSaving.setApprovedModified(null);
 
         setCategory(dlListingDTO, dlListingForSaving);
         setLocation(dlListingDTO, dlListingForSaving);

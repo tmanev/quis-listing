@@ -1,5 +1,6 @@
 package com.manev.quislisting.web.rest.admin;
 
+import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
@@ -150,10 +151,10 @@ public class DlAdminListingResource {
     }
 
     @PutMapping("/{id}/disapprove")
-    public ResponseEntity<DlListingDTO> disapproveListing(@PathVariable Long id) {
+    public ResponseEntity<DlListingDTO> disapproveListing(@PathVariable Long id, @RequestBody ApproveDTO approveDTO) {
         log.debug("REST request to disapprove listing with id : {}", id);
 
-        DlListingDTO dlListingDTO = dlListingService.disapproveListing(id);
+        DlListingDTO dlListingDTO = dlListingService.disapproveListing(id, approveDTO);
         return ResponseEntity.ok().body(dlListingDTO);
     }
 }

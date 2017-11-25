@@ -8,6 +8,7 @@ import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.service.dto.ContactDTO;
+import com.manev.quislisting.service.util.UrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -28,6 +29,7 @@ public class EmailSendingService {
     private static final String BASE_NAME = "baseName";
     private static final String SUBJECT = "subject";
     private static final String ACTIVATION_TEXT = "activationText";
+    private static final String DL_LISTING = "dlListing";
     private final Logger log = LoggerFactory.getLogger(EmailSendingService.class);
     private final MessageSource messageSource;
     private final QuisListingProperties quisListingProperties;
@@ -91,6 +93,61 @@ public class EmailSendingService {
         mailService.sendEmail(user.getEmail(), title, emailContent, false, true);
     }
 
+    public void sendListingDisapprovedEmail(DlListing dlListing, String reason) {
+        User user = dlListing.getUser();
+        log.debug("Sending listing disapprove e-mail to '{}'", user.getEmail());
+
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+
+        EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("listing-disapproved");
+
+        QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
+
+        String subject = messageSource.getMessage("email.listing_disapproved.subject", new String[]{dlListing.getTitle()}, locale);
+
+        String html = getValueByLanguage(user.getLangKey(), activationEmailTemplate.getQlString());
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(USER, user);
+        variables.put(BASE_NAME, siteNameConfig.getValue());
+        variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
+        variables.put("previewListingUrl", UrlUtil.makePreviewListingUrl(quisListingProperties.getMail().getBaseUrl(), dlListing.getId()));
+        variables.put("editListingUrl", UrlUtil.makeEditListingUrl(quisListingProperties.getMail().getBaseUrl(), dlListing.getId()));
+        variables.put("reason_label", messageSource.getMessage("email.listing_disapproved.label.reason", new String[]{dlListing.getTitle()}, locale));
+        variables.put("reason", reason);
+        variables.put(DL_LISTING, dlListing);
+
+        String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
+        mailService.sendEmail(user.getEmail(), subject, emailContent, false, true);
+    }
+
+    public void sendListingApprovedEmail(DlListing dlListing) {
+        User user = dlListing.getUser();
+        log.debug("Sending listing approve e-mail to '{}'", user.getEmail());
+
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+
+        EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("listing-approved");
+
+        QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
+
+        String subject = messageSource.getMessage("email.listing_approved.subject", new String[]{dlListing.getTitle()}, locale);
+
+        String html = getValueByLanguage(user.getLangKey(), activationEmailTemplate.getQlString());
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(USER, user);
+        variables.put(BASE_NAME, siteNameConfig.getValue());
+        variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
+        variables.put("listingUrl", UrlUtil.makePublicListingUrl(quisListingProperties.getMail().getBaseUrl(), dlListing.getId(), dlListing.getName()));
+        variables.put(DL_LISTING, dlListing);
+
+        String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
+        mailService.sendEmail(user.getEmail(), subject, emailContent, false, true);
+    }
+
     @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation e-mail to '{}'", user.getEmail());
@@ -143,4 +200,5 @@ public class EmailSendingService {
 
         mailService.sendEmail(publishRequestAdmin.getValue(), subject, publishText, false, true);
     }
+
 }

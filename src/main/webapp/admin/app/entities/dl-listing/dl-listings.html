@@ -75,6 +75,18 @@
                                 <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
+                                    ui-sref="dl-listings.approve({id:dlListing.id})"
+                                    class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.approve"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="dl-listings.disapprove({id:dlListing.id})"
+                                    class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-thumbs-down"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.disapprove"></span>
+                            </button>
+                            <button type="submit"
                                     ui-sref="dl-listings.edit({id:dlListing.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>

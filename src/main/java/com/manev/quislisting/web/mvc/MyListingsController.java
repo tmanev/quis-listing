@@ -33,8 +33,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.ADD;
+import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.BASE;
+import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.EDIT;
+import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.PREVIEW;
+import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.PUBLISH_REQUEST_SUCCESS;
+
 @Controller
-@RequestMapping(value = "/my-listings")
 public class MyListingsController extends BaseController {
 
     private final DlListingService dlListingService;
@@ -55,7 +60,7 @@ public class MyListingsController extends BaseController {
         this.dlLocationService = dlLocationService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = BASE, method = RequestMethod.GET)
     public String showMyListingsPage(final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 
@@ -65,7 +70,7 @@ public class MyListingsController extends BaseController {
         return "client/index";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = ADD, method = RequestMethod.GET)
     public String showAddListingPage(final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 
@@ -77,7 +82,7 @@ public class MyListingsController extends BaseController {
         return "client/index";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = EDIT, method = RequestMethod.GET)
     public String showEditListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
@@ -128,7 +133,7 @@ public class MyListingsController extends BaseController {
         return "client/index";
     }
 
-    @RequestMapping(value = "/{id}/preview", method = RequestMethod.GET)
+    @RequestMapping(value = PREVIEW, method = RequestMethod.GET)
     public String showPreviewListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
@@ -161,7 +166,7 @@ public class MyListingsController extends BaseController {
         return "client/index";
     }
 
-    @RequestMapping(value = "/{id}/publish-successful", method = RequestMethod.GET)
+    @RequestMapping(value = PUBLISH_REQUEST_SUCCESS, method = RequestMethod.GET)
     public String publishSuccessful(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
 

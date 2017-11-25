@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1511602661312" author="tmanev">
+        <comment>Add email template for approved listings.</comment>
+        <!--<loadData-->
+                <!--file="config/liquibase/load-data/email_templates_0001.csv"-->
+                <!--separator="¦"-->
+                <!--quotchar="'"-->
+                <!--tableName="ql_email_template"/>-->
+        <!--<loadData-->
+                <!--file="config/liquibase/load-data/ql_string_translations.csv"-->
+                <!--separator="¦"-->
+                <!--quotchar="'"-->
+                <!--tableName="ql_string_translation"/>-->
+        <sqlFile path="classpath:config/liquibase/sql/V2017_11_25_1649__add_email_templates.sql" relativeToChangelogFile="false" />
+    </changeSet>
+
+</databaseChangeLog>

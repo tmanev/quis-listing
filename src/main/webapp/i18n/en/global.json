@@ -135,6 +135,12 @@
         "deactivate": {
             "title": "Confirm deactivate operation"
         },
+        "disapprove": {
+            "title": "Confirm disapprove operation"
+        },
+        "approve": {
+            "title": "Confirm approve operation"
+        },
         "validation": {
             "required": "This field is required.",
             "minlength": "This field is required to be at least {{ min }} characters.",
