@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @Service
 public class GeoLocationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GeoLocationService.class);
+    private static final Logger log = LoggerFactory.getLogger(GeoLocationService.class);
     private final QuisListingProperties quisListingProperties;
 
     private DatabaseReader dbReader;
@@ -39,17 +40,24 @@ public class GeoLocationService {
         if (dbReader == null) {
             try {
                 dbReader = initializeDbReader();
-                InetAddress ipAddress = InetAddress.getByName(remoteIp);
-
-                CountryResponse countryResponse = dbReader.country(ipAddress);
-                if (countryResponse != null && countryResponse.getCountry() != null) {
-                    return countryResponse.getCountry().getIsoCode().toLowerCase();
-                }
             } catch (IOException e) {
-                LOG.error("DB reader could not be initialized", e);
-            } catch (GeoIp2Exception e) {
-                LOG.error("Country location cannot be read", e);
+                log.error("DB reader could not be initialized", e);
             }
+        }
+
+        try {
+            InetAddress ipAddress = InetAddress.getByName(remoteIp);
+            log.info("Looking for ip address {}", remoteIp);
+            CountryResponse countryResponse = dbReader.country(ipAddress);
+            if (countryResponse != null && countryResponse.getCountry() != null) {
+                return countryResponse.getCountry().getIsoCode().toLowerCase();
+            }
+        } catch (GeoIp2Exception e) {
+            log.error("Country location cannot be read", e);
+        } catch (UnknownHostException e) {
+            log.error("Unknown host error", e);
+        } catch (IOException e) {
+            log.error("IO error", e);
         }
 
         return null;
