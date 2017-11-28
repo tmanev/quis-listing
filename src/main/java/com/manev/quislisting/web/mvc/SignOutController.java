@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.manev.quislisting.security.jwt.JWTFilter.QL_AUTH;
+
 @Controller
 @RequestMapping("/sign-out")
 public class SignOutController extends BaseController {
@@ -36,7 +38,7 @@ public class SignOutController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public void authorize(HttpServletRequest request,
                           HttpServletResponse response, ModelMap model) throws IOException {
-        response.addCookie(new Cookie("ql-auth", null));
+        response.addCookie(new Cookie(QL_AUTH, null));
         redirectStrategy.sendRedirect(request, response, "/");
     }
 

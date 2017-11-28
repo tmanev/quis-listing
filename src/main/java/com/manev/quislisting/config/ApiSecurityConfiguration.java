@@ -3,6 +3,7 @@ package com.manev.quislisting.config;
 import com.manev.quislisting.security.Http401UnauthorizedEntryPoint;
 import com.manev.quislisting.security.jwt.JWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
+import com.manev.quislisting.service.GeoLocationService;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,15 +44,18 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
+    private final GeoLocationService geoLocationService;
+
     public ApiSecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService,
                                     TokenProvider tokenProvider, SessionRegistry sessionRegistry,
-                                    CorsFilter corsFilter) {
+                                    CorsFilter corsFilter, GeoLocationService geoLocationService) {
 
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userDetailsService = userDetailsService;
         this.tokenProvider = tokenProvider;
         this.sessionRegistry = sessionRegistry;
         this.corsFilter = corsFilter;
+        this.geoLocationService = geoLocationService;
     }
 
     @PostConstruct
@@ -125,7 +129,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider);
+        return new JWTConfigurer(tokenProvider, geoLocationService);
     }
 
     @Bean

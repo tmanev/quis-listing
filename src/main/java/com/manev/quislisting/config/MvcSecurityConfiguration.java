@@ -5,6 +5,7 @@ import com.manev.quislisting.security.ContinueEntryPoint;
 import com.manev.quislisting.security.MvcAuthenticationSuccessHandler;
 import com.manev.quislisting.security.jwt.JWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
+import com.manev.quislisting.service.GeoLocationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -36,13 +37,16 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler;
 
+    private final GeoLocationService geoLocationService;
+
     public MvcSecurityConfiguration(TokenProvider tokenProvider, SessionRegistry sessionRegistry,
-                                    CorsFilter corsFilter, MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler) {
+                                    CorsFilter corsFilter, MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler, GeoLocationService geoLocationService) {
 
         this.tokenProvider = tokenProvider;
         this.sessionRegistry = sessionRegistry;
         this.corsFilter = corsFilter;
         this.quisAuthenticationSuccessHandler = quisAuthenticationSuccessHandler;
+        this.geoLocationService = geoLocationService;
     }
 
     @Bean
@@ -111,7 +115,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider);
+        return new JWTConfigurer(tokenProvider, geoLocationService);
     }
 
     @Bean

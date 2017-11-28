@@ -1,5 +1,6 @@
 package com.manev.quislisting.security.jwt;
 
+import com.manev.quislisting.service.GeoLocationService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -11,13 +12,16 @@ public class JWTConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilt
 
     private TokenProvider tokenProvider;
 
-    public JWTConfigurer(TokenProvider tokenProvider) {
+    private GeoLocationService geoLocationService;
+
+    public JWTConfigurer(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
         this.tokenProvider = tokenProvider;
+        this.geoLocationService = geoLocationService;
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        JWTFilter customFilter = new JWTFilter(tokenProvider);
+        JWTFilter customFilter = new JWTFilter(tokenProvider, geoLocationService);
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
