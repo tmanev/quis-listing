@@ -53,18 +53,18 @@ public class GeoLocationService {
 
         try {
             InetAddress ipAddress = InetAddress.getByName(remoteIp);
-            log.info("Looking for ip address {}", remoteIp);
+            log.debug("Looking for ip address {}", remoteIp);
             CountryResponse countryResponse = dbReader.country(ipAddress);
 
             if (countryResponse != null && countryResponse.getCountry() != null) {
                 String langKeyByIp = countryResponse.getCountry().getIsoCode().toLowerCase();
-                log.info("Language by ip address {}", langKeyByIp);
+                log.debug("Language by ip address {}", langKeyByIp);
                 List<Language> allByActive = languageRepository.findAllByActive(Boolean.TRUE);
 
                 if (isExistingInActiveLanguages(countryResponse, allByActive)) {
                     return langKeyByIp;
                 } else {
-                    log.info("Language not active setting default en");
+                    log.debug("Language not active setting default en");
                     return "en";
                 }
 
