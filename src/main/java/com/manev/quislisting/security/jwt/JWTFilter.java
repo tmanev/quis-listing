@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.manev.quislisting.config.ThymeleafConfiguration.QUIS_LISTING_LOCALE_COOKIE;
+import static org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME;
 
 /**
  * Filters incoming requests and installs a Spring Security principal if a header corresponding to a valid user is
@@ -96,6 +97,7 @@ public class JWTFilter extends GenericFilterBean {
             log.info("Country iso is: {}", countryIso);
             if (countryIso != null) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+                request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, countryIso);
                 httpServletResponse.addCookie(new Cookie(QUIS_LISTING_LOCALE_COOKIE, countryIso));
             }
         }
