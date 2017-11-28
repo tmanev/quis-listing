@@ -2,7 +2,9 @@ package com.manev.quislisting.service;
 
 import com.manev.quislisting.config.QuisListingProperties;
 import com.manev.quislisting.domain.QlConfig;
+import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.exception.MissingConfigurationException;
+import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CountryResponse;
@@ -14,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 @Service
 public class GeoLocationService {
@@ -25,9 +28,12 @@ public class GeoLocationService {
 
     private QlConfigService qlConfigService;
 
-    public GeoLocationService(QuisListingProperties quisListingProperties, QlConfigService qlConfigService) {
+    private LanguageRepository languageRepository;
+
+    public GeoLocationService(QuisListingProperties quisListingProperties, QlConfigService qlConfigService, LanguageRepository languageRepository) {
         this.quisListingProperties = quisListingProperties;
         this.qlConfigService = qlConfigService;
+        this.languageRepository = languageRepository;
     }
 
     public String countryIsoFromIp(String ip) {
@@ -49,8 +55,19 @@ public class GeoLocationService {
             InetAddress ipAddress = InetAddress.getByName(remoteIp);
             log.info("Looking for ip address {}", remoteIp);
             CountryResponse countryResponse = dbReader.country(ipAddress);
+
             if (countryResponse != null && countryResponse.getCountry() != null) {
-                return countryResponse.getCountry().getIsoCode().toLowerCase();
+                String langKeyByIp = countryResponse.getCountry().getIsoCode().toLowerCase();
+                log.info("Language by ip address {}", langKeyByIp);
+                List<Language> allByActive = languageRepository.findAllByActive(Boolean.TRUE);
+
+                if (isExistingInActiveLanguages(countryResponse, allByActive)) {
+                    return langKeyByIp;
+                } else {
+                    log.info("Language not active setting default en");
+                    return "en";
+                }
+
             }
         } catch (GeoIp2Exception e) {
             log.error("Country location cannot be read", e);
@@ -61,6 +78,15 @@ public class GeoLocationService {
         }
 
         return null;
+    }
+
+    private Boolean isExistingInActiveLanguages(CountryResponse countryResponse, List<Language> allByActive) {
+        for (Language language : allByActive) {
+            if (language.getCode().equalsIgnoreCase(countryResponse.getCountry().getIsoCode().toLowerCase())) {
+                return Boolean.TRUE;
+            }
+        }
+        return Boolean.FALSE;
     }
 
     private String getManualIp() {
