@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Locale;
 import java.util.Optional;
@@ -131,7 +132,8 @@ public class AccountResource {
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) or 500 (Internal Server Error) if the user couldn't be updated
      */
     @PostMapping("/account")
-    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request) {
+    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request,
+                                              HttpServletResponse response) {
         Locale locale = localeResolver.resolveLocale(request);
         Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
@@ -140,10 +142,11 @@ public class AccountResource {
         return userRepository
                 .findOneByLogin(SecurityUtils.getCurrentUserLogin())
                 .map(u -> {
-                    userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(),
+                    User user = userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(),
                             userDTO.getLangKey(), userDTO.getUpdates());
-                    return new ResponseEntity<>(messageSource.getMessage("info.save_success", null,
-                            locale), HttpStatus.OK);
+                    response.addHeader("ql-locale-header", user.getLangKey());
+                    return new ResponseEntity<>(messageSource.getMessage("info.save_success", null, locale),
+                            HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }

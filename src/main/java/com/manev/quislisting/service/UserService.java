@@ -148,15 +148,19 @@ public class UserService {
     /**
      * Update basic information (first name, last name, language) for the current user.
      */
-    public void updateUser(String firstName, String lastName, String langKey, Boolean updates) {
-        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
+    public User updateUser(String firstName, String lastName, String langKey, Boolean updates) {
+        Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        if (oneByLogin.isPresent()) {
+            User user = oneByLogin.get();
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setLangKey(langKey);
             user.setUpdates(updates);
             userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
-        });
+            return user;
+        }
+        return null;
     }
 
     /**
