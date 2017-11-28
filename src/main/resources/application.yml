@@ -61,3 +61,4 @@ quislisting:
         max-pool-size: 50
         queue-capacity: 10000
     attachment-storage-path: ./attachment_storage
+    geo-location-db-path: ./geolite2/GeoLite2-Country.mmdb

@@ -43,9 +43,11 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
             List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
                     .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                     .collect(Collectors.toList());
-            return new org.springframework.security.core.userdetails.User(lowercaseLogin,
+            QlUserDetails qlUserDetails = new QlUserDetails(lowercaseLogin,
                     user.getPassword(),
                     grantedAuthorities);
+            qlUserDetails.setLangKey(user.getLangKey());
+            return qlUserDetails;
         }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " +
                 "database"));
     }

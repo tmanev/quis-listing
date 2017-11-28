@@ -21,6 +21,7 @@ public class QuisListingProperties {
     private final CorsConfiguration cors = new CorsConfiguration();
     private final QuisListingProperties.Async async = new QuisListingProperties.Async();
     private String attachmentStoragePath;
+    private String geoLocationDbPath;
 
     public Security getSecurity() {
         return security;
@@ -44,6 +45,14 @@ public class QuisListingProperties {
 
     public void setAttachmentStoragePath(String attachmentStoragePath) {
         this.attachmentStoragePath = attachmentStoragePath;
+    }
+
+    public String getGeoLocationDbPath() {
+        return geoLocationDbPath;
+    }
+
+    public void setGeoLocationDbPath(String geoLocationDbPath) {
+        this.geoLocationDbPath = geoLocationDbPath;
     }
 
     public QuisListingProperties.Async getAsync() {

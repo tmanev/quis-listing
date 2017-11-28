@@ -1,5 +1,6 @@
 package com.manev.quislisting.security;
 
+import com.manev.quislisting.security.jwt.JWTFilter;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.manev.quislisting.config.ThymeleafConfiguration.QUIS_LISTING_LOCALE_COOKIE;
 import static com.manev.quislisting.security.jwt.JWTConfigurer.AUTHORIZATION_HEADER;
 
 @Component
@@ -34,7 +36,12 @@ public class MvcAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         String jwt = tokenProvider.createToken(authentication, isRememberMe(httpServletRequest));
         httpServletResponse.addHeader(AUTHORIZATION_HEADER, "Bearer " + jwt);
-        httpServletResponse.addCookie(new Cookie("ql-auth", "Bearer:" + jwt));
+        httpServletResponse.addCookie(new Cookie(JWTFilter.QL_AUTH, "Bearer:" + jwt));
+
+        if (authentication.isAuthenticated()) {
+            QlUserDetails principal = (QlUserDetails) authentication.getPrincipal();
+            httpServletResponse.addCookie(new Cookie(QUIS_LISTING_LOCALE_COOKIE, principal.getLangKey()));
+        }
 
         String redirectUrl = "/";
         String aContinue = httpServletRequest.getParameter("continue");
