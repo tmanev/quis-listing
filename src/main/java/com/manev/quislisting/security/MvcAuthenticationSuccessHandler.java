@@ -14,9 +14,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Locale;
 
 import static com.manev.quislisting.config.ThymeleafConfiguration.QUIS_LISTING_LOCALE_COOKIE;
 import static com.manev.quislisting.security.jwt.JWTConfigurer.AUTHORIZATION_HEADER;
+import static org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME;
 
 @Component
 public class MvcAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -40,6 +42,7 @@ public class MvcAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         if (authentication.isAuthenticated()) {
             QlUserDetails principal = (QlUserDetails) authentication.getPrincipal();
+            httpServletRequest.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(principal.getLangKey()));
             httpServletResponse.addCookie(new Cookie(QUIS_LISTING_LOCALE_COOKIE, principal.getLangKey()));
         }
 

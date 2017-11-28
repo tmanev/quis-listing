@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Locale;
 
 import static com.manev.quislisting.config.ThymeleafConfiguration.QUIS_LISTING_LOCALE_COOKIE;
 import static org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME;
@@ -97,7 +98,7 @@ public class JWTFilter extends GenericFilterBean {
             log.info("Country iso is: {}", countryIso);
             if (countryIso != null) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-                request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, countryIso);
+                request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(countryIso));
                 httpServletResponse.addCookie(new Cookie(QUIS_LISTING_LOCALE_COOKIE, countryIso));
             }
         }

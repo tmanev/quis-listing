@@ -68,7 +68,12 @@ Profile = {
                             method: 'POST'
                         }).then(function (response) {
                             console.log('Success!:', response.data);
-
+                            var headerLocaleKey = "ql-locale-header";
+                            var localeCookie = "QuisListingLocaleCookie";
+                            if (response.headers.get(headerLocaleKey)) {
+                                eraseCookie(localeCookie);
+                                createCookie(localeCookie, response.headers.get(headerLocaleKey));
+                            }
                             this.$v.profile.$reset();
                             $.notify({
                                 message: response.bodyText
@@ -76,6 +81,20 @@ Profile = {
                                 type: 'success'
                             });
                             $btn.button('reset');
+
+                            function createCookie(name,value,days) {
+                                if (days) {
+                                    var date = new Date();
+                                    date.setTime(date.getTime()+(days*24*60*60*1000));
+                                    var expires = "; expires="+date.toGMTString();
+                                }
+                                else var expires = "";
+                                document.cookie = name+"="+value+expires+"; path=/";
+                            }
+
+                            function eraseCookie(name) {
+                                createCookie(name,"",-1);
+                            }
                             // trigger successful block
                         }, function (response) {
                             console.log('Error!:', response.data);
