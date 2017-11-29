@@ -83,30 +83,40 @@
         }
 
         function initDlContentFieldOptionModel() {
-            if (vm.dlContentField.options !== null && vm.dlContentField.options !== '') {
-                vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
-            }
             if (vm.dlContentField.type === 'STRING') {
-                vm.dlContentFieldOption = {
-                    maxLength: 25,
-                    regex: ''
-                };
-            } else if (vm.dlContentField.type === 'NUMBER') {
-                vm.dlContentFieldOption = {
-                    isInteger: true,
-                    decimalSeparator: ',',
-                    thousandsSeparator: '',
-                    min: '',
-                    max: ''
+                if (vm.dlContentField.options !== null && vm.dlContentField.options !== '') {
+                    vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
+                } else {
+                    vm.dlContentFieldOption = {
+                        maxLength: 25,
+                        regex: ''
+                    };
                 }
+            } else if (vm.dlContentField.type === 'NUMBER') {
+                if (vm.dlContentField.options !== null && vm.dlContentField.options !== '') {
+                    vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
+                } else {
+                    vm.dlContentFieldOption = {
+                        isInteger: true,
+                        decimalSeparator: ',',
+                        thousandsSeparator: '',
+                        min: '',
+                        max: ''
+                    }
+                }
+
             } else if (vm.dlContentField.type === 'WEBSITE') {
-                vm.dlContentFieldOption = {
-                    isBlank: true,
-                    isNoFollow: true,
-                    useLinkText: true,
-                    defaultLinkText: '',
-                    useDefaultLinkText: false
-                };
+                if (vm.dlContentField.options !== null && vm.dlContentField.options !== '') {
+                    vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
+                } else {
+                    vm.dlContentFieldOption = {
+                        isBlank: true,
+                        isNoFollow: true,
+                        useLinkText: true,
+                        defaultLinkText: '',
+                        useDefaultLinkText: false
+                    };
+                }
             } else if (vm.dlContentField.type === 'SELECT' || vm.dlContentField.type === 'CHECKBOX') {
                 vm.loadItems();
             } else if (vm.dlContentField.type === 'DEPENDENT_SELECT') {
