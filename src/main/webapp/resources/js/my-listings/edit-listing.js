@@ -45,6 +45,18 @@ EditListing = {
                 }
             }
 
+            function defaultValueIfNoRelation(dlContentField) {
+                if (dlContentField.type === 'CHECKBOX') {
+                    // return empty array to be able to operate checkbox
+                    return [];
+                } else if (dlContentField.type === 'SELECT') {
+                    return -1;
+                } else if (dlContentField.type === 'DEPENDENT_SELECT') {
+                    dlContentField.parentValue = -1;
+                    return -1;
+                }
+            }
+
             if (dlListingFields) {
                 for (let dlListingField of dlListingFields) {
                     if (dlListingField.id == dlContentField.id) {
@@ -73,18 +85,12 @@ EditListing = {
                         }
                     }
                 }
+                // if it gets here means content field is added and there is no relation with the dlListing
+                // return default value for the proper type
+                return defaultValueIfNoRelation(dlContentField);
             } else {
-                if (dlContentField.type === 'CHECKBOX') {
-                    // return empty array to be able to operate checkbox
-                    return [];
-                } else if (dlContentField.type === 'SELECT') {
-                    return -1;
-                } else if (dlContentField.type === 'DEPENDENT_SELECT') {
-                    dlContentField.parentValue = -1;
-                    return -1;
-                }
+                return defaultValueIfNoRelation(dlContentField);
             }
-            return null;
         }
 
         var selectedCategory = {
