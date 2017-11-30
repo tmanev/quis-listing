@@ -30,6 +30,7 @@ public class DlContentFieldDTO {
     private String options;
     private String searchOptions;
     private List<DlContentFieldItemDTO> dlContentFieldItems;
+    private DlContentFieldGroupDTO dlContentFieldGroup;
 
     public Long getId() {
         return id;
@@ -327,6 +328,19 @@ public class DlContentFieldDTO {
 
     public DlContentFieldDTO dlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
+        return this;
+    }
+
+    public DlContentFieldGroupDTO getDlContentFieldGroup() {
+        return dlContentFieldGroup;
+    }
+
+    public void setDlContentFieldGroup(DlContentFieldGroupDTO dlContentFieldGroup) {
+        this.dlContentFieldGroup = dlContentFieldGroup;
+    }
+
+    public DlContentFieldDTO dlContentFieldGroup(DlContentFieldGroupDTO dlContentFieldGroup) {
+        this.dlContentFieldGroup = dlContentFieldGroup;
         return this;
     }
 }

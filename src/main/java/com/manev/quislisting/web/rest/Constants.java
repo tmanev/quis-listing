@@ -29,6 +29,13 @@ public final class Constants {
     public static final String RESOURCE_API_ADMIN_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-listings";
     public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";
 
+    public class Rest {
+        public class DlContentFieldGroup {
+            public static final String BASE = "/api/admin/dl-content-field-group";
+
+        }
+    }
+
     public class Mvc {
         public class Listings {
             public static final String BASE = "/listings";

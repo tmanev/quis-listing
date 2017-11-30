@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="V2017_11_30_1400" author="tmanev">
+        <comment>Add content field grouping.</comment>
+        <createTable tableName="ql_dl_content_field_group">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slug" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text"/>
+            <column name="order_num" type="tinyint(4)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addColumn tableName="ql_dl_content_field">
+            <column name="dl_content_field_group_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_dl_content_field_dl_content_field_group"
+                             referencedColumnNames="id"
+                             referencedTableName="ql_dl_content_field_group"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

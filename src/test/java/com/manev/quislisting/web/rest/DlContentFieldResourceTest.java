@@ -2,8 +2,10 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.DlContentField;
+import com.manev.quislisting.domain.DlContentFieldGroup;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.repository.DlContentFieldGroupRepository;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.DlContentFieldService;
@@ -31,8 +33,13 @@ import java.util.Set;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_CONTENT_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
@@ -85,6 +92,9 @@ public class DlContentFieldResourceTest {
     private DlContentFieldRepository dlContentFieldRepository;
 
     @Autowired
+    private DlContentFieldGroupRepository dlContentFieldGroupRepository;
+
+    @Autowired
     private DlCategoryRepository dlCategoryRepository;
 
     @Autowired
@@ -101,6 +111,7 @@ public class DlContentFieldResourceTest {
     private DlContentField dlContentField;
     private DlCategory dlCategory;
     private DlCategory dlCategory2;
+    private DlContentFieldGroup dlContentFieldGroup;
 
     public static DlContentField createEntity() {
         return new DlContentField()
@@ -168,6 +179,7 @@ public class DlContentFieldResourceTest {
         dlCategoryRepository.deleteAllByParent(null);
         dlCategory = DlCategoryResourceIntTest.createEntity();
         dlCategory2 = DlCategoryResourceIntTest.createEntity2();
+        dlContentFieldGroup = DlContentFieldGroupResourceTest.createEntity();
     }
 
     @Test
@@ -175,12 +187,14 @@ public class DlContentFieldResourceTest {
     public void createDlContentField() throws Exception {
         int databaseSizeBeforeCreate = dlContentFieldRepository.findAll().size();
 
+        dlContentFieldGroupRepository.saveAndFlush(dlContentFieldGroup);
         DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
         dlContentField.setDlCategories(new HashSet<DlCategory>() {
             {
                 add(dlCategorySaved);
             }
         });
+        dlContentField.setDlContentFieldGroup(dlContentFieldGroup);
 
         // Create the DlContentField
         DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
@@ -218,6 +232,9 @@ public class DlContentFieldResourceTest {
 
         // verify also that qlString is created
         assertThat(dlContentFieldSaved.getQlString().getValue()).isEqualTo(DEFAULT_NAME);
+
+        // verify that also group is saved
+        assertThat(dlContentFieldSaved.getDlContentFieldGroup().getId()).isEqualTo(dlContentFieldGroup.getId());
     }
 
     @Test
@@ -251,6 +268,8 @@ public class DlContentFieldResourceTest {
                 add(dlCategorySaved);
             }
         });
+        dlContentFieldGroupRepository.saveAndFlush(dlContentFieldGroup);
+        dlContentField.setDlContentFieldGroup(dlContentFieldGroup);
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         // Get the DlContentField
@@ -279,6 +298,9 @@ public class DlContentFieldResourceTest {
                 .andExpect(jsonPath("$.dlCategories.[0].id").value(dlContentField.getDlCategories().stream().findFirst().orElse(null).getId()))
                 .andExpect(jsonPath("$.options").value(dlContentField.getOptions()))
                 .andExpect(jsonPath("$.searchOptions").value(dlContentField.getSearchOptions()))
+                .andExpect(jsonPath("$.dlContentFieldGroup.id").value(dlContentFieldGroup.getId()))
+                .andExpect(jsonPath("$.dlContentFieldGroup.name").value(dlContentFieldGroup.getName()))
+                .andExpect(jsonPath("$.dlContentFieldGroup.slug").value(dlContentFieldGroup.getSlug()))
         ;
     }
 
@@ -331,6 +353,9 @@ public class DlContentFieldResourceTest {
                 .options(UPDATED_OPTIONS)
                 .searchOptions(UPDATED_SEARCH_OPTIONS);
 
+        dlContentFieldGroupRepository.saveAndFlush(dlContentFieldGroup);
+        updatedDlContentField.setDlContentFieldGroup(dlContentFieldGroup);
+
         DlContentFieldDTO updateContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(updatedDlContentField, null);
 
         restDlContentFieldMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELDS)
@@ -363,6 +388,8 @@ public class DlContentFieldResourceTest {
         assertThat(dlContentFieldSaved.getDlCategories().size()).isEqualTo(2);
         assertThat(dlContentFieldSaved.getOptions()).isEqualTo(UPDATED_OPTIONS);
         assertThat(dlContentFieldSaved.getSearchOptions()).isEqualTo(UPDATED_SEARCH_OPTIONS);
+
+        assertThat(dlContentFieldSaved.getDlContentFieldGroup().getId()).isEqualTo(dlContentFieldGroup.getId());
 
         // verify also that qlString is created
         assertThat(dlContentFieldSaved.getQlString().getValue()).isEqualTo(UPDATED_NAME);

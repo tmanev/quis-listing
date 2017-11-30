@@ -21,10 +21,12 @@ public class DlContentFieldMapper {
 
     private DlCategoryMapper dlCategoryMapper;
     private DlContentFieldItemMapper dlContentFieldItemMapper;
+    private DlContentFieldGroupMapper dlContentFieldGroupMapper;
 
-    public DlContentFieldMapper(DlCategoryMapper dlCategoryMapper, DlContentFieldItemMapper dlContentFieldItemMapper) {
+    public DlContentFieldMapper(DlCategoryMapper dlCategoryMapper, DlContentFieldItemMapper dlContentFieldItemMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper) {
         this.dlCategoryMapper = dlCategoryMapper;
         this.dlContentFieldItemMapper = dlContentFieldItemMapper;
+        this.dlContentFieldGroupMapper = dlContentFieldGroupMapper;
     }
 
     public DlContentField dlContentFieldDTOToDlContentField(DlContentField dlContentField, DlContentFieldDTO dlContentFieldDTO) {
@@ -50,6 +52,8 @@ public class DlContentFieldMapper {
                 .dlCategories(getDlCategories(dlContentFieldDTO.getDlCategories()))
                 .options(dlContentFieldDTO.getOptions())
                 .searchOptions(dlContentFieldDTO.getSearchOptions())
+                .dlContentFieldGroup(dlContentFieldDTO.getDlContentFieldGroup() != null ?
+                        dlContentFieldGroupMapper.dlContentFieldGroupDTOToDlContentFieldGroup(dlContentFieldDTO.getDlContentFieldGroup()) : null)
                 ;
     }
 
@@ -79,7 +83,10 @@ public class DlContentFieldMapper {
                 .options(dlContentField.getOptions())
                 .searchOptions(dlContentField.getSearchOptions())
                 .dlCategories(getDlCategoriesDTO(dlContentField.getDlCategories()))
-                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems()));
+                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems()))
+                .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
+                        dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
+                ;
     }
 
     private String getTranslatedName(DlContentField dlContentField, String language) {
