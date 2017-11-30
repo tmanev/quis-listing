@@ -1,0 +1,58 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myDlContentFieldGroupLabel" data-translate="quisListingApp.dlContentFieldGroup.home.createOrEditLabel">Create or edit a Content Field Group</h4>
+    </div>
+    <div class="modal-body form-horizontal">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.dlContentFieldGroup.id">
+            <label class="col-sm-2 control-label" for="id" data-translate="global.field.id">ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="id" name="id"
+                        ng-model="vm.dlContentFieldGroup.id" readonly />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentFieldGroup.name" for="field_name">Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" id="field_name" ng-model="vm.dlContentFieldGroup.name" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentFieldGroup.slug" for="field_slug">Slug</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="slug" id="field_slug" ng-model="vm.dlContentFieldGroup.slug"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentFieldGroup.description"
+                   for="field_description">
+                Description
+            </label>
+            <div class="col-sm-10">
+                <textarea class="form-control" name="description" id="field_description"
+                          ng-model="vm.dlContentFieldGroup.description"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentFieldGroup.orderNum" for="order_num">
+                Ored Num.
+            </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" id="order_num"
+                       ng-model="vm.dlContentFieldGroup.orderNum"/>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

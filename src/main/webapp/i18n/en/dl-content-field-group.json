@@ -1,0 +1,25 @@
+{
+    "quisListingApp": {
+        "dlContentFieldGroup" : {
+            "home": {
+                "title": "Dl Content Field Groups",
+                "createLabel": "Create a new Dl Content Field Group",
+                "createOrEditLabel": "Create or edit a Dl Content Field Group",
+                "search": "Search for Dl Content Field Group"
+            },
+            "created": "A new Dl Content Field Group is created with identifier {{ param }}",
+            "updated": "A Dl Content Field Group is updated with identifier {{ param }}",
+            "deleted": "A Dl Content Field Group is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Dl Content Field Group {{ id }}?"
+            },
+            "detail": {
+                "title": "Dl Content Field Group"
+            },
+            "name": "Name",
+            "slug": "Slug",
+            "description": "Description",
+            "orderNum": "Order Num."
+        }
+    }
+}

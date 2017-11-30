@@ -31,7 +31,7 @@ public final class Constants {
 
     public class Rest {
         public class DlContentFieldGroup {
-            public static final String BASE = "/api/admin/dl-content-field-group";
+            public static final String BASE = "/api/admin/dl-content-field-groups";
 
         }
     }
