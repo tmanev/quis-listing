@@ -319,6 +319,7 @@
                 <button type="button" class="btn btn-primary col-sm-5 col-xs-5"
                         id="btnPublish"
                         v-on:click="onPublish"
+                        v-bind:disabled="listing.status == 'PUBLISHED'"
                         th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_publish}">
                     <span class="glyphicon glyphicon-globe"></span>&nbsp;<span
                         th:text="#{page.my_listings.edit_listing.btn_publish}">Publish</span>
