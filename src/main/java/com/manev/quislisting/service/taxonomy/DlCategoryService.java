@@ -1,10 +1,9 @@
 package com.manev.quislisting.service.taxonomy;
 
-import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.TranslationGroupRepository;
+import com.manev.quislisting.repository.model.CategoryCount;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
@@ -90,6 +89,10 @@ public class DlCategoryService {
     public void delete(Long id) {
         log.debug("Request to delete DlCategoryDTO : {}", id);
         dlCategoryRepository.delete(id);
+    }
+
+    public List<CategoryCount> findAllCategoriesWithCount(String languageCode) {
+        return dlCategoryRepository.findCategoriesWithCount();
     }
 
     public List<ActiveLanguageDTO> findAllActiveLanguages() {
