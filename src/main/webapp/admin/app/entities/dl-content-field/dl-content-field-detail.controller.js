@@ -14,10 +14,10 @@
         });
 
     DlContentFieldDetailController.$inject = ['$scope', '$rootScope', '$state', '$stateParams', 'previousState',
-        'entity', 'DlContentField', 'DlCategory', 'DataLanguageHub', 'Language', 'AlertService'];
+        'entity', 'DlContentField', 'DlCategory', 'DataLanguageHub', 'Language', 'AlertService', 'DlContentFieldGroup'];
 
     function DlContentFieldDetailController($scope, $rootScope, $state, $stateParams, previousState,
-                                            entity, DlContentField, DlCategory, DataLanguageHub, Language, AlertService) {
+                                            entity, DlContentField, DlCategory, DataLanguageHub, Language, AlertService, DlContentFieldGroup) {
         var vm = this;
         vm.dataLanguageHub = DataLanguageHub.get();
 
@@ -28,6 +28,7 @@
         vm.onLanguageChange = onLanguageChange;
         vm.onLanguageClick = onLanguageClick;
         vm.clearDlCategorySelection = clearDlCategorySelection;
+        vm.clearDlContentFieldGroupSelection = clearDlContentFieldGroupSelection;
         vm.doSlugify = doSlugify;
 
         vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
@@ -52,6 +53,7 @@
 
         loadActiveLanguages();
         loadAllCategoriesByLanguage();
+        loadDlContentFieldGroups();
 
         function doSlugify() {
             slug.defaults.mode ='rfc3986';
@@ -131,12 +133,30 @@
             }
         }
 
+        function loadDlContentFieldGroups() {
+            DlContentFieldGroup.query({}, onSuccess, onError);
+
+            function onSuccess(data, headers) {
+                vm.dlContentFieldGroups = data;
+            }
+
+            function onError(error) {
+                AlertService.error(error.data.message);
+            }
+        }
+
         vm.onSelectCallback = function ($item, $model) {
             console.log("Item:");
             console.log($item);
             console.log("Model:");
             console.log($model);
-            console.log(vm.dlContentField.dlCategories);
+        };
+
+        vm.onSelectGroupCallback = function ($item, $model) {
+            console.log("Item:");
+            console.log($item);
+            console.log("Model:");
+            console.log($model);
         };
 
         function save() {
@@ -173,6 +193,10 @@
         function clearDlCategorySelection() {
             vm.selectedCategories = [];
             vm.dlContentField.dlCategories = null;
+        }
+
+        function clearDlContentFieldGroupSelection() {
+            vm.dlContentField.dlContentFieldGroup = null;
         }
     }
 })();
