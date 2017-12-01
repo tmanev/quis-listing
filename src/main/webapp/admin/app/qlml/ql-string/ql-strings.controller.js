@@ -20,7 +20,6 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchModel = pagingParams.searchModel;
-        vm.currentSearchModel = pagingParams.searchModel;
 
         loadAll();
 
@@ -69,10 +68,7 @@
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
-                return vm.clear();
-            }
+        function search() {
             vm.links = null;
             vm.page = 1;
             vm.predicate = '_score';
@@ -85,7 +81,7 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearchModel = {};
+            vm.searchModel = {};
             vm.transition();
         }
     }

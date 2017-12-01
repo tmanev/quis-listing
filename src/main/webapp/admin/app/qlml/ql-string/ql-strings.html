@@ -12,7 +12,7 @@
                                 <input type="text" class="form-control" id="search_id" placeholder="Search by id"
                                        ng-model="vm.searchModel.id">
                                 <span  class="input-group-btn width-min" >
-                                    <button class="btn btn-info" ng-click="vm.search(vm.searchModel.id)">
+                                    <button class="btn btn-info" ng-click="vm.search()">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                 </span>
@@ -25,7 +25,7 @@
                                 <input type="text" class="form-control" id="search_value" placeholder="Search value"
                                        ng-model="vm.searchModel.value">
                                 <span  class="input-group-btn width-min" >
-                                    <button class="btn btn-info" ng-click="vm.search(vm.searchModel.value)">
+                                    <button class="btn btn-info" ng-click="vm.search()">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                 </span>
@@ -40,26 +40,18 @@
                                 <input type="text" class="form-control" id="search_context" placeholder="Search context"
                                        ng-model="vm.searchModel.context">
                                 <span  class="input-group-btn width-min" >
-                                    <button class="btn btn-info" ng-click="vm.search(vm.searchModel.context)">
+                                    <button class="btn btn-info" ng-click="vm.search()">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                 </span>
                             </div>
                         </div>
+
+                        <button class="btn btn-default btn-sm col-sm-2 col-sm-offset-2" ng-click="vm.clear()">
+                            <span class="glyphicon glyphicon-filter"></span>
+                            <span class="hidden-sm-down" >Reset</span>
+                        </button>
                     </div>
-                    <!--<div class="input-group pull-right" >-->
-                        <!--<input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.qlString.home.search' | translate }}">-->
-                        <!--<span  class="input-group-btn width-min" >-->
-                            <!--<button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">-->
-                                <!--<span class="glyphicon glyphicon-search"></span>-->
-                            <!--</button>-->
-                        <!--</span>-->
-                        <!--<span class="input-group-btn width-min" ng-if="vm.currentSearch">-->
-                            <!--<button class="btn btn-info" ng-click="vm.clear()">-->
-                                <!--<span class="glyphicon glyphicon-trash"></span>-->
-                            <!--</button>-->
-                        <!--</span>-->
-                    <!--</div>-->
                 </form>
             </div>
         </div>
@@ -97,7 +89,6 @@
                             <span class="glyphicon glyphicon-eye-open"></span>
                             <span class="hidden-sm-down" data-translate="entity.action.translate"></span>
                         </button>
-
                     </div>
                 </td>
             </tr>
