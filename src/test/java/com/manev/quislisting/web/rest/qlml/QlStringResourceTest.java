@@ -25,6 +25,7 @@ import java.util.Set;
 
 import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_STRINGS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -43,17 +44,16 @@ public class QlStringResourceTest {
     private static final String DEFAULT_TYPE = "default type";
     private static final Integer DEFAULT_STATUS = 0;
 
-
-    @Autowired
-    private QlStringResource qlStringResource;
     @Autowired
     private QlStringRepository qlStringRepository;
 
     @Autowired
     private QlStringService qlStringService;
+
     @Autowired
     private MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
-    private MockMvc restQlStringMockMvc;
+
+    private MockMvc mockMvc;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver;
@@ -75,7 +75,7 @@ public class QlStringResourceTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         QlStringResource qlStringResource = new QlStringResource(qlStringService);
-        this.restQlStringMockMvc = MockMvcBuilders.standaloneSetup(qlStringResource)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(qlStringResource)
                 .setCustomArgumentResolvers(pageableHandlerMethodArgumentResolver)
                 .setMessageConverters(jackson2HttpMessageConverter)
                 .build();
@@ -83,8 +83,40 @@ public class QlStringResourceTest {
 
     @Before
     public void initTest() {
-//        qlStringRepository.deleteAll();
         qlString = createEntity();
+    }
+
+    @Test
+    @Transactional
+    public void getQlStrings() throws Exception {
+        qlStringRepository.saveAndFlush(qlString);
+
+        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(qlString.getId().intValue())))
+                .andExpect(jsonPath("$.[*].languageCode").value(hasItem(DEFAULT_LCODE)))
+                .andExpect(jsonPath("$.[*].name").value(hasItem((DEFAULT_NAME))))
+                .andExpect(jsonPath("$.[*].context").value(hasItem((DEFAULT_CONTEXT))))
+                .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE)))
+                .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)));
+    }
+
+    @Test
+    @Transactional
+    public void getQlStringsShouldFilterByValue() throws Exception {
+        qlStringRepository.saveAndFlush(qlString);
+
+        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS)
+                .param("value", DEFAULT_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[0].id").value((qlString.getId().intValue())))
+                .andExpect(jsonPath("$.[0].languageCode").value((DEFAULT_LCODE)))
+                .andExpect(jsonPath("$.[0].name").value(((DEFAULT_NAME))))
+                .andExpect(jsonPath("$.[0].context").value(((DEFAULT_CONTEXT))))
+                .andExpect(jsonPath("$.[0].value").value((DEFAULT_VALUE)))
+                .andExpect(jsonPath("$.[0].status").value((DEFAULT_STATUS)));
     }
 
     @Test
@@ -92,7 +124,7 @@ public class QlStringResourceTest {
     public void getQlString() throws Exception {
         qlStringRepository.saveAndFlush(qlString);
 
-        restQlStringMockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", qlString.getId()))
+        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", qlString.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(qlString.getId().intValue()))
@@ -101,13 +133,12 @@ public class QlStringResourceTest {
                 .andExpect(jsonPath("$.context").value(DEFAULT_CONTEXT))
                 .andExpect(jsonPath("$.value").value(DEFAULT_VALUE))
                 .andExpect(jsonPath("$.status").value(DEFAULT_STATUS));
-
     }
 
     @Test
     @Transactional
     public void getNonExistingQlString() throws Exception {
-        restQlStringMockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", Long.MAX_VALUE))
+        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -126,7 +157,7 @@ public class QlStringResourceTest {
 
         qlString.setStringTranslation(stringTranslationSet);
 
-        restQlStringMockMvc.perform(put(RESOURCE_API_ADMIN_QL_STRINGS)
+        mockMvc.perform(put(RESOURCE_API_ADMIN_QL_STRINGS)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(qlString)))
                 .andExpect(status().isOk());
@@ -151,7 +182,7 @@ public class QlStringResourceTest {
     private boolean containsTranslation(String value, String languageCode, Set<StringTranslation> stringTranslationSavedSet) {
         for (StringTranslation stringTranslation : stringTranslationSavedSet) {
             if (stringTranslation.getLanguageCode().equals(languageCode)
-                    && stringTranslation.getValue().equals(value)){
+                    && stringTranslation.getValue().equals(value)) {
                 return true;
             }
         }

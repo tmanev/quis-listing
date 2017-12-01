@@ -3,6 +3,7 @@ package com.manev.quislisting.service.qlml;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.qlml.QlStringRepository;
+import com.manev.quislisting.service.filter.QlStringFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,12 @@ public class QlStringService {
     public Page<QlString> findAll(Pageable pageable) {
         log.debug("Request to get all strings");
         return qlStringRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QlString> findAllByFilter(QlStringFilter filter, Pageable pageable) {
+        log.debug("Request to get all strings");
+        return qlStringRepository.findAllByFilter(filter, pageable);
     }
 
     @Transactional(readOnly = true)
