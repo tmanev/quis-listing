@@ -19,27 +19,21 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+        vm.searchModel = pagingParams.searchModel;
 
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
-                QlStringSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
+            // if (pagingParams.search) {
                 QlString.query({
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort(),
-                    active: true
+                    active: true,
+                    id: pagingParams.searchModel.id,
+                    value: pagingParams.searchModel.value,
+                    context: pagingParams.searchModel.context
                 }, onSuccess, onError);
-            }
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -68,19 +62,17 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                id: vm.searchModel.id,
+                value: vm.searchModel.value,
+                context: vm.searchModel.context
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
-                return vm.clear();
-            }
+        function search() {
             vm.links = null;
             vm.page = 1;
             vm.predicate = '_score';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
             vm.transition();
         }
 
@@ -89,7 +81,7 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.searchModel = {};
             vm.transition();
         }
     }

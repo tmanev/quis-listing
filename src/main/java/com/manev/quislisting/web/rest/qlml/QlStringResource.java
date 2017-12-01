@@ -1,6 +1,7 @@
 package com.manev.quislisting.web.rest.qlml;
 
 import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.service.filter.QlStringFilter;
 import com.manev.quislisting.service.qlml.QlStringService;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -35,9 +36,10 @@ public class QlStringResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<QlString>> getAllQlStrings(@PageableDefault(value = Integer.MAX_VALUE) Pageable pageable) {
+    public ResponseEntity<List<QlString>> getAllQlStrings(QlStringFilter qlStringFilter,
+            @PageableDefault(value = Integer.MAX_VALUE) Pageable pageable) {
         log.debug("REST request to get a page of QlStrings");
-        Page<QlString> page = qlStringService.findAll(pageable);
+        Page<QlString> page = qlStringService.findAllByFilter(qlStringFilter, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_QL_STRINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

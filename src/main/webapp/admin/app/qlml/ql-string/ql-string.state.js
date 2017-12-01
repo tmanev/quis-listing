@@ -11,7 +11,7 @@
         $stateProvider
         .state('ql-strings', {
             parent: 'qlml',
-            url: '/ql-strings?page&sort&search',
+            url: '/ql-strings?page&sort&search&id&value&context',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'quisListingApp.ql-string.home.title'
@@ -32,6 +32,9 @@
                     value: 'id,asc',
                     squash: true
                 },
+                id: null,
+                value: null,
+                context: null,
                 search: null
             },
             resolve: {
@@ -41,7 +44,12 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        search: $stateParams.search,
+                        searchModel: {
+                            id: $stateParams.id,
+                            value: $stateParams.value,
+                            context: $stateParams.context
+                        }
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

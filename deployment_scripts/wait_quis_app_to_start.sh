@@ -16,6 +16,8 @@ while [ $elapsed -le $timeout ]; do
    elapsed=$((elapsed+delay))
 
    if [[ ! -z `awk "/^$currentTime/,/^2999-01-01 00:00:00/" ~/quis-app/logs/quis$PORT.log | grep "Started QuisListingApp in"` ]]; then
+        # make initial call to initialize dispacherServlet
+        curl -i localhost:$PORT > /dev/null
         success=1
         break
     else

@@ -10,7 +10,10 @@
         var resourceUrl =  'api/admin/ql-strings/:id';
 
         return $resource(resourceUrl, {}, {
-            'query': { method: 'GET', isArray: true},
+            'query': {
+                url: 'api/admin/ql-strings',
+                method: 'GET',
+                isArray: true},
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {
