@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="quisListingApp.dlContentFieldGroup.detail.title">Content Field Group</span> {{vm.dlContentFieldGroup.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row jh-entity-details">
+        <dt><span data-translate="quisListingApp.dlContentFieldGroup.name">Name</span></dt>
+        <dd>
+            <span>{{vm.dlContentFieldGroup.name}}</span>
+        </dd>
+        <dt><span data-translate="quisListingApp.dlContentFieldGroup.slug">Slug</span></dt>
+        <dd>
+            <span>{{vm.dlContentFieldGroup.slug}}</span>
+        </dd>
+        <dt><span data-translate="quisListingApp.dlContentFieldGroup.description">Description</span></dt>
+        <dd>
+            <span>{{vm.dlContentFieldGroup.description}}</span>
+        </dd>
+        <dt><span data-translate="quisListingApp.dlContentFieldGroup.orderNum">Order Num.</span></dt>
+        <dd>
+            <span>{{vm.dlContentFieldGroup.orderNum}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="dl-content-field-group-detail.edit({id:vm.dlContentFieldGroup.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

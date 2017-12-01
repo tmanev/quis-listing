@@ -45,6 +45,18 @@ EditListing = {
                 }
             }
 
+            function defaultValueIfNoRelation(dlContentField) {
+                if (dlContentField.type === 'CHECKBOX') {
+                    // return empty array to be able to operate checkbox
+                    return [];
+                } else if (dlContentField.type === 'SELECT') {
+                    return -1;
+                } else if (dlContentField.type === 'DEPENDENT_SELECT') {
+                    dlContentField.parentValue = -1;
+                    return -1;
+                }
+            }
+
             if (dlListingFields) {
                 for (let dlListingField of dlListingFields) {
                     if (dlListingField.id == dlContentField.id) {
@@ -73,18 +85,12 @@ EditListing = {
                         }
                     }
                 }
+                // if it gets here means content field is added and there is no relation with the dlListing
+                // return default value for the proper type
+                return defaultValueIfNoRelation(dlContentField);
             } else {
-                if (dlContentField.type === 'CHECKBOX') {
-                    // return empty array to be able to operate checkbox
-                    return [];
-                } else if (dlContentField.type === 'SELECT') {
-                    return -1;
-                } else if (dlContentField.type === 'DEPENDENT_SELECT') {
-                    dlContentField.parentValue = -1;
-                    return -1;
-                }
+                return defaultValueIfNoRelation(dlContentField);
             }
-            return null;
         }
 
         var selectedCategory = {
@@ -135,6 +141,9 @@ EditListing = {
                 image: '',
                 confirmRemoveImageModal: {
                     attachment: null
+                },
+                saveModal: {
+                    shouldGoBack: false
                 }
             },
             validations: function () {
@@ -423,20 +432,43 @@ EditListing = {
                     }
                     touchMap.set($v, setTimeout($v.$touch, 1000));
                 },
+                callbackSave: function () {
+                    if (this.saveModal.shouldGoBack) {
+                        var $btn = $('#btnSaveAndGoBack').button('loading');
+                        $('#save-warning-modal').modal('hide');
+                        this.doSave($btn, "/my-listings");
+                    } else {
+                        var $btn = $('#btnSave').button('loading');
+                        $('#save-warning-modal').modal('hide');
+                        this.doSave($btn, false);
+                    }
+                },
                 onSaveAndGoBack: function (event) {
-                    var $btn = $('#btnSaveAndGoBack').button('loading');
-                    this.doSave($btn, "/my-listings");
+                    if (this.listing.status == 'PUBLISHED') {
+                        // open confirmation dialog
+                        this.saveModal.shouldGoBack = "/my-listings";
+                        $('#save-warning-modal').modal('show');
+                    } else {
+                        var $btn = $('#btnSaveAndGoBack').button('loading');
+                        this.doSave($btn, "/my-listings");
+                    }
                 },
                 onSave: function (event) {
-                    var $btn = $('#btnSave').button('loading');
-                    this.doSave($btn, false);
+                    if (this.listing.status == 'PUBLISHED') {
+                        // open confirmation dialog
+                        this.saveModal.shouldGoBack = false;
+                        $('#save-warning-modal').modal('show');
+                    } else {
+                        var $btn = $('#btnSave').button('loading');
+                        this.doSave($btn, false);
+                    }
                 },
                 doSave: function ($btn, locationAfterSave) {
                     var payload = this.getPayload();
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
                         console.log('Success!:', response.data);
-
+                        this.listing.status = response.data.status;
                         $.notify({
                             message: response.headers.get('X-qlService-alert')
                         }, {

@@ -3,8 +3,6 @@ package com.manev.quislisting.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -106,6 +104,10 @@ public class DlContentField {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dlContentField")
     @OrderBy
     private Set<DlContentFieldItem> dlContentFieldItems;
+
+    @ManyToOne
+    @JoinColumn(name = "dl_content_field_group_id")
+    private DlContentFieldGroup dlContentFieldGroup;
 
     public Long getId() {
         return id;
@@ -403,6 +405,19 @@ public class DlContentField {
 
     public DlContentField dlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
+        return this;
+    }
+
+    public DlContentFieldGroup getDlContentFieldGroup() {
+        return dlContentFieldGroup;
+    }
+
+    public void setDlContentFieldGroup(DlContentFieldGroup dlContentFieldGroup) {
+        this.dlContentFieldGroup = dlContentFieldGroup;
+    }
+
+    public DlContentField dlContentFieldGroup(DlContentFieldGroup dlContentFieldGroup) {
+        this.dlContentFieldGroup = dlContentFieldGroup;
         return this;
     }
 

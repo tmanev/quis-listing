@@ -39,7 +39,8 @@
           th:action="@{/sign-up}"
           th:object="${signUpUserBean}"
           method="post"
-          v-on:submit.prevent="onSubmit($event)">
+          v-on:submit.prevent="onSubmit($event)"
+          v-cloak>
         <fieldset>
             <legend th:text="#{page.signup.form.legend}">Sign Up</legend>
             <div class="form-group">

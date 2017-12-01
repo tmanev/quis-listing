@@ -33,7 +33,8 @@
                 "dlListings": "Dl Listings",
                 "dlCategories": "Dl Categories",
                 "dlLocations": "Dl Locations",
-                "dlContentFields": "Dl Content Fields"
+                "dlContentFields": "Dl Content Fields",
+                "dlContentFieldGroups": "Dl Content Field Groups"
             },
             "account": {
                 "main": "Account",
