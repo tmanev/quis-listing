@@ -3,6 +3,7 @@ package com.manev.quislisting.service.post.dto;
 public class DlListingFieldItemDTO {
     private Long id;
     private String value;
+    private String translatedValue;
 
     public Long getId() {
         return id;
@@ -30,4 +31,16 @@ public class DlListingFieldItemDTO {
         return this;
     }
 
+    public String getTranslatedValue() {
+        return translatedValue;
+    }
+
+    public void setTranslatedValue(String translatedValue) {
+        this.translatedValue = translatedValue;
+    }
+
+    public DlListingFieldItemDTO translatedValue(String translatedValue) {
+        this.translatedValue = translatedValue;
+        return this;
+    }
 }

@@ -87,7 +87,7 @@ public class DlContentFieldItemResourceTest {
         DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
         dlContentFieldRepository.save(dlContentField);
 
-        DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem);
+        DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
         restDlContentFieldItemMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS.replace("{dlContentFieldId}", dlContentField.getId().toString()))
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldItemDTO)))
@@ -110,7 +110,7 @@ public class DlContentFieldItemResourceTest {
 
         DlContentFieldItem existingDlContentFieldItem = new DlContentFieldItem();
         existingDlContentFieldItem.setId(1L);
-        DlContentFieldItemDTO existingDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(existingDlContentFieldItem);
+        DlContentFieldItemDTO existingDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(existingDlContentFieldItem, null);
 
         restDlContentFieldItemMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS.replace("{dlContentFieldId}", dlContentField.getId().toString()))
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -162,7 +162,7 @@ public class DlContentFieldItemResourceTest {
         DlContentFieldItem updateDlContentFieldItem = dlContentFieldItemRepository.findOne(dlContentFieldItem.getId());
         updateDlContentFieldItem.value(UPDATE_VALUE);
 
-        DlContentFieldItemDTO updateDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(updateDlContentFieldItem);
+        DlContentFieldItemDTO updateDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(updateDlContentFieldItem, null);
 
         restDlContentFieldItemMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS, dlContentField.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -184,7 +184,7 @@ public class DlContentFieldItemResourceTest {
         DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
-        DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem);
+        DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
         restDlContentFieldItemMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS, dlContentField.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldItemDTO)))

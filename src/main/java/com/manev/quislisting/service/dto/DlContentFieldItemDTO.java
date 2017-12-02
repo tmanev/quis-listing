@@ -8,6 +8,8 @@ public class DlContentFieldItemDTO {
 
     private Long id;
     private String value;
+    private String translatedValue;
+
     private DlContentFieldDTO dlContentFieldDTO;
 
 //    @JsonBackReference(value = "dl_content_field_item_dto_parent_reference")
@@ -39,6 +41,19 @@ public class DlContentFieldItemDTO {
 
     public DlContentFieldItemDTO value(String value) {
         this.value = value;
+        return this;
+    }
+
+    public String getTranslatedValue() {
+        return translatedValue;
+    }
+
+    public void setTranslatedValue(String translatedValue) {
+        this.translatedValue = translatedValue;
+    }
+
+    public DlContentFieldItemDTO translatedValue(String translatedValue) {
+        this.translatedValue = translatedValue;
         return this;
     }
 
