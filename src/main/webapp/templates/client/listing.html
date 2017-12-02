@@ -3,7 +3,7 @@
 >
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title th:text="${title}">Contacts</title>
+    <title th:text="${title}">Listing title</title>
 
     <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
@@ -19,10 +19,14 @@
         <p th:text="${dlListingDTO.content}"></p>
     </div>
     <div class="col-md-6">
-        <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">Category &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlCategories[0].name}">Work</span></h3>
+        <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
+            <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlCategories[0].name}">Work</span>
+        </h3>
     </div>
     <div class="col-md-6">
-        <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">Location &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlLocations[0].name}">Orlando, Miami, USA</span></h3>
+        <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
+            <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlLocations[0].name}">Orlando, Miami, USA</span>
+        </h3>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -45,7 +49,6 @@
                                 </span>
                         </td>
                     </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -53,8 +56,22 @@
         <div class="col-md-6">
             <div id="gallery" class="row" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
                 <th:block th:each="attachment : ${dlListingDTO.attachments}">
-                    <img th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
+
+                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta != null}"
+                         th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
                          th:data-image="'/content/files' + ${attachment.attachmentMetadata.largeImageResizeMeta.detail.file}"
+                         th:alt="${attachment.fileName}"
+                         style="display: none;"
+                    />
+                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta != null}"
+                         th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
+                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.mediumImageResizeMeta.detail.file}"
+                         th:alt="${attachment.fileName}"
+                         style="display: none;"
+                    />
+                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta == null && attachment.attachmentMetadata.smallImageResizeMeta != null}"
+                         th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
+                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
                          th:alt="${attachment.fileName}"
                          style="display: none;"
                     />
