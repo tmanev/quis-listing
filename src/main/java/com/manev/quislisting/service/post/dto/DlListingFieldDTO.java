@@ -1,7 +1,5 @@
 package com.manev.quislisting.service.post.dto;
 
-import com.manev.quislisting.domain.DlContentField;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,7 @@ public class DlListingFieldDTO {
     private String type;
     private String name;
     private String value;
-    private String previewValue;
+    private String translatedValue;
     private List<DlListingFieldItemDTO> dlListingFieldItemDTOs;
 
     public String getName() {
@@ -53,16 +51,16 @@ public class DlListingFieldDTO {
         return this;
     }
 
-    public String getPreviewValue() {
-        return previewValue;
+    public String getTranslatedValue() {
+        return translatedValue;
     }
 
-    public void setPreviewValue(String previewValue) {
-        this.previewValue = previewValue;
+    public void setTranslatedValue(String translatedValue) {
+        this.translatedValue = translatedValue;
     }
 
-    public DlListingFieldDTO previewValue(String previewValue) {
-        this.previewValue = previewValue;
+    public DlListingFieldDTO translatedValue(String translatedValue) {
+        this.translatedValue = translatedValue;
         return this;
     }
 

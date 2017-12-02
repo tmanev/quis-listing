@@ -139,7 +139,7 @@
                                 <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
                                 </option>
                                 <option v-for="selectionItem in dlContentField.dlContentFieldItems"
-                                        v-bind:value="selectionItem.id">{{selectionItem.value}}
+                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
                                 </option>
                             </select>
                             <span class="help-block"
@@ -158,14 +158,14 @@
                                 <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
                                 </option>
                                 <option v-for="selectionItem in rootContentFieldItem(dlContentField.dlContentFieldItems)"
-                                        v-bind:value="selectionItem.id">{{selectionItem.value}}
+                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
                                 </option>
                             </select>
                             <select class="form-control" v-model="dlContentField.value">
                                 <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
                                 </option>
                                 <option v-for="selectionItem in childContentFieldItem(dlContentField.dlContentFieldItems, dlContentField.parentValue)"
-                                        v-bind:value="selectionItem.id">{{selectionItem.value}}
+                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
                                 </option>
                             </select>
                             <span class="help-block"
@@ -182,7 +182,7 @@
                                 <label>
                                     <input type="checkbox" v-bind:value="selectionItem.id"
                                            v-model="dlContentField.value"/>
-                                    {{selectionItem.value}}
+                                    {{selectionItem.translatedValue}}
                                 </label>
                             </div>
                         </div>

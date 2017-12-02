@@ -2,8 +2,6 @@ package com.manev.quislisting.service.mapper;
 
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
-import com.manev.quislisting.domain.qlml.QlString;
-import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
@@ -58,8 +56,8 @@ public class DlContentFieldMapper {
     }
 
 
-    public DlContentFieldDTO dlContentFieldToDlContentFieldDTO(DlContentField dlContentField, String language) {
-        String translatedName = getTranslatedName(dlContentField, language);
+    public DlContentFieldDTO dlContentFieldToDlContentFieldDTO(DlContentField dlContentField, String languageCode) {
+        String translatedName = getTranslatedName(dlContentField, languageCode);
         return new DlContentFieldDTO()
                 .id(dlContentField.getId())
                 .coreField(dlContentField.getCoreField())
@@ -83,22 +81,15 @@ public class DlContentFieldMapper {
                 .options(dlContentField.getOptions())
                 .searchOptions(dlContentField.getSearchOptions())
                 .dlCategories(getDlCategoriesDTO(dlContentField.getDlCategories()))
-                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems()))
+                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems(), languageCode))
                 .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
                 ;
     }
 
-    private String getTranslatedName(DlContentField dlContentField, String language) {
-        if (language != null) {
-            QlString qlString = dlContentField.getQlString();
-            Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
-            for (StringTranslation translation : stringTranslation) {
-                if (translation.getLanguageCode().equals(language)) {
-                    return translation.getValue();
-                }
-            }
-        }
+    private String getTranslatedName(DlContentField dlContentField, String languageCode) {
+        String translation = TranslateUtil.getTranslatedString(dlContentField, languageCode);
+        if (translation != null) return translation;
         return dlContentField.getName();
     }
 
@@ -126,11 +117,11 @@ public class DlContentFieldMapper {
         return dlCategoryDTOList;
     }
 
-    private List<DlContentFieldItemDTO> getDlContentFieldsDTO(Set<DlContentFieldItem> dlContentFieldItems) {
+    private List<DlContentFieldItemDTO> getDlContentFieldsDTO(Set<DlContentFieldItem> dlContentFieldItems, String languageCode) {
         List<DlContentFieldItemDTO> result = new ArrayList<>();
         if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
             for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
-                result.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem));
+                result.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, languageCode));
             }
         }
 

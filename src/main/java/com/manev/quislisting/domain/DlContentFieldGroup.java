@@ -31,6 +31,7 @@ public class DlContentFieldGroup {
     @Column
     private Integer orderNum;
 
+    @JsonBackReference(value = "dl_content_fields_reference")
     @OneToMany(mappedBy="dlContentFieldGroup")
     private Set<DlContentField> dlContentFields;
 

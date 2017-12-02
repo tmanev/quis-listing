@@ -41,7 +41,7 @@ public class DlContentFieldItemService {
 
         saveQlString(dlContentFieldItem);
 
-        return dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem);
+        return dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
     }
 
     public Page<DlContentFieldItemDTO> findAll(Pageable pageable, Long dlContentFieldId, Long parentId) {
@@ -54,12 +54,12 @@ public class DlContentFieldItemService {
             dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParent(pageable, one, null);
         }
 
-        return dlContentFieldItems.map(dlContentFieldItem -> dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem));
+        return dlContentFieldItems.map(dlContentFieldItem -> dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null));
     }
 
-    public DlContentFieldItemDTO findOne(Long id) {
+    public DlContentFieldItemDTO findOne(Long id, String languageCode) {
         DlContentFieldItem result = dlContentFieldItemRepository.findOne(id);
-        return result != null ? dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(result) : null;
+        return result != null ? dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(result, null) : null;
     }
 
     public void delete(Long id) {

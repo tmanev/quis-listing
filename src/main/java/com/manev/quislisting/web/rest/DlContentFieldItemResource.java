@@ -75,10 +75,9 @@ public class DlContentFieldItemResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DlContentFieldItemDTO> getDlContentFieldItem(@PathVariable("dlContentFieldId") Long dlContentFieldId,
-                                                                       @PathVariable Long id) {
+    public ResponseEntity<DlContentFieldItemDTO> getDlContentFieldItem(@PathVariable Long id) {
         log.debug("REST request to get DlContentFieldItemDTO : {}", id);
-        DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemService.findOne(id);
+        DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemService.findOne(id, null);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlContentFieldItemDTO));
     }
 

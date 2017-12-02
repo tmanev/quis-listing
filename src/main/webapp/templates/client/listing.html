@@ -37,11 +37,11 @@
                         <td style="text-align: right; font-size: large;" th:text="${dlListingField.name}"></td>
 
                         <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} != 'CHECKBOX'"
-                              th:text="${dlListingField.previewValue}"></td>
+                              th:text="${dlListingField.translatedValue}"></td>
 
                         <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} == 'CHECKBOX'">
                                 <span th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
-                                    [(${dlListingFieldItem.value})]
+                                    [(${dlListingFieldItem.translatedValue})]
                                 </span>
                         </td>
                     </tr>
