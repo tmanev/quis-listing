@@ -399,7 +399,8 @@ public class DlListingService {
     }
 
     public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
-        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED, Boolean.TRUE);
+//        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED, Boolean.TRUE);
+        Page<DlListing> result = dlListingRepository.findAllForFrontPage(language, pageable);
         return result.map(dlListingMapper::dlListingToDlListingDTO);
     }
 }
