@@ -8,11 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface DlListingRepository extends JpaRepository<DlListing, Long> {
+public interface DlListingRepository extends JpaRepository<DlListing, Long>, DlListingRepositoryCustom {
 
     Page<DlListing> findAllByTranslation_languageCode(Pageable pageable, String languageCode);
-
-    Page<DlListing> findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(Pageable pageable, String languageCode, DlListing.Status status, Boolean approved);
 
     Long countByTranslation_languageCode(String languageCode);
 
