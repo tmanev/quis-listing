@@ -16,17 +16,19 @@ public class TranslateUtil {
     public static String getTranslatedString(DlContentFieldItem dlContentFieldItem, String languageCode) {
         if (languageCode != null) {
             QlString qlString = dlContentFieldItem.getQlString();
-            return searchString(languageCode, qlString);
+            String translation = searchString(languageCode, qlString);
+            if (translation != null) return translation;
         }
-        return null;
+        return dlContentFieldItem.getValue();
     }
 
-    static String getTranslatedString(DlContentField dlContentField, String languageCode) {
+    public static String getTranslatedString(DlContentField dlContentField, String languageCode) {
         if (languageCode != null) {
             QlString qlString = dlContentField.getQlString();
-            return searchString(languageCode, qlString);
+            String translation = searchString(languageCode, qlString);
+            if (translation != null) return translation;
         }
-        return null;
+        return dlContentField.getName();
     }
 
     private static String searchString(String languageCode, QlString qlString) {

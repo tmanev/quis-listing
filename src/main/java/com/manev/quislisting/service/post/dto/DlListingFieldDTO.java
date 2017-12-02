@@ -8,6 +8,7 @@ public class DlListingFieldDTO {
     private Long id;
     private String type;
     private String name;
+    private String translatedName;
     private String value;
     private String translatedValue;
     private List<DlListingFieldItemDTO> dlListingFieldItemDTOs;
@@ -22,6 +23,19 @@ public class DlListingFieldDTO {
 
     public DlListingFieldDTO name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getTranslatedName() {
+        return translatedName;
+    }
+
+    public void setTranslatedName(String translatedName) {
+        this.translatedName = translatedName;
+    }
+
+    public DlListingFieldDTO translatedName(String translatedName) {
+        this.translatedName = translatedName;
         return this;
     }
 

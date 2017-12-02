@@ -24,11 +24,7 @@ public class DlListingDTO {
     private String content;
     private String name;
 
-//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-//    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private Timestamp created;
-//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-//    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
     private Timestamp modified;
 
     private UserDTO author;

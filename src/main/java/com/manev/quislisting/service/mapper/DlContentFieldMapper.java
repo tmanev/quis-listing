@@ -57,7 +57,7 @@ public class DlContentFieldMapper {
 
 
     public DlContentFieldDTO dlContentFieldToDlContentFieldDTO(DlContentField dlContentField, String languageCode) {
-        String translatedName = getTranslatedName(dlContentField, languageCode);
+        String translatedName = TranslateUtil.getTranslatedString(dlContentField, languageCode);
         return new DlContentFieldDTO()
                 .id(dlContentField.getId())
                 .coreField(dlContentField.getCoreField())
@@ -85,12 +85,6 @@ public class DlContentFieldMapper {
                 .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
                 ;
-    }
-
-    private String getTranslatedName(DlContentField dlContentField, String languageCode) {
-        String translation = TranslateUtil.getTranslatedString(dlContentField, languageCode);
-        if (translation != null) return translation;
-        return dlContentField.getName();
     }
 
     public DlContentField dlContentFieldDTOToDlContentField(DlContentFieldDTO dlContentFieldDTO) {

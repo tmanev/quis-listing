@@ -28,13 +28,13 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <!-- Default panel contents -->
-                <div class="panel-heading">Details</div>
+                <div class="panel-heading" th:text="#{page.listing.label.details}">Details</div>
 
                 <!-- Table -->
                 <table class="table table-striped table-bordered">
                     <tbody>
                     <tr th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                        <td style="text-align: right; font-size: large;" th:text="${dlListingField.name}"></td>
+                        <td style="text-align: right; font-size: large;" th:text="${dlListingField.translatedName}"></td>
 
                         <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} != 'CHECKBOX'"
                               th:text="${dlListingField.translatedValue}"></td>

@@ -96,9 +96,9 @@ public class DlListingMapper {
                         if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
                             DlContentFieldItem dlContentFieldItem = dlContentFieldItems.iterator().next();
                             DlContentFieldItem parentDlContentFieldItem = dlContentFieldItem.getParent();
-                            String parentPreviewValue = TranslateUtil.getTranslatedString(parentDlContentFieldItem, languageCode);
+                            String parentTranslatedValue = TranslateUtil.getTranslatedString(parentDlContentFieldItem, languageCode);
                             value = String.valueOf(dlContentFieldItem.getId());
-                            translatedValue = parentPreviewValue + " / " + TranslateUtil.getTranslatedString(dlContentFieldItem, languageCode);
+                            translatedValue = parentTranslatedValue + " / " + TranslateUtil.getTranslatedString(dlContentFieldItem, languageCode);
                         }
                     } else {
                         value = dlListingContentFieldRel.getValue();
@@ -108,6 +108,7 @@ public class DlListingMapper {
                             .id(dlContentField.getId())
                             .type(dlContentField.getType().name())
                             .name(dlContentField.getName())
+                            .translatedName(TranslateUtil.getTranslatedString(dlContentField, languageCode))
                             .value(value)
                             .translatedValue(translatedValue)
                             .dlListingFieldItemDTOs(dlContentFieldItemDTOS));

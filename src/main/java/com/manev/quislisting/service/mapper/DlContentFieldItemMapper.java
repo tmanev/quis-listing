@@ -15,7 +15,7 @@ public class DlContentFieldItemMapper {
     }
 
     public DlContentFieldItemDTO dlContentFieldItemToDlContentFieldItemDTO(DlContentFieldItem dlContentFieldItem, String languageCode) {
-        String translatedValue = getTranslatedValue(dlContentFieldItem, languageCode);
+        String translatedValue = TranslateUtil.getTranslatedString(dlContentFieldItem, languageCode);
         return new DlContentFieldItemDTO()
                 .id(dlContentFieldItem.getId())
                 .value(dlContentFieldItem.getValue())
@@ -26,12 +26,6 @@ public class DlContentFieldItemMapper {
     public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItem one, DlContentFieldItemDTO dlContentFieldItemDTO) {
         one.setValue(dlContentFieldItemDTO.getValue());
         return one;
-    }
-
-    private String getTranslatedValue(DlContentFieldItem dlContentFieldItem, String languageCode) {
-        String translation = TranslateUtil.getTranslatedString(dlContentFieldItem, languageCode);
-        if (translation != null) return translation;
-        return dlContentFieldItem.getValue();
     }
 
 }
