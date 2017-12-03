@@ -59,7 +59,7 @@ public class DlAdminListingResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
         }
 
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+        DlListingDTO result = dlListingService.save(dlListingDTO, null);
         return ResponseEntity.created(new URI(RESOURCE_API_DL_LISTINGS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
@@ -71,7 +71,7 @@ public class DlAdminListingResource {
         if (dlListingDTO.getId() == null) {
             return createDlListing(dlListingDTO);
         }
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+        DlListingDTO result = dlListingService.save(dlListingDTO, null);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
@@ -85,7 +85,7 @@ public class DlAdminListingResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
         }
 
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+        DlListingDTO result = dlListingService.save(dlListingDTO, null);
         dlListingService.validateForPublishing(result);
 
         return ResponseEntity.ok()
@@ -116,7 +116,7 @@ public class DlAdminListingResource {
     @GetMapping("/{id}")
     public ResponseEntity<DlListingDTO> getDlListing(@PathVariable Long id) {
         log.debug("REST request to get DlListingDTO : {}", id);
-        DlListingDTO dlListingDTO = dlListingService.findOne(id);
+        DlListingDTO dlListingDTO = dlListingService.findOne(id, null);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlListingDTO));
     }
 

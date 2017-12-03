@@ -60,19 +60,19 @@
                     <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta != null}"
                          th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
                          th:data-image="'/content/files' + ${attachment.attachmentMetadata.largeImageResizeMeta.detail.file}"
-                         th:alt="${attachment.fileName}"
+                         th:alt="${attachment.id}"
                          style="display: none;"
                     />
                     <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta != null}"
                          th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
                          th:data-image="'/content/files' + ${attachment.attachmentMetadata.mediumImageResizeMeta.detail.file}"
-                         th:alt="${attachment.fileName}"
+                         th:alt="${attachment.id}"
                          style="display: none;"
                     />
                     <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta == null && attachment.attachmentMetadata.smallImageResizeMeta != null}"
                          th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
                          th:data-image="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
-                         th:alt="${attachment.fileName}"
+                         th:alt="${attachment.id}"
                          style="display: none;"
                     />
                 </th:block>

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -54,10 +53,12 @@ public class DlListingPublicResource {
     }
 
     @GetMapping("/_search")
-    public ResponseEntity<List<DlListingDTO>> searchBooks(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<DlListingDTO>> searchBooks(@RequestParam String query, @ApiParam Pageable pageable,
+                                                          HttpServletRequest request) {
         log.debug("REST request to search for a page of Books for query {}", query);
-        Page<DlListingDTO> page = dlListingService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RESOURCE_API_PUBLIC_DL_LISTINGS+"/_search");
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
+        Page<DlListingDTO> page = dlListingService.search(query, pageable, languageCode);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

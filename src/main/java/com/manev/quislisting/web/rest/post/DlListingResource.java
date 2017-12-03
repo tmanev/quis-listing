@@ -14,7 +14,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.LocaleResolver;
@@ -24,7 +33,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,25 +55,29 @@ public class DlListingResource {
 
     @RequestMapping(method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlListingDTO> createDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
+    public ResponseEntity<DlListingDTO> createDlListing(@RequestBody DlListingDTO dlListingDTO,
+                                                        HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to save DlListingDTO : {}", dlListingDTO);
         if (dlListingDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
         }
-
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
+        DlListingDTO result = dlListingService.save(dlListingDTO, languageCode);
         return ResponseEntity.created(new URI(RESOURCE_API_DL_LISTINGS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
     @PutMapping
-    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
+    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO,
+                                                        HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
         if (dlListingDTO.getId() == null) {
-            return createDlListing(dlListingDTO);
+            return createDlListing(dlListingDTO, request);
         }
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
+        DlListingDTO result = dlListingService.save(dlListingDTO, languageCode);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
@@ -105,18 +117,18 @@ public class DlListingResource {
                                                              HttpServletRequest request) {
         log.debug("REST request to get a page of DlListingDTO");
 
-        Locale locale = localeResolver.resolveLocale(request);
-        String language = locale.getLanguage();
-        log.debug("Language from cookie: {}", language);
-        Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, language);
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
+        log.debug("Language from cookie: {}", languageCode);
+        Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_LISTINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DlListingDTO> getDlListing(@PathVariable Long id) {
+    public ResponseEntity<DlListingDTO> getDlListing(@PathVariable Long id, HttpServletRequest request) {
         log.debug("REST request to get DlListingDTO : {}", id);
-        DlListingDTO dlListingDTO = dlListingService.findOne(id);
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
+        DlListingDTO dlListingDTO = dlListingService.findOne(id, languageCode);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlListingDTO));
     }
 

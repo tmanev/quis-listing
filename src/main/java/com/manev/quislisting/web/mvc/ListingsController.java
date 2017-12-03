@@ -53,7 +53,7 @@ public class ListingsController extends BaseController {
                                       final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
 
         if (dlListingDTO == null) {
             return redirectToPageNotFound();

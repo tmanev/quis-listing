@@ -86,7 +86,7 @@ public class MyListingsController extends BaseController {
     public String showEditListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
 
         if (dlListingDTO == null) {
             return redirectToPageNotFound();
@@ -137,7 +137,7 @@ public class MyListingsController extends BaseController {
     public String showPreviewListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
 
         if (dlListingDTO == null) {
             return redirectToPageNotFound();
