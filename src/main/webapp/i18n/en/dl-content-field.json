@@ -56,7 +56,8 @@
                 "useLinkText": "Enable link text field",
                 "defaultLinkText" : "Default link text",
                 "useDefaultLinkText": "Use default link text when empty"
-            }
+            },
+            "dlContentFieldGroup" : "Content Field Group"
         }
     }
 }
