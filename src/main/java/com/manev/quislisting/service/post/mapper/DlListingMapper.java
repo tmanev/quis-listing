@@ -36,7 +36,7 @@ public class DlListingMapper {
         this.attachmentMapper = attachmentMapper;
     }
 
-    public DlListingDTO dlListingToDlListingDTO(DlListing dlListing) {
+    public DlListingDTO dlListingToDlListingDTO(DlListing dlListing, String languageCode) {
         DlListingDTO dlListingDTO = new DlListingDTO();
         dlListingDTO.setId(dlListing.getId());
         dlListingDTO.setTitle(dlListing.getTitle());
@@ -57,13 +57,12 @@ public class DlListingMapper {
 
         setAuthor(dlListing, dlListingDTO);
 
-        setDlListingContentFields(dlListing, dlListingDTO);
+        setDlListingContentFields(dlListing, dlListingDTO, languageCode);
 
         return dlListingDTO;
     }
 
-    private void setDlListingContentFields(DlListing dlListing, DlListingDTO dlListingDTO) {
-        String languageCode = dlListing.getTranslation().getLanguageCode();
+    private void setDlListingContentFields(DlListing dlListing, DlListingDTO dlListingDTO, String languageCode) {
         try {
             Set<DlListingContentFieldRel> dlListingContentFieldRels = dlListing.getDlListingContentFieldRels();
             if (dlListingContentFieldRels != null) {

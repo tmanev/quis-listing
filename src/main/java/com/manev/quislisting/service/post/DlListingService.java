@@ -104,14 +104,14 @@ public class DlListingService {
         this.emailSendingService = emailSendingService;
     }
 
-    public DlListingDTO save(DlListingDTO dlListingDTO) {
+    public DlListingDTO save(DlListingDTO dlListingDTO, String languageCode) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
         DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         dlListingSearchRepository.save(dlListingForSaving);
-        return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        return dlListingMapper.dlListingToDlListingDTO(savedDlListing, languageCode);
     }
 
     public DlListingDTO saveAndRequestPublishing(DlListingDTO dlListingDTO) {
@@ -123,7 +123,7 @@ public class DlListingService {
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         dlListingSearchRepository.save(dlListingForSaving);
         emailSendingService.sendPublishRequest(savedDlListing);
-        return dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        return dlListingMapper.dlListingToDlListingDTO(savedDlListing, null);
     }
 
     public DlListingDTO approveListing(Long id) {
@@ -137,7 +137,7 @@ public class DlListingService {
 
         emailSendingService.sendListingApprovedEmail(save);
 
-        return dlListingMapper.dlListingToDlListingDTO(save);
+        return dlListingMapper.dlListingToDlListingDTO(save, null);
     }
 
     public DlListingDTO disapproveListing(Long id, ApproveDTO approveDTO) {
@@ -150,7 +150,7 @@ public class DlListingService {
 
         emailSendingService.sendListingDisapprovedEmail(save, approveDTO.getMessage());
 
-        return dlListingMapper.dlListingToDlListingDTO(save);
+        return dlListingMapper.dlListingToDlListingDTO(save, null);
     }
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
@@ -311,14 +311,14 @@ public class DlListingService {
         log.debug("Request to get all DlListingDTO");
         String languageCode = allRequestParams.get("languageCode");
         Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCode(pageable, languageCode);
-        return result.map(dlListingMapper::dlListingToDlListingDTO);
+        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
     }
 
     @Transactional(readOnly = true)
-    public DlListingDTO findOne(Long id) {
+    public DlListingDTO findOne(Long id, String languageCode) {
         log.debug("Request to get DlListingDTO: {}", id);
         DlListing result = dlListingRepository.findOne(id);
-        return result != null ? dlListingMapper.dlListingToDlListingDTO(result) : null;
+        return result != null ? dlListingMapper.dlListingToDlListingDTO(result, languageCode) : null;
     }
 
     public void delete(Long id) {
@@ -327,10 +327,10 @@ public class DlListingService {
         dlListingSearchRepository.delete(id);
     }
 
-    public Page<DlListingDTO> search(String query, Pageable pageable) {
+    public Page<DlListingDTO> search(String query, Pageable pageable, String languageCode) {
         log.debug("Request to search for a page of Books for query {}", query);
         Page<DlListing> result = dlListingSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(book -> dlListingMapper.dlListingToDlListingDTO(book));
+        return result.map(dlListing -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
     }
 
     public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException {
@@ -346,7 +346,7 @@ public class DlListingService {
             storageService.delete(filePaths);
         }
 
-        return dlListingMapper.dlListingToDlListingDTO(result);
+        return dlListingMapper.dlListingToDlListingDTO(result, null);
     }
 
     public void validateForPublishing(DlListingDTO dlListingDTO) {
@@ -379,7 +379,7 @@ public class DlListingService {
 
             dlListing.setStatus(DlListing.Status.DRAFT);
             DlListing result = dlListingRepository.save(dlListing);
-            return dlListingMapper.dlListingToDlListingDTO(result);
+            return dlListingMapper.dlListingToDlListingDTO(result, null);
         } else {
             throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
         }
@@ -390,17 +390,17 @@ public class DlListingService {
         return languageService.findAllActiveLanguages(dlListingRepository);
     }
 
-    public Page<DlListingDTO> findAllByLanguageAndUser(Pageable pageable, String language) {
+    public Page<DlListingDTO> findAllByLanguageAndUser(Pageable pageable, String languageCode) {
         String currentUserLogin = SecurityUtils.getCurrentUserLogin();
         Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
 
-        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, language, oneByLogin.get());
-        return result.map(dlListingMapper::dlListingToDlListingDTO);
+        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, languageCode, oneByLogin.get());
+        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
     }
 
     public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
 //        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED, Boolean.TRUE);
         Page<DlListing> result = dlListingRepository.findAllForFrontPage(language, pageable);
-        return result.map(dlListingMapper::dlListingToDlListingDTO);
+        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, language));
     }
 }

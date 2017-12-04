@@ -300,7 +300,7 @@ public class DlListingResourceTest extends GenericResourceTest {
 
         dlListingRepository.saveAndFlush(dlListing);
 
-        DlListingDTO createdDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing);
+        DlListingDTO createdDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing, null);
 
         // making updates to the dlListing so at the end object is updated and published
         createdDlListingDTO.setContent(UPDATE_CONTENT);
