@@ -15,7 +15,7 @@ public class TranslateUtil {
     }
 
     public static String getTranslatedString(DlContentFieldItem dlContentFieldItem, String languageCode) {
-        if (languageCode != null) {
+        if (languageCode != null && dlContentFieldItem.getQlString() != null) {
             QlString qlString = dlContentFieldItem.getQlString();
             String translation = searchString(qlString, languageCode);
             if (translation != null) return translation;
@@ -24,12 +24,21 @@ public class TranslateUtil {
     }
 
     public static String getTranslatedString(DlContentField dlContentField, String languageCode) {
-        if (languageCode != null) {
+        if (languageCode != null && dlContentField.getQlString() != null) {
             QlString qlString = dlContentField.getQlString();
             String translation = searchString(qlString, languageCode);
             if (translation != null) return translation;
         }
         return dlContentField.getName();
+    }
+
+    public static String getTranslatedStringDescription(DlContentField dlContentField, String languageCode) {
+        if (languageCode != null && dlContentField.getQlStringDescription() != null) {
+            QlString qlString = dlContentField.getQlStringDescription();
+            String translation = searchString(qlString, languageCode);
+            if (translation != null) return translation;
+        }
+        return dlContentField.getDescription();
     }
 
     private static String searchString(QlString qlString, String languageCode) {

@@ -468,9 +468,10 @@ EditListing = {
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
                         console.log('Success!:', response.data);
+                        var successMsg = $('#msg_save_success').text();
                         this.listing.status = response.data.status;
                         $.notify({
-                            message: response.headers.get('X-qlService-alert')
+                            message: successMsg
                         }, {
                             type: 'success'
                         });

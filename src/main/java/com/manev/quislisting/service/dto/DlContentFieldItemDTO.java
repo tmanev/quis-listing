@@ -9,6 +9,7 @@ public class DlContentFieldItemDTO {
     private Long id;
     private String value;
     private String translatedValue;
+    private Integer orderNum;
 
     private DlContentFieldDTO dlContentFieldDTO;
 
@@ -54,6 +55,19 @@ public class DlContentFieldItemDTO {
 
     public DlContentFieldItemDTO translatedValue(String translatedValue) {
         this.translatedValue = translatedValue;
+        return this;
+    }
+
+    public Integer getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(Integer orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public DlContentFieldItemDTO orderNum(Integer orderNum) {
+        this.orderNum = orderNum;
         return this;
     }
 

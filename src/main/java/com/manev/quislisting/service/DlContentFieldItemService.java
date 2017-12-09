@@ -49,9 +49,9 @@ public class DlContentFieldItemService {
         Page<DlContentFieldItem> dlContentFieldItems;
         if (parentId != null) {
             DlContentFieldItem parent = dlContentFieldItemRepository.findOne(parentId);
-            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParent(pageable, one, parent);
+            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParentOrderByOrderNum(pageable, one, parent);
         } else {
-            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParent(pageable, one, null);
+            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParentOrderByOrderNum(pageable, one, null);
         }
 
         return dlContentFieldItems.map(dlContentFieldItem -> dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null));

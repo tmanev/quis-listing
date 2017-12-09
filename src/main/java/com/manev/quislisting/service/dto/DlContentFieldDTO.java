@@ -14,6 +14,7 @@ public class DlContentFieldDTO {
     private String translatedName;
     private String slug;
     private String description;
+    private String translatedDescription;
     private DlContentField.Type type;
     private String iconImage;
     private Boolean required;
@@ -120,6 +121,19 @@ public class DlContentFieldDTO {
 
     public DlContentFieldDTO description(String description) {
         this.description = description;
+        return this;
+    }
+
+    public String getTranslatedDescription() {
+        return translatedDescription;
+    }
+
+    public void setTranslatedDescription(String translatedDescription) {
+        this.translatedDescription = translatedDescription;
+    }
+
+    public DlContentFieldDTO translatedDescription(String translatedDescription) {
+        this.translatedDescription = translatedDescription;
         return this;
     }
 

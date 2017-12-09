@@ -16,7 +16,7 @@
         vm.dlContentFieldItems = [];
         vm.rootDlContentFieldItems = [];
         vm.parentDlContentFieldItem = null;
-        vm.newDlContentFieldItem = {id: null, value: '', parent: null, children: null};
+        vm.newDlContentFieldItem = {id: null, value: '', parent: null, children: null, orderNum: 0};
         vm.dlContentFieldOption = {};
 
         vm.clear = clear;
@@ -67,7 +67,7 @@
         }
 
         function onAddSuccess(result) {
-            vm.newDlContentFieldItem = {id: null, value: '', parent: null, children: null};
+            vm.newDlContentFieldItem = {id: null, value: '', parent: null, children: null, orderNum: 0};
             vm.loadItems();
             if (vm.parentDlContentFieldItem===null) {
                 vm.loadRootItems();

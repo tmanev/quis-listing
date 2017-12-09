@@ -34,8 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = QuisListingApp.class)
 public class DlContentFieldItemResourceTest {
 
-    public static final String DEFAULT_VALUE = "DEFAULT_VALUE";
-    public static final String UPDATE_VALUE = "UPDATE_VALUE";
+    private static final String DEFAULT_VALUE = "DEFAULT_VALUE";
+    private static final String UPDATE_VALUE = "UPDATE_VALUE";
+    private static final Integer DEFAULT_ORDER_NUM = 0;
+    private static final Integer UPDATE_ORDER_NUM = 1;
+
     @Autowired
     private DlContentFieldItemService dlContentFieldItemService;
 
@@ -76,7 +79,8 @@ public class DlContentFieldItemResourceTest {
     private DlContentFieldItem createEntity() {
         return new DlContentFieldItem()
                 .value(DEFAULT_VALUE)
-                .qlString(new QlString().languageCode("en").context("dl-content-field-item").name("dl-content-field-#some_id").value(DEFAULT_VALUE).status(0));
+                .qlString(new QlString().languageCode("en").context("dl-content-field-item").name("dl-content-field-#some_id").value(DEFAULT_VALUE).status(0))
+                .orderNum(DEFAULT_ORDER_NUM);
     }
 
     @Test
@@ -98,6 +102,7 @@ public class DlContentFieldItemResourceTest {
 
         DlContentFieldItem dlContentFieldItemSaved = all.get(all.size() - 1);
         assertThat(dlContentFieldItemSaved.getValue()).isEqualTo(DEFAULT_VALUE);
+        assertThat(dlContentFieldItemSaved.getOrderNum()).isEqualTo(DEFAULT_ORDER_NUM);
     }
 
     @Test
@@ -135,7 +140,8 @@ public class DlContentFieldItemResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlContentFieldItem.getId().intValue()))
-                .andExpect(jsonPath("$.value").value(dlContentFieldItem.getValue()));
+                .andExpect(jsonPath("$.value").value(dlContentFieldItem.getValue()))
+                .andExpect(jsonPath("$.orderNum").value(dlContentFieldItem.getOrderNum()));
     }
 
     @Test
@@ -160,7 +166,7 @@ public class DlContentFieldItemResourceTest {
         int databaseSizeBeforeUpdate = dlContentFieldItemRepository.findAll().size();
 
         DlContentFieldItem updateDlContentFieldItem = dlContentFieldItemRepository.findOne(dlContentFieldItem.getId());
-        updateDlContentFieldItem.value(UPDATE_VALUE);
+        updateDlContentFieldItem.value(UPDATE_VALUE).orderNum(UPDATE_ORDER_NUM);
 
         DlContentFieldItemDTO updateDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(updateDlContentFieldItem, null);
 
@@ -174,6 +180,7 @@ public class DlContentFieldItemResourceTest {
 
         DlContentFieldItem dlContentFieldItemSaved = dlContentFieldItemRepository.findOne(updateDlContentFieldItem.getId());
         assertThat(dlContentFieldItemSaved.getValue()).isEqualTo(UPDATE_VALUE);
+        assertThat(dlContentFieldItemSaved.getOrderNum()).isEqualTo(UPDATE_ORDER_NUM);
     }
 
     @Test
