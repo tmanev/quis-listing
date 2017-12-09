@@ -58,7 +58,7 @@ public class DlContentFieldMapper {
 
     public DlContentFieldDTO dlContentFieldToDlContentFieldDTO(DlContentField dlContentField, String languageCode) {
         String translatedName = TranslateUtil.getTranslatedString(dlContentField, languageCode);
-        String translatedDescription = dlContentField.getDescription();
+        String translatedDescription = TranslateUtil.getTranslatedStringDescription(dlContentField, languageCode);
         return new DlContentFieldDTO()
                 .id(dlContentField.getId())
                 .coreField(dlContentField.getCoreField())

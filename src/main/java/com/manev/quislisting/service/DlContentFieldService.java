@@ -56,11 +56,31 @@ public class DlContentFieldService {
 
     private void saveQlString(DlContentField dlContentField) {
         if (dlContentField.getQlString() == null) {
-            dlContentField.setQlString(new QlString().languageCode("en").context("dl-content-field").name("dl-content-field-#" + dlContentField.getId()).value(dlContentField.getName()).status(0));
+            dlContentField.setQlString(new QlString()
+                    .languageCode("en")
+                    .context("dl-content-field")
+                    .name("dl-content-field-#" + dlContentField.getId())
+                    .value(dlContentField.getName())
+                    .status(0));
         } else {
             QlString qlString = dlContentField.getQlString();
             if (!qlString.getValue().equals(dlContentField.getName())) {
                 qlString.setValue(dlContentField.getName());
+                qlString.setStatus(0);
+            }
+        }
+
+        if (dlContentField.getQlStringDescription() == null) {
+            dlContentField.setQlStringDescription(new QlString()
+                    .languageCode("en")
+                    .context("dl-content-field-description")
+                    .name("dl-content-field-description-#" + dlContentField.getId())
+                    .value(dlContentField.getDescription())
+                    .status(0));
+        } else {
+            QlString qlString = dlContentField.getQlString();
+            if (!qlString.getValue().equals(dlContentField.getDescription())) {
+                qlString.setValue(dlContentField.getDescription());
                 qlString.setStatus(0);
             }
         }

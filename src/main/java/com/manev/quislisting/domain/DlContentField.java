@@ -32,7 +32,6 @@ public class DlContentField {
     @Column
     private String slug;
 
-    @NotNull
     @Column
     private String description;
 
@@ -100,6 +99,10 @@ public class DlContentField {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "string_id")
     private QlString qlString;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "string_description_id")
+    private QlString qlStringDescription;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dlContentField")
     @OrderBy
@@ -392,6 +395,19 @@ public class DlContentField {
 
     public DlContentField qlString(QlString qlString) {
         this.qlString = qlString;
+        return this;
+    }
+
+    public QlString getQlStringDescription() {
+        return qlStringDescription;
+    }
+
+    public void setQlStringDescription(QlString qlStringDescription) {
+        this.qlStringDescription = qlStringDescription;
+    }
+
+    public DlContentField qlStringDescription(QlString qlStringDescription) {
+        this.qlStringDescription = qlStringDescription;
         return this;
     }
 

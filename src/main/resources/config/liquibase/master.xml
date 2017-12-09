@@ -13,5 +13,6 @@
     <include file="classpath:config/liquibase/changelog/1511602188400_dl_listing_drop_not_needed_default_values.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/1511602661312_approve_disapprove_email_template.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2017_11_30_1400__add_dl_content_field_group.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2017_12_09_1824__add_string_description_column.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
