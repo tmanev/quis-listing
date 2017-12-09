@@ -239,7 +239,7 @@ public class DlListingService {
                     Long[] ids = new ObjectMapper().readValue(dlListingFieldDTO.getValue(), Long[].class);
                     List<Long> idsAsList = Arrays.asList(ids);
                     if (!idsAsList.isEmpty()) {
-                        Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdIn(idsAsList);
+                        Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdInOrderByOrderNum(idsAsList);
                         newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
                     }
                 }

@@ -105,7 +105,7 @@ public class DlContentField {
     private QlString qlStringDescription;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dlContentField")
-    @OrderBy
+    @OrderBy("orderNum asc")
     private Set<DlContentFieldItem> dlContentFieldItems;
 
     @ManyToOne
