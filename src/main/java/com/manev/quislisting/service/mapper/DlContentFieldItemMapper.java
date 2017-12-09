@@ -11,7 +11,8 @@ public class DlContentFieldItemMapper {
     public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItemDTO dlContentFieldItemDTO) {
         return new DlContentFieldItem()
                 .id(dlContentFieldItemDTO.getId())
-                .value(dlContentFieldItemDTO.getValue());
+                .value(dlContentFieldItemDTO.getValue())
+                .orderNum(dlContentFieldItemDTO.getOrderNum());
     }
 
     public DlContentFieldItemDTO dlContentFieldItemToDlContentFieldItemDTO(DlContentFieldItem dlContentFieldItem, String languageCode) {
@@ -20,12 +21,14 @@ public class DlContentFieldItemMapper {
                 .id(dlContentFieldItem.getId())
                 .value(dlContentFieldItem.getValue())
                 .translatedValue(translatedValue)
-                .parent(dlContentFieldItem.getParent() != null ? dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem.getParent(), languageCode) : null);
+                .parent(dlContentFieldItem.getParent() != null ? dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem.getParent(), languageCode) : null)
+                .orderNum(dlContentFieldItem.getOrderNum());
     }
 
-    public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItem one, DlContentFieldItemDTO dlContentFieldItemDTO) {
-        one.setValue(dlContentFieldItemDTO.getValue());
-        return one;
+    public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItem dlContentFieldItem, DlContentFieldItemDTO dlContentFieldItemDTO) {
+        dlContentFieldItem.setValue(dlContentFieldItemDTO.getValue());
+        dlContentFieldItem.setOrderNum(dlContentFieldItemDTO.getOrderNum());
+        return dlContentFieldItem;
     }
 
 }

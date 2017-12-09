@@ -2,9 +2,6 @@ package com.manev.quislisting.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,6 +35,10 @@ public class DlContentFieldItem {
     @NotNull
     @Column
     private String value;
+
+    @NotNull
+    @Column
+    private Integer orderNum;
 
     public Long getId() {
         return id;
@@ -88,6 +89,19 @@ public class DlContentFieldItem {
 
     public DlContentFieldItem value(String value) {
         this.value = value;
+        return this;
+    }
+
+    public Integer getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(Integer orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public DlContentFieldItem orderNum(Integer orderNum) {
+        this.orderNum = orderNum;
         return this;
     }
 
