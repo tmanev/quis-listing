@@ -15,5 +15,6 @@
     <include file="classpath:config/liquibase/changelog/V2017_11_30_1400__add_dl_content_field_group.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2017_12_09_1824__add_string_description_column.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2017_12_09_2006__add_order_num_column.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2017_12_13_2312__add_default_content_groups.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

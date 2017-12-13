@@ -11,6 +11,7 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.dto.UserDTO;
+import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
 import com.manev.quislisting.service.mapper.TranslateUtil;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
@@ -29,11 +30,13 @@ public class DlListingMapper {
     private DlCategoryMapper dlCategoryMapper;
     private DlLocationMapper dlLocationMapper;
     private AttachmentMapper attachmentMapper;
+    private DlContentFieldGroupMapper dlContentFieldGroupMapper;
 
-    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper) {
+    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper) {
         this.dlCategoryMapper = dlCategoryMapper;
         this.dlLocationMapper = dlLocationMapper;
         this.attachmentMapper = attachmentMapper;
+        this.dlContentFieldGroupMapper = dlContentFieldGroupMapper;
     }
 
     public DlListingDTO dlListingToDlListingDTO(DlListing dlListing, String languageCode) {
@@ -119,8 +122,8 @@ public class DlListingMapper {
                             .value(value)
                             .selectedValue(selectedValue)
                             .translatedValue(translatedValue)
-                            .dlListingFieldItemDTOs(dlContentFieldItemDTOS));
-
+                            .dlListingFieldItemDTOs(dlContentFieldItemDTOS)
+                            .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ? dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null));
                 }
             }
         } catch (JsonProcessingException e) {
