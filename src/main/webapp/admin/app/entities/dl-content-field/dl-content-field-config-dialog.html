@@ -104,7 +104,7 @@
                 </div>
             </div>
         </div>
-        <div ng-if="vm.dlContentField.type == 'NUMBER'">
+        <div ng-if="vm.dlContentField.type == 'NUMBER' || vm.dlContentField.type == 'NUMBER_UNIT'">
             <div class="form-group">
                 <label data-translate="quisListingApp.dlContentField.number.isIntegerOrDecimal">Is Integer or
                     Decimal</label>
@@ -138,6 +138,51 @@
                 <label for="number_max" data-translate="quisListingApp.dlContentField.number.max">Max</label>
                 <input type="text" class="form-control" id="number_max" name="number_max"
                        ng-model="vm.dlContentFieldOption.max"/>
+            </div>
+            <div class="form-horizontal" ng-if="vm.dlContentField.type == 'NUMBER_UNIT'">
+                <div class="form-group">
+                    <div class="form-horizontal">
+                        <label class="control-label col-md-2">Item Name</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" class="form-control" placeholder="Item Name"
+                                   ng-model="vm.newDlContentFieldItem.value"/>
+                        </div>
+                        <label class="control-label col-md-1">Or.N</label>
+                        <div class="col-md-2">
+                            <input class="form-control" type="number" class="form-control" placeholder="Order number"
+                                   ng-model="vm.newDlContentFieldItem.orderNum"/>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-default btn-block" ng-click="vm.addDlContentFieldItem()">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group" ng-repeat="dlContentFieldItem in vm.dlContentFieldItems">
+                    <div class="form-horizontal">
+                        <label class="control-label col-md-1">Id: {{dlContentFieldItem.id}}</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" ng-model="dlContentFieldItem.value"/>
+                        </div>
+                        <label class="control-label col-md-1">Or.N</label>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" ng-model="dlContentFieldItem.orderNum"/>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-default btn-block" ng-click="vm.saveItem(dlContentFieldItem)">
+                                <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-block" ng-click="vm.deleteItem(dlContentFieldItem)">
+                                <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
+                                    data-translate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div ng-if="vm.dlContentField.type == 'WEBSITE'">

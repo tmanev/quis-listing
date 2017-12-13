@@ -10,6 +10,7 @@ public class DlListingFieldDTO {
     private String name;
     private String translatedName;
     private String value;
+    private String selectedValue;
     private String translatedValue;
     private List<DlListingFieldItemDTO> dlListingFieldItemDTOs;
 
@@ -75,6 +76,19 @@ public class DlListingFieldDTO {
 
     public DlListingFieldDTO translatedValue(String translatedValue) {
         this.translatedValue = translatedValue;
+        return this;
+    }
+
+    public String getSelectedValue() {
+        return selectedValue;
+    }
+
+    public void setSelectedValue(String selectedValue) {
+        this.selectedValue = selectedValue;
+    }
+
+    public DlListingFieldDTO selectedValue(String selectedValue) {
+        this.selectedValue = selectedValue;
         return this;
     }
 

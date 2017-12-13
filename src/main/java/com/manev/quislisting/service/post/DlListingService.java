@@ -235,8 +235,8 @@ public class DlListingService {
         try {
             if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
                 // make relation with the selection items
-                if (!StringUtils.isEmpty(dlListingFieldDTO.getValue())) {
-                    Long[] ids = new ObjectMapper().readValue(dlListingFieldDTO.getValue(), Long[].class);
+                if (!StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue())) {
+                    Long[] ids = new ObjectMapper().readValue(dlListingFieldDTO.getSelectedValue(), Long[].class);
                     List<Long> idsAsList = Arrays.asList(ids);
                     if (!idsAsList.isEmpty()) {
                         Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdInOrderByOrderNum(idsAsList);
@@ -245,12 +245,10 @@ public class DlListingService {
                 }
             } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)
                     || dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
-                if (!StringUtils.isEmpty(dlListingFieldDTO.getValue()) && !dlListingFieldDTO.getValue().equals("-1")) {
-                    DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getValue()));
-                    Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
-                    dlContentFieldItemSet.add(dlContentFieldItem);
-                    newDlListingContentFieldRel.setDlContentFieldItems(dlContentFieldItemSet);
-                }
+                setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
+            } else if (dlContentField.getType().equals(DlContentField.Type.NUMBER_UNIT)) {
+                setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
+                newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
             } else {
                 // set value
                 newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
@@ -258,6 +256,15 @@ public class DlListingService {
         } catch (IOException e) {
             e.printStackTrace();
             // TODO do something
+        }
+    }
+
+    private void setSelection(DlListingFieldDTO dlListingFieldDTO, DlListingContentFieldRel newDlListingContentFieldRel) {
+        if (!StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue()) && !dlListingFieldDTO.getSelectedValue().equals("-1")) {
+            DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getSelectedValue()));
+            Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
+            dlContentFieldItemSet.add(dlContentFieldItem);
+            newDlListingContentFieldRel.setDlContentFieldItems(dlContentFieldItemSet);
         }
     }
 

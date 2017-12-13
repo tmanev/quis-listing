@@ -42,6 +42,7 @@
             {key: 'STRING', value: 'Text string'},
             {key: 'TEXT_AREA', value: 'Textarea'},
             {key: 'NUMBER', value: 'Digital value'},
+            {key: 'NUMBER_UNIT', value: 'Digital value with a unit'},
             {key: 'SELECT', value: 'Select list'},
             {key: 'DEPENDENT_SELECT', value: 'Dependent select list'},
             {key: 'RADIO', value: 'Radio buttons'},

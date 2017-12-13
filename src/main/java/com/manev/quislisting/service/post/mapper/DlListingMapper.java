@@ -69,6 +69,7 @@ public class DlListingMapper {
                 for (DlListingContentFieldRel dlListingContentFieldRel : dlListingContentFieldRels) {
                     DlContentField dlContentField = dlListingContentFieldRel.getDlContentField();
                     String value = "";
+                    String selectedValue = "";
                     String translatedValue = "";
                     List<DlListingFieldItemDTO> dlContentFieldItemDTOS = new ArrayList<>();
                     if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
@@ -83,11 +84,11 @@ public class DlListingMapper {
                                         .translatedValue(TranslateUtil.getTranslatedString(dlContentFieldItem, languageCode)));
                             }
                         }
-                        value = new ObjectMapper().writeValueAsString(selectionIds);
+                        selectedValue = new ObjectMapper().writeValueAsString(selectionIds);
                     } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)) {
                         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
                         if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
-                            value = String.valueOf(dlContentFieldItems.iterator().next().getId());
+                            selectedValue = String.valueOf(dlContentFieldItems.iterator().next().getId());
                             translatedValue = TranslateUtil.getTranslatedString(dlContentFieldItems.iterator().next(), languageCode);
                         }
                     } else if (dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
@@ -96,8 +97,15 @@ public class DlListingMapper {
                             DlContentFieldItem dlContentFieldItem = dlContentFieldItems.iterator().next();
                             DlContentFieldItem parentDlContentFieldItem = dlContentFieldItem.getParent();
                             String parentTranslatedValue = TranslateUtil.getTranslatedString(parentDlContentFieldItem, languageCode);
-                            value = String.valueOf(dlContentFieldItem.getId());
+                            selectedValue = String.valueOf(dlContentFieldItem.getId());
                             translatedValue = parentTranslatedValue + " / " + TranslateUtil.getTranslatedString(dlContentFieldItem, languageCode);
+                        }
+                    } else if (dlContentField.getType().equals(DlContentField.Type.NUMBER_UNIT)) {
+                        Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
+                        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+                            value = dlListingContentFieldRel.getValue();
+                            selectedValue = String.valueOf(dlContentFieldItems.iterator().next().getId());
+                            translatedValue = dlListingContentFieldRel.getValue() + " " + TranslateUtil.getTranslatedString(dlContentFieldItems.iterator().next(), languageCode);
                         }
                     } else {
                         value = dlListingContentFieldRel.getValue();
@@ -109,6 +117,7 @@ public class DlListingMapper {
                             .name(dlContentField.getName())
                             .translatedName(TranslateUtil.getTranslatedString(dlContentField, languageCode))
                             .value(value)
+                            .selectedValue(selectedValue)
                             .translatedValue(translatedValue)
                             .dlListingFieldItemDTOs(dlContentFieldItemDTOS));
 

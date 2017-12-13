@@ -92,7 +92,7 @@
                         regex: ''
                     };
                 }
-            } else if (vm.dlContentField.type === 'NUMBER') {
+            } else if (vm.dlContentField.type === 'NUMBER' || vm.dlContentField.type === 'NUMBER_UNIT') {
                 if (vm.dlContentField.options !== null && vm.dlContentField.options !== '') {
                     vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
                 } else {
@@ -104,7 +104,9 @@
                         max: ''
                     }
                 }
-
+                if (vm.dlContentField.type === 'NUMBER_UNIT') {
+                    vm.loadItems();
+                }
             } else if (vm.dlContentField.type === 'WEBSITE') {
                 if (vm.dlContentField.options !== null && vm.dlContentField.options !== '') {
                     vm.dlContentFieldOption = JSON.parse(vm.dlContentField.options);
