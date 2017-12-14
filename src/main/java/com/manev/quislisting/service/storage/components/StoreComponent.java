@@ -15,18 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.List;
 
 @Component
 public class StoreComponent {
 
-    public static final String QUIS_CONTENT_TYPE = "quisContentType";
     private static final String DL_MEDIUM = "medium";
     private static final String DL_LARGE = "large";
     private static final String DL_SMALL = "small";
@@ -136,9 +136,6 @@ public class StoreComponent {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, extension.isEmpty() ? "jpg" : extension, os);
         Files.copy(new ByteArrayInputStream(os.toByteArray()), file.toPath());
-        UserDefinedFileAttributeView view = Files.getFileAttributeView(file.toPath(),
-                UserDefinedFileAttributeView.class);
-        view.write(QUIS_CONTENT_TYPE, Charset.defaultCharset().encode(contentType));
     }
 
     private File checkFileName(String fileName, File parent) {
@@ -169,14 +166,8 @@ public class StoreComponent {
         AttachmentStreamResource attachmentStreamResource;
 
         File file = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + absPath);
-        UserDefinedFileAttributeView view = Files.getFileAttributeView(file.toPath(),
-                UserDefinedFileAttributeView.class);
-        ByteBuffer buffer = ByteBuffer.allocate(view.size(QUIS_CONTENT_TYPE));
-        view.read(QUIS_CONTENT_TYPE, buffer);
-        buffer.flip();
-        String value = Charset.defaultCharset().decode(buffer).toString();
         InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(file));
-        attachmentStreamResource = new AttachmentStreamResource(inputStreamResource, value,
+        attachmentStreamResource = new AttachmentStreamResource(inputStreamResource, Files.probeContentType(file.toPath()),
                 file.getName());
 
         return attachmentStreamResource;

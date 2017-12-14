@@ -4,9 +4,9 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1511602661312" author="tmanev">
-        <comment>Add email template for approved listings.</comment>
-        <sqlFile path="classpath:config/liquibase/sql/V2017_11_25_1649__add_email_templates.sql" relativeToChangelogFile="false" />
+    <changeSet id="V2017_12_13_2312" author="tmanev">
+        <comment>Add default content field groups</comment>
+        <sqlFile path="classpath:config/liquibase/sql/V2017_12_13_2312__add_default_content_groups.sql" relativeToChangelogFile="false" />
     </changeSet>
 
 </databaseChangeLog>
