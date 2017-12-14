@@ -35,7 +35,7 @@
         <div class="col-md-4">
             <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
                 <th:block th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'price'">
-                    <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
+                    <h3 style="text-align: center; margin-top: 0px;" th:if="${dlListingField.translatedValue} != null and ${dlListingField.translatedValue} != ''">
                         <span th:text="${dlListingField.translatedName}">Price</span> &nbsp;<span class="label label-default" th:text="${dlListingField.translatedValue}">2000 EUR</span>
                     </h3>
                 </th:block>
