@@ -65,13 +65,16 @@
                 <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
                     <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
                     <th:block th:if="${dlListingField.type} == 'CHECKBOX'">
-                        <h4>
-                            <span class="label label-default" th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}"
-                                  style="margin: 0 5px 0 5px;">
+                        <div class="container-fluid">
+                        <th:block th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
+                            <h4 style="display: inline-block">
+                                <span class="label label-default" style="margin: 0 5px 0 5px;">
                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                 [(${dlListingFieldItem.translatedValue})]
-                            </span>
-                        </h4>
+                                </span>
+                            </h4>
+                        </th:block>
+                        </div>
                     </th:block>
                 </div>
             </th:block>
