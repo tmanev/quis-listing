@@ -105,10 +105,11 @@ public class DlListingMapper {
                         }
                     } else if (dlContentField.getType().equals(DlContentField.Type.NUMBER_UNIT)) {
                         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
+                        value = dlListingContentFieldRel.getValue();
+                        translatedValue = dlListingContentFieldRel.getValue();
                         if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
-                            value = dlListingContentFieldRel.getValue();
                             selectedValue = String.valueOf(dlContentFieldItems.iterator().next().getId());
-                            translatedValue = dlListingContentFieldRel.getValue() + " " + TranslateUtil.getTranslatedString(dlContentFieldItems.iterator().next(), languageCode);
+                            translatedValue += " " + TranslateUtil.getTranslatedString(dlContentFieldItems.iterator().next(), languageCode);
                         }
                     } else {
                         value = dlListingContentFieldRel.getValue();
