@@ -306,9 +306,10 @@ EditListing = {
                         success: function (data, message, xhr) {
                             // widget.settings.onUploadSuccess.call(widget.element, widget.queuePos, data);
                             console.log("Success upload");
+                            var successMsg = $('#msg_upload_success').text();
                             listing.attachments = data.attachments;
                             $.notify({
-                                message: 'Success upload'
+                                message: successMsg
                             }, {
                                 type: 'success'
                             });
