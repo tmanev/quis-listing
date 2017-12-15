@@ -157,7 +157,7 @@ EditListing = {
                     attachment: null
                 },
                 saveModal: {
-                    shouldGoBack: false
+                    callback: null
                 }
             },
             validations: function () {
@@ -263,11 +263,9 @@ EditListing = {
 
                     return this.listing;
                 },
-                fileUpload: function (files) {
-                    console.log(files);
-
+                runUpload: function (files) {
                     for (var i = 0; i< files.length; i++) {
-                        doUpload(this.listing, this.queueFiles, files[i]);
+                        doUpload(editListingApp.listing, editListingApp.queueFiles, files[i]);
                     }
 
                     function doUpload(dlListing, queueFiles, file) {
@@ -332,6 +330,18 @@ EditListing = {
                                 console.log("Complete upload");
                             }
                         });
+                    }
+                },
+                fileUpload: function (files) {
+                    if (this.listing.status == 'PUBLISHED') {
+                        $('#save-warning-modal').modal('show');
+                        this.saveModal.callback = function () {
+                            $('#save-warning-modal').modal('hide');
+                            editListingApp.runUpload(files);
+                            editListingApp.listing.status = 'DRAFT';
+                        };
+                    } else {
+                        this.runUpload(files);
                     }
                 },
                 onDrop: function (e) {
@@ -467,20 +477,16 @@ EditListing = {
                     touchMap.set($v, setTimeout($v.$touch, 1000));
                 },
                 callbackSave: function () {
-                    if (this.saveModal.shouldGoBack) {
-                        var $btn = $('#btnSaveAndGoBack').button('loading');
-                        $('#save-warning-modal').modal('hide');
-                        this.doSave($btn, "/my-listings");
-                    } else {
-                        var $btn = $('#btnSave').button('loading');
-                        $('#save-warning-modal').modal('hide');
-                        this.doSave($btn, false);
-                    }
+                    this.saveModal.callback();
                 },
                 onSaveAndGoBack: function (event) {
                     if (this.listing.status == 'PUBLISHED') {
                         // open confirmation dialog
-                        this.saveModal.shouldGoBack = "/my-listings";
+                        this.saveModal.callback = function () {
+                            var $btn = $('#btnSaveAndGoBack').button('loading');
+                            $('#save-warning-modal').modal('hide');
+                            editListingApp.doSave($btn, "/my-listings");
+                        };
                         $('#save-warning-modal').modal('show');
                     } else {
                         var $btn = $('#btnSaveAndGoBack').button('loading');
@@ -489,8 +495,12 @@ EditListing = {
                 },
                 onSave: function (event) {
                     if (this.listing.status == 'PUBLISHED') {
+                        this.saveModal.callback = function () {
+                            var $btn = $('#btnSave').button('loading');
+                            $('#save-warning-modal').modal('hide');
+                            editListingApp.doSave($btn, false);
+                        };
                         // open confirmation dialog
-                        this.saveModal.shouldGoBack = false;
                         $('#save-warning-modal').modal('show');
                     } else {
                         var $btn = $('#btnSave').button('loading');
