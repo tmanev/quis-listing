@@ -2,6 +2,7 @@ package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -94,15 +95,13 @@ public class DlAdminListingResource {
     }
 
     @PostMapping(value = "/{id}/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlListingDTO> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException {
+    public ResponseEntity<List<AttachmentDTO>> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException {
 
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 
-        DlListingDTO result = dlListingService.uploadFile(fileMap, id);
+        List<AttachmentDTO> result = dlListingService.uploadFile(fileMap, id);
 
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping

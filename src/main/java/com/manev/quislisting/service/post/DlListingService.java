@@ -51,6 +51,7 @@ import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -371,8 +372,10 @@ public class DlListingService {
 
     }
 
-    public DlListingDTO uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException {
+    public List<AttachmentDTO> uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException {
         DlListing dlListing = dlListingRepository.findOne(id);
+
+        List<AttachmentDTO> uploadedAttachments = new ArrayList<>();
 
         String currentUserLogin = SecurityUtils.getCurrentUserLogin();
         Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
@@ -382,11 +385,12 @@ public class DlListingService {
                 DlAttachment dlAttachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
                 dlAttachment.setDlListing(dlListing);
                 dlListing.addDlAttachment(dlAttachment);
+                uploadedAttachments.add(attachmentDto);
             }
 
             dlListing.setStatus(DlListing.Status.DRAFT);
-            DlListing result = dlListingRepository.save(dlListing);
-            return dlListingMapper.dlListingToDlListingDTO(result, null);
+            dlListingRepository.save(dlListing);
+            return uploadedAttachments;
         } else {
             throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
         }

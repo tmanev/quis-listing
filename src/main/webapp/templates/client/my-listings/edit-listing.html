@@ -321,10 +321,9 @@
                     </div>
                 </div>
             </div>
-            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop"
-                 v-on:click="onBoxClick">
-                <input type="file" name="image" v-on:change="onChange" style="display: none"/>
-                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}">Drop images here or click to upload</span>
+            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop" v-on:click="onBoxClick">
+                <input id="image-upload" type="file" name="image" v-on:change="onChange" style="display: none" accept="image/*" multiple/>
+                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}" >Drop images here or click to upload</span>
             </div>
             <div id="upload_info" class="row" v-for="queueFile in queueFiles">
                 <div class="col-md-2">
