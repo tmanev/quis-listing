@@ -384,8 +384,9 @@ public class DlListingService {
                 AttachmentDTO attachmentDto = storageService.store(file);
                 DlAttachment dlAttachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
                 dlAttachment.setDlListing(dlListing);
+                dlAttachmentRepository.save(dlAttachment);
                 dlListing.addDlAttachment(dlAttachment);
-                uploadedAttachments.add(attachmentDto);
+                uploadedAttachments.add(attachmentMapper.attachmentToAttachmentDTO(dlAttachment));
             }
 
             dlListing.setStatus(DlListing.Status.DRAFT);

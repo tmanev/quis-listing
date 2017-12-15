@@ -403,9 +403,9 @@ public class DlListingResourceTest extends GenericResourceTest {
                 DlListingDTO.class);
 
         // make the upload
-        DlListingDTO updatedDlListingDTO = doFileUpload(createdDlListingDTO.getId());
-        assertThat(updatedDlListingDTO.getAttachments()).hasSize(1);
-        AttachmentDTO attachmentDTO = updatedDlListingDTO.getAttachments().get(0);
+        AttachmentDTO[] uploadedAttachmentDTOs = doFileUpload(createdDlListingDTO.getId());
+        assertThat(uploadedAttachmentDTOs).hasSize(1);
+        AttachmentDTO attachmentDTO = uploadedAttachmentDTOs[0];
 
         // test removal of attachments
         MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RESOURCE_API_DL_LISTINGS + "/" + createdDlListingDTO.getId() + "/attachments/" + attachmentDTO.getId())
@@ -422,7 +422,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         assertThat(updatedDlListing.getDlAttachments()).isEmpty();
     }
 
-    private DlListingDTO doFileUpload(Long id) throws Exception {
+    private AttachmentDTO[] doFileUpload(Long id) throws Exception {
         String contentType = Files.probeContentType(imageFile.toPath());
 
         MockMultipartFile multipartFile =
@@ -442,7 +442,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         String contentAsString = mvcResult.getResponse().getContentAsString();
 
         return new ObjectMapper().readValue(contentAsString,
-                DlListingDTO.class);
+                AttachmentDTO[].class);
     }
 
     @Test
