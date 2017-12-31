@@ -4,18 +4,20 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="dl-categories.new({selectedLanguageCode: vm.selectedLanguageCode})" >
+                <button class="btn btn-primary"
+                        ui-sref="dl-categories.new({selectedLanguageCode: vm.selectedLanguageCode})">
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlCategory.home.createLabel">
+                    <span class="hidden-xs-down" data-translate="quisListingApp.dlCategory.home.createLabel">
                         Create new DL Category
                     </span>
                 </button>
             </div>
             <div class="col-xs-8 no-padding-right">
                 <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.dlCategory.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
+                    <div class="input-group pull-right">
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery"
+                               placeholder="{{ 'quisListingApp.dlCategory.home.search' | translate }}">
+                        <span class="input-group-btn width-min">
                             <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
                                 <span class="glyphicon glyphicon-search"></span>
                             </button>
@@ -36,7 +38,7 @@
                ng-repeat="activeLanguage in vm.activeLanguages track by activeLanguage.code"
                ng-model="vm.selectedLanguageCode"
                uib-btn-radio="activeLanguage.code"
-                ng-change="vm.onLanguageChange()">
+               ng-change="vm.onLanguageChange()">
             {{activeLanguage.englishName}} ({{activeLanguage.count}})
         </label>
     </div>
@@ -45,10 +47,16 @@
         <table class="jh-table table table-striped">
             <thead>
             <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="name"><span data-translate="quisListingApp.dlCategory.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="slug"><span data-translate="quisListingApp.dlCategory.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
-                <th jh-sort-by="count"><span data-translate="quisListingApp.dlCategory.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="name"><span data-translate="quisListingApp.dlCategory.name">Name</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="slug"><span data-translate="quisListingApp.dlCategory.slug">Slug</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
+                <th jh-sort-by="count"><span data-translate="quisListingApp.dlCategory.count">Count</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
+                <th><span data-translate="quisListingApp.dlCategory.translation">Translation</span> <span
+                        class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
@@ -58,6 +66,20 @@
                 <td><span ng-repeat="n in [] | range:dlCategories.depthLevel">—</span> {{dlCategories.name}}</td>
                 <td>{{dlCategories.slug}}</td>
                 <td>{{dlCategories.count}}</td>
+                <td>
+                    <span ng-repeat="activeLanguage in vm.activeLanguages">
+                       <button type="submit" ui-sref="dl-categories.edit-translation({id: vm.hasTranslation(activeLanguage, dlCategories.translations)})" class="btn btn-default btn-xs"
+                               ng-if="activeLanguage.code != dlCategories.languageCode && vm.hasTranslation(activeLanguage, dlCategories.translations)">
+                           <span class="glyphicon glyphicon-pencil"></span>
+                           {{activeLanguage.code}}
+                       </button>
+                        <button type="submit" ui-sref="dl-categories.add-translation({id:dlCategories.id, selectedLanguageCode: activeLanguage.code, sourceLanguageCode: dlCategories.languageCode, translationGroupId: dlCategories.translationGroupId})" class="btn btn-default btn-xs"
+                                ng-if="activeLanguage.code != dlCategories.languageCode && !vm.hasTranslation(activeLanguage, dlCategories.translations)">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            {{activeLanguage.code}}
+                        </button>
+                    </span>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -86,7 +108,8 @@
     </div>
     <div class="text-center">
         <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
-        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage"
+                        ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
 
 </div>

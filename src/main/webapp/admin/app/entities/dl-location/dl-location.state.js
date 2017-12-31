@@ -150,6 +150,69 @@
             }]
         })
 
+            .state('dl-locations.add-translation', {
+                parent: 'dl-locations',
+                url: '/add-translation',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                params: {id: null, selectedLanguageCode: null, sourceLanguageCode: null, translationGroupId: null},
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/entities/dl-location/dl-location-dialog.html',
+                        controller: 'DlLocationDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: function () {
+                                return {
+                                    id: null,
+                                    name: null,
+                                    slug: null,
+                                    description: "",
+                                    parentId: $stateParams.dlLocationParentId,
+                                    count: null,
+                                    languageCode: $stateParams.selectedLanguageCode,
+                                    sourceLanguageCode: $stateParams.sourceLanguageCode,
+                                    translationGroupId: $stateParams.translationGroupId
+                                };
+                            }
+                        }
+                    }).result.then(function(result) {
+                        $state.go('dl-locations', {dlLocationParentId: result.parentId}, { reload: 'dl-locations' });
+                    }, function() {
+                        $state.go('dl-locations');
+                    });
+                }]
+            })
+
+            .state('dl-locations.edit-translation', {
+                parent: 'dl-locations',
+                url: '/by-translation/{id}/edit-translation',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/entities/dl-location/dl-location-dialog.html',
+                        controller: 'DlLocationDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: ['DlLocation', function(DlLocation) {
+                                return DlLocation.getByTranslation({id : $stateParams.id}).$promise;
+                            }]
+                        }
+                    }).result.then(function(result) {
+                        $state.go('dl-locations', {dlLocationParentId: result.parentId}, { reload: 'dl-locations' });
+                    }, function() {
+                        $state.go('dl-locations');
+                    });
+                }]
+            })
+
         .state('dl-locations.edit', {
             parent: 'dl-locations',
             url: '/{id}/edit',

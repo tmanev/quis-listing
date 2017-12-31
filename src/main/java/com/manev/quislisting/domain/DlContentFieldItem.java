@@ -15,11 +15,11 @@ public class DlContentFieldItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonBackReference(value = "dl_content_field_item_parent_reference")
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private DlContentFieldItem parent;
 
+    @JsonBackReference(value = "dl_content_field_item_children_reference")
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<DlContentFieldItem> children;
 

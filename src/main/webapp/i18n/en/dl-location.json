@@ -20,7 +20,8 @@
             "slug": "Slug",
             "description": "Description",
             "parent": "Parent",
-            "count": "Count"
+            "count": "Count",
+            "translation": "Translation"
         }
     }
 }

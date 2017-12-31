@@ -34,6 +34,7 @@
         vm.currentSearch = pagingParams.search;
         vm.onLanguageChange = onLanguageChange;
         vm.clearParentLocationFilter = clearParentLocationFilter;
+        vm.hasTranslation = hasTranslation;
 
         vm.filter = {            dlLocationParentId: dlLocationParentId        };
 
@@ -177,6 +178,15 @@
         function clearParentLocationFilter() {
             vm.filter.dlLocationParentId = null;
             vm.loadTable();
+        }
+
+        function hasTranslation(activeLanguage, translations) {
+            for (let i = 0; i < translations.length; i++) {
+                if (activeLanguage.code === translations[i].languageCode) {
+                    return translations[i].id;
+                }
+            }
+            return false;
         }
     }
 })();

@@ -6,6 +6,7 @@ import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
+import com.manev.quislisting.web.rest.vm.BindDlTermTaxonomyVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -77,6 +78,19 @@ public class DlCategoryResource {
         log.debug("REST request to get DlCategoryDTO : {}", id);
         DlCategoryDTO dlCategoryDTO = dlCategoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlCategoryDTO));
+    }
+
+    @GetMapping("/by-translation/{id}")
+    public ResponseEntity<DlCategoryDTO> getDlCategoryByTranslationId(@PathVariable Long id) {
+        log.debug("REST request to get DlCategoryDTO by translation id : {}", id);
+        DlCategoryDTO dlCategoryDTO = dlCategoryService.findOneByTranslationId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlCategoryDTO));
+    }
+
+    @PostMapping("/bind-categories")
+    public ResponseEntity<Void> bindDlCategories(@RequestBody BindDlTermTaxonomyVM bindDlTermTaxonomyVM) {
+        dlCategoryService.bindDlCategories(bindDlTermTaxonomyVM.getSourceId(), bindDlTermTaxonomyVM.getTargetId());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

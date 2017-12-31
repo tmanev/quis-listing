@@ -134,7 +134,9 @@
                                 description: "",
                                 parentId: null,
                                 count: null,
-                                languageCode: $stateParams.selectedLanguageCode
+                                languageCode: $stateParams.selectedLanguageCode,
+                                sourceLanguageCode: null,
+                                translationGroupId: null
                             };
                         }
                     }
@@ -145,6 +147,69 @@
                 });
             }]
         })
+
+            .state('dl-categories.add-translation', {
+                parent: 'dl-categories',
+                url: '/add-translation',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                params: {id: null, selectedLanguageCode: null, sourceLanguageCode: null, translationGroupId: null},
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/entities/dl-category/dl-category-dialog.html',
+                        controller: 'DlCategoryDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: function () {
+                                return {
+                                    id: null,
+                                    name: null,
+                                    slug: null,
+                                    description: "",
+                                    parentId: null,
+                                    count: null,
+                                    languageCode: $stateParams.selectedLanguageCode,
+                                    sourceLanguageCode: $stateParams.sourceLanguageCode,
+                                    translationGroupId: $stateParams.translationGroupId
+                                };
+                            }
+                        }
+                    }).result.then(function() {
+                        $state.go('dl-categories', null, { reload: 'dl-categories' });
+                    }, function() {
+                        $state.go('dl-categories');
+                    });
+                }]
+            })
+
+            .state('dl-categories.edit-translation', {
+                parent: 'dl-categories',
+                url: '/by-translation/{id}/edit-translation',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'admin/app/entities/dl-category/dl-category-dialog.html',
+                        controller: 'DlCategoryDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: ['DlCategory', function(DlCategory) {
+                                return DlCategory.getByTranslation({id : $stateParams.id}).$promise;
+                            }]
+                        }
+                    }).result.then(function() {
+                        $state.go('dl-categories', null, { reload: 'dl-categories' });
+                    }, function() {
+                        $state.go('dl-categories');
+                    });
+                }]
+            })
 
         .state('dl-categories.edit', {
             parent: 'dl-categories',

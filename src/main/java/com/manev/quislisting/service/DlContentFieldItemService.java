@@ -68,6 +68,7 @@ public class DlContentFieldItemService {
 
     private void setDlContentField(Long dlContentFieldId, DlContentFieldItem dlContentFieldItem) {
         DlContentField one = dlContentFieldRepository.findOne(dlContentFieldId);
+        one.addDlContentFieldItem(dlContentFieldItem);
         dlContentFieldItem.setDlContentField(one);
     }
 

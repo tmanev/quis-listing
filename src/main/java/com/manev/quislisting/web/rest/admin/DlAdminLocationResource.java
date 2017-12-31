@@ -6,6 +6,7 @@ import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
+import com.manev.quislisting.web.rest.vm.BindDlTermTaxonomyVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -76,6 +86,19 @@ public class DlAdminLocationResource {
         log.debug("REST request to get DlLocationDTO : {}", id);
         DlLocationDTO dlLocationDTO = dlLocationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlLocationDTO));
+    }
+
+    @GetMapping("/by-translation/{id}")
+    public ResponseEntity<DlLocationDTO> getDlCategoryByTranslationId(@PathVariable Long id) {
+        log.debug("REST request to get DlCategoryDTO by translation id : {}", id);
+        DlLocationDTO dlLocationDTO = dlLocationService.findOneByTranslationId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlLocationDTO));
+    }
+
+    @PostMapping("/bind-locations")
+    public ResponseEntity<Void> bindDlCategories(@RequestBody BindDlTermTaxonomyVM bindDlTermTaxonomyVM) {
+        dlLocationService.bindDlLocations(bindDlTermTaxonomyVM.getSourceId(), bindDlTermTaxonomyVM.getTargetId());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

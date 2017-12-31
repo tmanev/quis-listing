@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -40,6 +41,13 @@ public class DlCategory extends TermTaxonomy {
 
     public void setChildren(Set<DlCategory> children) {
         this.children = children;
+    }
+
+    public void addChildren(DlCategory dlCategory) {
+        if (children == null) {
+            children = new HashSet<>();
+        }
+        children.add(dlCategory);
     }
 
     public Set<DlListing> getDlListings() {

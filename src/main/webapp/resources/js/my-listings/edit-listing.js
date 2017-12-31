@@ -442,7 +442,6 @@ EditListing = {
                             this.isStateSelectLoading = false;
                         });
                     }
-
                 },
                 onStateChange: function () {
                     if (this.selectedState === "-1") {

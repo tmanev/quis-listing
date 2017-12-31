@@ -1,6 +1,7 @@
 package com.manev.quislisting.web.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.MediaType;
@@ -36,6 +37,16 @@ public class TestUtil {
         mapper.registerModule(module);
 
         return mapper.writeValueAsBytes(object);
+    }
+
+    public static String convertObjectToJsonString(Object object) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        JavaTimeModule module = new JavaTimeModule();
+        mapper.registerModule(module);
+
+        return mapper.writeValueAsString(object);
     }
 
 }

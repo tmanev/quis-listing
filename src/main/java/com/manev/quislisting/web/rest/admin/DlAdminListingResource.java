@@ -4,6 +4,7 @@ import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.post.rebuildindex.DlListingRebuildService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -47,9 +48,11 @@ public class DlAdminListingResource {
 
     private final Logger log = LoggerFactory.getLogger(DlAdminListingResource.class);
     private final DlListingService dlListingService;
+    private final DlListingRebuildService dlListingRebuildService;
 
-    public DlAdminListingResource(DlListingService dlListingService) {
+    public DlAdminListingResource(DlListingService dlListingService, DlListingRebuildService dlListingRebuildService) {
         this.dlListingService = dlListingService;
+        this.dlListingRebuildService = dlListingRebuildService;
     }
 
     @RequestMapping(method = RequestMethod.POST,
@@ -155,5 +158,11 @@ public class DlAdminListingResource {
 
         DlListingDTO dlListingDTO = dlListingService.disapproveListing(id, approveDTO);
         return ResponseEntity.ok().body(dlListingDTO);
+    }
+
+    @GetMapping("/rebuild-index")
+    public ResponseEntity<Void> rebuildIndex() {
+        dlListingRebuildService.rebuildElasticsearchData();
+        return ResponseEntity.noContent().build();
     }
 }

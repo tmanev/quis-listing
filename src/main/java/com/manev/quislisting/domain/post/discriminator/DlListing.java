@@ -1,22 +1,24 @@
 package com.manev.quislisting.domain.post.discriminator;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.manev.quislisting.domain.*;
+import com.manev.quislisting.domain.DlAttachment;
+import com.manev.quislisting.domain.DlListingContentFieldRel;
+import com.manev.quislisting.domain.DlListingLocationRel;
+import com.manev.quislisting.domain.Translation;
+import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import com.manev.quislisting.service.post.dto.serializer.TimestampDeserializer;
-import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
 import org.hibernate.annotations.Where;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "ql_dl_listing")
-@Document(indexName = "dl_listing")
 public class DlListing {
 
     @OneToOne
@@ -38,13 +40,9 @@ public class DlListing {
     @Column
     private String content;
 
-    @JsonSerialize(using = TimestampSerializer.class)
-    @JsonDeserialize(using = TimestampDeserializer.class)
     @Column
     private Timestamp created;
 
-    @JsonSerialize(using = TimestampSerializer.class)
-    @JsonDeserialize(using = TimestampDeserializer.class)
     @Column
     private Timestamp modified;
 

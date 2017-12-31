@@ -1,21 +1,29 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
-import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.Translation;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;
+import com.manev.quislisting.service.post.dto.TranslationDTO;
+import com.manev.quislisting.service.post.mapper.TranslationMapper;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.builder.DlLocationDTOBuilder;
-import com.manev.quislisting.service.taxonomy.dto.builder.TermDTOBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class DlLocationMapper {
+
+    private TranslationMapper translationMapper;
+
+    public DlLocationMapper(TranslationMapper translationMapper) {
+        this.translationMapper = translationMapper;
+    }
 
     public DlLocation dlLocationDTOTodlLocation(DlLocationDTO dlLocationDTO) {
         return DlLocationBuilder.aDlLocation()
@@ -23,12 +31,6 @@ public class DlLocationMapper {
                 .withName(dlLocationDTO.getName())
                 .withSlug(dlLocationDTO.getSlug())
                 .withDescription(dlLocationDTO.getDescription())
-                .withTranslation(
-                        TranslationBuilder.aTranslation()
-                                .withLanguageCode(dlLocationDTO.getLanguageCode())
-                                .withTranslationGroup(new TranslationGroup())
-                                .withSourceLanguageCode(dlLocationDTO.getSourceLanguageCode())
-                                .build())
                 .build();
     }
 
@@ -65,14 +67,18 @@ public class DlLocationMapper {
     }
 
     public DlLocationDTO dlLocationToDlLocationDTO(DlLocation dlLocation) {
-        return DlLocationDTOBuilder.aDlLocationDTO().withId(dlLocation.getId())
-                        .withName(dlLocation.getName())
-                        .withSlug(dlLocation.getSlug())
+        return DlLocationDTOBuilder.aDlLocationDTO()
+                .withId(dlLocation.getId())
+                .withName(dlLocation.getName())
+                .withSlug(dlLocation.getSlug())
                 .withDescription(dlLocation.getDescription())
                 .withParentId(dlLocation.getParent() != null ? dlLocation.getParent().getId() : null)
                 .withParent(dlLocation.getParent() != null ? this.dlLocationToDlLocationDTO(dlLocation.getParent()) : null)
                 .withCount(dlLocation.getCount())
-                .withLanguageId(dlLocation.getTranslation() != null ? dlLocation.getTranslation().getLanguageCode() : null)
+                .withLanguageCode(dlLocation.getTranslation() != null ? dlLocation.getTranslation().getLanguageCode() : null)
+                .withSourceLanguageCode(dlLocation.getTranslation().getSourceLanguageCode())
+                .withTranslationGroupId(dlLocation.getTranslation().getTranslationGroup().getId())
+                .withTranslations(getTranslationDTOS(dlLocation))
                 .build();
     }
 
@@ -82,5 +88,14 @@ public class DlLocationMapper {
         existingDlLocation.setSlug(dlLocationDTO.getSlug());
 
         return existingDlLocation;
+    }
+
+    private List<TranslationDTO> getTranslationDTOS(DlLocation dlLocation) {
+        Set<Translation> translationSet = dlLocation.getTranslation().getTranslationGroup().getTranslations();
+        if (translationSet != null) {
+            return translationSet.stream()
+                    .map(translationMapper::translationToTranslationDTO).collect(Collectors.toList());
+        }
+        return null;
     }
 }

@@ -34,7 +34,7 @@ public class DlCategoryRepositoryTest {
     @Test
     public void saveDlCategoryTest() {
         int size = dlCategoryRepository.findAll().size();
-        DlCategory dlCategory = DlCategoryResourceIntTest.createEntity();
+        DlCategory dlCategory = DlCategoryResourceIntTest.createEntity("en");
         DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
         assertEquals(size + 1, dlCategoryRepository.findAll().size());
 

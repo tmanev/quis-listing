@@ -16,7 +16,7 @@ public class SlugUtil {
         return slugify.slugify(fileName) + (extension.isEmpty() ? "" : "." + slugify.slugify(extension));
     }
 
-    public static String metaContentFieldId(Long id) {
-        return "content_field_" + id;
+    public static String slugify(String name) {
+        return new Slugify().slugify(name);
     }
 }

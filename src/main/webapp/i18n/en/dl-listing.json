@@ -5,7 +5,8 @@
                 "title": "Dl Listings",
                 "createLabel": "Create a new Dl Listing",
                 "createOrEditLabel": "Create or edit a Dl Listing",
-                "search": "Search for Dl Listing"
+                "search": "Search for Dl Listing",
+                "rebuildElasticsearch": "Re-build elastisearch"
             },
             "created": "A new Dl Listing is created with identifier {{ param }}",
             "updated": "A Dl Listing is updated with identifier {{ param }}",

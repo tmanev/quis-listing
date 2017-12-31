@@ -6,6 +6,7 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -422,6 +423,13 @@ public class DlContentField {
     public DlContentField dlContentFieldItems(Set<DlContentFieldItem> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
         return this;
+    }
+
+    public void addDlContentFieldItem(DlContentFieldItem dlContentFieldItem) {
+        if (this.dlContentFieldItems == null) {
+            this.dlContentFieldItems = new HashSet<>();
+        }
+        this.dlContentFieldItems.add(dlContentFieldItem);
     }
 
     public DlContentFieldGroup getDlContentFieldGroup() {

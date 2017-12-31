@@ -1,12 +1,16 @@
 package com.manev.quislisting.service.taxonomy;
 
+import com.manev.quislisting.domain.Translation;
+import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
@@ -61,11 +65,36 @@ public class DlLocationService {
             dlLocation = dlLocationMapper.dlLocationDTOTodlLocation(dlLocationDTO);
         }
 
+        setTranslation(dlLocationDTO, dlLocation);
+
         if (dlLocationDTO.getParentId() != null) {
             dlLocation.setParent(dlLocationRepository.findOne(dlLocationDTO.getParentId()));
         }
         dlLocation = dlLocationRepository.save(dlLocation);
         return dlLocationMapper.dlLocationToDlLocationDTO(dlLocation);
+    }
+
+    private void setTranslation(DlLocationDTO dlLocationDTO, DlLocation dlLocation) {
+        if (dlLocation.getTranslation() == null) {
+            if (dlLocationDTO.getTranslationGroupId() != null) {
+                // this is translation use existing translation group
+                TranslationGroup translationGroup = translationGroupRepository.findOne(dlLocationDTO.getTranslationGroupId());
+                dlLocation.setTranslation(
+                        createTranslation(dlLocationDTO.getLanguageCode(), translationGroup, dlLocationDTO.getSourceLanguageCode()));
+            } else {
+                // create new translation group
+                dlLocation.setTranslation(
+                        createTranslation(dlLocationDTO.getLanguageCode(), new TranslationGroup(), dlLocationDTO.getSourceLanguageCode()));
+            }
+        }
+    }
+
+    private Translation createTranslation(String languageCode, TranslationGroup translationGroup, String sourceLanguageCode) {
+        return TranslationBuilder.aTranslation()
+                .withLanguageCode(languageCode)
+                .withTranslationGroup(translationGroup)
+                .withSourceLanguageCode(sourceLanguageCode)
+                .build();
     }
 
     public Page<DlLocationDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
@@ -89,6 +118,12 @@ public class DlLocationService {
     public DlLocationDTO findOne(Long id) {
         log.debug("Request to get DlLocationDTO : {}", id);
         DlLocation result = dlLocationRepository.findOne(id);
+        return result != null ? dlLocationMapper.dlLocationToDlLocationDTO(result) : null;
+    }
+
+    @Transactional(readOnly = true)
+    public DlLocationDTO findOneByTranslationId(Long id) {
+        DlLocation result = dlLocationRepository.findByTranslation_id(id);
         return result != null ? dlLocationMapper.dlLocationToDlLocationDTO(result) : null;
     }
 
@@ -117,5 +152,18 @@ public class DlLocationService {
         }
         List<DlLocation> dlLocations = dlLocationRepository.findAllByParentAndTranslation_languageCode(parent, language);
         return dlLocations.stream().map(dlLocationMapper::dlLocationToDlLocationDTO).collect(Collectors.toList());
+    }
+
+    public void bindDlLocations(Long sourceId, Long targetId) {
+        DlLocation source = dlLocationRepository.findOne(sourceId);
+        TranslationGroup sourceTranslationGroup = source.getTranslation().getTranslationGroup();
+
+        DlLocation target = dlLocationRepository.findOne(targetId);
+        Translation targetTranslation = target.getTranslation();
+        TranslationGroup targetTranslationGroup = targetTranslation.getTranslationGroup();
+        targetTranslation.setTranslationGroup(sourceTranslationGroup);
+
+        dlLocationRepository.save(target);
+        translationGroupRepository.delete(targetTranslationGroup);
     }
 }

@@ -75,6 +75,7 @@
                 <th jh-sort-by="name"><span data-translate="quisListingApp.dlLocation.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="slug"><span data-translate="quisListingApp.dlLocation.slug">Slug</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th jh-sort-by="count"><span data-translate="quisListingApp.dlLocation.count">Count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <th><span data-translate="quisListingApp.dlLocation.translation">Translation</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
@@ -84,6 +85,20 @@
                 <td><span ng-repeat="n in [] | range:dlLocation.depthLevel">—</span> {{dlLocation.name}}</td>
                 <td>{{dlLocation.slug}}</td>
                 <td>{{dlLocation.count}}</td>
+                <td>
+                    <span ng-repeat="activeLanguage in vm.activeLanguages">
+                       <button type="submit" ui-sref="dl-locations.edit-translation({id: vm.hasTranslation(activeLanguage, dlLocation.translations)})" class="btn btn-default btn-xs"
+                               ng-if="activeLanguage.code != dlLocation.languageCode && vm.hasTranslation(activeLanguage, dlLocation.translations)">
+                           <span class="glyphicon glyphicon-pencil"></span>
+                           {{activeLanguage.code}}
+                       </button>
+                        <button type="submit" ui-sref="dl-locations.add-translation({id:dlLocation.id, selectedLanguageCode: activeLanguage.code, sourceLanguageCode: dlLocation.languageCode, translationGroupId: dlLocation.translationGroupId})" class="btn btn-default btn-xs"
+                                ng-if="activeLanguage.code != dlLocation.languageCode && !vm.hasTranslation(activeLanguage, dlLocation.translations)">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            {{activeLanguage.code}}
+                        </button>
+                    </span>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

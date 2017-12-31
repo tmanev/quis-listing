@@ -86,14 +86,15 @@ public class DlListingResource {
 
     @RequestMapping(path = "/publish", method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO) {
+    public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO, HttpServletRequest request) {
         log.debug("REST request to publish DlListingDTO : {}", dlListingDTO);
         if (dlListingDTO.getId() == null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
         }
 
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
         dlListingService.validateForPublishing(dlListingDTO);
-        DlListingDTO result = dlListingService.saveAndRequestPublishing(dlListingDTO);
+        DlListingDTO result = dlListingService.saveAndRequestPublishing(dlListingDTO, languageCode);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))

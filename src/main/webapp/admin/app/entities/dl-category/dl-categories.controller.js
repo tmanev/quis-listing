@@ -31,6 +31,7 @@
         vm.searchQuery = pagingParams.search;
         vm.currentSearch = pagingParams.search;
         vm.onLanguageChange = onLanguageChange;
+        vm.hasTranslation = hasTranslation;
 
         vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
         vm.activeLanguages = [
@@ -126,6 +127,15 @@
         function onLanguageChange() {
             loadAll();
             vm.dataLanguageHub.selectedLanguageCode = vm.selectedLanguageCode;
+        }
+
+        function hasTranslation(activeLanguage, translations) {
+            for (let i = 0; i < translations.length; i++) {
+                if (activeLanguage.code === translations[i].languageCode) {
+                    return translations[i].id;
+                }
+            }
+            return false;
         }
     }
 })();

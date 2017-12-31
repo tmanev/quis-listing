@@ -25,6 +25,7 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.onLanguageChange = onLanguageChange;
+        vm.rebuildElasticsearch = rebuildElasticsearch;
 
         vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
         vm.activeLanguages = [
@@ -118,6 +119,10 @@
             vm.reverse = true;
             vm.currentSearch = null;
             vm.transition();
+        }
+
+        function rebuildElasticsearch() {
+            DlListing.rebuildElasticsearch();
         }
     }
 })();

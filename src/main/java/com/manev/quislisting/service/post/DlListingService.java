@@ -15,6 +15,7 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.DlAttachmentRepository;
 import com.manev.quislisting.repository.DlContentFieldItemRepository;
 import com.manev.quislisting.repository.DlContentFieldRepository;
+import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.search.DlListingSearchRepository;
@@ -35,6 +36,11 @@ import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.util.AttachmentUtil;
 import com.manev.quislisting.service.util.SlugUtil;
+import com.manev.quislisting.web.rest.post.filter.DlContentFieldFilter;
+import com.manev.quislisting.web.rest.post.filter.DlListingSearchFilter;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -42,6 +48,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,9 +65,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 
 @Service
 @Transactional
@@ -82,6 +86,7 @@ public class DlListingService {
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlAttachmentRepository dlAttachmentRepository;
     private DlListingSearchRepository dlListingSearchRepository;
+    private TranslationGroupRepository translationGroupRepository;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
@@ -89,7 +94,7 @@ public class DlListingService {
                             StorageService storageService, LanguageService languageService,
                             DlContentFieldRepository dlContentFieldRepository,
                             DlContentFieldItemRepository dlContentFieldItemRepository,
-                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository, EmailSendingService emailSendingService) {
+                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository, EmailSendingService emailSendingService, TranslationGroupRepository translationGroupRepository) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -103,28 +108,32 @@ public class DlListingService {
         this.dlAttachmentRepository = dlAttachmentRepository;
         this.dlListingSearchRepository = dlListingSearchRepository;
         this.emailSendingService = emailSendingService;
+        this.translationGroupRepository = translationGroupRepository;
     }
 
     public DlListingDTO save(DlListingDTO dlListingDTO, String languageCode) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
-        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
+        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, languageCode, null);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        dlListingSearchRepository.save(dlListingForSaving);
-        return dlListingMapper.dlListingToDlListingDTO(savedDlListing, languageCode);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, languageCode);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
     }
 
-    public DlListingDTO saveAndRequestPublishing(DlListingDTO dlListingDTO) {
+    public DlListingDTO saveAndRequestPublishing(DlListingDTO dlListingDTO, String languageCode) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
-        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO);
+        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, languageCode, null);
         dlListingForSaving.setStatus(DlListing.Status.PUBLISH_REQUEST);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        dlListingSearchRepository.save(dlListingForSaving);
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving, null);
+        dlListingSearchRepository.save(savedDlListingDTO);
         emailSendingService.sendPublishRequest(savedDlListing);
-        return dlListingMapper.dlListingToDlListingDTO(savedDlListing, null);
+        return savedDlListingDTO;
     }
 
     public DlListingDTO approveListing(Long id) {
@@ -154,7 +163,7 @@ public class DlListingService {
         return dlListingMapper.dlListingToDlListingDTO(save, null);
     }
 
-    private DlListing getDlListingForSaving(DlListingDTO dlListingDTO) {
+    private DlListing getDlListingForSaving(DlListingDTO dlListingDTO, String langKey, Long translationGroupId) {
         DlListing dlListingForSaving;
         Timestamp now = new Timestamp(clock.millis());
         if (dlListingDTO.getId() != null) {
@@ -170,12 +179,12 @@ public class DlListingService {
 
                 setCommonProperties(dlListingDTO, dlListingForSaving);
 
+                TranslationGroup translationGroup = getTranslationGroup(translationGroupId);
                 dlListingForSaving.setTranslation(
                         TranslationBuilder.aTranslation()
-                                .withLanguageCode(oneByLogin.get().getLangKey())
-                                .withTranslationGroup(new TranslationGroup())
-                                .build()
-                );
+                                .withLanguageCode(langKey)
+                                .withTranslationGroup(translationGroup)
+                                .build());
 
                 dlListingForSaving.setCreated(now);
                 dlListingForSaving.setModified(now);
@@ -185,6 +194,14 @@ public class DlListingService {
             }
         }
         return dlListingForSaving;
+    }
+
+    private TranslationGroup getTranslationGroup(Long translationGroupId) {
+        if (translationGroupId != null) {
+            return translationGroupRepository.findOne(translationGroupId);
+        } else {
+            return new TranslationGroup();
+        }
     }
 
     private void setCommonProperties(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
@@ -335,10 +352,57 @@ public class DlListingService {
         dlListingSearchRepository.delete(id);
     }
 
-    public Page<DlListingDTO> search(String query, Pageable pageable, String languageCode) {
+    public Page<DlListingDTO> search(DlListingSearchFilter query, Pageable pageable) {
         log.debug("Request to search for a page of Books for query {}", query);
-        Page<DlListing> result = dlListingSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(dlListing -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
+
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        if (!StringUtils.isEmpty(query.getText())) {
+            boolQueryBuilder.must(QueryBuilders.queryStringQuery(query.getText())
+                    .field("title^3")
+                    .field("description")
+                    .fuzziness(Fuzziness.AUTO));
+        }
+
+        boolQueryBuilder
+                .must(QueryBuilders.termQuery("status", DlListing.Status.PUBLISHED.toString().toLowerCase()))
+                .should(QueryBuilders.termQuery("languageCode", query.getLanguageCode()));
+
+        if (hasSelection(query.getCategoryId())) {
+            boolQueryBuilder.must(QueryBuilders.nestedQuery("translatedCategories",
+                    QueryBuilders.boolQuery()
+                            .must(QueryBuilders.termQuery("translatedCategories.id", query.getCategoryId()))));
+        }
+
+        if (hasSelection(query.getLocationId())) {
+            boolQueryBuilder.must(QueryBuilders.nestedQuery("translatedLocations",
+                    QueryBuilders.boolQuery()
+                            .must(QueryBuilders.termQuery("translatedLocations.id", query.getLocationId()))));
+        }
+
+        List<DlContentFieldFilter> dlContentFields = query.getContentFields();
+        if (!CollectionUtils.isEmpty(dlContentFields)) {
+            for (DlContentFieldFilter dlContentField : dlContentFields) {
+                if (!StringUtils.isEmpty(dlContentField.getValue())) {
+                    boolQueryBuilder.must(QueryBuilders.nestedQuery("dlListingFields",
+                            QueryBuilders.boolQuery()
+                                    .must(QueryBuilders.termQuery("dlListingFields.id", dlContentField.getId()))
+                                    .must(QueryBuilders.termQuery("dlListingFields.value", dlContentField.getValue()))));
+                }
+
+                if (!StringUtils.isEmpty(dlContentField.getSelectedValue())) {
+                    boolQueryBuilder.must(QueryBuilders.nestedQuery("dlListingFields",
+                            QueryBuilders.boolQuery()
+                                    .must(QueryBuilders.termQuery("dlListingFields.id", dlContentField.getId()))
+                                    .must(QueryBuilders.termQuery("dlListingFields.selectedValue", dlContentField.getSelectedValue()))));
+                }
+            }
+        }
+
+        return dlListingSearchRepository.search(boolQueryBuilder, pageable);
+    }
+
+    private boolean hasSelection(String value) {
+        return !StringUtils.isEmpty(value) && !value.equals("-1");
     }
 
     public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException {
