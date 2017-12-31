@@ -321,10 +321,9 @@
                     </div>
                 </div>
             </div>
-            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop"
-                 v-on:click="onBoxClick">
-                <input type="file" name="image" v-on:change="onChange" style="display: none"/>
-                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}">Drop images here or click to upload</span>
+            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop" v-on:click="onBoxClick">
+                <input id="image-upload" type="file" name="image" v-on:change="onChange" style="display: none" accept="image/*" multiple/>
+                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}" >Drop images here or click to upload</span>
             </div>
             <div id="upload_info" class="row" v-for="queueFile in queueFiles">
                 <div class="col-md-2">
@@ -416,6 +415,7 @@
             </div>
         </div>
         <label id="msg_save_success" th:text="#{rest.general.save_success}" style="display: none"></label>
+        <label id="msg_upload_success" th:text="#{rest.general.upload_success}" style="display: none"></label>
     </div>
 
     <div th:replace="client/my-listings/components :: components"></div>

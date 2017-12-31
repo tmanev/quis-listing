@@ -1,7 +1,10 @@
 package com.manev.quislisting.web.rest.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.web.rest.post.filter.DlListingSearchFilter;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,9 +39,9 @@ public class DlListingPublicResource {
     private final LocaleResolver localeResolver;
     private final DlListingService dlListingService;
 
-    public DlListingPublicResource(LocaleResolver localeResolver, DlListingService dlListingService) {
-        this.localeResolver = localeResolver;
+    public DlListingPublicResource(DlListingService dlListingService, LocaleResolver localeResolver) {
         this.dlListingService = dlListingService;
+        this.localeResolver = localeResolver;
     }
 
     @GetMapping
@@ -53,11 +59,19 @@ public class DlListingPublicResource {
     }
 
     @GetMapping("/_search")
-    public ResponseEntity<List<DlListingDTO>> searchBooks(@RequestParam String query, @ApiParam Pageable pageable,
-                                                          HttpServletRequest request) {
+    public ResponseEntity<List<DlListingDTO>> searchListings(@RequestParam String query, @ApiParam Pageable pageable,
+                                                          HttpServletRequest request) throws IOException {
         log.debug("REST request to search for a page of Books for query {}", query);
         String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
-        Page<DlListingDTO> page = dlListingService.search(query, pageable, languageCode);
+
+        ObjectMapper mapper = new ObjectMapper();
+        DlListingSearchFilter dlListingSearchFilter = mapper.readValue(URLDecoder.decode(query, "UTF-8"), DlListingSearchFilter.class);
+
+        if (dlListingSearchFilter.getLanguageCode() == null) {
+            dlListingSearchFilter.setLanguageCode(languageCode);
+        }
+
+        Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

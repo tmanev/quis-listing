@@ -5,6 +5,14 @@ spring:
         name:
         username: ql_user
         password:
+    data:
+        elasticsearch:
+            cluster-name:
+            cluster-nodes:
+            properties:
+                path:
+                  logs: elasticsearch/log_itest
+                  data: elasticsearch/data_itest
     jpa:
         database-platform: com.manev.quislisting.domain.util.FixedH2Dialect
         database: H2

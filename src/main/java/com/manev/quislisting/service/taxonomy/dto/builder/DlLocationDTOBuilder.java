@@ -1,6 +1,9 @@
 package com.manev.quislisting.service.taxonomy.dto.builder;
 
+import com.manev.quislisting.service.post.dto.TranslationDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
+
+import java.util.List;
 
 public final class DlLocationDTOBuilder {
     private Long id;
@@ -9,7 +12,10 @@ public final class DlLocationDTOBuilder {
     private Long parentId;
     private String description;
     private Long count;
-    private String languageId;
+    private String languageCode;
+    private String sourceLanguageCode;
+    private Long translationGroupId;
+    private List<TranslationDTO> translations;
     private DlLocationDTO parent;
 
     private DlLocationDTOBuilder() {
@@ -54,8 +60,23 @@ public final class DlLocationDTOBuilder {
         return this;
     }
 
-    public DlLocationDTOBuilder withLanguageId(String languageId) {
-        this.languageId = languageId;
+    public DlLocationDTOBuilder withLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+        return this;
+    }
+
+    public DlLocationDTOBuilder withSourceLanguageCode(String sourceLanguageCode) {
+        this.sourceLanguageCode = sourceLanguageCode;
+        return this;
+    }
+
+    public DlLocationDTOBuilder withTranslationGroupId(Long translationGroupId) {
+        this.translationGroupId = translationGroupId;
+        return this;
+    }
+
+    public DlLocationDTOBuilder withTranslations(List<TranslationDTO> translations) {
+        this.translations = translations;
         return this;
     }
 
@@ -68,7 +89,10 @@ public final class DlLocationDTOBuilder {
         dlLocationDTO.setParent(parent);
         dlLocationDTO.setDescription(description);
         dlLocationDTO.setCount(count);
-        dlLocationDTO.setLanguageCode(languageId);
+        dlLocationDTO.setLanguageCode(languageCode);
+        dlLocationDTO.setSourceLanguageCode(sourceLanguageCode);
+        dlLocationDTO.setTranslationGroupId(translationGroupId);
+        dlLocationDTO.setTranslations(translations);
         return dlLocationDTO;
     }
 }

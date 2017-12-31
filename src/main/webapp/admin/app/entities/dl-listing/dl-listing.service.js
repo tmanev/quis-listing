@@ -55,6 +55,10 @@
             'deleteAttachment' : {
                 method: 'DELETE',
                 url: resourceUrl + '/attachments/:attachmentId'
+            },
+            'rebuildElasticsearch': {
+                method: 'GET',
+                url: resourceUrl + '/rebuild-index'
             }
         });
     }

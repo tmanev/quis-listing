@@ -1,9 +1,10 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
-import com.manev.quislisting.domain.TranslationBuilder;
-import com.manev.quislisting.domain.TranslationGroup;
+import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
+import com.manev.quislisting.service.post.dto.TranslationDTO;
+import com.manev.quislisting.service.post.mapper.TranslationMapper;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.builder.DlCategoryDTOBuilder;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class DlCategoryMapper {
+
+    private TranslationMapper translationMapper;
+
+    public DlCategoryMapper(TranslationMapper translationMapper) {
+        this.translationMapper = translationMapper;
+    }
 
     public DlCategory dlCategoryDtoToDlCategory(DlCategoryDTO dlCategoryDTO) {
         return DlCategoryBuilder.aDlCategory()
@@ -22,12 +30,6 @@ public class DlCategoryMapper {
                 .withName(dlCategoryDTO.getName())
                 .withSlug(dlCategoryDTO.getSlug())
                 .withDescription(dlCategoryDTO.getDescription())
-                .withTranslation(
-                        TranslationBuilder.aTranslation()
-                                .withLanguageCode(dlCategoryDTO.getLanguageCode())
-                                .withTranslationGroup(new TranslationGroup())
-                                .withSourceLanguageCode(dlCategoryDTO.getSourceLanguageCode())
-                                .build())
                 .build();
     }
 
@@ -82,7 +84,17 @@ public class DlCategoryMapper {
                 .withLanguageCode(dlCategory.getTranslation() != null ? dlCategory.getTranslation().getLanguageCode() : null)
                 .withSourceLanguageCode(dlCategory.getTranslation().getSourceLanguageCode())
                 .withTranslationGroupId(dlCategory.getTranslation().getTranslationGroup().getId())
+                .withTranslations(getTranslationDTOS(dlCategory))
                 .build();
+    }
+
+    private List<TranslationDTO> getTranslationDTOS(DlCategory dlCategory) {
+        Set<Translation> translationSet = dlCategory.getTranslation().getTranslationGroup().getTranslations();
+        if (translationSet != null) {
+            return translationSet.stream()
+                    .map(translationMapper::translationToTranslationDTO).collect(Collectors.toList());
+        }
+        return null;
     }
 
 }

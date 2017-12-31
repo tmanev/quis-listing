@@ -1,30 +1,43 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.service.dto.UserDTO;
-import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeDeserializer;
-import com.manev.quislisting.service.post.dto.serializer.ZonedDateTimeSerializer;
+import com.manev.quislisting.service.post.dto.serializer.TimestampDeserializer;
+import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
+import com.manev.quislisting.service.taxonomy.dto.TranslatedTermDTO;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Document(indexName = "dl_listing")
 public class DlListingDTO {
 
+    @Id
     private Long id;
     @NotEmpty(message = "dlListingDto.title.NotNull.message")
     private String title;
     private String content;
     private String name;
 
+    @JsonSerialize(using = TimestampSerializer.class)
+    @JsonDeserialize(using = TimestampDeserializer.class)
     private Timestamp created;
+
+    @JsonSerialize(using = TimestampSerializer.class)
+    @JsonDeserialize(using = TimestampDeserializer.class)
     private Timestamp modified;
 
     private UserDTO author;
@@ -35,12 +48,28 @@ public class DlListingDTO {
     private Long translationGroupId;
     private List<TranslationDTO> translations;
     private String expirationDate;
+
+    @Field(type = FieldType.String)
     private DlListing.Status status;
+
     private Boolean approved;
+
     @NotEmpty
+    @Field(type = FieldType.Nested)
     private List<DlCategoryDTO> dlCategories;
+
+    @Field(type = FieldType.Nested)
+    private List<TranslatedTermDTO> translatedCategories;
+
+    @Field(type = FieldType.Nested)
     private List<DlLocationDTO> dlLocations;
+
+    @Field(type = FieldType.Nested)
+    private List<TranslatedTermDTO> translatedLocations;
+
+    @Field(type = FieldType.Nested)
     private List<DlListingFieldDTO> dlListingFields;
+
     private List<AttachmentDTO> attachments;
     private AttachmentDTO featuredAttachment;
 
@@ -229,5 +258,35 @@ public class DlListingDTO {
 
     public void setFeaturedAttachment(AttachmentDTO featuredAttachment) {
         this.featuredAttachment = featuredAttachment;
+    }
+
+    public List<TranslatedTermDTO> getTranslatedCategories() {
+        return translatedCategories;
+    }
+
+    public void setTranslatedCategories(List<TranslatedTermDTO> translatedCategories) {
+        this.translatedCategories = translatedCategories;
+    }
+
+    public void addTranslatedCategory(TranslatedTermDTO translatedCategoryDTO) {
+        if (translatedCategories == null) {
+            translatedCategories = new ArrayList<>();
+        }
+        translatedCategories.add(translatedCategoryDTO);
+    }
+
+    public List<TranslatedTermDTO> getTranslatedLocations() {
+        return translatedLocations;
+    }
+
+    public void setTranslatedLocations(List<TranslatedTermDTO> translatedLocations) {
+        this.translatedLocations = translatedLocations;
+    }
+
+    public void addTranslatedLocation(TranslatedTermDTO translatedTermDTO) {
+        if (translatedLocations == null) {
+            translatedLocations = new ArrayList<>();
+        }
+        translatedLocations.add(translatedTermDTO);
     }
 }

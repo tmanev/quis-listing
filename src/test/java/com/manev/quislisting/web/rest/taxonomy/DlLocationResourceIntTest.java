@@ -155,9 +155,8 @@ public class DlLocationResourceIntTest {
         int databaseSizeBeforeCreate = dlLocationRepository.findAll().size();
 
         // Create the DlLocation with an existing ID
-        DlLocation existingDlLocation = new DlLocation();
-        existingDlLocation.setId(1L);
-        DlLocationDTO existingDlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(existingDlLocation);
+        DlLocationDTO existingDlLocationDTO = new DlLocationDTO();
+        existingDlLocationDTO.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restDlLocationMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LOCATIONS)

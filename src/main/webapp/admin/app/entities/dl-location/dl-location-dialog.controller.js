@@ -20,10 +20,15 @@
         vm.predicate = 'id';
         vm.reverse = true;
 
+        vm.sourceId = $stateParams.id;
+        vm.bindTranslation = true;
+        vm.bindLocationId = null;
+
         vm.dlLocation = entity;
         vm.clear = clear;
         vm.save = save;
         vm.doSlugify = doSlugify;
+        vm.bind = bind;
 
         loadAll();
 
@@ -92,6 +97,11 @@
 
         function onSaveError() {
             vm.isSaving = false;
+        }
+
+        function bind() {
+            vm.isSaving = true;
+            DlLocation.bindTranslation({sourceId: vm.sourceId, targetId: vm.bindLocationId}, onSaveSuccess, onSaveError)
         }
 
     }

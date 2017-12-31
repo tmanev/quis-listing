@@ -82,14 +82,14 @@ public class DlCategoryResourceIntTest {
 
     private DlCategory dlCategory;
 
-    public static DlCategory createEntity() {
+    public static DlCategory createEntity(String langKey) {
         return DlCategoryBuilder.aDlCategory()
                 .withName(DEFAULT_NAME)
                 .withSlug(DEFAULT_SLUG)
                 .withDescription(DEFAULT_DESCRIPTION)
                 .withCount(DEFAULT_COUNT)
                 .withTranslation(TranslationBuilder.aTranslation()
-                        .withLanguageCode("en")
+                        .withLanguageCode(langKey)
                         .withTranslationGroup(new TranslationGroup())
                         .build())
                 .build();
@@ -121,7 +121,7 @@ public class DlCategoryResourceIntTest {
     public void initTest() {
         dlCategoryRepository.deleteAllByParent(null);
         languageRepository.deleteAll();
-        dlCategory = createEntity();
+        dlCategory = createEntity("en");
     }
 
     @Test
@@ -194,6 +194,23 @@ public class DlCategoryResourceIntTest {
 
         // Get the DlCategory
         restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.parentId").value(DEFAULT_PARENT_ID))
+                .andExpect(jsonPath("$.count").value(DEFAULT_COUNT.intValue()));
+    }
+
+    @Test
+    @Transactional
+    public void getDlCategoryByTranslationId() throws Exception {
+        // Initialize the database
+        dlCategoryRepository.saveAndFlush(dlCategory);
+
+        // Get the DlCategory
+        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/by-translation/{id}", dlCategory.getTranslation().getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))

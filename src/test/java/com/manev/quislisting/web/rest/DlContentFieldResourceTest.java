@@ -177,7 +177,7 @@ public class DlContentFieldResourceTest {
         dlContentField = createEntity();
 
         dlCategoryRepository.deleteAllByParent(null);
-        dlCategory = DlCategoryResourceIntTest.createEntity();
+        dlCategory = DlCategoryResourceIntTest.createEntity("en");
         dlCategory2 = DlCategoryResourceIntTest.createEntity2();
         dlContentFieldGroup = DlContentFieldGroupResourceTest.createEntity();
     }

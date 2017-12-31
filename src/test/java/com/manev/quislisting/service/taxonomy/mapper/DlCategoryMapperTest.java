@@ -4,11 +4,14 @@ import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlCategoryBuilder;
+import com.manev.quislisting.service.post.mapper.TranslationMapper;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.PageImpl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -16,15 +19,22 @@ import static org.junit.Assert.assertEquals;
 
 public class DlCategoryMapperTest {
 
-    private DlCategoryMapper dlCategoryMapper = new DlCategoryMapper();
+    private DlCategoryMapper dlCategoryMapper;
+
+    @Before
+    public void setUp() {
+        dlCategoryMapper = new DlCategoryMapper(new TranslationMapper());
+    }
 
     private DlCategory createDlCategory(Long id, DlCategory parent) {
+        TranslationGroup translationGroup = new TranslationGroup();
+        translationGroup.setTranslations(new HashSet<>());
         return DlCategoryBuilder.aDlCategory()
                 .withId(id)
                 .withParent(parent)
                 .withTranslation(TranslationBuilder.aTranslation()
                         .withLanguageCode("en")
-                        .withTranslationGroup(new TranslationGroup())
+                        .withTranslationGroup(translationGroup)
                         .build())
                 .build();
     }

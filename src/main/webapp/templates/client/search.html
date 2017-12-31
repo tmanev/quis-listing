@@ -13,20 +13,93 @@
           rel="stylesheet"/>
 </head>
 <body>
-<div th:fragment="content" id="searchApp" class="container">
+<div th:fragment="content" id="searchApp" class="container" v-cloak>
 
     <div class="row">
-        <form v-on:submit.prevent="onSearch($event)">
-            <div class="col-md-10">
-                <input class="form-control" placeholder="Search" th:placeholder="#{page.search.title}"
-                       v-model="search"/>
+        <form v-on:submit.prevent="onSearch($event)" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-9">
+                    <input class="form-control" placeholder="Search" th:placeholder="#{page.search.title}"
+                           v-model="text"/>
+                </div>
+                <div class="col-md-3">
+                    <button id="searchButton" class="btn btn-primary btn-block" th:text="#{page.search.btn_search}"
+                            th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.search.btn_search}">
+                        Search
+                    </button>
+                </div>
             </div>
-            <div class="col-md-2">
-                <button id="searchButton" class="btn btn-primary btn-block" th:text="#{page.search.btn_search}"
-                        data-loading-text="Searching...">Search
-                </button>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Category</label>
+                <div class="col-sm-11">
+                    <select class="form-control" id="categoriesGrouped" v-model="selectedCategoryId" v-on:change="onCategoryChange($event)">
+                        <option value="-1">- Select -</option>
+                        <th:block th:each="instance : ${dlCategoriesGrouped}">
+                            <th:block th:if="${#lists.size(instance.value) > 0}">
+                                <optgroup th:label="${instance.key.name}" label="Swedish Cars">
+                                    <option th:each="childCategory : ${instance.value}" th:value="${childCategory.id}" th:text="${childCategory.name}"></option>
+                                </optgroup>
+                            </th:block>
+                            <th:block th:if="${#lists.size(instance.value) == 0}">
+                                <option th:value="${instance.key.id}" th:text="${instance.key.name}">Audi</option>
+                            </th:block>
+                        </th:block>
+                    </select>
+                </div>
             </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
+                <div class="col-sm-3">
+                    <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountryId">
+                        <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                        </option>
+                        <option v-for="dlLocationCountry in dlLocationCountries"
+                                v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <label class="col-sm-1 control-label"
+                       th:text="#{page.my_listings.edit_listing.label.state}">State</label>
+                <div class="col-sm-3">
+                    <select class="form-control" v-on:change="onStateChange" v-model="selectedStateId"
+                            v-bind:class="{loadinggif: isStateSelectLoading}">
+                        <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                        </option>
+                        <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">
+                            {{ dlLocationState.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <label class="col-sm-1 control-label"
+                       th:text="#{page.my_listings.edit_listing.label.city}">City</label>
+                <div class="col-sm-3">
+                    <select class="form-control" v-model="selectedCityId"
+                            v-bind:class="{loadinggif: isCitySelectLoading}">
+                        <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                        </option>
+                        <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
+                            dlLocationCity.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
         </form>
+    </div>
+
+    <div class="row" v-if="selectedCategoryId != '-1'">
+        <div class="col-md-12">
+            <div class="row" v-for="dlContentField in dlContentFields">
+                <div>
+                    <span>{{dlContentField.id}}</span>
+                    <span>{{dlContentField.name}}</span>
+                </div>
+            </div>
+        </div>
     </div>
     <hr/>
     <div class="row">
@@ -55,9 +128,10 @@
     <!-- Load current page javascript file -->
     <script src="../../resources/js/search.js"
             th:src="@{/resources/js/search.js}"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            Search.init();
+            var dlLocationCountries = [[${dlLocationCountries}]];
+            Search.init(dlLocationCountries);
         };
     </script>
 </div>

@@ -157,7 +157,7 @@ EditListing = {
                     attachment: null
                 },
                 saveModal: {
-                    shouldGoBack: false
+                    callback: null
                 }
             },
             validations: function () {
@@ -263,67 +263,86 @@ EditListing = {
 
                     return this.listing;
                 },
-                fileUpload: function (files) {
-                    console.log(files);
+                runUpload: function (files) {
+                    for (var i = 0; i< files.length; i++) {
+                        doUpload(editListingApp.listing, editListingApp.queueFiles, files[i]);
+                    }
 
-                    var index = this.queueFiles.push({
-                        file: files[0],
-                        progress: 0
-                    });
-                    var local = this.queueFiles;
-                    var listing = this.listing;
-                    var fd = new FormData();
-                    fd.append(files[0].fileName, files[0]);
-                    // Ajax Submit
-                    $.ajax({
-                        url: '/api/dl-listings/' + this.listing.id + '/upload',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: fd,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        forceSync: false,
-                        xhr: function () {
-                            var xhrobj = $.ajaxSettings.xhr();
-                            if (xhrobj.upload) {
-                                xhrobj.upload.addEventListener('progress', function (event) {
-                                    var percent = 0;
-                                    var position = event.loaded || event.position;
-                                    var total = event.total || event.totalSize;
-                                    if (event.lengthComputable) {
-                                        percent = Math.ceil(position / total * 100);
-                                    }
+                    function doUpload(dlListing, queueFiles, file) {
+                        var index = queueFiles.push({
+                            file: file,
+                            progress: 0
+                        });
+                        var local = queueFiles;
+                        var listing = dlListing;
+                        var fd = new FormData();
+                        fd.append(file.name, file);
+                        // Ajax Submit
+                        $.ajax({
+                            url: '/api/dl-listings/' + listing.id + '/upload',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: fd,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            forceSync: false,
+                            xhr: function () {
+                                var xhrobj = $.ajaxSettings.xhr();
+                                if (xhrobj.upload) {
+                                    xhrobj.upload.addEventListener('progress', function (event) {
+                                        var percent = 0;
+                                        var position = event.loaded || event.position;
+                                        var total = event.total || event.totalSize;
+                                        if (event.lengthComputable) {
+                                            percent = Math.ceil(position / total * 100);
+                                        }
 
-                                    // widget.settings.onUploadProgress.call(widget.element, widget.queuePos, percent);
-                                    console.log(percent);
-                                    local[index - 1].progress = percent;
-                                }, false);
+                                        // widget.settings.onUploadProgress.call(widget.element, widget.queuePos, percent);
+                                        console.log(percent);
+                                        local[index - 1].progress = percent;
+                                    }, false);
+                                }
+
+                                return xhrobj;
+                            },
+                            success: function (data, message, xhr) {
+                                // widget.settings.onUploadSuccess.call(widget.element, widget.queuePos, data);
+                                console.log("Success upload");
+                                var successMsg = $('#msg_upload_success').text();
+                                for (var i = 0; i<data.length; i++) {
+                                    listing.attachments.push(data[i]);
+                                }
+
+                                $.notify({
+                                    message: successMsg
+                                }, {
+                                    type: 'success'
+                                });
+
+                            },
+                            error: function (xhr, status, errMsg) {
+                                // widget.settings.onUploadError.call(widget.element, widget.queuePos, errMsg);
+                                console.log("Error upload");
+                            },
+                            complete: function (xhr, textStatus) {
+                                // widget.processQueue();
+                                console.log("Complete upload");
                             }
-
-                            return xhrobj;
-                        },
-                        success: function (data, message, xhr) {
-                            // widget.settings.onUploadSuccess.call(widget.element, widget.queuePos, data);
-                            console.log("Success upload");
-                            listing.attachments = data.attachments;
-                            $.notify({
-                                message: 'Success upload'
-                            }, {
-                                type: 'success'
-                            });
-
-                        },
-                        error: function (xhr, status, errMsg) {
-                            // widget.settings.onUploadError.call(widget.element, widget.queuePos, errMsg);
-                            console.log("Error upload");
-                        },
-                        complete: function (xhr, textStatus) {
-                            // widget.processQueue();
-                            console.log("Complete upload");
-                        }
-                    });
-
+                        });
+                    }
+                },
+                fileUpload: function (files) {
+                    if (this.listing.status == 'PUBLISHED') {
+                        $('#save-warning-modal').modal('show');
+                        this.saveModal.callback = function () {
+                            $('#save-warning-modal').modal('hide');
+                            editListingApp.runUpload(files);
+                            editListingApp.listing.status = 'DRAFT';
+                        };
+                    } else {
+                        this.runUpload(files);
+                    }
                 },
                 onDrop: function (e) {
                     e.stopPropagation();
@@ -381,7 +400,7 @@ EditListing = {
                     });
                 },
                 onBoxClick: function (e) {
-                    $(e.target.firstElementChild).trigger('click');
+                    $('#image-upload').trigger('click');
                 },
                 rootContentFieldItem: function(dlContentFieldItems) {
                     return dlContentFieldItems.filter(function (dlContentFieldItem) {
@@ -423,7 +442,6 @@ EditListing = {
                             this.isStateSelectLoading = false;
                         });
                     }
-
                 },
                 onStateChange: function () {
                     if (this.selectedState === "-1") {
@@ -458,20 +476,16 @@ EditListing = {
                     touchMap.set($v, setTimeout($v.$touch, 1000));
                 },
                 callbackSave: function () {
-                    if (this.saveModal.shouldGoBack) {
-                        var $btn = $('#btnSaveAndGoBack').button('loading');
-                        $('#save-warning-modal').modal('hide');
-                        this.doSave($btn, "/my-listings");
-                    } else {
-                        var $btn = $('#btnSave').button('loading');
-                        $('#save-warning-modal').modal('hide');
-                        this.doSave($btn, false);
-                    }
+                    this.saveModal.callback();
                 },
                 onSaveAndGoBack: function (event) {
                     if (this.listing.status == 'PUBLISHED') {
                         // open confirmation dialog
-                        this.saveModal.shouldGoBack = "/my-listings";
+                        this.saveModal.callback = function () {
+                            var $btn = $('#btnSaveAndGoBack').button('loading');
+                            $('#save-warning-modal').modal('hide');
+                            editListingApp.doSave($btn, "/my-listings");
+                        };
                         $('#save-warning-modal').modal('show');
                     } else {
                         var $btn = $('#btnSaveAndGoBack').button('loading');
@@ -480,8 +494,12 @@ EditListing = {
                 },
                 onSave: function (event) {
                     if (this.listing.status == 'PUBLISHED') {
+                        this.saveModal.callback = function () {
+                            var $btn = $('#btnSave').button('loading');
+                            $('#save-warning-modal').modal('hide');
+                            editListingApp.doSave($btn, false);
+                        };
                         // open confirmation dialog
-                        this.saveModal.shouldGoBack = false;
                         $('#save-warning-modal').modal('show');
                     } else {
                         var $btn = $('#btnSave').button('loading');

@@ -1,6 +1,9 @@
 package com.manev.quislisting.service.taxonomy.dto.builder;
 
+import com.manev.quislisting.service.post.dto.TranslationDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+
+import java.util.List;
 
 public final class DlCategoryDTOBuilder {
     private Long id;
@@ -12,6 +15,7 @@ public final class DlCategoryDTOBuilder {
     private String languageCode;
     private String sourceLanguageCode;
     private Long translationGroupId;
+    private List<TranslationDTO> translations;
 
     private DlCategoryDTOBuilder() {
     }
@@ -66,6 +70,7 @@ public final class DlCategoryDTOBuilder {
         dlCategoryDTO.setLanguageCode(languageCode);
         dlCategoryDTO.setSourceLanguageCode(sourceLanguageCode);
         dlCategoryDTO.setTranslationGroupId(translationGroupId);
+        dlCategoryDTO.setTranslations(translations);
         return dlCategoryDTO;
     }
 
@@ -76,6 +81,11 @@ public final class DlCategoryDTOBuilder {
 
     public DlCategoryDTOBuilder withTranslationGroupId(Long translationGroupId) {
         this.translationGroupId = translationGroupId;
+        return this;
+    }
+
+    public DlCategoryDTOBuilder withTranslations(List<TranslationDTO> translations) {
+        this.translations = translations;
         return this;
     }
 }

@@ -11,7 +11,17 @@
                     </span>
                 </button>
             </div>
-            <div class="col-xs-8 no-padding-right">
+
+            <div class="col-xs-4">
+                <button class="btn btn-default" ng-click="vm.rebuildElasticsearch()">
+                    <span class="glyphicon glyphicon-apple"></span>
+                    <span class="hidden-xs-down"  data-translate="quisListingApp.dlListing.home.rebuildElasticsearch">
+                        Rebuild elasticsearch
+                    </span>
+                </button>
+            </div>
+
+            <div class="col-xs-4 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
                         <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'quisListingApp.dlListing.home.search' | translate }}">

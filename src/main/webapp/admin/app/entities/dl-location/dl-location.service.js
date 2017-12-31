@@ -25,6 +25,16 @@
                     return data;
                 }
             },
+            'getByTranslation': {
+                method: 'GET',
+                url: 'api/admin/dl-locations/by-translation/:id',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                    }
+                    return data;
+                }
+            },
             'update': {
                 method: 'PUT',
                 transformRequest: function (data) {
@@ -33,6 +43,14 @@
                 }
             },
             'save': {
+                method: 'POST',
+                transformRequest: function (data) {
+                    var copy = angular.copy(data);
+                    return angular.toJson(copy);
+                }
+            },
+            'bindTranslation': {
+                url: 'api/admin/dl-locations/bind-locations',
                 method: 'POST',
                 transformRequest: function (data) {
                     var copy = angular.copy(data);

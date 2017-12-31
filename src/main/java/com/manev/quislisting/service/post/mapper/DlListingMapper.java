@@ -7,36 +7,51 @@ import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
 import com.manev.quislisting.domain.DlListingContentFieldRel;
 import com.manev.quislisting.domain.DlListingLocationRel;
+import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
+import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
 import com.manev.quislisting.service.mapper.TranslateUtil;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldItemDTO;
+import com.manev.quislisting.service.taxonomy.dto.TranslatedTermDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Component
 public class DlListingMapper {
 
+    private final DlCategoryRepository dlCategoryRepository;
+    private final DlLocationRepository dlLocationRepository;
+    private final ConversionService conversionService;
     private DlCategoryMapper dlCategoryMapper;
     private DlLocationMapper dlLocationMapper;
     private AttachmentMapper attachmentMapper;
     private DlContentFieldGroupMapper dlContentFieldGroupMapper;
 
-    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper) {
+    @Autowired
+    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, ConversionService conversionService) {
         this.dlCategoryMapper = dlCategoryMapper;
         this.dlLocationMapper = dlLocationMapper;
         this.attachmentMapper = attachmentMapper;
         this.dlContentFieldGroupMapper = dlContentFieldGroupMapper;
+        this.dlCategoryRepository = dlCategoryRepository;
+        this.dlLocationRepository = dlLocationRepository;
+        this.conversionService = conversionService;
     }
 
     public DlListingDTO dlListingToDlListingDTO(DlListing dlListing, String languageCode) {
@@ -146,24 +161,63 @@ public class DlListingMapper {
         if (dlLocations != null && !dlLocations.isEmpty()) {
             for (DlListingLocationRel dlListingLocationRel : dlLocations) {
                 dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlListingLocationRel.getDlLocation()));
+                TranslationGroup translationGroup = dlListingLocationRel.getDlLocation().getTranslation().getTranslationGroup();
+                List<DlLocation> allByTranslation_translationGroup = dlLocationRepository.findAllByTranslation_translationGroup(translationGroup);
+                dlListingDTO.setTranslatedLocations(fillLocationTranslationsWithParents(allByTranslation_translationGroup));
             }
         }
     }
+
+    private List<TranslatedTermDTO> fillLocationTranslationsWithParents(List<DlLocation> dlLocations) {
+        Set<TranslatedTermDTO> result = new HashSet<>();
+
+        for (DlLocation dlLocation : dlLocations) {
+            addTranslatedLocation(dlLocation, result);
+        }
+
+        return new ArrayList<>(result);
+    }
+
+    private void addTranslatedLocation(DlLocation dlLocation, Set<TranslatedTermDTO> result) {
+        if (dlLocation.getParent() != null) {
+            addTranslatedLocation(dlLocation.getParent(), result);
+        }
+        result.add(conversionService.convert(dlLocation, TranslatedTermDTO.class));
+    }
+
 
     private void setDlCategories(DlListing dlListing, DlListingDTO dlListingDTO) {
         Set<DlCategory> dlCategories = dlListing.getDlCategories();
         if (dlCategories != null && !dlCategories.isEmpty()) {
             for (DlCategory dlCategory : dlCategories) {
                 dlListingDTO.addDlCategoryDto(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
+                TranslationGroup translationGroup = dlCategory.getTranslation().getTranslationGroup();
+                List<DlCategory> allByTranslation_translationGroup = dlCategoryRepository.findAllByTranslation_translationGroup(translationGroup);
+                dlListingDTO.setTranslatedCategories(fillCategoryTranslationsWithParents(allByTranslation_translationGroup));
             }
         }
     }
 
+    private List<TranslatedTermDTO> fillCategoryTranslationsWithParents(List<DlCategory> dlCategories) {
+        Set<TranslatedTermDTO> result = new HashSet<>();
+
+        for (DlCategory dlCategory : dlCategories) {
+            addTranslatedCategory(dlCategory, result);
+        }
+
+        return new ArrayList<>(result);
+    }
+
+    private void addTranslatedCategory(DlCategory dlCategory, Set<TranslatedTermDTO> result) {
+        if (dlCategory.getParent() != null) {
+            addTranslatedCategory(dlCategory.getParent(), result);
+        }
+        result.add(conversionService.convert(dlCategory, TranslatedTermDTO.class));
+    }
 
     private void setAuthor(DlListing dlListing, DlListingDTO dlListingDTO) {
         User user = dlListing.getUser();
         dlListingDTO.setAuthor(new UserDTO(user.getId(), user.getLogin(), user.getFirstName(), user.getLastName()));
     }
-
 
 }
