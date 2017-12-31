@@ -113,7 +113,8 @@ public class DlListingTestComponent {
         return dlListingDTO;
     }
 
-    public DlListingDTO createDlListingDTO(DlCategory dlCategory, DlLocation dlLocation, List<DlContentFieldInput> contentFieldInputs) {
+    public DlListingDTO createDlListingDTO(DlCategory dlCategory, DlLocation dlLocation,
+                                           List<DlContentFieldInput> contentFieldInputs) {
         DlListingDTO dlListingDTO = DlListingDTOBuilder.aDlListingDTO()
                 .withTitle(DlListingTestComponent.DEFAULT_TITLE)
                 .withContent(DlListingTestComponent.DEFAULT_CONTENT)
@@ -127,7 +128,7 @@ public class DlListingTestComponent {
                 .addTranslation(TranslationDTOBuilder.aTranslationDTO()
                         .withId(1000L)
                         .build())
-                .withStatus(DlListing.Status.PUBLISH_REQUEST)
+                .withStatus(DlListing.Status.DRAFT)
                 .withExpirationDate("2020-01-01")
                 .build();
 
