@@ -88,6 +88,7 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
     @WithUserDetails
     public void shouldSearchByTitleOrDescription() throws Exception {
         DlListingDTO savedDlListingDTO = createDlListingDTO();
+        dlListingService.approveListing(savedDlListingDTO.getId());
 
         DlListingSearchFilter dlListingSearchFilter = new DlListingSearchFilter();
         dlListingSearchFilter.setText(DlListingTestComponent.DEFAULT_TITLE);
@@ -133,14 +134,19 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
 
         DlListingDTO savedDlListing1 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing One", "en",
                 dlCategory11EN, null, null), "en");
+        dlListingService.approveListing(savedDlListing1.getId());
         DlListingDTO savedDlListing2 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Two", "en",
                 dlCategory21EN, null, null), "en");
+        dlListingService.approveListing(savedDlListing2.getId());
         DlListingDTO savedDlListing3 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Three", "bg",
                 dlCategory21BG, null, null), "bg");
+        dlListingService.approveListing(savedDlListing3.getId());
         DlListingDTO savedDlListingDTO4 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Four", "bg",
                 dlCategory22BG, null, null), "bg");
+        dlListingService.approveListing(savedDlListingDTO4.getId());
         DlListingDTO savedDlListingDTO5 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Five", "bg",
                 dlCategory22BG, null, null), "bg");
+        dlListingService.approveListing(savedDlListingDTO5.getId());
 
         // search by category
         DlListingSearchFilter dlListingSearchFilterEN = new DlListingSearchFilter();
@@ -182,8 +188,10 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
         DlListingDTO dlListingDTO = dlListingTestComponent.createDlListingDTO(dlCategory, dlLocation, null);
         DlListingDTO dlListingDTO2 = dlListingTestComponent.createDlListingDTO(dlCategory, dlLocation2, null);
 
-        dlListingService.save(dlListingDTO, "en");
+        DlListingDTO savedDlListingDTO1 = dlListingService.save(dlListingDTO, "en");
+        dlListingService.approveListing(savedDlListingDTO1.getId());
         DlListingDTO savedDlListingDTO2 = dlListingService.save(dlListingDTO2, "en");
+        dlListingService.approveListing(savedDlListingDTO2.getId());
 
         DlListingSearchFilter dlListingSearchFilter = new DlListingSearchFilter();
         dlListingSearchFilter.setLocationId(String.valueOf(dlLocation2.getId()));
@@ -220,8 +228,10 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
             add(new DlContentFieldInput(dlFuelCF, null, String.valueOf(findByName("Gasoline", dlFuelCF.getDlContentFieldItems()).getId())));
         }});
 
-        dlListingService.save(dlListingDTO, "en");
+        DlListingDTO savedDlListingDTO1 = dlListingService.save(dlListingDTO, "en");
+        dlListingService.approveListing(savedDlListingDTO1.getId());
         DlListingDTO savedDlListingDTO2 = dlListingService.save(dlListingDTO2, "en");
+        dlListingService.approveListing(savedDlListingDTO2.getId());
 
         DlListingSearchFilter dlListingSearchFilter = new DlListingSearchFilter();
         dlListingSearchFilter.setContentFields(Arrays.asList(new DlContentFieldFilter(dlFuelCF.getId(), null, String.valueOf(findByName("Gasoline", dlFuelCF.getDlContentFieldItems()).getId()))));

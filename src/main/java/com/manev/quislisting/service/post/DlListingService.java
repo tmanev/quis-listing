@@ -145,9 +145,12 @@ public class DlListingService {
         dlListing.setStatus(DlListing.Status.PUBLISHED);
         DlListing save = dlListingRepository.save(dlListing);
 
+        DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save, null);
+        dlListingSearchRepository.save(dlListingDTO);
+
         emailSendingService.sendListingApprovedEmail(save);
 
-        return dlListingMapper.dlListingToDlListingDTO(save, null);
+        return dlListingDTO;
     }
 
     public DlListingDTO disapproveListing(Long id, ApproveDTO approveDTO) {
@@ -158,9 +161,12 @@ public class DlListingService {
         dlListing.setStatus(DlListing.Status.PUBLISH_DISAPPROVED);
         DlListing save = dlListingRepository.save(dlListing);
 
+        DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save, null);
+        dlListingSearchRepository.save(dlListingDTO);
+
         emailSendingService.sendListingDisapprovedEmail(save, approveDTO.getMessage());
 
-        return dlListingMapper.dlListingToDlListingDTO(save, null);
+        return dlListingDTO;
     }
 
     private DlListing getDlListingForSaving(DlListingDTO dlListingDTO, String langKey, Long translationGroupId) {
