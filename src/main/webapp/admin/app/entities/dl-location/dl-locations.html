@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="dl-locations.new({selectedLanguageCode: vm.selectedLanguageCode, dlLocationParentId: vm.filter.dlLocationParentId})" >
+                <button class="btn btn-primary" ui-sref="dl-locations.new({selectedLanguageCode: vm.selectedLanguageCode, dlLocationParentId: vm.filter.parentId})" >
                     <span class="glyphicon glyphicon-plus"></span>
                     <span class="hidden-xs-down"  data-translate="quisListingApp.dlLocation.home.createLabel">
                         Create new DL Location
@@ -34,7 +34,7 @@
                 <label class="control-label" data-translate="quisListingApp.dlLocation.parent">Parent</label>
                 <div class="input-group">
 
-                    <ui-select allow-clear ng-model="vm.filter.dlLocationParentId" on-select="vm.onSelectCallback($item, $model)"
+                    <ui-select allow-clear ng-model="vm.filter.parentId" on-select="vm.onSelectCallback($item, $model)"
                                theme="bootstrap">
                         <ui-select-match placeholder="Select or search a location in the list...">
                             {{$select.selected.name}}
