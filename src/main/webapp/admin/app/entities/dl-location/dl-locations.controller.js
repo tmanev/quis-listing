@@ -14,10 +14,10 @@
         });
 
     DlLocationsController.$inject = ['$scope', '$state', 'DlLocation', 'DlLocationSearch', 'ParseLinks', 'AlertService',
-        'paginationConstants', 'pagingParams', 'dlLocationParentId', 'TreeUtils', 'DataLanguageHub'];
+        'paginationConstants', 'pagingParams', 'parentId', 'TreeUtils', 'DataLanguageHub', '$location'];
 
     function DlLocationsController($scope, $state, DlLocation, DlLocationSearch, ParseLinks, AlertService,
-                                   paginationConstants, pagingParams, dlLocationParentId, TreeUtils, DataLanguageHub) {
+                                   paginationConstants, pagingParams, parentId, TreeUtils, DataLanguageHub, $location) {
         var vm = this;
         vm.dataLanguageHub = DataLanguageHub.get();
         vm.loadPage = loadPage;
@@ -36,13 +36,15 @@
         vm.clearParentLocationFilter = clearParentLocationFilter;
         vm.hasTranslation = hasTranslation;
 
-        vm.filter = {            dlLocationParentId: dlLocationParentId        };
+        vm.filter = {            parentId: parentId!==null?parseInt(parentId):null        };
 
         vm.onSelectCallback = function ($item, $model) {
             console.log("Item:");
             console.log($item);
             console.log("Model:");
             console.log($model);
+            pagingParams.parentId = vm.filter.parentId;
+            $location.search('parentId', vm.filter.parentId);
             vm.loadTable();
         };
 
@@ -105,7 +107,7 @@
                     size: vm.itemsPerPage,
                     sort: sort(),
                     languageCode: vm.selectedLanguageCode,
-                    parentId: vm.filter.dlLocationParentId
+                    parentId: vm.filter.parentId
                 }, onSuccess, onError);
             }
             function sort() {
@@ -176,7 +178,8 @@
         }
 
         function clearParentLocationFilter() {
-            vm.filter.dlLocationParentId = null;
+            vm.filter.parentId = null;
+            $location.search('parentId', null);
             vm.loadTable();
         }
 

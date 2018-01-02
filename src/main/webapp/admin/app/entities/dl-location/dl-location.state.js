@@ -11,7 +11,7 @@
         $stateProvider
         .state('dl-locations', {
             parent: 'entity',
-            url: '/dl-locations?page&sort&search',
+            url: '/dl-locations?page&sort&search&parentId',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'quisListingApp.dlLocation.home.title'
@@ -32,7 +32,7 @@
                     value: 'id,asc',
                     squash: true
                 },
-                dlLocationParentId: null,
+                parentId: null,
                 search: null
             },
             resolve: {
@@ -42,11 +42,12 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        search: $stateParams.search,
+                        parentId: $stateParams.dlLocationParentId
                     };
                 }],
-                dlLocationParentId: ['$stateParams', function ($stateParams) {
-                    return $stateParams.dlLocationParentId;
+                parentId: ['$stateParams', function ($stateParams) {
+                    return $stateParams.parentId;
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('dl-location');
