@@ -78,10 +78,10 @@ public class DlContentFieldService {
                     .value(dlContentField.getDescription())
                     .status(0));
         } else {
-            QlString qlString = dlContentField.getQlString();
-            if (!qlString.getValue().equals(dlContentField.getDescription())) {
-                qlString.setValue(dlContentField.getDescription());
-                qlString.setStatus(0);
+            QlString qlStringDescription = dlContentField.getQlStringDescription();
+            if (!qlStringDescription.getValue().equals(dlContentField.getDescription())) {
+                qlStringDescription.setValue(dlContentField.getDescription());
+                qlStringDescription.setStatus(0);
             }
         }
 
