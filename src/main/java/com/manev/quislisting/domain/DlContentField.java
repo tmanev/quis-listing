@@ -113,6 +113,9 @@ public class DlContentField {
     @JoinColumn(name = "dl_content_field_group_id")
     private DlContentFieldGroup dlContentFieldGroup;
 
+    @Column
+    private Boolean enabled;
+
     public Long getId() {
         return id;
     }
@@ -443,6 +446,19 @@ public class DlContentField {
     public DlContentField dlContentFieldGroup(DlContentFieldGroup dlContentFieldGroup) {
         this.dlContentFieldGroup = dlContentFieldGroup;
         return this;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public DlContentField enabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public enum Type {

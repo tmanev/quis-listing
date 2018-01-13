@@ -158,6 +158,7 @@ public class DlContentFieldResourceTest {
                 .onMap(Boolean.FALSE)
                 .options("")
                 .searchOptions("")
+                .enabled(Boolean.TRUE)
                 .dlCategories(dlCategories);
     }
 

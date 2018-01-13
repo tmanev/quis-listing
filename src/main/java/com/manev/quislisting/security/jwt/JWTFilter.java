@@ -74,7 +74,7 @@ public class JWTFilter extends GenericFilterBean {
             log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-            httpServletResponse.addCookie(new Cookie(QL_AUTH, "")); // invalidate auth cookie
+            httpServletResponse.addCookie(new Cookie(QL_AUTH, null)); // invalidate auth cookie
 
             if (httpServletRequest.getRequestURL().toString().contains("/api")
                     && !httpServletRequest.getRequestURL().toString().contains("/api/public")) {

@@ -30,7 +30,7 @@ public class DlContentFieldRepositoryTest {
         System.out.println(dlContentFieldRepository.findAll().size());
 
         DlCategory dlCategory = dlCategoryRepository.findOne(2L);
-        List<DlContentField> allByDlCategoriesOrDlCategoriesIsNull = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNullOrderByOrderNum(dlCategory);
+        List<DlContentField> allByDlCategoriesOrDlCategoriesIsNull = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNullAndEnabledOrderByOrderNum(dlCategory, Boolean.TRUE);
         System.out.println(allByDlCategoriesOrDlCategoriesIsNull.size());
     }
 

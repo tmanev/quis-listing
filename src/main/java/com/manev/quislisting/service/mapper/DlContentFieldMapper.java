@@ -52,6 +52,7 @@ public class DlContentFieldMapper {
                 .searchOptions(dlContentFieldDTO.getSearchOptions())
                 .dlContentFieldGroup(dlContentFieldDTO.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupDTOToDlContentFieldGroup(dlContentFieldDTO.getDlContentFieldGroup()) : null)
+                .enabled(dlContentFieldDTO.getEnabled())
                 ;
     }
 
@@ -86,6 +87,7 @@ public class DlContentFieldMapper {
                 .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems(), languageCode))
                 .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
+                .enabled(dlContentField.getEnabled())
                 ;
     }
 

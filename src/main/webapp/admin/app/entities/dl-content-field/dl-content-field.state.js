@@ -161,7 +161,8 @@
                             onAdvancedSearchForm: false,
                             dlCategories: null,
                             options: JSON.stringify({}),
-                            searchOptions: JSON.stringify({})
+                            searchOptions: JSON.stringify({}),
+                            enabled: true
                         };
                     }],
                     previousState: ["$state", function ($state) {

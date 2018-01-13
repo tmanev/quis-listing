@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="V2017_12_13_2312" author="tmanev">
+        <comment>Add enabled column into dl content field entity</comment>
+        <addColumn tableName="ql_dl_content_field">
+            <column name="enabled" type="boolean" defaultValue="true" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
