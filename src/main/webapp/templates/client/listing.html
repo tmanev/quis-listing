@@ -24,12 +24,12 @@
     <div class="row" style="margin-bottom: 20px;">
         <div class="col-md-4">
             <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
-                <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlCategories[0].name}">Work</span>
+                <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlCategories[0].translatedName}">Work</span>
             </h3>
         </div>
         <div class="col-md-4">
             <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
-                <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlLocations[0].name}">Orlando, Miami, USA</span>
+                <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlLocations[0].translatedName}">Orlando, Miami, USA</span>
             </h3>
         </div>
         <div class="col-md-4">
