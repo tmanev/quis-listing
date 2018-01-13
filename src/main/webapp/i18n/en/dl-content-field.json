@@ -29,6 +29,7 @@
             "type": "Field type",
             "orderNum": "Order Num.",
             "required": "Is this field required?",
+            "enabled": "Enabled",
             "order": "Can be ordered by this field?",
             "onExcerptPage": "On excerpt page",
             "onListingPage": "On listing page",

@@ -127,7 +127,7 @@ var MyListings = {
             el: '#myListingsApp',
             filters: {
                 fullTime: function(date) {
-                    return moment(date, moment.ISO_8601).format('MMMM Do YYYY, h:mm');
+                    return moment(date).format('MMMM Do YYYY, h:mm');
                 }
             },
             data: {
@@ -183,6 +183,9 @@ var MyListings = {
                     this.isLoading = true;
                     this.$http({
                         url: '/api/dl-listings',
+                        headers: {
+                            'Authorization': 'Bearer ' + Cookies.get('ql-auth').split(":")[1]
+                        },
                         params: {
                             page: this.pagingParams.page - 1,
                             size: this.pagingParams.itemsPerPage,

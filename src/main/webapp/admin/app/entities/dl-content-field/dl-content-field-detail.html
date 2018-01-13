@@ -121,6 +121,16 @@
                        ng-model="vm.dlContentField.onMap"/>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" data-translate="quisListingApp.dlContentField.enabled"
+                   for="field_enabled">
+                Enabled
+            </label>
+            <div class="col-sm-1">
+                <input class="form-control" type="checkbox" name="required" id="field_enabled"
+                       ng-model="vm.dlContentField.enabled"/>
+            </div>
+        </div>
         <div class="btn-group">
             <label class="btn btn-primary btn-xs"
                    ng-repeat="activeLanguage in vm.activeLanguages track by activeLanguage.code"

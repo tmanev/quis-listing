@@ -32,6 +32,7 @@ public class DlContentFieldDTO {
     private String searchOptions;
     private List<DlContentFieldItemDTO> dlContentFieldItems;
     private DlContentFieldGroupDTO dlContentFieldGroup;
+    private Boolean enabled;
 
     public Long getId() {
         return id;
@@ -356,5 +357,18 @@ public class DlContentFieldDTO {
     public DlContentFieldDTO dlContentFieldGroup(DlContentFieldGroupDTO dlContentFieldGroup) {
         this.dlContentFieldGroup = dlContentFieldGroup;
         return this;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public DlContentFieldDTO enabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }
