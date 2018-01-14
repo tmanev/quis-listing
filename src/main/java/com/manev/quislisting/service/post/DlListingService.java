@@ -265,6 +265,8 @@ public class DlListingService {
                     if (!idsAsList.isEmpty()) {
                         Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdInOrderByOrderNum(idsAsList);
                         newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
+                    } else {
+                        newDlListingContentFieldRel.setDlContentFieldItems(new HashSet<>());
                     }
                 }
             } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)
