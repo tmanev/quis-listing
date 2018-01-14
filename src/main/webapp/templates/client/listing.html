@@ -46,16 +46,52 @@
     <div class="row" style="margin-bottom: 20px;">
         <div class="col-md-6">
 
-            <th:block th:if="${listingSectionsVisibility.details}">
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading" th:text="#{page.listing.label.details}">Details</div>
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading" th:text="#{page.listing.label.details}">Details</div>
 
-                    <!-- Table -->
+                <!-- Table -->
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                    <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
+                        <tr th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'details' and !${#strings.isEmpty(dlListingField.translatedValue)}">
+                            <td style="text-align: right; font-size: large;" th:text="${dlListingField.translatedName}"></td>
+                            <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} != 'CHECKBOX'" th:text="${dlListingField.translatedValue}"></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
+                <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
+
+                    <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
+
+                    <th:block th:if="${dlListingField.type} == 'CHECKBOX'">
+                        <div class="container-fluid">
+                            <th:block th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
+                                <h4 style="display: inline-block">
+                            <span class="label label-default" style="margin: 0 5px 0 5px;">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            [(${dlListingFieldItem.translatedValue})]
+                            </span>
+                                </h4>
+                            </th:block>
+                        </div>
+                    </th:block>
+                </div>
+            </th:block>
+
+            <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
+                <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'contact'">
+
+                    <div class="panel-heading" th:text="#{page.listing.label.contact}">Contact</div>
+
                     <table class="table table-striped table-bordered">
                         <tbody>
                         <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                            <tr th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'details' and !${#strings.isEmpty(dlListingField.translatedValue)}">
+                            <tr th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'contact'">
                                 <td style="text-align: right; font-size: large;" th:text="${dlListingField.translatedName}"></td>
                                 <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} != 'CHECKBOX'" th:text="${dlListingField.translatedValue}"></td>
                             </tr>
@@ -63,48 +99,6 @@
                         </tbody>
                     </table>
                 </div>
-            </th:block>
-
-            <th:block th:if="${listingSectionsVisibility.features}">
-                <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                    <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
-
-                        <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
-
-                        <th:block th:if="${dlListingField.type} == 'CHECKBOX'">
-                            <div class="container-fluid">
-                                <th:block th:each="dlListingFieldItem : ${dlListingField.dlListingFieldItemDTOs}">
-                                    <h4 style="display: inline-block">
-                                <span class="label label-default" style="margin: 0 5px 0 5px;">
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                [(${dlListingFieldItem.translatedValue})]
-                                </span>
-                                    </h4>
-                                </th:block>
-                            </div>
-                        </th:block>
-                    </div>
-                </th:block>
-            </th:block>
-
-            <th:block th:if="${listingSectionsVisibility.contact}">
-                <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                    <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'contact'">
-
-                        <div class="panel-heading" th:text="#{page.listing.label.contact}">Contact</div>
-
-                        <table class="table table-striped table-bordered">
-                            <tbody>
-                            <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                                <tr th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'contact'">
-                                    <td style="text-align: right; font-size: large;" th:text="${dlListingField.translatedName}"></td>
-                                    <td style="font-weight: bold; font-size: large;" th:if="${dlListingField.type} != 'CHECKBOX'" th:text="${dlListingField.translatedValue}"></td>
-                                </tr>
-                            </th:block>
-                            </tbody>
-                        </table>
-                    </div>
-                </th:block>
             </th:block>
 
         </div>

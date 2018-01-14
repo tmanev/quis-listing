@@ -154,29 +154,4 @@ public class BaseController {
         return REDIRECT + URLEncoder.encode("page-not-found", "UTF-8");
     }
 
-    ListingSectionsVisibility calculateSectionVisibility(List<DlListingFieldDTO> dlListingFields) {
-        ListingSectionsVisibility listingSectionsVisibility = new ListingSectionsVisibility();
-        for (DlListingFieldDTO dlListingField : dlListingFields) {
-            if ("details".equals(dlListingField.getDlContentFieldGroup().getSlug()) && hasValue(dlListingField)) {
-                listingSectionsVisibility.setDetails(Boolean.TRUE);
-            } else if ("features".equals(dlListingField.getDlContentFieldGroup().getSlug()) && hasValue(dlListingField)) {
-                listingSectionsVisibility.setFeatures(Boolean.TRUE);
-            } else if ("contact".equals(dlListingField.getDlContentFieldGroup().getSlug()) && hasValue(dlListingField)) {
-                listingSectionsVisibility.setContact(Boolean.TRUE);
-            }
-        }
-        return listingSectionsVisibility;
-    }
-
-    private boolean hasValue(DlListingFieldDTO dlListingFieldDTO) {
-        if (dlListingFieldDTO.getType().equals(DlContentField.Type.CHECKBOX.toString())) {
-            return dlListingFieldDTO.getSelectedValue() != null && !dlListingFieldDTO.getSelectedValue().equals("[]");
-        } else if (dlListingFieldDTO.getType().equals(DlContentField.Type.SELECT.toString())
-                || dlListingFieldDTO.getType().equals(DlContentField.Type.DEPENDENT_SELECT.toString())) {
-            return !StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue());
-        } else {
-            return !StringUtils.isEmpty(dlListingFieldDTO.getTranslatedValue());
-        }
-    }
-
 }
