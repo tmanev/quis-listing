@@ -157,6 +157,7 @@ public class MyListingsController extends BaseController {
         List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), language);
 
         modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);
+        modelMap.addAttribute("listingSectionsVisibility", calculateSectionVisibility(dlListingDTO.getDlListingFields()));
 
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 

@@ -1,6 +1,7 @@
 package com.manev.quislisting.web.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.QlMenuConfig;
 import com.manev.quislisting.domain.QlMenuPosConfig;
@@ -12,11 +13,13 @@ import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.post.StaticPageService;
-import com.manev.quislisting.service.post.dto.StaticPageDTO;
+import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
+import com.manev.quislisting.web.model.ListingSectionsVisibility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -30,9 +33,8 @@ import java.util.Locale;
 
 public class BaseController {
 
-    private static Logger log = LoggerFactory.getLogger(BaseController.class);
-
     public static final String REDIRECT = "redirect:/";
+    private static Logger log = LoggerFactory.getLogger(BaseController.class);
     protected NavMenuRepository navMenuRepository;
 
     protected QlConfigService qlConfigService;
@@ -148,8 +150,33 @@ public class BaseController {
         return null;
     }
 
-    protected String redirectToPageNotFound() throws UnsupportedEncodingException {
+    String redirectToPageNotFound() throws UnsupportedEncodingException {
         return REDIRECT + URLEncoder.encode("page-not-found", "UTF-8");
+    }
+
+    ListingSectionsVisibility calculateSectionVisibility(List<DlListingFieldDTO> dlListingFields) {
+        ListingSectionsVisibility listingSectionsVisibility = new ListingSectionsVisibility();
+        for (DlListingFieldDTO dlListingField : dlListingFields) {
+            if ("details".equals(dlListingField.getDlContentFieldGroup().getSlug()) && hasValue(dlListingField)) {
+                listingSectionsVisibility.setDetails(Boolean.TRUE);
+            } else if ("features".equals(dlListingField.getDlContentFieldGroup().getSlug()) && hasValue(dlListingField)) {
+                listingSectionsVisibility.setFeatures(Boolean.TRUE);
+            } else if ("contact".equals(dlListingField.getDlContentFieldGroup().getSlug()) && hasValue(dlListingField)) {
+                listingSectionsVisibility.setContact(Boolean.TRUE);
+            }
+        }
+        return listingSectionsVisibility;
+    }
+
+    private boolean hasValue(DlListingFieldDTO dlListingFieldDTO) {
+        if (dlListingFieldDTO.getType().equals(DlContentField.Type.CHECKBOX.toString())) {
+            return dlListingFieldDTO.getSelectedValue() != null && !dlListingFieldDTO.getSelectedValue().equals("[]");
+        } else if (dlListingFieldDTO.getType().equals(DlContentField.Type.SELECT.toString())
+                || dlListingFieldDTO.getType().equals(DlContentField.Type.DEPENDENT_SELECT.toString())) {
+            return !StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue());
+        } else {
+            return !StringUtils.isEmpty(dlListingFieldDTO.getTranslatedValue());
+        }
     }
 
 }
