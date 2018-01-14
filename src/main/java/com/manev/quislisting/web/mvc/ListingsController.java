@@ -64,8 +64,6 @@ public class ListingsController extends BaseController {
 
         modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);
 
-        modelMap.addAttribute("listingSectionsVisibility", calculateSectionVisibility(dlListingDTO.getDlListingFields()));
-
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 
         modelMap.addAttribute("title", dlListingDTO.getTitle());
