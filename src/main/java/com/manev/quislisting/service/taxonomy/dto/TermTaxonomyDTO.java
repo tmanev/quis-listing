@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class TermTaxonomyDTO {
     private Long id;
     private String name;
+    private String translatedName;
     private String slug;
     private Long parentId;
     private String description;
@@ -33,6 +34,14 @@ public abstract class TermTaxonomyDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTranslatedName() {
+        return translatedName;
+    }
+
+    public void setTranslatedName(String translatedName) {
+        this.translatedName = translatedName;
     }
 
     public String getSlug() {

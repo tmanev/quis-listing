@@ -13,6 +13,7 @@ import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
+import com.manev.quislisting.web.model.ListingSectionsVisibility;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -60,11 +61,10 @@ public class ListingsController extends BaseController {
         }
 
         List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), language);
-        generateContentFieldsWithValues(dlContentFieldDTOS, dlListingDTO.getDlListingFields());
 
         modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);
 
-
+        modelMap.addAttribute("listingSectionsVisibility", calculateSectionVisibility(dlListingDTO.getDlListingFields()));
 
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 
@@ -73,11 +73,5 @@ public class ListingsController extends BaseController {
 
         return "client/index";
     }
-
-    private void generateContentFieldsWithValues(List<DlContentFieldDTO> dlContentFieldDTOS, List<DlListingFieldDTO> dlListingFields) {
-        for (DlContentFieldDTO dlContentFieldDTO : dlContentFieldDTOS) {
-        }
-    }
-
 
 }

@@ -20,6 +20,8 @@ import com.manev.quislisting.service.mapper.TranslateUtil;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldItemDTO;
+import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.TranslatedTermDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
@@ -66,9 +68,9 @@ public class DlListingMapper {
         dlListingDTO.setApproved(dlListing.getApproved());
         dlListingDTO.setLanguageCode(dlListing.getTranslation().getLanguageCode());
 
-        setDlCategories(dlListing, dlListingDTO);
+        setDlCategories(dlListing, dlListingDTO, languageCode);
 
-        setDlLocations(dlListing, dlListingDTO);
+        setDlLocations(dlListing, dlListingDTO, languageCode);
 
         dlListingDTO.setFeaturedAttachment(dlListing.getFeaturedAttachment() != null ? attachmentMapper.attachmentToAttachmentDTO(dlListing.getFeaturedAttachment()) : null);
         setAttachments(dlListing, dlListingDTO);
@@ -158,14 +160,27 @@ public class DlListingMapper {
         }
     }
 
-    private void setDlLocations(DlListing dlListing, DlListingDTO dlListingDTO) {
+    private void setDlLocations(DlListing dlListing, DlListingDTO dlListingDTO, String languageCode) {
         Set<DlListingLocationRel> dlLocations = dlListing.getDlListingLocationRels();
         if (dlLocations != null && !dlLocations.isEmpty()) {
             for (DlListingLocationRel dlListingLocationRel : dlLocations) {
-                dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlListingLocationRel.getDlLocation()));
+                DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(dlListingLocationRel.getDlLocation());
+                dlListingDTO.addDlLocationDto(dlLocationDTO);
                 TranslationGroup translationGroup = dlListingLocationRel.getDlLocation().getTranslation().getTranslationGroup();
                 List<DlLocation> allByTranslation_translationGroup = dlLocationRepository.findAllByTranslation_translationGroup(translationGroup);
                 dlListingDTO.setTranslatedLocations(fillLocationTranslationsWithParents(allByTranslation_translationGroup));
+                setTranslatedTitle(dlLocationDTO, allByTranslation_translationGroup, languageCode);
+            }
+        }
+    }
+
+    private void setTranslatedTitle(DlLocationDTO dlLocationDTO, List<DlLocation> allByTranslation_translationGroup, String languageCode) {
+        if (languageCode != null) {
+            for (DlLocation dlLocation : allByTranslation_translationGroup) {
+                if (dlLocation.getTranslation().getLanguageCode().equals(languageCode)) {
+                    dlLocationDTO.setTranslatedName(dlLocation.getName());
+                    break;
+                }
             }
         }
     }
@@ -188,14 +203,27 @@ public class DlListingMapper {
     }
 
 
-    private void setDlCategories(DlListing dlListing, DlListingDTO dlListingDTO) {
+    private void setDlCategories(DlListing dlListing, DlListingDTO dlListingDTO, String languageCode) {
         Set<DlCategory> dlCategories = dlListing.getDlCategories();
         if (dlCategories != null && !dlCategories.isEmpty()) {
             for (DlCategory dlCategory : dlCategories) {
-                dlListingDTO.addDlCategoryDto(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
+                DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
+                dlListingDTO.addDlCategoryDto(dlCategoryDTO);
                 TranslationGroup translationGroup = dlCategory.getTranslation().getTranslationGroup();
                 List<DlCategory> allByTranslation_translationGroup = dlCategoryRepository.findAllByTranslation_translationGroup(translationGroup);
                 dlListingDTO.setTranslatedCategories(fillCategoryTranslationsWithParents(allByTranslation_translationGroup));
+                setTranslatedTitle(dlCategoryDTO, allByTranslation_translationGroup, languageCode);
+            }
+        }
+    }
+
+    private void setTranslatedTitle(DlCategoryDTO dlCategoryDTO, List<DlCategory> allByTranslation_translationGroup, String languageCode) {
+        if (languageCode != null) {
+            for (DlCategory dlCategory : allByTranslation_translationGroup) {
+                if (dlCategory.getTranslation().getLanguageCode().equals(languageCode)) {
+                    dlCategoryDTO.setTranslatedName(dlCategory.getName());
+                    break;
+                }
             }
         }
     }
