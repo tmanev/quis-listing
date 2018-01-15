@@ -5,8 +5,8 @@ spring:
             cluster-nodes:
             properties:
                 path:
-                  logs: elasticsearch/log
-                  data: elasticsearch/data
+                  logs: elasticsearch_01/log
+                  data: elasticsearch_01/data
     mail:
         host: smtp.mailgun.org
         port: 587
@@ -48,3 +48,4 @@ quislisting:
                 token-validity-in-seconds-for-remember-me: 2592000
     mail:
         baseUrl: http://localhost:8181
+    attachment-storage-path: ./attachment_storage_01
