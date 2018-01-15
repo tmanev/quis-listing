@@ -9,24 +9,21 @@
     <div id="landingApp">
         <div class="row">
             <div class="col-md-12">
-                <div class="container-fluid">
-                    <div class="row">
+                <div class="container">
+                    <div class="flex-row row">
                         <div v-for="dlListing in dlListings" style="display: none;"
-                             class="col-sm-6 col-md-4 col-lg-3" v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
+                             class="col-xs-6 col-sm-4 col-lg-3" v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
                             <div class="thumbnail">
                                 <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
-                                    <div style="width: 242px; height: 200px; white-space: nowrap; text-align: center;">
-                                        <span style="display: inline-block; height: 100%; vertical-align: middle;"></span>
-                                        <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
-                                             th:src="@{/resources/images/no-image-available.jpg}"
-                                             alt="No image available"
-                                             data-holder-rendered="true"
-                                             style="vertical-align: middle; max-width: 242px; max-height: 200px; margin-left: -2px;"/>
-                                        <img v-else
-                                             v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
-                                             data-holder-rendered="true"
-                                             style="vertical-align: middle; max-width: 242px; max-height: 200px; margin-left: -2px;"/>
-                                    </div>
+                                    <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
+                                         th:src="@{/resources/images/no-image-available.jpg}"
+                                         alt="No image available"
+                                         data-holder-rendered="true"
+                                         />
+                                    <img v-else
+                                         v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
+                                         data-holder-rendered="true"
+                                         />
                                     <div class="caption"><h4>{{dlListing.title}}</h4></div>
                                 </a>
                             </div>
