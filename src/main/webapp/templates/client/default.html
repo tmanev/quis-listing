@@ -1,18 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <title th:text="${title}">Home</title>
 </head>
 <body>
 <div class="container" th:fragment="content">
-    <div id="landingApp">
+    <div id="landingApp" v-cloak>
         <div class="row">
             <div class="col-md-12">
                 <div class="container">
                     <div class="flex-row row">
-                        <div v-for="dlListing in dlListings" style="display: none;"
-                             class="col-xs-6 col-sm-4 col-lg-3" v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
+                        <div th:each="dlListing : ${dlListings}"
+                             class="col-xs-12 col-sm-4 col-lg-3">
+                            <div class="thumbnail">
+                                <a th:href="'/listings/' + ${dlListing.id} + '/' + ${dlListing.name}">
+                                    <img th:if="${dlListing.attachments==null} or ${#lists.size(dlListing.attachments) == 0}" src="../../resources/images/no-image-available.jpg"
+                                         th:src="@{/resources/images/no-image-available.jpg}"
+                                         alt="No image available"
+                                         data-holder-rendered="true"/>
+                                    <img th:if="${dlListing.attachments!=null} and ${#lists.size(dlListing.attachments) > 0}"
+                                         th:src="'/content/files' + ${dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file}"
+                                         data-holder-rendered="true" />
+                                    <div class="caption"><h4 th:text="${dlListing.title}">Some title</h4></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lazy loaded listings -->
+                    <div class="flex-row row">
+                        <div v-for="dlListing in dlListings" class="col-xs-12 col-sm-4 col-lg-3"
+                             v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
                             <div class="thumbnail">
                                 <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
                                     <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
@@ -34,6 +53,14 @@
                             <!--<span th:text="${dlCategory.count}"></span>-->
                         <!--</div>-->
                     </div>
+                    <div class="row text-center" v-if="pagingParams.loadedDlListings<pagingParams.totalDlListings">
+                        <div style="margin-bottom: 20px;">
+                            <button id="btnLoadMore" href="#" class="btn btn-default btn-block btn-lg" role="button"
+                                    th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.default.btn_load_mode}"
+                                    v-bind:disabled="pagingParams.isLoading"
+                                    v-on:click="onLoadNext">Load more</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,7 +69,9 @@
             th:src="@{/resources/js/default.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            LandingPage.init();
+            var totalDlListings = [[${totalDlListings}]];
+            var loadedDlListings = [[${loadedDlListings}]];
+            LandingPage.init(totalDlListings, loadedDlListings);
         };
     </script>
 </div>
