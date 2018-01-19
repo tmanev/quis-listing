@@ -21,6 +21,7 @@ import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.search.DlListingSearchRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
+import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.dto.ApproveDTO;
@@ -214,7 +215,12 @@ public class DlListingService {
         dlListingForSaving.setTitle(dlListingDTO.getTitle());
         dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingDTO.getTitle()));
         dlListingForSaving.setContent(dlListingDTO.getContent());
-        dlListingForSaving.setStatus(DlListing.Status.DRAFT);
+
+        // if user is in role ADMIN don't change the status
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            dlListingForSaving.setStatus(DlListing.Status.DRAFT);
+        }
+
         dlListingForSaving.setApproved(null);
         dlListingForSaving.setApprovedModified(null);
 
