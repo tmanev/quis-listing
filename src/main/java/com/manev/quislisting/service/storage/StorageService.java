@@ -21,7 +21,7 @@ public class StorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(StorageService.class);
 
-    private static final String DL_SMALL_SIZE = "242x200";
+    private static final String DL_SMALL_SIZE = "320x240";
     private static final String DL_MEDIUM_SIZE = "800x600";
     private static final String DL_BIG_SIZE = "1024x768";
     private StoreComponent storeComponent;

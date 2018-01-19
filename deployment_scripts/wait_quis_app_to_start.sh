@@ -1,6 +1,5 @@
 #!/bin/sh
 PORT=$1
-currentTime=$(date '+%Y-%m-%d %H:%M')
 # wait spring application to start about 30 sec
 echo "Sleeping a bit"
 sleep 5
@@ -14,8 +13,8 @@ log=""
 
 while [ $elapsed -le $timeout ]; do
    sleep $delay
+   currentTime=$(date '+%Y-%m-%d %H:%M')
    elapsed=$((elapsed+delay))
-
    log=`awk "/^$currentTime/,/^2999-01-01 00:00:00/" ~/quis-app/logs/quis$PORT.log | grep "Started QuisListingApp in" || echo ""`
    if [[ ! -z $log ]]; then
         echo --- $log

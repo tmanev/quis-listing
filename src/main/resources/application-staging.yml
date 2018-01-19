@@ -55,3 +55,4 @@ quislisting:
                 token-validity-in-seconds-for-remember-me: 2592000
     mail:
         baseUrl: http://192.168.1.64:8181
+    attachment-storage-path: ./attachment_storage

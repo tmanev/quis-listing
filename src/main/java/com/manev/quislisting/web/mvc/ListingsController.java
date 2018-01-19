@@ -3,6 +3,7 @@ package com.manev.quislisting.web.mvc;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
+import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
@@ -59,6 +60,8 @@ public class ListingsController extends BaseController {
         if (dlListingDTO == null) {
             return redirectToPageNotFound();
         }
+
+        modelMap.addAttribute("showEditButton", dlListingDTO.getAuthor().getLogin().equals(SecurityUtils.getCurrentUserLogin()));
 
         List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), language);
 
