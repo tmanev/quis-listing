@@ -17,6 +17,7 @@ import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
 import com.manev.quislisting.service.mapper.TranslateUtil;
+import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldItemDTO;
@@ -25,6 +26,8 @@ import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.TranslatedTermDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -36,6 +39,8 @@ import java.util.Set;
 
 @Component
 public class DlListingMapper {
+
+    private final Logger log = LoggerFactory.getLogger(DlListingMapper.class);
 
     private final DlCategoryRepository dlCategoryRepository;
     private final DlLocationRepository dlLocationRepository;
@@ -57,6 +62,7 @@ public class DlListingMapper {
     }
 
     public DlListingDTO dlListingToDlListingDTO(DlListing dlListing, String languageCode) {
+        long start = System.currentTimeMillis();
         DlListingDTO dlListingDTO = new DlListingDTO();
         dlListingDTO.setId(dlListing.getId());
         dlListingDTO.setTitle(dlListing.getTitle());
@@ -79,6 +85,7 @@ public class DlListingMapper {
 
         setDlListingContentFields(dlListing, dlListingDTO, languageCode);
 
+        log.info("DlListing to DlListingDTO with id: {}, took: {} ms", dlListing.getId(), System.currentTimeMillis() - start);
         return dlListingDTO;
     }
 

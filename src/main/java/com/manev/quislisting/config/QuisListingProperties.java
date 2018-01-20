@@ -22,6 +22,7 @@ public class QuisListingProperties {
     private final QuisListingProperties.Async async = new QuisListingProperties.Async();
     private String attachmentStoragePath;
     private String geoLocationDbPath;
+    private final Cache cache = new Cache();
 
     public Security getSecurity() {
         return security;
@@ -57,6 +58,10 @@ public class QuisListingProperties {
 
     public QuisListingProperties.Async getAsync() {
         return this.async;
+    }
+
+    public Cache getCache() {
+        return cache;
     }
 
     public static class Security {
@@ -175,6 +180,38 @@ public class QuisListingProperties {
 
         public void setQueueCapacity(int queueCapacity) {
             this.queueCapacity = queueCapacity;
+        }
+    }
+
+    public static class Cache {
+
+        private final Ehcache ehcache = new Ehcache();
+
+        public Ehcache getEhcache() {
+            return ehcache;
+        }
+
+        public static class Ehcache {
+
+            private int timeToLiveSeconds = 3600;
+
+            private long maxEntries = 100;
+
+            public int getTimeToLiveSeconds() {
+                return timeToLiveSeconds;
+            }
+
+            public void setTimeToLiveSeconds(int timeToLiveSeconds) {
+                this.timeToLiveSeconds = timeToLiveSeconds;
+            }
+
+            public long getMaxEntries() {
+                return maxEntries;
+            }
+
+            public void setMaxEntries(long maxEntries) {
+                this.maxEntries = maxEntries;
+            }
         }
     }
 

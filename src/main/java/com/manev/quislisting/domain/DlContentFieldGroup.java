@@ -1,15 +1,22 @@
 package com.manev.quislisting.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.manev.quislisting.domain.qlml.QlString;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_content_field_group")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlContentFieldGroup {
 
     @Id

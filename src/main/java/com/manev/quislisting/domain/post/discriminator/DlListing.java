@@ -6,6 +6,8 @@ import com.manev.quislisting.domain.DlListingLocationRel;
 import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -19,6 +21,7 @@ import java.util.TreeSet;
 
 @Entity
 @Table(name = "ql_dl_listing")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlListing {
 
     @OneToOne
@@ -72,17 +75,21 @@ public class DlListing {
             inverseJoinColumns =
             @JoinColumn(name = "term_taxonomy_id", nullable = false, updatable = false))
     @Where(clause = "taxonomy='" + DlCategory.TAXONOMY + "'")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlCategory> dlCategories = new HashSet<>();
 
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
     @OrderBy
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlAttachment> dlAttachments;
 
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
     @OrderBy
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private SortedSet<DlListingContentFieldRel> dlListingContentFieldRels;
 
     @OneToMany(mappedBy = "dlListing", cascade = CascadeType.ALL)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlListingLocationRel> dlListingLocationRels;
 
     public Set<DlAttachment> getDlAttachments() {

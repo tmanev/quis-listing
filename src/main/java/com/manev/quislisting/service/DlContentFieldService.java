@@ -95,12 +95,18 @@ public class DlContentFieldService {
     }
 
     public List<DlContentFieldDTO> findAllByCategoryId(Long categoryId, String language) {
+        long start = System.currentTimeMillis();
         DlCategory dlCategory = dlCategoryRepository.findOne(categoryId);
+        long startQuery = System.currentTimeMillis();
         List<DlContentField> dlContentFields = dlContentFieldRepository.findAllByDlCategoriesOrDlCategoriesIsNullAndEnabledOrderByOrderNum(dlCategory, Boolean.TRUE);
+        log.info("findAllByDlCategoriesOrDlCategoriesIsNullAndEnabledOrderByOrderNum for categoryId: {}, took: {} ms", categoryId, System.currentTimeMillis()-startQuery);
         List<DlContentFieldDTO> result = new ArrayList<>();
+        long startMapping = System.currentTimeMillis();
         dlContentFields.forEach(dlContentField ->
                 result.add(dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, language))
         );
+        log.info("dlContentFieldMapper.dlContentFieldToDlContentFieldDTO, took: {} ms", System.currentTimeMillis() - startMapping);
+        log.info("findAllByCategoryId categoryId: {}, language: {}, took: {} ms", categoryId, language, System.currentTimeMillis() - start);
         return result;
     }
 

@@ -356,8 +356,11 @@ public class DlListingService {
     @Transactional(readOnly = true)
     public DlListingDTO findOne(Long id, String languageCode) {
         log.debug("Request to get DlListingDTO: {}", id);
+        long start = System.currentTimeMillis();
         DlListing result = dlListingRepository.findOne(id);
-        return result != null ? dlListingMapper.dlListingToDlListingDTO(result, languageCode) : null;
+        DlListingDTO dlListingDTO = result != null ? dlListingMapper.dlListingToDlListingDTO(result, languageCode) : null;
+        log.info("finOne id: {}, took: {} ms", id, System.currentTimeMillis() - start);
+        return dlListingDTO;
     }
 
     public void delete(Long id) {
