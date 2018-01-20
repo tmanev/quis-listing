@@ -1,10 +1,5 @@
 package com.manev.quislisting.service.dto;
 
-import com.manev.quislisting.domain.DlContentField;
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
-
-import java.util.List;
-
 public class DlContentFieldGroupDTO {
 
     private Long id;
