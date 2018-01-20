@@ -9,6 +9,8 @@ import com.manev.quislisting.service.storage.ResizedImages;
 import com.manev.quislisting.service.util.SlugUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,10 +24,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Component
 public class StoreComponent {
+
+    private final Logger log = LoggerFactory.getLogger(StoreComponent.class);
 
     private static final String DL_MEDIUM = "medium";
     private static final String DL_LARGE = "large";
@@ -157,7 +162,11 @@ public class StoreComponent {
         for (String filePath : filePaths) {
             File file = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + filePath);
             if (file.exists()) {
-                file.delete();
+                try {
+                    Files.delete(Paths.get(file.toURI()));
+                } catch (IOException e) {
+                    log.error("Failed to remove file: {}", filePath, e);
+                }
             }
         }
     }

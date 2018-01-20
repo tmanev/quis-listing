@@ -1,5 +1,8 @@
 package com.manev.quislisting.web.rest.post;
 
+import com.manev.quislisting.domain.User;
+import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
@@ -48,10 +51,12 @@ public class DlListingResource {
     private final Logger log = LoggerFactory.getLogger(DlListingResource.class);
     private final DlListingService dlListingService;
     private final LocaleResolver localeResolver;
+    private final UserService userService;
 
-    public DlListingResource(DlListingService dlListingService, LocaleResolver localeResolver) {
+    public DlListingResource(DlListingService dlListingService, LocaleResolver localeResolver, UserService userService) {
         this.dlListingService = dlListingService;
         this.localeResolver = localeResolver;
+        this.userService = userService;
     }
 
     @RequestMapping(method = RequestMethod.POST,
@@ -119,7 +124,14 @@ public class DlListingResource {
 
         String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
         log.debug("Language from cookie: {}", languageCode);
-        Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode);
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> oneByLogin = userService.findOneByLogin(currentUserLogin);
+        if (!oneByLogin.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode, oneByLogin.get());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_LISTINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -140,7 +152,7 @@ public class DlListingResource {
     }
 
     @DeleteMapping("/{id}/attachments/{attachmentId}")
-    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) throws IOException {
+    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) {
         log.debug("REST request to delete attachment with id : {} in DlListingDTO : {}", attachmentId, id);
         DlListingDTO result = dlListingService.deleteDlListingAttachment(id, attachmentId);
         return ResponseEntity.ok()

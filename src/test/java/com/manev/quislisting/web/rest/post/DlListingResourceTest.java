@@ -17,6 +17,7 @@ import com.manev.quislisting.service.DlCategoryTestComponent;
 import com.manev.quislisting.service.DlContentFieldTestComponent;
 import com.manev.quislisting.service.DlListingTestComponent;
 import com.manev.quislisting.service.DlLocationTestComponent;
+import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.model.DlContentFieldInput;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
@@ -118,12 +119,15 @@ public class DlListingResourceTest extends GenericResourceTest {
     @Autowired
     private DlContentFieldTestComponent dlContentFieldTestComponent;
 
+    @Autowired
+    private UserService userService;
+
     private MockMvc restDlListingMockMvc;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingResource dlListingResource = new DlListingResource(dlListingService, localeResolver);
+        DlListingResource dlListingResource = new DlListingResource(dlListingService, localeResolver, userService);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
