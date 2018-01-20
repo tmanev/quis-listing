@@ -6,36 +6,33 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-public class PageableCollection<T> implements Iterable<T>
-{
+public class PageableCollection<T> implements Iterable<T> {
     private static final int DEFAULT_PAGE_SIZE = 100;
 
     private Fetcher<?, T> fetcher;
     private int pageSize;
 
-    public PageableCollection(Fetcher<?, T> f) {
+    PageableCollection(Fetcher<?, T> f) {
         this(f, DEFAULT_PAGE_SIZE);
     }
 
-    public PageableCollection(Fetcher<?, T> f, int pageSize)
-    {
+    private PageableCollection(Fetcher<?, T> f, int pageSize) {
         this.fetcher = f;
         this.pageSize = pageSize;
     }
 
     @Override
-    public Iterator<T> iterator()
-    {
-        return new PageableIterator<T>(fetcher, pageSize);
+    public Iterator<T> iterator() {
+        return new PageableIterator<>(fetcher, pageSize);
     }
 }
 
 /**
  * Initially makes sense only inside the PageableCollection class
  */
-class PageableIterator<T> implements Iterator<T>
-{
+class PageableIterator<T> implements Iterator<T> {
     private static final int FIRST_PAGE = 0;
 
     private List<T> currentData;
@@ -44,16 +41,15 @@ class PageableIterator<T> implements Iterator<T>
     private Pageable page;
     private Fetcher<?, T> fetcher;
 
-    public PageableIterator(Fetcher<?, T> f, int pageSize) {
+    PageableIterator(Fetcher<?, T> f, int pageSize) {
         this.fetcher = f;
         this.pageSize = pageSize;
         page = new PageRequest(FIRST_PAGE, pageSize);
-        currentData = new ArrayList<T>();
+        currentData = new ArrayList<>();
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         if (hasDataLoaded()) {
             return true;
         }
@@ -62,27 +58,27 @@ class PageableIterator<T> implements Iterator<T>
         return !currentData.isEmpty();
     }
 
-    private void tryToFetchMoreData()
-    {
+    private void tryToFetchMoreData() {
         currentData = fetcher.fetch(page);
-        page = new PageRequest(page.getPageNumber()+1, pageSize);
+        page = new PageRequest(page.getPageNumber() + 1, pageSize);
         cursor = 0;
     }
 
-    private boolean hasDataLoaded()
-    {
+    private boolean hasDataLoaded() {
         return cursor < currentData.size();
     }
 
     @Override
-    public T next()
-    {
-        return currentData.get(cursor++);
+    public T next() {
+        try{
+            return currentData.get(cursor++);
+        } catch (IndexOutOfBoundsException ex) {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
-    public void remove()
-    {
+    public void remove() {
         throw new UnsupportedOperationException();
     }
 }
