@@ -7,14 +7,13 @@ import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.UserService;
-import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
-import com.manev.quislisting.web.model.ListingSectionsVisibility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -25,12 +24,13 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 @Controller
 @RequestMapping(value = "/listings")
 public class ListingsController extends BaseController {
+
+    private final Logger log = LoggerFactory.getLogger(ListingsController.class);
 
     private final DlListingService dlListingService;
     private final DlCategoryService dlCategoryService;
@@ -53,6 +53,7 @@ public class ListingsController extends BaseController {
     @RequestMapping(value = "/{id}/{slug}", method = RequestMethod.GET)
     public String showEditListingPage(@PathVariable String id, @PathVariable String slug,
                                       final ModelMap modelMap, HttpServletRequest request) throws IOException {
+        long start = System.currentTimeMillis();
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
         DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
@@ -63,15 +64,12 @@ public class ListingsController extends BaseController {
 
         modelMap.addAttribute("showEditButton", dlListingDTO.getAuthor().getLogin().equals(SecurityUtils.getCurrentUserLogin()));
 
-        List<DlContentFieldDTO> dlContentFieldDTOS = dlContentFieldService.findAllByCategoryId(dlListingDTO.getDlCategories().get(0).getId(), language);
-
-        modelMap.addAttribute("dlContentFieldsDto", dlContentFieldDTOS);
-
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 
         modelMap.addAttribute("title", dlListingDTO.getTitle());
         modelMap.addAttribute("view", "client/listing");
 
+        log.info("Loading of listing id: {}, name: {}, took: {} ms", dlListingDTO.getId(), dlListingDTO.getName(), System.currentTimeMillis() - start);
         return "client/index";
     }
 
