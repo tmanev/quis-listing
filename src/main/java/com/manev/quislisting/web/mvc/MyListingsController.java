@@ -42,6 +42,8 @@ import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.PUBLISH_RE
 @Controller
 public class MyListingsController extends BaseController {
 
+    private static final String ATTRIBUTE_TITLE = "title";
+    private static final String PAGE_CLIENT_INDEX = "client/index";
     private final DlListingService dlListingService;
     private final DlCategoryService dlCategoryService;
     private final DlContentFieldService dlContentFieldService;
@@ -64,10 +66,10 @@ public class MyListingsController extends BaseController {
     public String showMyListingsPage(final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 
-        modelMap.addAttribute("title", messageSource.getMessage("page.my_listings.title", null, locale));
+        modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.title", null, locale));
         modelMap.addAttribute("view", "client/my-listings/my-listings");
 
-        return "client/index";
+        return PAGE_CLIENT_INDEX;
     }
 
     @RequestMapping(value = ADD, method = RequestMethod.GET)
@@ -76,10 +78,10 @@ public class MyListingsController extends BaseController {
 
         List<DlCategoryDTO> dlCategories = dlCategoryService.findAllByLanguageCode(locale.getLanguage());
         modelMap.addAttribute("dlCategoriesDtoFlat", dlCategories);
-        modelMap.addAttribute("title", messageSource.getMessage("page.my_listings.add_listing.title", null, locale));
+        modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.add_listing.title", null, locale));
         modelMap.addAttribute("view", "client/my-listings/add-listing");
 
-        return "client/index";
+        return PAGE_CLIENT_INDEX;
     }
 
     @RequestMapping(value = EDIT, method = RequestMethod.GET)
@@ -127,10 +129,10 @@ public class MyListingsController extends BaseController {
             modelMap.addAttribute("dlLocationCities", Collections.emptyList());
         }
 
-        modelMap.addAttribute("title", messageSource.getMessage("page.my_listings.edit_listing.title", null, locale));
+        modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.edit_listing.title", null, locale));
         modelMap.addAttribute("view", "client/my-listings/edit-listing");
 
-        return "client/index";
+        return PAGE_CLIENT_INDEX;
     }
 
     @RequestMapping(value = PREVIEW, method = RequestMethod.GET)
@@ -160,20 +162,20 @@ public class MyListingsController extends BaseController {
 
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 
-        modelMap.addAttribute("title", dlListingDTO.getTitle());
+        modelMap.addAttribute(ATTRIBUTE_TITLE, dlListingDTO.getTitle());
         modelMap.addAttribute("view", "client/listing");
 
-        return "client/index";
+        return PAGE_CLIENT_INDEX;
     }
 
     @RequestMapping(value = PUBLISH_REQUEST_SUCCESS, method = RequestMethod.GET)
-    public String publishSuccessful(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
+    public String publishSuccessful(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 
-        modelMap.addAttribute("title", messageSource.getMessage("page.my_listings.publish_successful.title", null, locale));
+        modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.publish_successful.title", null, locale));
 
         modelMap.addAttribute("view", "client/my-listings/publish-successful");
 
-        return "client/index";
+        return PAGE_CLIENT_INDEX;
     }
 }

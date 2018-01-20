@@ -48,7 +48,7 @@ public class HomeController extends BaseController {
         model.addAttribute("dlListings", page.getContent());
         model.addAttribute("totalDlListings", page.getTotalElements());
         model.addAttribute("loadedDlListings", page.getNumberOfElements());
-        List<CategoryCount> allCategoriesWithCount = dlCategoryService.findAllCategoriesWithCount(locale.getLanguage());
+        List<CategoryCount> allCategoriesWithCount = dlCategoryService.findAllCategoriesWithCount();
         model.addAttribute("dlCategories", allCategoriesWithCount);
 
         model.addAttribute("title", title);

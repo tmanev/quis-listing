@@ -1,7 +1,6 @@
 package com.manev.quislisting.web.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.QlMenuConfig;
 import com.manev.quislisting.domain.QlMenuPosConfig;
@@ -13,13 +12,10 @@ import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.post.StaticPageService;
-import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
-import com.manev.quislisting.web.model.ListingSectionsVisibility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -33,7 +29,7 @@ import java.util.Locale;
 
 public class BaseController {
 
-    public static final String REDIRECT = "redirect:/";
+    static final String REDIRECT = "redirect:/";
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
     protected NavMenuRepository navMenuRepository;
 

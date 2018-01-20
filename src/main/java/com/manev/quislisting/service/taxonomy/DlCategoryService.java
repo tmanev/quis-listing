@@ -146,7 +146,7 @@ public class DlCategoryService {
         dlCategoryRepository.delete(id);
     }
 
-    public List<CategoryCount> findAllCategoriesWithCount(String languageCode) {
+    public List<CategoryCount> findAllCategoriesWithCount() {
         return dlCategoryRepository.findCategoriesWithCount();
     }
 

@@ -4,14 +4,10 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.security.SecurityUtils;
-import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.QlConfigService;
-import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.taxonomy.DlCategoryService;
-import com.manev.quislisting.service.taxonomy.DlLocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -33,21 +29,13 @@ public class ListingsController extends BaseController {
     private final Logger log = LoggerFactory.getLogger(ListingsController.class);
 
     private final DlListingService dlListingService;
-    private final DlCategoryService dlCategoryService;
-    private final DlContentFieldService dlContentFieldService;
-    private final UserService userService;
-    private final DlLocationService dlLocationService;
 
     public ListingsController(NavMenuRepository navMenuRepository,
                               QlConfigService qlConfigService, LanguageRepository languageRepository,
                               LanguageTranslationRepository languageTranslationRepository,
-                              LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource, DlListingService dlListingService, DlCategoryService dlCategoryService, DlContentFieldService dlContentFieldService, UserService userService, DlLocationService dlLocationService) {
+                              LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource, DlListingService dlListingService) {
         super(navMenuRepository, qlConfigService, languageRepository, languageTranslationRepository, localeResolver, staticPageService, messageSource);
         this.dlListingService = dlListingService;
-        this.dlCategoryService = dlCategoryService;
-        this.dlContentFieldService = dlContentFieldService;
-        this.userService = userService;
-        this.dlLocationService = dlLocationService;
     }
 
     @RequestMapping(value = "/{id}/{slug}", method = RequestMethod.GET)
