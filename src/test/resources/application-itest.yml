@@ -24,5 +24,8 @@ spring:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         properties:
-            hibernate.cache.use_second_level_cache: true
-            hibernate.enable_lazy_load_no_trans: true
+            hibernate.id.new_generator_mappings: false
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: false
+            hibernate.cache.region.factory_class: com.manev.quislisting.config.NoDefaultJCacheRegionFactory
