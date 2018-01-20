@@ -2,7 +2,6 @@ package com.manev.quislisting.domain.post.discriminator.builder;
 
 import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.sql.Timestamp;
 

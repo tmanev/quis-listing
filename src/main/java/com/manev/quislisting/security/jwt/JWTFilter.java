@@ -36,7 +36,7 @@ public class JWTFilter extends GenericFilterBean {
 
     private GeoLocationService geoLocationService;
 
-    public JWTFilter(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
+    JWTFilter(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
         this.tokenProvider = tokenProvider;
         this.geoLocationService = geoLocationService;
     }
@@ -89,7 +89,7 @@ public class JWTFilter extends GenericFilterBean {
         Cookie qlLocaleCookie = WebUtils.getCookie(request, QUIS_LISTING_LOCALE_COOKIE);
         String languageToken = qlLocaleCookie != null ? qlLocaleCookie.getValue() : null;
 
-        if (languageToken == null | !StringUtils.hasText(languageToken)) {
+        if (languageToken == null || !StringUtils.hasText(languageToken)) {
             log.info("No language is configured in cookie");
             // set the language cookie based on the ip location
             String remoteIp = getRemoteIp(request);

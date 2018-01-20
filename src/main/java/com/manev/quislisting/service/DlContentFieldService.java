@@ -25,14 +25,12 @@ public class DlContentFieldService {
 
     private DlContentFieldRepository dlContentFieldRepository;
     private DlContentFieldMapper dlContentFieldMapper;
-    private DlContentFieldItemService dlContentFieldItemService;
     private DlCategoryRepository dlCategoryRepository;
 
     public DlContentFieldService(DlContentFieldRepository dlContentFieldRepository,
-                                 DlContentFieldMapper dlContentFieldMapper, DlContentFieldItemService dlContentFieldItemService, DlCategoryRepository dlCategoryRepository) {
+                                 DlContentFieldMapper dlContentFieldMapper, DlCategoryRepository dlCategoryRepository) {
         this.dlContentFieldRepository = dlContentFieldRepository;
         this.dlContentFieldMapper = dlContentFieldMapper;
-        this.dlContentFieldItemService = dlContentFieldItemService;
         this.dlCategoryRepository = dlCategoryRepository;
     }
 

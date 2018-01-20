@@ -30,6 +30,7 @@ public class EmailSendingService {
     private static final String SUBJECT = "subject";
     private static final String ACTIVATION_TEXT = "activationText";
     private static final String DL_LISTING = "dlListing";
+    private static final String SITE_NAME = "site-name";
     private final Logger log = LoggerFactory.getLogger(EmailSendingService.class);
     private final MessageSource messageSource;
     private final QuisListingProperties quisListingProperties;
@@ -76,7 +77,7 @@ public class EmailSendingService {
         // try and find the template by the selected language
         EmailTemplate passwordResetEmailTemplate = emailTemplateService.findOneByName("password-reset");
 
-        QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
+        QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
 
         String html = getValueByLanguage(user.getLangKey(), passwordResetEmailTemplate.getQlString());
         String title = messageSource.getMessage("email.reset.title", new String[]{siteNameConfig.getValue()}, locale);
@@ -101,7 +102,7 @@ public class EmailSendingService {
 
         EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("listing-disapproved");
 
-        QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
+        QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
 
         String subject = messageSource.getMessage("email.listing_disapproved.subject", new String[]{dlListing.getTitle()}, locale);
 
@@ -130,7 +131,7 @@ public class EmailSendingService {
 
         EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("listing-approved");
 
-        QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
+        QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
 
         String subject = messageSource.getMessage("email.listing_approved.subject", new String[]{dlListing.getTitle()}, locale);
 
@@ -155,7 +156,7 @@ public class EmailSendingService {
 
         EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("activation_email");
 
-        QlConfig siteNameConfig = qlConfigService.findOneByKey("site-name");
+        QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
 
         String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
         String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
