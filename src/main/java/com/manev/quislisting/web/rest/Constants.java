@@ -31,7 +31,17 @@ public final class Constants {
     public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";
 
     public class Rest {
+
+        private Rest() {
+            // private constructor
+        }
+
         public class DlContentFieldGroup {
+
+            private DlContentFieldGroup() {
+                // private constructor
+            }
+
             public static final String BASE = "/api/admin/dl-content-field-groups";
 
         }
@@ -39,11 +49,19 @@ public final class Constants {
 
     public class Mvc {
         public class Listings {
+            private Listings() {
+                // private constructor
+            }
+
             public static final String BASE = "/listings";
             public static final String VIEW = BASE + "/{id}/{slug}";
         }
 
         public class MyListings {
+
+            private MyListings() {
+            }
+
             public static final String BASE = "/my-listings";
             public static final String ADD = BASE + "/add";
             public static final String EDIT = BASE + "/{id}";
