@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.mvc;
+package com.manev.quislisting.web.mvc.model;
 
 import com.manev.quislisting.domain.StaticPage;
 import com.manev.quislisting.domain.NavMenuItem;
@@ -47,11 +47,6 @@ public class BaseModel {
 
     public void setActiveLanguages(List<ActiveLanguageBean> activeLanguages) {
         this.activeLanguages = activeLanguages;
-    }
-
-    public BaseModel activeLanugages(List<ActiveLanguageBean> activeLanguages) {
-        this.activeLanguages = activeLanguages;
-        return this;
     }
 
     public StaticPage getProfilePage() {

@@ -13,6 +13,7 @@ import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
+import com.manev.quislisting.web.mvc.model.BaseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ import java.util.Locale;
 public class BaseController {
 
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
+
+    protected static final String ATTRIBUTE_TITLE = "title";
+    protected static final String PAGE_CLIENT_INDEX = "client/index";
 
     static final String REDIRECT = "redirect:/";
 
@@ -85,7 +89,7 @@ public class BaseController {
             List<LanguageTranslation> languageTranslations = languageTranslationRepository.
                     findAllByLanguageCodeInAndDisplayLanguageCode(getLanguageCodes(activeLanguages), language);
             List<ActiveLanguageBean> activeLanguageBeans = makeActiveLanguagesForTranslations(activeLanguages, languageTranslations);
-            baseModel.activeLanugages(activeLanguageBeans);
+            baseModel.setActiveLanguages(activeLanguageBeans);
         } else {
             baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
         }
@@ -142,7 +146,7 @@ public class BaseController {
         return null;
     }
 
-    String redirectToPageNotFound() throws UnsupportedEncodingException {
+    protected String redirectToPageNotFound() throws UnsupportedEncodingException {
         return REDIRECT + URLEncoder.encode("page-not-found", "UTF-8");
     }
 
