@@ -3,7 +3,6 @@ package com.manev.quislisting.web.mvc;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -15,14 +14,14 @@ import java.io.IOException;
 import static com.manev.quislisting.security.jwt.JWTFilter.QL_AUTH;
 
 @Controller
-@RequestMapping("/sign-out")
+@RequestMapping(MvcRouter.SIGN_OUT)
 public class SignOutController extends BaseController {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @RequestMapping(method = RequestMethod.GET)
     public void authorize(HttpServletRequest request,
-                          HttpServletResponse response, ModelMap model) throws IOException {
+                          HttpServletResponse response) throws IOException {
         response.addCookie(new Cookie(QL_AUTH, null));
         redirectStrategy.sendRedirect(request, response, "/");
     }

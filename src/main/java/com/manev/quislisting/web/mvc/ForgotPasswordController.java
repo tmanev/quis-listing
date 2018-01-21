@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @Controller
-@RequestMapping("/forgot-password")
+@RequestMapping(MvcRouter.FORGOT_PASS)
 public class ForgotPasswordController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)

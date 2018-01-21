@@ -13,6 +13,7 @@ import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.web.model.JsTranslations;
 import com.manev.quislisting.web.mvc.BaseController;
+import com.manev.quislisting.web.mvc.MvcRouter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -28,8 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.EDIT;
-
 @Controller
 public class EditListingController extends BaseController {
 
@@ -44,7 +43,7 @@ public class EditListingController extends BaseController {
     @Autowired
     private DlLocationService dlLocationService;
 
-    @RequestMapping(value = EDIT, method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.MyListings.EDIT, method = RequestMethod.GET)
     public String showEditListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();

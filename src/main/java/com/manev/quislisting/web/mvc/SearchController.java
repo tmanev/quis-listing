@@ -16,7 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/search")
+@RequestMapping(MvcRouter.SEARCH)
 public class SearchController extends BaseController {
 
     @Autowired

@@ -22,7 +22,7 @@ public class StaticPageController extends BaseController {
 
     private final Logger log = LoggerFactory.getLogger(StaticPageController.class);
 
-    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.STATIC_PAGE, method = RequestMethod.GET)
     public String showPost(@PathVariable String name, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();

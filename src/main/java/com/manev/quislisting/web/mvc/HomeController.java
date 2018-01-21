@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping(MvcRouter.HOME)
 public class HomeController extends BaseController {
 
     @Autowired

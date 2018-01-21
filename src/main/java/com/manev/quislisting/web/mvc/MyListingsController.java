@@ -8,12 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.BASE;
-
 @Controller
 public class MyListingsController extends BaseController {
 
-    @RequestMapping(value = BASE, method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.MyListings.BASE, method = RequestMethod.GET)
     public String showMyListingsPage(final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 

@@ -3,6 +3,7 @@ package com.manev.quislisting.web.mvc.mylistings;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.web.mvc.BaseController;
+import com.manev.quislisting.web.mvc.MvcRouter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,15 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.ADD;
-
 @Controller
 public class AddListingController extends BaseController {
 
     @Autowired
     private DlCategoryService dlCategoryService;
 
-    @RequestMapping(value = ADD, method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.MyListings.ADD, method = RequestMethod.GET)
     public String showAddListingPage(final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 

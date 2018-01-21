@@ -1,6 +1,7 @@
 package com.manev.quislisting.web.mvc.mylistings;
 
 import com.manev.quislisting.web.mvc.BaseController;
+import com.manev.quislisting.web.mvc.MvcRouter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.PUBLISH_REQUEST_SUCCESS;
-
 @Controller
 public class PublishSuccessController extends BaseController {
 
-    @RequestMapping(value = PUBLISH_REQUEST_SUCCESS, method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.MyListings.PUBLISH_REQUEST_SUCCESS, method = RequestMethod.GET)
     public String publishSuccessful(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 

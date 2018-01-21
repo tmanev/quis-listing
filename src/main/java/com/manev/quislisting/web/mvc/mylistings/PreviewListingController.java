@@ -6,6 +6,7 @@ import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.web.mvc.BaseController;
+import com.manev.quislisting.web.mvc.MvcRouter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.PREVIEW;
-
 @Controller
 public class PreviewListingController extends BaseController {
 
@@ -29,7 +28,7 @@ public class PreviewListingController extends BaseController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = PREVIEW, method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.MyListings.PREVIEW, method = RequestMethod.GET)
     public String showPreviewListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();

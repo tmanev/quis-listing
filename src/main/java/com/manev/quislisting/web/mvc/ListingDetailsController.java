@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Locale;
 
 @Controller
-@RequestMapping(value = "/listings")
 public class ListingDetailsController extends BaseController {
 
     private final Logger log = LoggerFactory.getLogger(ListingDetailsController.class);
@@ -25,7 +24,7 @@ public class ListingDetailsController extends BaseController {
     @Autowired
     private DlListingService dlListingService;
 
-    @RequestMapping(value = "/{id}/{slug}", method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.Listings.VIEW, method = RequestMethod.GET)
     public String showEditListingPage(@PathVariable String id, @PathVariable String slug,
                                       final ModelMap modelMap, HttpServletRequest request) throws IOException {
         long start = System.currentTimeMillis();

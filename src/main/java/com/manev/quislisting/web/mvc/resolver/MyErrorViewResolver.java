@@ -1,5 +1,6 @@
-package com.manev.quislisting.web.mvc;
+package com.manev.quislisting.web.mvc.resolver;
 
+import com.manev.quislisting.web.mvc.PageNotFoundController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ErrorViewResolver;

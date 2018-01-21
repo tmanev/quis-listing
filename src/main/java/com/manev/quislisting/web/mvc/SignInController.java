@@ -10,7 +10,7 @@ import java.util.Locale;
 @Controller
 public class SignInController extends BaseController {
 
-    @RequestMapping(value = "/sign-in")
+    @RequestMapping(value = MvcRouter.SIGN_IN)
     public String indexPage(final ModelMap model, Locale locale, HttpServletRequest request) {
         String error = request.getParameter("error");
         if (error != null) {

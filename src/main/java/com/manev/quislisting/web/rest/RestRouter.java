@@ -47,29 +47,6 @@ public final class RestRouter {
         }
     }
 
-    public class Mvc {
-        public class Listings {
-            private Listings() {
-                // private constructor
-            }
-
-            public static final String BASE = "/listings";
-            public static final String VIEW = BASE + "/{id}/{slug}";
-        }
-
-        public class MyListings {
-
-            private MyListings() {
-            }
-
-            public static final String BASE = "/my-listings";
-            public static final String ADD = BASE + "/add";
-            public static final String EDIT = BASE + "/{id}";
-            public static final String PREVIEW = BASE + "/{id}/preview";
-            public static final String PUBLISH_REQUEST_SUCCESS = BASE + "/{id}/publish-successful";
-        }
-    }
-
     private RestRouter() {
     }
 

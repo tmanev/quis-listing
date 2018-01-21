@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/account-activate")
+@RequestMapping(MvcRouter.ACCOUNT_ACTIVATE)
 public class AccountActivateController extends BaseController {
 
     @Autowired

@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/sign-up")
+@RequestMapping(MvcRouter.SIGN_UP)
 public class SignUpController extends BaseController {
 
     @Autowired

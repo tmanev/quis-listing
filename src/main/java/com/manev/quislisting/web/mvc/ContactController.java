@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @Controller
-@RequestMapping(value = "/contact")
+@RequestMapping(value = MvcRouter.CONTACT)
 public class ContactController extends BaseController {
 
     @GetMapping

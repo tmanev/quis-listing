@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/account/profile")
+@RequestMapping(MvcRouter.Account.PROFILE)
 public class AccountProfileController extends BaseController {
 
     @Autowired

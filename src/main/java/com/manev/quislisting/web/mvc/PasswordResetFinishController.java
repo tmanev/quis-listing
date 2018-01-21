@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/password-reset")
+@RequestMapping(MvcRouter.PASS_RESET)
 public class PasswordResetFinishController extends BaseController {
 
     @Autowired

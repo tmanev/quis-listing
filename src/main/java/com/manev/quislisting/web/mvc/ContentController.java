@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/content")
 public class ContentController {
 
     private final StorageService storageService;
@@ -21,7 +20,7 @@ public class ContentController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/files/{year}/{month}/{day}/{filename:.+}")
+    @GetMapping(MvcRouter.CONTENT)
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable(name = "year") String yearStr,
                                               @PathVariable(name = "month") String monthStr,

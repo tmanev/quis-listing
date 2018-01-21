@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @Controller
-@RequestMapping(value = "/page-not-found")
+@RequestMapping(value = MvcRouter.PAGE_NOT_FOUND)
 public class PageNotFoundController extends BaseController {
 
     @GetMapping
