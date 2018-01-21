@@ -15,6 +15,7 @@ import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.LocaleResolver;
@@ -29,29 +30,24 @@ import java.util.Locale;
 
 public class BaseController {
 
-    static final String REDIRECT = "redirect:/";
     private static Logger log = LoggerFactory.getLogger(BaseController.class);
+
+    static final String REDIRECT = "redirect:/";
+
+    @Autowired
     protected NavMenuRepository navMenuRepository;
-
+    @Autowired
     protected QlConfigService qlConfigService;
-
+    @Autowired
     protected LanguageRepository languageRepository;
+    @Autowired
     protected LocaleResolver localeResolver;
+    @Autowired
     protected StaticPageService staticPageService;
+    @Autowired
     protected LanguageTranslationRepository languageTranslationRepository;
+    @Autowired
     protected MessageSource messageSource;
-
-    public BaseController(NavMenuRepository navMenuRepository, QlConfigService qlConfigService,
-                          LanguageRepository languageRepository, LanguageTranslationRepository languageTranslationRepository,
-                          LocaleResolver localeResolver, StaticPageService staticPageService, MessageSource messageSource) {
-        this.navMenuRepository = navMenuRepository;
-        this.qlConfigService = qlConfigService;
-        this.languageRepository = languageRepository;
-        this.languageTranslationRepository = languageTranslationRepository;
-        this.localeResolver = localeResolver;
-        this.staticPageService = staticPageService;
-        this.messageSource = messageSource;
-    }
 
     @ModelAttribute("baseModel")
     public BaseModel baseModel(HttpServletRequest request) throws IOException {
