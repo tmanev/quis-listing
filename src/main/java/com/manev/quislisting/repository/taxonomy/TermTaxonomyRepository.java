@@ -2,7 +2,6 @@ package com.manev.quislisting.repository.taxonomy;
 
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

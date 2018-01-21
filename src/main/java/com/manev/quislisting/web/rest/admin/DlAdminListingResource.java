@@ -130,7 +130,7 @@ public class DlAdminListingResource {
     }
 
     @DeleteMapping("/{id}/attachments/{attachmentId}")
-    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) throws IOException {
+    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) {
         log.debug("REST request to delete attachment with id : {} in DlListingDTO : {}", attachmentId, id);
         DlListingDTO result = dlListingService.deleteDlListingAttachment(id, attachmentId);
         return ResponseEntity.ok()
