@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -92,7 +91,7 @@ public class DlContentFieldItemResourceTest {
         dlContentFieldRepository.save(dlContentField);
 
         DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
-        restDlContentFieldItemMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS.replace("{dlContentFieldId}", dlContentField.getId().toString()))
+        restDlContentFieldItemMockMvc.perform(post(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST.replace("{dlContentFieldId}", dlContentField.getId().toString()))
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldItemDTO)))
                 .andExpect(status().isCreated());
@@ -117,7 +116,7 @@ public class DlContentFieldItemResourceTest {
         existingDlContentFieldItem.setId(1L);
         DlContentFieldItemDTO existingDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(existingDlContentFieldItem, null);
 
-        restDlContentFieldItemMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS.replace("{dlContentFieldId}", dlContentField.getId().toString()))
+        restDlContentFieldItemMockMvc.perform(post(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST.replace("{dlContentFieldId}", dlContentField.getId().toString()))
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingDlContentFieldItemDTO)))
                 .andExpect(status().isBadRequest());
@@ -136,7 +135,7 @@ public class DlContentFieldItemResourceTest {
         dlContentFieldItem.setDlContentField(dlContentField);
         dlContentFieldItemRepository.saveAndFlush(dlContentFieldItem);
 
-        restDlContentFieldItemMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS + "/{id}", dlContentField.getId(), dlContentFieldItem.getId()))
+        restDlContentFieldItemMockMvc.perform(get(AdminRestRouter.DlContentFields.DlContentFieldItem.DETAIL, dlContentField.getId(), dlContentFieldItem.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlContentFieldItem.getId().intValue()))
@@ -150,7 +149,7 @@ public class DlContentFieldItemResourceTest {
         DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
         dlContentFieldRepository.save(dlContentField);
 
-        restDlContentFieldItemMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS + "/{id}", dlContentField.getId(), Long.MAX_VALUE))
+        restDlContentFieldItemMockMvc.perform(get(AdminRestRouter.DlContentFields.DlContentFieldItem.DETAIL, dlContentField.getId(), Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -170,7 +169,7 @@ public class DlContentFieldItemResourceTest {
 
         DlContentFieldItemDTO updateDlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(updateDlContentFieldItem, null);
 
-        restDlContentFieldItemMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS, dlContentField.getId())
+        restDlContentFieldItemMockMvc.perform(put(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST, dlContentField.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(updateDlContentFieldItemDTO)))
                 .andExpect(status().isOk());
@@ -192,7 +191,7 @@ public class DlContentFieldItemResourceTest {
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
-        restDlContentFieldItemMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS, dlContentField.getId())
+        restDlContentFieldItemMockMvc.perform(put(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST, dlContentField.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldItemDTO)))
                 .andExpect(status().isCreated());
@@ -212,7 +211,7 @@ public class DlContentFieldItemResourceTest {
 
         int databaseSizeBeforeDelete = dlContentFieldItemRepository.findAll().size();
 
-        restDlContentFieldItemMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS + "/{id}",
+        restDlContentFieldItemMockMvc.perform(delete(AdminRestRouter.DlContentFields.DlContentFieldItem.DETAIL,
                 dlContentField.getId(), dlContentFieldItem.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());

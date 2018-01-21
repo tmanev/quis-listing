@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +20,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS;
-
 @RestController
-@RequestMapping(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS)
 public class DlContentFieldItemResource {
 
     private static final String ENTITY_NAME = "DlContentFieldItem";
@@ -36,8 +32,7 @@ public class DlContentFieldItemResource {
         this.dlContentFieldItemService = dlContentFieldItemService;
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST)
     public ResponseEntity<DlContentFieldItemDTO> createDlContentFieldItem(@PathVariable("dlContentFieldId") Long dlContentFieldId,
                                                                           @RequestBody DlContentFieldItemDTO dlContentFieldItemDTO) throws URISyntaxException {
         log.debug("REST request to save DlContentFieldItemDTO : {}", dlContentFieldItemDTO);
@@ -46,12 +41,12 @@ public class DlContentFieldItemResource {
         }
 
         DlContentFieldItemDTO result = dlContentFieldItemService.save(dlContentFieldItemDTO, dlContentFieldId);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS.replace("{dlContentFieldId}", dlContentFieldId.toString()) + String.format("/%s", result.getId())))
+        return ResponseEntity.created(new URI(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST.replace("{dlContentFieldId}", dlContentFieldId.toString()) + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
-    @PutMapping
+    @PutMapping(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST)
     public ResponseEntity<DlContentFieldItemDTO> updateDlContentFieldItem(@PathVariable("dlContentFieldId") Long dlContentFieldId,
                                                                           @RequestBody DlContentFieldItemDTO dlContentFieldItemDTO) throws URISyntaxException {
         log.debug("REST request to update DlContentFieldItemDTO : {}", dlContentFieldItemDTO);
@@ -64,26 +59,26 @@ public class DlContentFieldItemResource {
                 .body(result);
     }
 
-    @GetMapping
+    @GetMapping(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST)
     public ResponseEntity<List<DlContentFieldItemDTO>> getAllDlContentFieldItems(@PathVariable("dlContentFieldId") Long dlContentFieldId,
                                                                                  @RequestParam(value = "parentId", required = false) Long parentId,
                                                                                  Pageable pageable) {
         log.debug("REST request to get a page of DlContentFieldDTO");
         Page<DlContentFieldItemDTO> page = dlContentFieldItemService.findAll(pageable, dlContentFieldId, parentId);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_CONTENT_FIELD_ITEMS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.DlContentFields.DlContentFieldItem.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DlContentFieldItemDTO> getDlContentFieldItem(@PathVariable Long id) {
-        log.debug("REST request to get DlContentFieldItemDTO : {}", id);
+    @GetMapping(AdminRestRouter.DlContentFields.DlContentFieldItem.DETAIL)
+    public ResponseEntity<DlContentFieldItemDTO> getDlContentFieldItem(@PathVariable Long dlContentFieldId, @PathVariable Long id) {
+        log.debug("REST request to get DlContentFieldItemDTO : {}, belonging to DlContentField id: {}", id, dlContentFieldId);
         DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemService.findOne(id, null);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlContentFieldItemDTO));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDlContentFieldItem(@PathVariable Long id) {
-        log.debug("REST request to delete DlContentFieldDTO : {}", id);
+    @DeleteMapping(AdminRestRouter.DlContentFields.DlContentFieldItem.DETAIL)
+    public ResponseEntity<Void> deleteDlContentFieldItem(@PathVariable Long dlContentFieldId, @PathVariable Long id) {
+        log.debug("REST request to delete DlContentFieldDTO : {}, belonging to DlContentField id: {}", id, dlContentFieldId);
         dlContentFieldItemService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
