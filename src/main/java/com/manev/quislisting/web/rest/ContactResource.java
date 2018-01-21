@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_CONTACTS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_CONTACTS;
 
 @RestController
 @RequestMapping(RESOURCE_API_CONTACTS)

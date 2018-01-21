@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_EMAIL_TEMPLATE;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_EMAIL_TEMPLATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

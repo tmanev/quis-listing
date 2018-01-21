@@ -1,6 +1,6 @@
 package com.manev.quislisting.web.rest;
 
-public final class Constants {
+public final class RestRouter {
 
     private static final String RESOURCE_API_BASE = "/api";
     private static final String RESOURCE_PUBLIC = "/public";
@@ -70,7 +70,7 @@ public final class Constants {
         }
     }
 
-    private Constants() {
+    private RestRouter() {
     }
 
 }

@@ -57,7 +57,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_DL_LISTINGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LOCATIONS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_DL_LOCATIONS;
 
 @RestController
 @RequestMapping(RESOURCE_API_DL_LOCATIONS)

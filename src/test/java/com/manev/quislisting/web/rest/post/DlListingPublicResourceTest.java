@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_PUBLIC_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_LISTINGS;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

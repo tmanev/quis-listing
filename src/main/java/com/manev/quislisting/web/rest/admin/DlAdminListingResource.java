@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_DL_LISTINGS;
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_DL_LISTINGS;
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_DL_LISTINGS)

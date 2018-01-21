@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_NAV_MENUS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_NAV_MENUS;
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_NAV_MENUS)

@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.Rest.DlContentFieldGroup.BASE;
+import static com.manev.quislisting.web.rest.RestRouter.Rest.DlContentFieldGroup.BASE;
 
 @RestController
 @RequestMapping(BASE)

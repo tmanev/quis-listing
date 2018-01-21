@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.ADD;
-import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.BASE;
-import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.EDIT;
-import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.PREVIEW;
-import static com.manev.quislisting.web.rest.Constants.Mvc.MyListings.PUBLISH_REQUEST_SUCCESS;
+import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.ADD;
+import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.BASE;
+import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.EDIT;
+import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.PREVIEW;
+import static com.manev.quislisting.web.rest.RestRouter.Mvc.MyListings.PUBLISH_REQUEST_SUCCESS;
 
 @Controller
 public class MyListingsController extends BaseController {

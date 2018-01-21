@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_CONFIG;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_QL_CONFIG;
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_QL_CONFIG)

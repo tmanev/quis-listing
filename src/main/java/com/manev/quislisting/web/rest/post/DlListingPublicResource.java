@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_PUBLIC_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_LISTINGS;
 
 @RestController
 @RequestMapping(RESOURCE_API_PUBLIC_DL_LISTINGS)

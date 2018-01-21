@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_EMAIL_TEMPLATE;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_EMAIL_TEMPLATE;
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 @RestController

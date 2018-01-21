@@ -25,7 +25,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_QL_CONFIG;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_QL_CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

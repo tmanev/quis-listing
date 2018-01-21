@@ -26,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.PostConstruct;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_PUBLIC_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_LISTINGS;
 
 @Configuration
 @EnableWebSecurity

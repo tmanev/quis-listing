@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.Constants.RESOURCE_API_ADMIN_LANGUAGES;
+import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_LANGUAGES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
