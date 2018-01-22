@@ -7,6 +7,7 @@ import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
+import com.manev.quislisting.web.rest.RestRouter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,10 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_DL_LISTINGS;
-
 @RestController
-@RequestMapping(RESOURCE_API_DL_LISTINGS)
 public class DlListingResource {
 
     private static final String ENTITY_NAME = "DlListing";
@@ -59,8 +54,7 @@ public class DlListingResource {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(RestRouter.DlListing.LIST)
     public ResponseEntity<DlListingDTO> createDlListing(@RequestBody DlListingDTO dlListingDTO,
                                                         HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to save DlListingDTO : {}", dlListingDTO);
@@ -69,12 +63,12 @@ public class DlListingResource {
         }
         String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
         DlListingDTO result = dlListingService.save(dlListingDTO, languageCode);
-        return ResponseEntity.created(new URI(RESOURCE_API_DL_LISTINGS + String.format("/%s", result.getId())))
+        return ResponseEntity.created(new URI(RestRouter.DlListing.LIST + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
-    @PutMapping
+    @PutMapping(RestRouter.DlListing.LIST)
     public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO,
                                                         HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
@@ -89,8 +83,7 @@ public class DlListingResource {
                 .body(result);
     }
 
-    @RequestMapping(path = "/publish", method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(RestRouter.DlListing.PUBLISH)
     public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO, HttpServletRequest request) {
         log.debug("REST request to publish DlListingDTO : {}", dlListingDTO);
         if (dlListingDTO.getId() == null) {
@@ -106,7 +99,7 @@ public class DlListingResource {
                 .body(result);
     }
 
-    @PostMapping(value = "/{id}/upload", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(RestRouter.DlListing.UPLOAD)
     public ResponseEntity<List<AttachmentDTO>> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException {
 
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
@@ -116,7 +109,7 @@ public class DlListingResource {
         return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping
+    @GetMapping(RestRouter.DlListing.LIST)
     public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable,
                                                              @RequestParam Map<String, String> allRequestParams,
                                                              HttpServletRequest request) {
@@ -132,11 +125,11 @@ public class DlListingResource {
         }
 
         Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode, oneByLogin.get());
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_DL_LISTINGS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlListing.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(RestRouter.DlListing.DETAIL)
     public ResponseEntity<DlListingDTO> getDlListing(@PathVariable Long id, HttpServletRequest request) {
         log.debug("REST request to get DlListingDTO : {}", id);
         String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
@@ -144,14 +137,14 @@ public class DlListingResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlListingDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(RestRouter.DlListing.DETAIL)
     public ResponseEntity<Void> deleteDlListing(@PathVariable Long id) {
         log.debug("REST request to delete DlListingDTO : {}", id);
         dlListingService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    @DeleteMapping("/{id}/attachments/{attachmentId}")
+    @DeleteMapping(RestRouter.DlListing.ATTACHMENT_DETAIL)
     public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) {
         log.debug("REST request to delete attachment with id : {} in DlListingDTO : {}", attachmentId, id);
         DlListingDTO result = dlListingService.deleteDlListingAttachment(id, attachmentId);
@@ -160,7 +153,7 @@ public class DlListingResource {
                 .body(result);
     }
 
-    @GetMapping("/active-languages")
+    @GetMapping(RestRouter.DlListing.ACTIVE_LANGUAGES)
     public List<ActiveLanguageDTO> getActiveLanguages() {
         log.debug("REST request to retrieve active languages for dlCategories : {}");
         return dlListingService.findAllActiveLanguages();

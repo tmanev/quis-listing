@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_CONTENT_FIELDS;
+import static com.manev.quislisting.web.rest.RestRouter.DL_CONTENT_FIELDS;
 
 @RestController
-@RequestMapping(RESOURCE_API_PUBLIC_DL_CONTENT_FIELDS)
+@RequestMapping(DL_CONTENT_FIELDS)
 public class DlContentFieldsPublicResource {
 
     private final LocaleResolver localeResolver;

@@ -18,10 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Locale;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_CONTACTS;
-
 @RestController
-@RequestMapping(RESOURCE_API_CONTACTS)
+@RequestMapping(RestRouter.CONTACTS)
 public class ContactResource {
 
     private final Logger log = LoggerFactory.getLogger(ContactResource.class);

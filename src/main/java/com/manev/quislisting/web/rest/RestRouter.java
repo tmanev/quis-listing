@@ -2,12 +2,14 @@ package com.manev.quislisting.web.rest;
 
 public final class RestRouter {
 
+    public static final String DL_CONTENT_FIELDS = "/api/dl-content-fields";
+    public static final String FRONT_PAGE_DL_LISTINGS = "/api/fp-dl-listings";
+    public static final String CONTACTS = "/api/contacts";
+
     private static final String RESOURCE_API_BASE = "/api";
-    private static final String RESOURCE_PUBLIC = "/public";
 
     private static final String RESOURCE_ADMIN = "/admin";
 
-    public static final String RESOURCE_API_ADMIN_CONTENT_FIELD_GROUPS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/content-field-groups";
     public static final String RESOURCE_API_ADMIN_DL_CATEGORIES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-categories";
     public static final String RESOURCE_API_ADMIN_DL_LOCATIONS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-locations";
     public static final String RESOURCE_API_ADMIN_NAV_MENUS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/nav-menus";
@@ -17,19 +19,20 @@ public final class RestRouter {
     public static final String RESOURCE_API_ADMIN_QL_STRINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-strings";
     public static final String RESOURCE_API_ADMIN_QL_PAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-pages";
 
-    public static final String RESOURCE_API_CONTACTS = RESOURCE_API_BASE + "/contacts";
-    public static final String RESOURCE_API_PUBLIC_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_PUBLIC + "/dl-listings";
-    public static final String RESOURCE_API_PUBLIC_DL_CONTENT_FIELDS = RESOURCE_API_BASE + RESOURCE_PUBLIC + "/dl-content-fields";
-    public static final String RESOURCE_API_DL_LISTINGS = RESOURCE_API_BASE + "/dl-listings";
-    public static final String RESOURCE_API_ADMIN_DL_LISTINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-listings";
+
     public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";
 
-    public class Rest {
+    public class DlListing {
 
-        private Rest() {
-            // private constructor
+        public static final String LIST = "/api/dl-listings";
+        public static final String DETAIL = "/api/dl-listings/{id}";
+        public static final String ATTACHMENT_DETAIL = "/api/dl-listings/{id}/attachments/{attachmentId}";
+        public static final String PUBLISH = "/api/dl-listings/publish";
+        public static final String UPLOAD = "/api/dl-listings/{id}/upload";
+        public static final String ACTIVE_LANGUAGES = "/api/dl-listings/active-languages";
+
+        private DlListing() {
         }
-
     }
 
     private RestRouter() {

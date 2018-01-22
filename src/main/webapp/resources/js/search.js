@@ -61,7 +61,7 @@ Search = {
                     //         categoryId: this.selectedCategoryId
                     //     };
                     //     this.$http({
-                    //         url: '/api/public/dl-content-fields/',
+                    //         url: '/api/dl-content-fields',
                     //         method: 'GET',
                     //         params: params
                     //     }).then(function (response) {

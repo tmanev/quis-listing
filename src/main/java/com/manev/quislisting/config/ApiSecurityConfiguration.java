@@ -26,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.PostConstruct;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.FRONT_PAGE_DL_LISTINGS;
 
 @Configuration
 @EnableWebSecurity
@@ -121,7 +121,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/account/reset_password/finish").permitAll()
                 .antMatchers("/api/profile-info").permitAll()
                 .antMatchers("/api/contacts").permitAll()
-                .antMatchers(RESOURCE_API_PUBLIC_DL_LISTINGS+"/**").permitAll()
+                .antMatchers(FRONT_PAGE_DL_LISTINGS +"/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and()
             .apply(securityConfigurerAdapter());

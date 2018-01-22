@@ -27,6 +27,7 @@ import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import com.manev.quislisting.web.rest.GenericResourceTest;
+import com.manev.quislisting.web.rest.RestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
@@ -57,7 +58,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_DL_LISTINGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -141,7 +141,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         DlListing dlListing = dlListingTestComponent.createDlListing(dlCategoryTestComponent.initCategory("en"));
 
         // Get all the navMenus
-        ResultActions resultActions = restDlListingMockMvc.perform(get(RESOURCE_API_DL_LISTINGS + "?sort=id,desc&languageCode=en"));
+        ResultActions resultActions = restDlListingMockMvc.perform(get(RestRouter.DlListing.LIST + "?sort=id,desc&languageCode=en"));
         resultActions.andDo(MockMvcResultHandlers.print());
         resultActions
                 .andExpect(status().isOk())
@@ -171,7 +171,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                     add(new DlContentFieldInput(dlPhoneCF, "+123 456 555"));
                 }});
 
-        restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS)
+        restDlListingMockMvc.perform(post(RestRouter.DlListing.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated());
@@ -239,7 +239,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         createdDlListingDTO.addDlListingField(new DlListingFieldDTO().id(dlPhoneCF.getId()).value("+123 456 666"));
 
         // make the put request for updating the listing
-        restDlListingMockMvc.perform(put(RESOURCE_API_DL_LISTINGS)
+        restDlListingMockMvc.perform(put(RestRouter.DlListing.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(createdDlListingDTO)))
                 .andExpect(status().isOk());
@@ -282,7 +282,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         dlListingDTO.setTitle(DlListingTestComponent.DEFAULT_TITLE);
         dlListingDTO.setLanguageCode(DlListingTestComponent.DEFAULT_LANGUAGE_CODE);
 
-        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS)
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RestRouter.DlListing.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated())
@@ -297,7 +297,7 @@ public class DlListingResourceTest extends GenericResourceTest {
                 DlListingDTO.class);
 
         // make the put request for updating the listing
-        restDlListingMockMvc.perform(put(RESOURCE_API_DL_LISTINGS + "/publish")
+        restDlListingMockMvc.perform(put(RestRouter.DlListing.PUBLISH)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(createdDlListingDTO)))
                 .andExpect(status().isOk());
@@ -316,12 +316,12 @@ public class DlListingResourceTest extends GenericResourceTest {
         dlListingDTO.setTitle(DlListingTestComponent.DEFAULT_TITLE);
         dlListingDTO.setLanguageCode(DlListingTestComponent.DEFAULT_LANGUAGE_CODE);
 
-        MvcResult mvcResult = restDlListingMockMvc.perform(post(RESOURCE_API_DL_LISTINGS)
+        MvcResult mvcResult = restDlListingMockMvc.perform(post(RestRouter.DlListing.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
                 .andExpect(status().isCreated())
                 .andReturn();
-        // make da asserts
+        // make the asserts
         List<DlListing> dlListingList = dlListingRepository.findAll();
         assertThat(dlListingList).hasSize(databaseSizeBeforeCreate + 1);
 
@@ -336,7 +336,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         AttachmentDTO attachmentDTO = uploadedAttachmentDTOs[0];
 
         // test removal of attachments
-        MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RESOURCE_API_DL_LISTINGS + "/" + createdDlListingDTO.getId() + "/attachments/" + attachmentDTO.getId())
+        MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RestRouter.DlListing.ATTACHMENT_DETAIL, createdDlListingDTO.getId(), attachmentDTO.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -356,7 +356,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         MockMultipartFile multipartFile =
                 new MockMultipartFile("files[]", imageFile.getName(), contentType, new FileInputStream(imageFile));
 
-        ResultActions resultActions = this.restDlListingMockMvc.perform(fileUpload(RESOURCE_API_DL_LISTINGS + "/" + id + "/upload")
+        ResultActions resultActions = this.restDlListingMockMvc.perform(fileUpload(RestRouter.DlListing.UPLOAD, id)
                 .file(multipartFile))
                 .andExpect(status().isOk());
         // test get call to verify the resource
@@ -389,7 +389,7 @@ public class DlListingResourceTest extends GenericResourceTest {
         languageRepository.saveAndFlush(lanRu);
 
         // Get active languages
-        restDlListingMockMvc.perform(get(RESOURCE_API_DL_LISTINGS + "/active-languages"))
+        restDlListingMockMvc.perform(get(RestRouter.DlListing.ACTIVE_LANGUAGES))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))

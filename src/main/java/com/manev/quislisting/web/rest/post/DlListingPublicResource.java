@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.FRONT_PAGE_DL_LISTINGS;
 
 @RestController
-@RequestMapping(RESOURCE_API_PUBLIC_DL_LISTINGS)
+@RequestMapping(FRONT_PAGE_DL_LISTINGS)
 public class DlListingPublicResource {
 
     private final Logger log = LoggerFactory.getLogger(DlListingPublicResource.class);
@@ -52,7 +52,7 @@ public class DlListingPublicResource {
         String language = locale.getLanguage();
         log.debug("Language from cookie: {}", language);
         Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, language);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_PUBLIC_DL_LISTINGS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, FRONT_PAGE_DL_LISTINGS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -70,7 +70,7 @@ public class DlListingPublicResource {
         }
 
         Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search");
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, FRONT_PAGE_DL_LISTINGS + "/_search");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

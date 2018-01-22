@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_PUBLIC_DL_LISTINGS;
+import static com.manev.quislisting.web.rest.RestRouter.FRONT_PAGE_DL_LISTINGS;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -95,7 +95,7 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
         dlListingSearchFilter.setLanguageCode("en");
 
         String query = TestUtil.convertObjectToJsonString(dlListingSearchFilter);
-        mockMvc.perform(get(RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")))
+        mockMvc.perform(get(FRONT_PAGE_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(savedDlListingDTO.getId().intValue())))
@@ -154,7 +154,7 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
         dlListingSearchFilterEN.setLanguageCode("en");
 
         String query = TestUtil.convertObjectToJsonString(dlListingSearchFilterEN);
-        ResultActions perform = mockMvc.perform(get(RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")));
+        ResultActions perform = mockMvc.perform(get(FRONT_PAGE_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")));
         System.out.println(perform.andReturn().getResponse().getContentAsString());
         perform
                 .andExpect(status().isOk())
@@ -169,7 +169,7 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
         dlListingSearchFilterBG.setLanguageCode("bg");
 
         String queryBG = TestUtil.convertObjectToJsonString(dlListingSearchFilterBG);
-        mockMvc.perform(get(RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(queryBG, "UTF-8")))
+        mockMvc.perform(get(FRONT_PAGE_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(queryBG, "UTF-8")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[0].id").value(savedDlListing3.getId().intValue()))
@@ -198,7 +198,7 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
         dlListingSearchFilter.setLanguageCode("en");
 
         String query = TestUtil.convertObjectToJsonString(dlListingSearchFilter);
-        ResultActions perform = mockMvc.perform(get(RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")));
+        ResultActions perform = mockMvc.perform(get(FRONT_PAGE_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")));
         System.out.println(perform.andReturn().getResponse().getContentAsString());
         perform
                 .andExpect(status().isOk())
@@ -238,7 +238,7 @@ public class DlListingPublicResourceTest extends GenericResourceTest {
         dlListingSearchFilter.setLanguageCode("en");
 
         String query = TestUtil.convertObjectToJsonString(dlListingSearchFilter);
-        ResultActions perform = mockMvc.perform(get(RESOURCE_API_PUBLIC_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")));
+        ResultActions perform = mockMvc.perform(get(FRONT_PAGE_DL_LISTINGS + "/_search?query=" + URLEncoder.encode(query, "UTF-8")));
         System.out.println(perform.andReturn().getResponse().getContentAsString());
         perform
                 .andExpect(status().isOk())

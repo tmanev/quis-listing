@@ -12,7 +12,7 @@ LandingPage = {
                     itemsPerPage: 12,
                     totalDlListings: totalDlListings,
                     loadedDlListings: loadedDlListings,
-                    url: '/api/public/dl-listings',
+                    url: '/api/fp-dl-listings',
                     isLoading: false
                 },
                 dlListings: []
