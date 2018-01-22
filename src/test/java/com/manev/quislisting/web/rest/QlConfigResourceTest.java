@@ -22,13 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_QL_CONFIG;
 import static org.assertj.core.api.Assertions.assertThat;
-
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by Стефан on 05.04.2017.
@@ -96,7 +97,7 @@ public class QlConfigResourceTest {
 
         QlConfigDTO qlConfigDTO = qlConfigMapper.qlConfigToQlConfigDTO(qlConfig);
 
-        restQlConfigMockMvc.perform(post(RESOURCE_API_ADMIN_QL_CONFIG)
+        restQlConfigMockMvc.perform(post(AdminRestRouter.QlConfig.LIST)
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(qlConfigDTO)))
                 .andExpect(status().isCreated());
@@ -118,7 +119,7 @@ public class QlConfigResourceTest {
 
         qlConfigRepository.saveAndFlush(qlConfig);
 
-        restQlConfigMockMvc.perform(get(RESOURCE_API_ADMIN_QL_CONFIG + "/{id}",
+        restQlConfigMockMvc.perform(get(AdminRestRouter.QlConfig.DETAIL,
                 qlConfig.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -131,7 +132,7 @@ public class QlConfigResourceTest {
     @Test
     @Transactional
     public void getNonExistingQlConfig() throws Exception{
-        restQlConfigMockMvc.perform(get(RESOURCE_API_ADMIN_QL_CONFIG + "/{id}", Long.MAX_VALUE))
+        restQlConfigMockMvc.perform(get(AdminRestRouter.QlConfig.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -149,7 +150,7 @@ public class QlConfigResourceTest {
 
         QlConfigDTO updateQlConfigDTO = qlConfigMapper.qlConfigToQlConfigDTO(updatedQlConfig);
 
-        restQlConfigMockMvc.perform(put(RESOURCE_API_ADMIN_QL_CONFIG)
+        restQlConfigMockMvc.perform(put(AdminRestRouter.QlConfig.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(updateQlConfigDTO)))
                 .andExpect(status().isOk());
@@ -171,7 +172,7 @@ public class QlConfigResourceTest {
 
         QlConfigDTO qlConfigDTO = qlConfigMapper.qlConfigToQlConfigDTO(qlConfig);
 
-        restQlConfigMockMvc.perform(put(RESOURCE_API_ADMIN_QL_CONFIG)
+        restQlConfigMockMvc.perform(put(AdminRestRouter.QlConfig.LIST)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(qlConfigDTO)))
             .andExpect(status().isCreated());
@@ -188,7 +189,7 @@ public class QlConfigResourceTest {
         qlConfigRepository.saveAndFlush(qlConfig);
         int databaseBeforeDelete = qlConfigRepository.findAll().size();
 
-        restQlConfigMockMvc.perform(delete(RESOURCE_API_ADMIN_QL_CONFIG + "/{id}",
+        restQlConfigMockMvc.perform(delete(AdminRestRouter.QlConfig.DETAIL,
                 qlConfig.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
