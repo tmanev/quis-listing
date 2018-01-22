@@ -18,4 +18,14 @@ public class AdminRestRouter {
         }
     }
 
+    public class DlContentFieldGroup {
+
+        private DlContentFieldGroup() {
+            // private constructor
+        }
+
+        public static final String LIST = "/api/admin/dl-content-field-groups";
+        public static final String DETAIL = "/api/admin/dl-content-field-groups/{id}";
+
+    }
 }

@@ -6,7 +6,7 @@ import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
-import com.manev.quislisting.web.rest.DlContentFieldResourceTest;
+import com.manev.quislisting.web.rest.admin.DlContentFieldResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

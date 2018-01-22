@@ -1,7 +1,8 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResource;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;

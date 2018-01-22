@@ -30,15 +30,6 @@ public final class RestRouter {
             // private constructor
         }
 
-        public class DlContentFieldGroup {
-
-            private DlContentFieldGroup() {
-                // private constructor
-            }
-
-            public static final String BASE = "/api/admin/dl-content-field-groups";
-
-        }
     }
 
     private RestRouter() {

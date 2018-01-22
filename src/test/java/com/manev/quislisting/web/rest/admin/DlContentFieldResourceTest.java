@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.DlContentField;
@@ -12,6 +12,8 @@ import com.manev.quislisting.service.DlContentFieldService;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldMapper;
 import com.manev.quislisting.service.util.SlugUtil;
+import com.manev.quislisting.web.rest.AdminRestRouter;
+import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -199,7 +202,7 @@ public class DlContentFieldResourceTest {
         // Create the DlContentField
         DlContentFieldDTO dlContentFieldDTO = dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null);
 
-        restDlContentFieldMockMvc.perform(post(AdminRestRouter.DlContentFields.LIST)
+        restDlContentFieldMockMvc.perform(MockMvcRequestBuilders.post(AdminRestRouter.DlContentFields.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldDTO)))
                 .andExpect(status().isCreated());

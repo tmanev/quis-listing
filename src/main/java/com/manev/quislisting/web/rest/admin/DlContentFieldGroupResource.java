@@ -1,7 +1,8 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.service.DlContentFieldGroupService;
 import com.manev.quislisting.service.dto.DlContentFieldGroupDTO;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.taxonomy.DlCategoryResource;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
@@ -12,15 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -28,10 +27,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.Rest.DlContentFieldGroup.BASE;
-
 @RestController
-@RequestMapping(BASE)
 public class DlContentFieldGroupResource {
 
     private static final String ENTITY_NAME = "DlContentField";
@@ -43,8 +39,7 @@ public class DlContentFieldGroupResource {
         this.dlContentFieldGroupService = dlContentFieldGroupService;
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(AdminRestRouter.DlContentFieldGroup.LIST)
     public ResponseEntity<DlContentFieldGroupDTO> createDlContentFieldGroup(@RequestBody DlContentFieldGroupDTO dlContentFieldGroupDTO) throws URISyntaxException {
         log.debug("REST request to save DlContentFieldGroupDTO : {}", dlContentFieldGroupDTO);
         if (dlContentFieldGroupDTO.getId() != null) {
@@ -52,12 +47,12 @@ public class DlContentFieldGroupResource {
         }
 
         DlContentFieldGroupDTO result = dlContentFieldGroupService.save(dlContentFieldGroupDTO);
-        return ResponseEntity.created(new URI(BASE + String.format("/%s", result.getId())))
+        return ResponseEntity.created(new URI(AdminRestRouter.DlContentFieldGroup.LIST + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
-    @PutMapping
+    @PutMapping(AdminRestRouter.DlContentFieldGroup.LIST)
     public ResponseEntity<DlContentFieldGroupDTO> updateDlContentFieldGroup(@RequestBody DlContentFieldGroupDTO dlContentFieldGroupDTO) throws URISyntaxException {
         log.debug("REST request to update DlContentFieldGroupDTO : {}", dlContentFieldGroupDTO);
         if (dlContentFieldGroupDTO.getId() == null) {
@@ -69,22 +64,22 @@ public class DlContentFieldGroupResource {
                 .body(result);
     }
 
-    @GetMapping
+    @GetMapping(AdminRestRouter.DlContentFieldGroup.LIST)
     public ResponseEntity<List<DlContentFieldGroupDTO>> getAllDlContentFieldGroups(Pageable pageable) {
         log.debug("REST request to get a page of DlContentFieldGroupDTO");
         Page<DlContentFieldGroupDTO> page = dlContentFieldGroupService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, BASE);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.DlContentFieldGroup.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(AdminRestRouter.DlContentFieldGroup.DETAIL)
     public ResponseEntity<DlContentFieldGroupDTO> getDlContentFieldGroup(@PathVariable Long id) {
         log.debug("REST request to get DlContentFieldGroupDTO : {}", id);
         DlContentFieldGroupDTO dlContentFieldGroupDTO = dlContentFieldGroupService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlContentFieldGroupDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(AdminRestRouter.DlContentFieldGroup.DETAIL)
     public ResponseEntity<Void> deleteDlContentFieldGroup(@PathVariable Long id) {
         log.debug("REST request to delete DlContentFieldGroupDTO : {}", id);
         dlContentFieldGroupService.delete(id);

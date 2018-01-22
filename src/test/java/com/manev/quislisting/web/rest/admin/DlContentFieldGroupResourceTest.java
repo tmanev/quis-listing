@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.DlContentFieldGroup;
@@ -6,6 +6,8 @@ import com.manev.quislisting.repository.DlContentFieldGroupRepository;
 import com.manev.quislisting.service.DlContentFieldGroupService;
 import com.manev.quislisting.service.dto.DlContentFieldGroupDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
+import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.Rest.DlContentFieldGroup.BASE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -96,7 +97,7 @@ public class DlContentFieldGroupResourceTest {
 
         DlContentFieldGroupDTO dlContentFieldGroupDTO = dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentFieldGroup);
 
-        mockMvc.perform(post(BASE)
+        mockMvc.perform(post(AdminRestRouter.DlContentFieldGroup.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldGroupDTO)))
                 .andExpect(status().isCreated());
@@ -122,7 +123,7 @@ public class DlContentFieldGroupResourceTest {
         DlContentFieldGroupDTO existingDlContentFieldGroupDTO = dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentFieldGroup);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        mockMvc.perform(post(BASE)
+        mockMvc.perform(post(AdminRestRouter.DlContentFieldGroup.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingDlContentFieldGroupDTO)))
                 .andExpect(status().isBadRequest());
@@ -139,7 +140,7 @@ public class DlContentFieldGroupResourceTest {
         dlContentFieldGroupRepository.saveAndFlush(dlContentFieldGroup);
 
         // Get the DlContentFieldGroup
-        mockMvc.perform(get(BASE + "/{id}",
+        mockMvc.perform(get(AdminRestRouter.DlContentFieldGroup.DETAIL,
                 dlContentFieldGroup.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -155,7 +156,7 @@ public class DlContentFieldGroupResourceTest {
     @Transactional
     public void getNonExistingDlContentFieldGroup() throws Exception {
         // Get non existing DlContentFieldGroup
-        mockMvc.perform(get(BASE + "/{id}", Long.MAX_VALUE))
+        mockMvc.perform(get(AdminRestRouter.DlContentFieldGroup.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -175,7 +176,7 @@ public class DlContentFieldGroupResourceTest {
 
         DlContentFieldGroupDTO updateContentFieldDTO = dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(updatedDlContentFieldGroup);
 
-        mockMvc.perform(put(BASE)
+        mockMvc.perform(put(AdminRestRouter.DlContentFieldGroup.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(updateContentFieldDTO)))
                 .andExpect(status().isOk());
@@ -200,7 +201,7 @@ public class DlContentFieldGroupResourceTest {
         DlContentFieldGroupDTO dlContentFieldGroupDTO = dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentFieldGroup);
 
         // If the entity does not have an ID, it will be created instead of just being updated
-        mockMvc.perform(put(BASE)
+        mockMvc.perform(put(AdminRestRouter.DlContentFieldGroup.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlContentFieldGroupDTO)))
                 .andExpect(status().isCreated());
@@ -218,7 +219,7 @@ public class DlContentFieldGroupResourceTest {
         int databaseSizeBeforeDelete = dlContentFieldGroupRepository.findAll().size();
 
         // Delete the DlContentFieldGroup
-        mockMvc.perform(delete(BASE + "/{id}",
+        mockMvc.perform(delete(AdminRestRouter.DlContentFieldGroup.DETAIL,
                 dlContentFieldGroup.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
