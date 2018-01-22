@@ -4,6 +4,7 @@ import com.manev.quislisting.security.Http401UnauthorizedEntryPoint;
 import com.manev.quislisting.security.jwt.JWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.GeoLocationService;
+import com.manev.quislisting.web.rest.RestRouter;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +26,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.PostConstruct;
-
-import static com.manev.quislisting.web.rest.RestRouter.FRONT_PAGE_DL_LISTINGS;
 
 @Configuration
 @EnableWebSecurity
@@ -80,7 +79,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
             .antMatchers(HttpMethod.OPTIONS, "/**")
             .antMatchers("/app/**/*.{js,html}")
@@ -121,7 +120,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/account/reset_password/finish").permitAll()
                 .antMatchers("/api/profile-info").permitAll()
                 .antMatchers("/api/contacts").permitAll()
-                .antMatchers(FRONT_PAGE_DL_LISTINGS +"/**").permitAll()
+                .antMatchers(RestRouter.DlListing.RECENT +"/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and()
             .apply(securityConfigurerAdapter());

@@ -1,5 +1,6 @@
 package com.manev.quislisting.web.rest.post;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UserService;
@@ -8,9 +9,11 @@ import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.web.rest.RestRouter;
+import com.manev.quislisting.web.rest.post.filter.DlListingSearchFilter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -34,7 +37,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -157,5 +162,37 @@ public class DlListingResource {
     public List<ActiveLanguageDTO> getActiveLanguages() {
         log.debug("REST request to retrieve active languages for dlCategories : {}");
         return dlListingService.findAllActiveLanguages();
+    }
+
+    @GetMapping(RestRouter.DlListing.RECENT)
+    public ResponseEntity<List<DlListingDTO>> getRecentListings(Pageable pageable,
+                                                                @RequestParam Map<String, String> allRequestParams,
+                                                                HttpServletRequest request) {
+        log.debug("REST request to get a page of DlListingDTO");
+
+        Locale locale = localeResolver.resolveLocale(request);
+        String language = locale.getLanguage();
+        log.debug("Language from cookie: {}", language);
+        Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, language);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlListing.RECENT);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping(RestRouter.DlListing.SEARCH)
+    public ResponseEntity<List<DlListingDTO>> searchListings(@RequestParam String query, @ApiParam Pageable pageable,
+                                                             HttpServletRequest request) throws IOException {
+        log.debug("REST request to search for a page of Books for query {}", query);
+        String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
+
+        ObjectMapper mapper = new ObjectMapper();
+        DlListingSearchFilter dlListingSearchFilter = mapper.readValue(URLDecoder.decode(query, "UTF-8"), DlListingSearchFilter.class);
+
+        if (dlListingSearchFilter.getLanguageCode() == null) {
+            dlListingSearchFilter.setLanguageCode(languageCode);
+        }
+
+        Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RestRouter.DlListing.SEARCH);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

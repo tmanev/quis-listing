@@ -3,7 +3,7 @@ package com.manev.quislisting.web.rest;
 public final class RestRouter {
 
     public static final String DL_CONTENT_FIELDS = "/api/dl-content-fields";
-    public static final String FRONT_PAGE_DL_LISTINGS = "/api/fp-dl-listings";
+
     public static final String CONTACTS = "/api/contacts";
 
     private static final String RESOURCE_API_BASE = "/api";
@@ -30,6 +30,8 @@ public final class RestRouter {
         public static final String PUBLISH = "/api/dl-listings/publish";
         public static final String UPLOAD = "/api/dl-listings/{id}/upload";
         public static final String ACTIVE_LANGUAGES = "/api/dl-listings/active-languages";
+        public static final String RECENT = "/api/dl-listings/recent";
+        public static final String SEARCH = "/api/dl-listings/_search";
 
         private DlListing() {
         }
