@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.QlConfig;
@@ -6,6 +6,8 @@ import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.dto.QlConfigDTO;
 import com.manev.quislisting.service.mapper.QlConfigMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
+import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,7 +100,7 @@ public class QlConfigResourceTest {
 
         QlConfigDTO qlConfigDTO = qlConfigMapper.qlConfigToQlConfigDTO(qlConfig);
 
-        restQlConfigMockMvc.perform(post(AdminRestRouter.QlConfig.LIST)
+        restQlConfigMockMvc.perform(MockMvcRequestBuilders.post(AdminRestRouter.QlConfig.LIST)
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(qlConfigDTO)))
                 .andExpect(status().isCreated());
