@@ -2,6 +2,17 @@ package com.manev.quislisting.web.rest;
 
 public class AdminRestRouter {
 
+    public class DlCategory {
+        private DlCategory() {
+        }
+
+        public static final String LIST = "/api/admin/dl-categories";
+        public static final String DETAIL = "/api/admin/dl-categories/{id}";
+        public static final String DETAIL_BY_TRANSLATION = "/api/admin/dl-categories/by-translation/{id}";
+        public static final String BIND_CATEGORIES = "/api/admin/dl-categories/bind-categories";
+        public static final String ACTIVE_LANGUAGES = "/api/admin/dl-categories/active-languages";
+    }
+
     public class StaticPage {
         public static final String LIST = "/api/admin/ql-pages";
         public static final String DETAIL = "/api/admin/ql-pages/{id}";

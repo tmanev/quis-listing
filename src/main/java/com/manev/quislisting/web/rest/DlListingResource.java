@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.post;
+package com.manev.quislisting.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.User;
@@ -8,8 +8,8 @@ import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
-import com.manev.quislisting.web.rest.RestRouter;
-import com.manev.quislisting.web.rest.post.filter.DlListingSearchFilter;
+import com.manev.quislisting.web.rest.util.LanguageUtil;
+import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;

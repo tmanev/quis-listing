@@ -3,7 +3,6 @@ package com.manev.quislisting.web.rest.admin;
 import com.manev.quislisting.service.DlContentFieldGroupService;
 import com.manev.quislisting.service.dto.DlContentFieldGroupDTO;
 import com.manev.quislisting.web.rest.AdminRestRouter;
-import com.manev.quislisting.web.rest.taxonomy.DlCategoryResource;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -32,7 +31,7 @@ public class DlContentFieldGroupAdminRest {
 
     private static final String ENTITY_NAME = "DlContentField";
 
-    private final Logger log = LoggerFactory.getLogger(DlCategoryResource.class);
+    private final Logger log = LoggerFactory.getLogger(DlCategoryAdminRest.class);
     private final DlContentFieldGroupService dlContentFieldGroupService;
 
     public DlContentFieldGroupAdminRest(DlContentFieldGroupService dlContentFieldGroupService) {

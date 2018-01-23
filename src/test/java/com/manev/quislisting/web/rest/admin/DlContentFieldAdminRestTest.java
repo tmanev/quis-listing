@@ -14,7 +14,6 @@ import com.manev.quislisting.service.mapper.DlContentFieldMapper;
 import com.manev.quislisting.service.util.SlugUtil;
 import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -180,8 +179,8 @@ public class DlContentFieldAdminRestTest {
         dlContentField = createEntity();
 
         dlCategoryRepository.deleteAllByParent(null);
-        dlCategory = DlCategoryResourceIntTest.createEntity("en");
-        dlCategory2 = DlCategoryResourceIntTest.createEntity2();
+        dlCategory = DlCategoryAdminRestIntTest.createEntity("en");
+        dlCategory2 = DlCategoryAdminRestIntTest.createEntity2();
         dlContentFieldGroup = DlContentFieldGroupAdminRestTest.createEntity();
     }
 

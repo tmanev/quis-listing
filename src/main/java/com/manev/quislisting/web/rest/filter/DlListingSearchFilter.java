@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.post.filter;
+package com.manev.quislisting.web.rest.filter;
 
 import java.util.List;
 

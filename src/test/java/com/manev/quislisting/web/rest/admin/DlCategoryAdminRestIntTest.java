@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.taxonomy;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
@@ -11,6 +11,7 @@ import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,16 +30,20 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_CATEGORIES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlCategoryResourceIntTest {
+public class DlCategoryAdminRestIntTest {
 
     public static final String DEFAULT_NAME = "DEFAULT_NAME";
     public static final String DEFAULT_SLUG = "DEFAULT_SLUG";
@@ -111,7 +116,7 @@ public class DlCategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlCategoryResource dlCategoryResource = new DlCategoryResource(dlCategoryService);
+        DlCategoryAdminRest dlCategoryResource = new DlCategoryAdminRest(dlCategoryService);
         this.restDlCategoryMockMvc = MockMvcBuilders.standaloneSetup(dlCategoryResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
@@ -132,7 +137,7 @@ public class DlCategoryResourceIntTest {
         // Create the DlCategory
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
 
-        restDlCategoryMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(post(AdminRestRouter.DlCategory.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlCategoryDTO)))
                 .andExpect(status().isCreated());
@@ -159,7 +164,7 @@ public class DlCategoryResourceIntTest {
         DlCategoryDTO existingDlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restDlCategoryMockMvc.perform(post(RESOURCE_API_ADMIN_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(post(AdminRestRouter.DlCategory.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingDlCategoryDTO)))
                 .andExpect(status().isBadRequest());
@@ -176,7 +181,7 @@ public class DlCategoryResourceIntTest {
         dlCategoryRepository.saveAndFlush(dlCategory);
 
         // Get all the dlCategories
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "?sort=id,desc&languageCode=en"))
+        restDlCategoryMockMvc.perform(get(AdminRestRouter.DlCategory.LIST + "?sort=id,desc&languageCode=en"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlCategory.getId().intValue())))
@@ -193,7 +198,7 @@ public class DlCategoryResourceIntTest {
         dlCategoryRepository.saveAndFlush(dlCategory);
 
         // Get the DlCategory
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId()))
+        restDlCategoryMockMvc.perform(get(AdminRestRouter.DlCategory.DETAIL, dlCategory.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))
@@ -210,7 +215,7 @@ public class DlCategoryResourceIntTest {
         dlCategoryRepository.saveAndFlush(dlCategory);
 
         // Get the DlCategory
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/by-translation/{id}", dlCategory.getTranslation().getId()))
+        restDlCategoryMockMvc.perform(get(AdminRestRouter.DlCategory.DETAIL_BY_TRANSLATION, dlCategory.getTranslation().getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlCategory.getId().intValue()))
@@ -224,7 +229,7 @@ public class DlCategoryResourceIntTest {
     @Transactional
     public void getNonExistingDlCategory() throws Exception {
         // Get the dlCategory
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", Long.MAX_VALUE))
+        restDlCategoryMockMvc.perform(get(AdminRestRouter.DlCategory.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -246,7 +251,7 @@ public class DlCategoryResourceIntTest {
         updatedDlCategory.setCount(UPDATED_COUNT);
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(updatedDlCategory);
 
-        restDlCategoryMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(put(AdminRestRouter.DlCategory.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlCategoryDTO)))
                 .andExpect(status().isOk());
@@ -271,7 +276,7 @@ public class DlCategoryResourceIntTest {
         DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restDlCategoryMockMvc.perform(put(RESOURCE_API_ADMIN_DL_CATEGORIES)
+        restDlCategoryMockMvc.perform(put(AdminRestRouter.DlCategory.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlCategoryDTO)))
                 .andExpect(status().isCreated());
@@ -289,7 +294,7 @@ public class DlCategoryResourceIntTest {
         int databaseSizeBeforeDelete = dlCategoryRepository.findAll().size();
 
         // Delete the dlCategory
-        restDlCategoryMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_CATEGORIES + "/{id}", dlCategory.getId())
+        restDlCategoryMockMvc.perform(delete(AdminRestRouter.DlCategory.DETAIL, dlCategory.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -314,7 +319,7 @@ public class DlCategoryResourceIntTest {
         languageRepository.saveAndFlush(lanRu);
 
         // Get active languages
-        restDlCategoryMockMvc.perform(get(RESOURCE_API_ADMIN_DL_CATEGORIES + "/active-languages"))
+        restDlCategoryMockMvc.perform(get(AdminRestRouter.DlCategory.ACTIVE_LANGUAGES))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))

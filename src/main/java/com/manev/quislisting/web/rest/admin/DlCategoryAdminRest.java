@@ -1,8 +1,9 @@
-package com.manev.quislisting.web.rest.taxonomy;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -13,9 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,24 +30,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_CATEGORIES;
 import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_LOCATIONS;
 
 @RestController
-@RequestMapping(RESOURCE_API_ADMIN_DL_CATEGORIES)
-public class DlCategoryResource {
+public class DlCategoryAdminRest {
 
     private static final String ENTITY_NAME = "DlCategory";
 
-    private final Logger log = LoggerFactory.getLogger(DlCategoryResource.class);
+    private final Logger log = LoggerFactory.getLogger(DlCategoryAdminRest.class);
     private final DlCategoryService dlCategoryService;
 
-    public DlCategoryResource(DlCategoryService dlCategoryService) {
+    public DlCategoryAdminRest(DlCategoryService dlCategoryService) {
         this.dlCategoryService = dlCategoryService;
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(AdminRestRouter.DlCategory.LIST)
     public ResponseEntity<DlCategoryDTO> createDlCategory(@RequestBody DlCategoryDTO dlCategoryDTO) throws URISyntaxException {
         log.debug("REST request to save DlCategoryDTO : {}", dlCategoryDTO);
         if (dlCategoryDTO.getId() != null) {
@@ -53,7 +57,7 @@ public class DlCategoryResource {
                 .body(result);
     }
 
-    @PutMapping
+    @PutMapping(AdminRestRouter.DlCategory.LIST)
     public ResponseEntity<DlCategoryDTO> updateDlCategory(@RequestBody DlCategoryDTO dlCategoryDTO) throws URISyntaxException {
         log.debug("REST request to update DlCategoryDTO : {}", dlCategoryDTO);
         if (dlCategoryDTO.getId() == null) {
@@ -65,7 +69,7 @@ public class DlCategoryResource {
                 .body(result);
     }
 
-    @GetMapping
+    @GetMapping(AdminRestRouter.DlCategory.LIST)
     public ResponseEntity<List<DlCategoryDTO>> getAllDlCategories(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of DlCategoryDTO");
         Page<DlCategoryDTO> page = dlCategoryService.findAll(pageable, allRequestParams);
@@ -73,34 +77,34 @@ public class DlCategoryResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(AdminRestRouter.DlCategory.DETAIL)
     public ResponseEntity<DlCategoryDTO> getDlCategory(@PathVariable Long id) {
         log.debug("REST request to get DlCategoryDTO : {}", id);
         DlCategoryDTO dlCategoryDTO = dlCategoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlCategoryDTO));
     }
 
-    @GetMapping("/by-translation/{id}")
+    @GetMapping(AdminRestRouter.DlCategory.DETAIL_BY_TRANSLATION)
     public ResponseEntity<DlCategoryDTO> getDlCategoryByTranslationId(@PathVariable Long id) {
         log.debug("REST request to get DlCategoryDTO by translation id : {}", id);
         DlCategoryDTO dlCategoryDTO = dlCategoryService.findOneByTranslationId(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlCategoryDTO));
     }
 
-    @PostMapping("/bind-categories")
+    @PostMapping(AdminRestRouter.DlCategory.BIND_CATEGORIES)
     public ResponseEntity<Void> bindDlCategories(@RequestBody BindDlTermTaxonomyVM bindDlTermTaxonomyVM) {
         dlCategoryService.bindDlCategories(bindDlTermTaxonomyVM.getSourceId(), bindDlTermTaxonomyVM.getTargetId());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(AdminRestRouter.DlCategory.DETAIL)
     public ResponseEntity<Void> deleteDlCategory(@PathVariable Long id) {
         log.debug("REST request to delete DlCategoryDTO : {}", id);
         dlCategoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    @GetMapping("/active-languages")
+    @GetMapping(AdminRestRouter.DlCategory.ACTIVE_LANGUAGES)
     public List<ActiveLanguageDTO> getActiveLanguages() {
         log.debug("REST request to retrieve active languages for dlCategories : {}");
         return dlCategoryService.findAllActiveLanguages();

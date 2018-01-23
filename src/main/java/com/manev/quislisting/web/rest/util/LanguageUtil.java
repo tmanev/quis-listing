@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.post;
+package com.manev.quislisting.web.rest.util;
 
 import org.springframework.web.servlet.LocaleResolver;
 

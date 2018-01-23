@@ -27,12 +27,13 @@ import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
+import com.manev.quislisting.web.rest.DlListingResource;
 import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.RestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.post.filter.DlContentFieldFilter;
-import com.manev.quislisting.web.rest.post.filter.DlListingSearchFilter;
-import com.manev.quislisting.web.rest.taxonomy.DlCategoryResourceIntTest;
+import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
+import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
+import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestIntTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -157,8 +158,8 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DlListingTestComponent.DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DlListingTestComponent.DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].status").value(hasItem(DlListingTestComponent.DEFAULT_STATUS.toString())))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryResourceIntTest.DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryResourceIntTest.DEFAULT_SLUG)));
+                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryAdminRestIntTest.DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryAdminRestIntTest.DEFAULT_SLUG)));
     }
 
     @Test
