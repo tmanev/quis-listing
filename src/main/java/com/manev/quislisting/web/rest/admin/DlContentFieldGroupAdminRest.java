@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class DlContentFieldGroupResource {
+public class DlContentFieldGroupAdminRest {
 
     private static final String ENTITY_NAME = "DlContentField";
 
     private final Logger log = LoggerFactory.getLogger(DlCategoryResource.class);
     private final DlContentFieldGroupService dlContentFieldGroupService;
 
-    public DlContentFieldGroupResource(DlContentFieldGroupService dlContentFieldGroupService) {
+    public DlContentFieldGroupAdminRest(DlContentFieldGroupService dlContentFieldGroupService) {
         this.dlContentFieldGroupService = dlContentFieldGroupService;
     }
 

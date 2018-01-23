@@ -33,13 +33,13 @@ import java.util.Optional;
  * REST controller for managing Language.
  */
 @RestController
-public class LanguageResource {
+public class LanguageAdminRest {
 
     private static final String ENTITY_NAME = "language";
-    private final Logger log = LoggerFactory.getLogger(LanguageResource.class);
+    private final Logger log = LoggerFactory.getLogger(LanguageAdminRest.class);
     private final LanguageService languageService;
 
-    public LanguageResource(LanguageService languageService) {
+    public LanguageAdminRest(LanguageService languageService) {
         this.languageService = languageService;
     }
 

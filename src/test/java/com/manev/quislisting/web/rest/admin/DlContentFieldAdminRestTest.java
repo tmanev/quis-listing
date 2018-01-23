@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlContentFieldResourceTest {
+public class DlContentFieldAdminRestTest {
 
     private static final boolean DEFAULT_CORE_FIELD = true;
     private static final int DEFAULT_ORDER_NUM = 0;
@@ -167,7 +167,7 @@ public class DlContentFieldResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlContentFieldResource dlContentFieldResource = new DlContentFieldResource(dlContentFieldService);
+        DlContentFieldAdminRest dlContentFieldResource = new DlContentFieldAdminRest(dlContentFieldService);
         this.restDlContentFieldMockMvc = MockMvcBuilders.standaloneSetup(dlContentFieldResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter)
@@ -182,7 +182,7 @@ public class DlContentFieldResourceTest {
         dlCategoryRepository.deleteAllByParent(null);
         dlCategory = DlCategoryResourceIntTest.createEntity("en");
         dlCategory2 = DlCategoryResourceIntTest.createEntity2();
-        dlContentFieldGroup = DlContentFieldGroupResourceTest.createEntity();
+        dlContentFieldGroup = DlContentFieldGroupAdminRestTest.createEntity();
     }
 
     @Test

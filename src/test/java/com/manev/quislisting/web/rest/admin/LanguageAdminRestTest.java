@@ -6,7 +6,6 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.admin.LanguageResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class LanguageResourceTest {
+public class LanguageAdminRestTest {
 
     private static final String DEFAULT_CODE = "AAAAAA";
     private static final String UPDATED_CODE = "BBBBBB";
@@ -87,7 +86,7 @@ public class LanguageResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        LanguageResource languageResource = new LanguageResource(languageService);
+        LanguageAdminRest languageResource = new LanguageAdminRest(languageService);
         this.restLanguageMockMvc = MockMvcBuilders.standaloneSetup(languageResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();

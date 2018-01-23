@@ -27,14 +27,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class QlConfigResource {
+public class QlConfigAdminRest {
 
     private static final String ENTITY_NAME = "QlConfig";
 
-    private final Logger log = LoggerFactory.getLogger(QlConfigResource.class);
+    private final Logger log = LoggerFactory.getLogger(QlConfigAdminRest.class);
     private final QlConfigService qlConfigService;
 
-    public QlConfigResource(QlConfigService qlConfigService) {
+    public QlConfigAdminRest(QlConfigService qlConfigService) {
         this.qlConfigService = qlConfigService;
     }
 

@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class QlStringResource {
+public class QlStringAdminRest {
 
     private static final String ENTITY_NAME = "qlString";
-    private final Logger log = LoggerFactory.getLogger(QlStringResource.class);
+    private final Logger log = LoggerFactory.getLogger(QlStringAdminRest.class);
     private final QlStringService qlStringService;
 
-    public QlStringResource(QlStringService qlStringService) {
+    public QlStringAdminRest(QlStringService qlStringService) {
         this.qlStringService = qlStringService;
     }
 

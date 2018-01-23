@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class QlConfigResourceTest {
+public class QlConfigAdminRestTest {
 
     public static final String DEFAULT_KEY = "DEFAULT_KEY";
     public static final String DEFAULT_NAME = "DEFAULT_NAME";
@@ -85,7 +85,7 @@ public class QlConfigResourceTest {
     @Before
     public void setup(){
         MockitoAnnotations.initMocks(this);
-        QlConfigResource qlConfigResource = new QlConfigResource(qlConfigService);
+        QlConfigAdminRest qlConfigResource = new QlConfigAdminRest(qlConfigService);
         this.restQlConfigMockMvc = MockMvcBuilders.standaloneSetup(qlConfigResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter)

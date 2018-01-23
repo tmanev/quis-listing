@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class EmailTemplateResourceTest {
+public class EmailTemplateAdminRestTest {
 
     private static final String DEFAULT_NAME = "Default_Name";
     private static final String DEFAULT_TEXT = "Default_Text";
@@ -73,7 +73,7 @@ public class EmailTemplateResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        EmailTemplateResource emailTemplateResource = new EmailTemplateResource(emailTemplateService);
+        EmailTemplateAdminRest emailTemplateResource = new EmailTemplateAdminRest(emailTemplateService);
         this.restEmailNotificationMockMvc = MockMvcBuilders.standaloneSetup(emailTemplateResource)
                 .setCustomArgumentResolvers(pageableHandlerMethodArgumentResolver)
                 .setMessageConverters(jackson2HttpMessageConverter)

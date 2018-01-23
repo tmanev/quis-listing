@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlContentFieldItemResourceTest {
+public class DlContentFieldItemAdminRestTest {
 
     private static final String DEFAULT_VALUE = "DEFAULT_VALUE";
     private static final String UPDATE_VALUE = "UPDATE_VALUE";
@@ -66,7 +66,7 @@ public class DlContentFieldItemResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlContentFieldItemResource dlContentFieldItemResource = new DlContentFieldItemResource(dlContentFieldItemService);
+        DlContentFieldItemAdminRest dlContentFieldItemResource = new DlContentFieldItemAdminRest(dlContentFieldItemService);
         this.restDlContentFieldItemMockMvc = MockMvcBuilders.standaloneSetup(dlContentFieldItemResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter)
@@ -90,7 +90,7 @@ public class DlContentFieldItemResourceTest {
     public void createDlContentFieldItem() throws Exception {
         int databaseSizeBeforeCreate = dlContentFieldItemRepository.findAll().size();
 
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.save(dlContentField);
 
         DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
@@ -112,7 +112,7 @@ public class DlContentFieldItemResourceTest {
     public void createDlContentFieldWithExistingId() throws Exception {
         int databaseSizeBeforeCreate = dlContentFieldItemRepository.findAll().size();
 
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.save(dlContentField);
 
         DlContentFieldItem existingDlContentFieldItem = new DlContentFieldItem();
@@ -132,7 +132,7 @@ public class DlContentFieldItemResourceTest {
     @Test
     @Transactional
     public void getDlContentFieldItem() throws Exception {
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.save(dlContentField);
 
         dlContentFieldItem.setDlContentField(dlContentField);
@@ -149,7 +149,7 @@ public class DlContentFieldItemResourceTest {
     @Test
     @Transactional
     public void getNonExistingDlContentFieldItem() throws Exception {
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.save(dlContentField);
 
         restDlContentFieldItemMockMvc.perform(get(AdminRestRouter.DlContentFields.DlContentFieldItem.DETAIL, dlContentField.getId(), Long.MAX_VALUE))
@@ -159,7 +159,7 @@ public class DlContentFieldItemResourceTest {
     @Test
     @Transactional
     public void updateDlContentFieldItem() throws Exception {
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         dlContentFieldItem.setDlContentField(dlContentField);
@@ -190,7 +190,7 @@ public class DlContentFieldItemResourceTest {
     public void updateNonExistingDlContentFieldItem() throws Exception {
         int databaseSizeBeforeUpdate = dlContentFieldItemRepository.findAll().size();
 
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         DlContentFieldItemDTO dlContentFieldItemDTO = dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
@@ -206,7 +206,7 @@ public class DlContentFieldItemResourceTest {
     @Test
     @Transactional
     public void deleteContentFieldItem() throws Exception {
-        DlContentField dlContentField = DlContentFieldResourceTest.createEntity();
+        DlContentField dlContentField = DlContentFieldAdminRestTest.createEntity();
         dlContentFieldRepository.saveAndFlush(dlContentField);
 
         dlContentFieldItem.setDlContentField(dlContentField);

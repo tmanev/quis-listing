@@ -30,12 +30,12 @@ import java.util.Optional;
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 @RestController
-public class EmailTemplateResource {
+public class EmailTemplateAdminRest {
 
     private final Logger log = LoggerFactory.getLogger(EmailTemplateRepository.class);
     private final EmailTemplateService emailTemplateService;
 
-    public EmailTemplateResource(EmailTemplateService emailTemplateService) {
+    public EmailTemplateAdminRest(EmailTemplateService emailTemplateService) {
         this.emailTemplateService = emailTemplateService;
     }
 

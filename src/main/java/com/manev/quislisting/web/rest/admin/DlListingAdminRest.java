@@ -36,15 +36,15 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-public class DlAdminListingResource {
+public class DlListingAdminRest {
 
     private static final String ENTITY_NAME = "DlListing";
 
-    private final Logger log = LoggerFactory.getLogger(DlAdminListingResource.class);
+    private final Logger log = LoggerFactory.getLogger(DlListingAdminRest.class);
     private final DlListingService dlListingService;
     private final DlListingRebuildService dlListingRebuildService;
 
-    public DlAdminListingResource(DlListingService dlListingService, DlListingRebuildService dlListingRebuildService) {
+    public DlListingAdminRest(DlListingService dlListingService, DlListingRebuildService dlListingRebuildService) {
         this.dlListingService = dlListingService;
         this.dlListingRebuildService = dlListingRebuildService;
     }

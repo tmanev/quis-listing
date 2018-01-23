@@ -36,14 +36,14 @@ import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_LO
 
 @RestController
 @RequestMapping(RESOURCE_API_ADMIN_DL_LOCATIONS)
-public class DlAdminLocationResource {
+public class DlLocationAdminRest {
 
     private static final String ENTITY_NAME = "DlLocation";
 
-    private final Logger log = LoggerFactory.getLogger(DlAdminLocationResource.class);
+    private final Logger log = LoggerFactory.getLogger(DlLocationAdminRest.class);
     private final DlLocationService dlLocationService;
 
-    public DlAdminLocationResource(DlLocationService dlLocationService) {
+    public DlLocationAdminRest(DlLocationService dlLocationService) {
         this.dlLocationService = dlLocationService;
     }
 

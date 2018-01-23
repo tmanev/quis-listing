@@ -12,7 +12,7 @@ import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.admin.DlAdminLocationResource;
+import com.manev.quislisting.web.rest.admin.DlLocationAdminRest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,7 +111,7 @@ public class DlLocationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlAdminLocationResource dlAdminLocationResource = new DlAdminLocationResource(dlLocationService);
+        DlLocationAdminRest dlAdminLocationResource = new DlLocationAdminRest(dlLocationService);
         this.restDlLocationMockMvc = MockMvcBuilders.standaloneSetup(dlAdminLocationResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();

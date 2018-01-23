@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlContentFieldGroupResourceTest {
+public class DlContentFieldGroupAdminRestTest {
 
     private static final int DEFAULT_ORDER_NUM = 0;
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
@@ -78,7 +78,7 @@ public class DlContentFieldGroupResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlContentFieldGroupResource dlContentFieldGroupResource = new DlContentFieldGroupResource(dlContentFieldGroupService);
+        DlContentFieldGroupAdminRest dlContentFieldGroupResource = new DlContentFieldGroupAdminRest(dlContentFieldGroupService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(dlContentFieldGroupResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter)

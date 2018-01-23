@@ -7,7 +7,6 @@ import com.manev.quislisting.repository.qlml.QlStringRepository;
 import com.manev.quislisting.service.qlml.QlStringService;
 import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.admin.QlStringResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class QlStringResourceTest {
+public class QlStringAdminRestTest {
 
 
     private static final String DEFAULT_LCODE = "en";
@@ -75,7 +74,7 @@ public class QlStringResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        QlStringResource qlStringResource = new QlStringResource(qlStringService);
+        QlStringAdminRest qlStringResource = new QlStringAdminRest(qlStringService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(qlStringResource)
                 .setCustomArgumentResolvers(pageableHandlerMethodArgumentResolver)
                 .setMessageConverters(jackson2HttpMessageConverter)

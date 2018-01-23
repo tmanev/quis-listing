@@ -6,7 +6,7 @@ import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
-import com.manev.quislisting.web.rest.admin.DlContentFieldResourceTest;
+import com.manev.quislisting.web.rest.admin.DlContentFieldAdminRestTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,14 +25,14 @@ public class DlContentFieldTestComponent {
     private DlContentFieldItemService dlContentFieldItemService;
 
     public DlContentField createNumberField(DlCategory dlCategory, String name) {
-        DlContentField numberContentField = DlContentFieldResourceTest.createField(DlContentField.Type.NUMBER, name, 1,
+        DlContentField numberContentField = DlContentFieldAdminRestTest.createField(DlContentField.Type.NUMBER, name, 1,
                 Collections.singleton(dlCategory));
         numberContentField.qlString(createQlString(numberContentField, DlContentField.Type.NUMBER));
         return dlContentFieldRepository.saveAndFlush(numberContentField);
     }
 
     public DlContentField createStringField(DlCategory dlCategory, String name) {
-        DlContentField stringContentField = DlContentFieldResourceTest.createField(DlContentField.Type.STRING, name, 1,
+        DlContentField stringContentField = DlContentFieldAdminRestTest.createField(DlContentField.Type.STRING, name, 1,
                 Collections.singleton(dlCategory));
         stringContentField.qlString(createQlString(stringContentField, DlContentField.Type.STRING));
         return dlContentFieldRepository.saveAndFlush(stringContentField);
@@ -48,7 +48,7 @@ public class DlContentFieldTestComponent {
     }
 
     public DlContentField createSelectField(DlCategory dlCategory, String name, List<String> items) {
-        DlContentField selectContentField = DlContentFieldResourceTest.createField(DlContentField.Type.SELECT, name, 1,
+        DlContentField selectContentField = DlContentFieldAdminRestTest.createField(DlContentField.Type.SELECT, name, 1,
                 Collections.singleton(dlCategory));
         selectContentField.qlString(createQlString(selectContentField, DlContentField.Type.SELECT));
 

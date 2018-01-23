@@ -23,14 +23,14 @@ import java.util.Optional;
 
 
 @RestController
-public class DlContentFieldResource {
+public class DlContentFieldAdminRest {
 
     private static final String ENTITY_NAME = "DlContentField";
 
     private final Logger log = LoggerFactory.getLogger(DlCategoryResource.class);
     private final DlContentFieldService dlContentFieldService;
 
-    public DlContentFieldResource(DlContentFieldService dlContentFieldService) {
+    public DlContentFieldAdminRest(DlContentFieldService dlContentFieldService) {
         this.dlContentFieldService = dlContentFieldService;
     }
 
