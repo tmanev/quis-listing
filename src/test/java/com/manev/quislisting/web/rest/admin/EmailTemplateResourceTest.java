@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.EmailTemplate;
@@ -8,6 +8,8 @@ import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.service.EmailTemplateService;
 import com.manev.quislisting.service.dto.EmailTemplateDTO;
 import com.manev.quislisting.service.mapper.EmailTemplateMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
+import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,16 +21,21 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_EMAIL_TEMPLATE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
@@ -87,7 +94,7 @@ public class EmailTemplateResourceTest {
         setDefaultQlString(emailTemplate);
 
         EmailTemplateDTO emailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplate);
-        restEmailNotificationMockMvc.perform(post(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
+        restEmailNotificationMockMvc.perform(MockMvcRequestBuilders.post(AdminRestRouter.EmailTemplate.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(emailTemplateDTO)))
                 .andExpect(status().isCreated());
@@ -109,7 +116,7 @@ public class EmailTemplateResourceTest {
         EmailTemplate emailTemplateSaved = emailTemplateRepository.saveAndFlush(emailTemplate);
         emailTemplateRepository.saveAndFlush(emailTemplateSaved);
 
-        restEmailNotificationMockMvc.perform(get(RESOURCE_API_ADMIN_EMAIL_TEMPLATE + "/{id}",
+        restEmailNotificationMockMvc.perform(get(AdminRestRouter.EmailTemplate.DETAIL,
                 emailTemplateSaved.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -146,7 +153,7 @@ public class EmailTemplateResourceTest {
     @Test
     @Transactional
     public void getNonExistingEmailNotification() throws Exception {
-        restEmailNotificationMockMvc.perform(get(RESOURCE_API_ADMIN_EMAIL_TEMPLATE + "/{id}", Long.MAX_VALUE))
+        restEmailNotificationMockMvc.perform(get(AdminRestRouter.EmailTemplate.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -164,7 +171,7 @@ public class EmailTemplateResourceTest {
         updateEmailTemplate.getQlString().getStringTranslation().iterator().next().setValue(UPDATE_DEFAULT_TEXT_BG);
 
         EmailTemplateDTO updateEmailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(updateEmailTemplate);
-        restEmailNotificationMockMvc.perform(put(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
+        restEmailNotificationMockMvc.perform(put(AdminRestRouter.EmailTemplate.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(updateEmailTemplateDTO)))
                 .andExpect(status().isOk());
@@ -186,7 +193,7 @@ public class EmailTemplateResourceTest {
         setDefaultQlString(emailTemplate);
         int databaseSizeBeforeUpdate = emailTemplateRepository.findAll().size();
         EmailTemplateDTO emailTemplateDTO = emailTemplateMapper.emailTemplateToEmailTemplateDTO(emailTemplate);
-        restEmailNotificationMockMvc.perform(put(RESOURCE_API_ADMIN_EMAIL_TEMPLATE)
+        restEmailNotificationMockMvc.perform(put(AdminRestRouter.EmailTemplate.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(emailTemplateDTO)))
                 .andExpect(status().isCreated());
@@ -203,7 +210,7 @@ public class EmailTemplateResourceTest {
         emailTemplateRepository.saveAndFlush(emailTemplate);
         int databaseSizeBeforeDelete = emailTemplateRepository.findAll().size();
 
-        restEmailNotificationMockMvc.perform(delete(RESOURCE_API_ADMIN_EMAIL_TEMPLATE + "/{id}",
+        restEmailNotificationMockMvc.perform(delete(AdminRestRouter.EmailTemplate.DETAIL,
                 emailTemplate.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
