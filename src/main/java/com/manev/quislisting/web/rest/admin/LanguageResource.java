@@ -1,7 +1,8 @@
-package com.manev.quislisting.web.rest.qlml;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.service.qlml.LanguageService;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -13,7 +14,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,13 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_LANGUAGES;
-
 /**
  * REST controller for managing Language.
  */
 @RestController
-@RequestMapping(RESOURCE_API_ADMIN_LANGUAGES)
 public class LanguageResource {
 
     private static final String ENTITY_NAME = "language";
@@ -45,7 +50,7 @@ public class LanguageResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new language, or with status 400 (Bad Request) if the language has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping
+    @PostMapping(AdminRestRouter.Language.LIST)
     public ResponseEntity<Language> createLanguage(@RequestBody Language language) throws URISyntaxException {
         log.debug("REST request to save Language : {}", language);
         if (language.getId() != null) {
@@ -66,7 +71,7 @@ public class LanguageResource {
      * or with status 500 (Internal Server Error) if the language couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping
+    @PutMapping(AdminRestRouter.Language.LIST)
     public ResponseEntity<Language> updateLanguage(@RequestBody Language language) throws URISyntaxException {
         log.debug("REST request to update Language : {}", language);
         if (language.getId() == null) {
@@ -84,11 +89,11 @@ public class LanguageResource {
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of languages in body
      */
-    @GetMapping
+    @GetMapping(AdminRestRouter.Language.LIST)
     public ResponseEntity<List<Language>> getAllLanguages(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of Languages");
         Page<Language> page = languageService.findAll(pageable, allRequestParams);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_LANGUAGES);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.Language.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -98,7 +103,7 @@ public class LanguageResource {
      * @param id the id of the language to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the language, or with status 404 (Not Found)
      */
-    @GetMapping("/{id}")
+    @GetMapping(AdminRestRouter.Language.DETAIL)
     public ResponseEntity<Language> getLanguage(@PathVariable Long id) {
         log.debug("REST request to get Language : {}", id);
         Language language = languageService.findOne(id);
@@ -111,7 +116,7 @@ public class LanguageResource {
      * @param id the id of the language to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping(AdminRestRouter.Language.DETAIL)
     public ResponseEntity<Void> deleteLanguage(@PathVariable Long id) {
         log.debug("REST request to delete Language : {}", id);
         languageService.delete(id);

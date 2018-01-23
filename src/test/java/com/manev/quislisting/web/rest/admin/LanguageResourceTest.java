@@ -1,10 +1,12 @@
-package com.manev.quislisting.web.rest.qlml;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.qlml.LanguageService;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
+import com.manev.quislisting.web.rest.admin.LanguageResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_LANGUAGES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -102,7 +106,7 @@ public class LanguageResourceTest {
 
         // Create the Language
 
-        restLanguageMockMvc.perform(post(RESOURCE_API_ADMIN_LANGUAGES)
+        restLanguageMockMvc.perform(post(AdminRestRouter.Language.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(language)))
                 .andExpect(status().isCreated());
@@ -127,7 +131,7 @@ public class LanguageResourceTest {
         existingLanguage.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restLanguageMockMvc.perform(post(RESOURCE_API_ADMIN_LANGUAGES)
+        restLanguageMockMvc.perform(post(AdminRestRouter.Language.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingLanguage)))
                 .andExpect(status().isBadRequest());
@@ -144,7 +148,7 @@ public class LanguageResourceTest {
         languageRepository.saveAndFlush(language);
 
         // Get all the languageList
-        restLanguageMockMvc.perform(get(RESOURCE_API_ADMIN_LANGUAGES + "?sort=id,desc"))
+        restLanguageMockMvc.perform(get(AdminRestRouter.Language.LIST + "?sort=id,desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(language.getId().intValue())))
@@ -161,7 +165,7 @@ public class LanguageResourceTest {
         languageRepository.saveAndFlush(language);
 
         // Get the language
-        restLanguageMockMvc.perform(get(RESOURCE_API_ADMIN_LANGUAGES + "/{id}", language.getId()))
+        restLanguageMockMvc.perform(get(AdminRestRouter.Language.DETAIL, language.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(language.getId().intValue()))
@@ -175,7 +179,7 @@ public class LanguageResourceTest {
     @Transactional
     public void getNonExistingLanguage() throws Exception {
         // Get the language
-        restLanguageMockMvc.perform(get(RESOURCE_API_ADMIN_LANGUAGES + "/{id}", Long.MAX_VALUE))
+        restLanguageMockMvc.perform(get(AdminRestRouter.Language.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -195,7 +199,7 @@ public class LanguageResourceTest {
                 .defaultLocale(UPDATED_DEFAULT_LOCALE)
                 .active(UPDATED_ACTIVE);
 
-        restLanguageMockMvc.perform(put(RESOURCE_API_ADMIN_LANGUAGES)
+        restLanguageMockMvc.perform(put(AdminRestRouter.Language.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(updatedLanguage)))
                 .andExpect(status().isOk());
@@ -218,7 +222,7 @@ public class LanguageResourceTest {
         // Create the Language
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restLanguageMockMvc.perform(put(RESOURCE_API_ADMIN_LANGUAGES)
+        restLanguageMockMvc.perform(put(AdminRestRouter.Language.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(language)))
                 .andExpect(status().isCreated());
@@ -237,7 +241,7 @@ public class LanguageResourceTest {
         int databaseSizeBeforeDelete = languageRepository.findAll().size();
 
         // Get the language
-        restLanguageMockMvc.perform(delete(RESOURCE_API_ADMIN_LANGUAGES + "/{id}", language.getId())
+        restLanguageMockMvc.perform(delete(AdminRestRouter.Language.DETAIL, language.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

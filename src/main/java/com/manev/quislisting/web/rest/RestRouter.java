@@ -13,7 +13,6 @@ public final class RestRouter {
     public static final String RESOURCE_API_ADMIN_DL_CATEGORIES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-categories";
     public static final String RESOURCE_API_ADMIN_DL_LOCATIONS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-locations";
     public static final String RESOURCE_API_ADMIN_NAV_MENUS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/nav-menus";
-    public static final String RESOURCE_API_ADMIN_LANGUAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/languages";
     public static final String RESOURCE_API_ADMIN_QL_STRINGS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-strings";
     public static final String RESOURCE_API_ADMIN_QL_PAGES = RESOURCE_API_BASE + RESOURCE_ADMIN + "/ql-pages";
 

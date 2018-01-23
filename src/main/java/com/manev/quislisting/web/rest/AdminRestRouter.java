@@ -2,6 +2,15 @@ package com.manev.quislisting.web.rest;
 
 public class AdminRestRouter {
 
+    public class Language {
+
+        public static final String LIST = "/api/admin/languages";
+        public static final String DETAIL = "/api/admin/languages/{id}";
+
+        private Language() {
+        }
+    }
+
     public class EmailTemplate {
         public static final String LIST = "/api/admin/email-templates";
         public static final String DETAIL = "/api/admin/email-templates/{id}";
