@@ -44,16 +44,16 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-public class DlListingResource {
+public class DlListingRest {
 
     private static final String ENTITY_NAME = "DlListing";
 
-    private final Logger log = LoggerFactory.getLogger(DlListingResource.class);
+    private final Logger log = LoggerFactory.getLogger(DlListingRest.class);
     private final DlListingService dlListingService;
     private final LocaleResolver localeResolver;
     private final UserService userService;
 
-    public DlListingResource(DlListingService dlListingService, LocaleResolver localeResolver, UserService userService) {
+    public DlListingRest(DlListingService dlListingService, LocaleResolver localeResolver, UserService userService) {
         this.dlListingService = dlListingService;
         this.localeResolver = localeResolver;
         this.userService = userService;

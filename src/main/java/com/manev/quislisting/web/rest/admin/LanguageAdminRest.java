@@ -2,7 +2,6 @@ package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.service.qlml.LanguageService;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;

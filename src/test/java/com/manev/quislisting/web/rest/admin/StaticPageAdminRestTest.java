@@ -10,7 +10,6 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.dto.StaticPageDTO;
 import com.manev.quislisting.service.post.mapper.QlStaticPageMapper;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

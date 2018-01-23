@@ -57,10 +57,10 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  */
 @RestController
 @RequestMapping("/api")
-public class UserResource {
+public class UserRest {
 
     private static final String ENTITY_NAME = "userManagement";
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
+    private final Logger log = LoggerFactory.getLogger(UserRest.class);
     private final UserRepository userRepository;
 
     private final MailService mailService;
@@ -69,8 +69,8 @@ public class UserResource {
 
     private final UserSearchRepository userSearchRepository;
 
-    public UserResource(UserRepository userRepository, MailService mailService,
-                        UserService userService, UserSearchRepository userSearchRepository) {
+    public UserRest(UserRepository userRepository, MailService mailService,
+                    UserService userService, UserSearchRepository userSearchRepository) {
 
         this.userRepository = userRepository;
         this.mailService = mailService;

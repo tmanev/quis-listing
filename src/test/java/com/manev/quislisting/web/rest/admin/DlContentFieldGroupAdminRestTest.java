@@ -6,7 +6,6 @@ import com.manev.quislisting.repository.DlContentFieldGroupRepository;
 import com.manev.quislisting.service.DlContentFieldGroupService;
 import com.manev.quislisting.service.dto.DlContentFieldGroupDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

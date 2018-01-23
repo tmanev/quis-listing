@@ -5,7 +5,6 @@ import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.qlml.QlStringRepository;
 import com.manev.quislisting.service.qlml.QlStringService;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

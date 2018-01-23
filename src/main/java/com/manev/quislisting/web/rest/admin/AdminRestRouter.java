@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 public class AdminRestRouter {
 

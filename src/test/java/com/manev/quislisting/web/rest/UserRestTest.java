@@ -26,11 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the UserResource REST controller.
  *
- * @see UserResource
+ * @see UserRest
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class UserResourceIntTest {
+public class UserRestTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -69,7 +69,7 @@ public class UserResourceIntTest {
 
     @Before
     public void setup() {
-        UserResource userResource = new UserResource(userRepository, mailService, userService, userSearchRepository);
+        UserRest userResource = new UserRest(userRepository, mailService, userService, userSearchRepository);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 

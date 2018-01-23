@@ -3,7 +3,6 @@ package com.manev.quislisting.web.rest.admin;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.service.filter.QlStringFilter;
 import com.manev.quislisting.service.qlml.QlStringService;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;

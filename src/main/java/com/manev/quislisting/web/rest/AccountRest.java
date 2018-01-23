@@ -33,9 +33,9 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-public class AccountResource {
+public class AccountRest {
 
-    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+    private final Logger log = LoggerFactory.getLogger(AccountRest.class);
 
     private final UserRepository userRepository;
 
@@ -47,9 +47,9 @@ public class AccountResource {
     private final PasswordEncoder passwordEncoder;
     private LocaleResolver localeResolver;
 
-    public AccountResource(UserRepository userRepository, UserService userService,
-                           EmailSendingService emailSendingService,
-                           MessageSource messageSource, LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
+    public AccountRest(UserRepository userRepository, UserService userService,
+                       EmailSendingService emailSendingService,
+                       MessageSource messageSource, LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
 
         this.userRepository = userRepository;
         this.userService = userService;

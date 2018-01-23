@@ -27,7 +27,7 @@ import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
-import com.manev.quislisting.web.rest.DlListingResource;
+import com.manev.quislisting.web.rest.DlListingRest;
 import com.manev.quislisting.web.rest.GenericResourceTest;
 import com.manev.quislisting.web.rest.RestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
@@ -78,7 +78,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlListingResourceTest extends GenericResourceTest {
+public class DlListingRestTest extends GenericResourceTest {
 
 
     private static final String UPDATE_CONTENT = "UPDATE_CONTENT";
@@ -134,7 +134,7 @@ public class DlListingResourceTest extends GenericResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingResource dlListingResource = new DlListingResource(dlListingService, localeResolver, userService);
+        DlListingRest dlListingResource = new DlListingRest(dlListingService, localeResolver, userService);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();

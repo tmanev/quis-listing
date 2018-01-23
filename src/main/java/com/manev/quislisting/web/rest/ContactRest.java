@@ -19,23 +19,22 @@ import javax.validation.Valid;
 import java.util.Locale;
 
 @RestController
-@RequestMapping(RestRouter.CONTACTS)
-public class ContactResource {
+public class ContactRest {
 
-    private final Logger log = LoggerFactory.getLogger(ContactResource.class);
+    private final Logger log = LoggerFactory.getLogger(ContactRest.class);
     private final EmailSendingService emailSendingService;
 
     private final LocaleResolver localeResolver;
     private final MessageSource messageSource;
 
-    public ContactResource(EmailSendingService emailSendingService, LocaleResolver localeResolver, MessageSource messageSource) {
+    public ContactRest(EmailSendingService emailSendingService, LocaleResolver localeResolver, MessageSource messageSource) {
         this.emailSendingService = emailSendingService;
         this.localeResolver = localeResolver;
         this.messageSource = messageSource;
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = RestRouter.Contact.BASE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createEmailNotification(@Valid @RequestBody ContactDTO contactDTO,
                                                         HttpServletRequest request) {
         log.debug("REST request to sent ContactDTO : {}", contactDTO);

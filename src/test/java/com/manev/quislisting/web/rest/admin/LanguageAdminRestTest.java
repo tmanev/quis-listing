@@ -4,7 +4,6 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.qlml.LanguageService;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

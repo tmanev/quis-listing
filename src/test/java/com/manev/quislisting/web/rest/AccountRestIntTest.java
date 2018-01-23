@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class AccountResourceIntTest {
+public class AccountRestIntTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -81,11 +81,11 @@ public class AccountResourceIntTest {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockEmailSendingService).sendActivationEmail((User) anyObject());
 
-        AccountResource accountResource =
-                new AccountResource(userRepository, userService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+        AccountRest accountResource =
+                new AccountRest(userRepository, userService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
-        AccountResource accountUserMockResource =
-                new AccountResource(userRepository, mockUserService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+        AccountRest accountUserMockResource =
+                new AccountRest(userRepository, mockUserService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();

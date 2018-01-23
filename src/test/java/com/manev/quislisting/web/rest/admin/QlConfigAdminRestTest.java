@@ -6,7 +6,6 @@ import com.manev.quislisting.repository.QlConfigRepository;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.dto.QlConfigDTO;
 import com.manev.quislisting.service.mapper.QlConfigMapper;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

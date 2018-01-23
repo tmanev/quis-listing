@@ -8,7 +8,6 @@ import com.manev.quislisting.repository.EmailTemplateRepository;
 import com.manev.quislisting.service.EmailTemplateService;
 import com.manev.quislisting.service.dto.EmailTemplateDTO;
 import com.manev.quislisting.service.mapper.EmailTemplateMapper;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

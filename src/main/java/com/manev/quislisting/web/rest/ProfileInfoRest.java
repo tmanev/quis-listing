@@ -16,13 +16,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api")
-public class ProfileInfoResource {
+public class ProfileInfoRest {
 
     private final Environment env;
 
     private final QuisListingProperties jHipsterProperties;
 
-    public ProfileInfoResource(Environment env, QuisListingProperties jHipsterProperties) {
+    public ProfileInfoRest(Environment env, QuisListingProperties jHipsterProperties) {
         this.env = env;
         this.jHipsterProperties = jHipsterProperties;
     }

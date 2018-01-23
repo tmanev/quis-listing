@@ -11,7 +11,6 @@ import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
-import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;

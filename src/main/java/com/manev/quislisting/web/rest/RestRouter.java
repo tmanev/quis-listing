@@ -2,7 +2,12 @@ package com.manev.quislisting.web.rest;
 
 public final class RestRouter {
 
-    public static final String CONTACTS = "/api/contacts";
+    public class Contact {
+        public static final String BASE = "/api/contacts";
+
+        private Contact() {
+        }
+    }
 
     public class DlLocation {
 
