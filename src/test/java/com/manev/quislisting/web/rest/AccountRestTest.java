@@ -37,7 +37,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the AccountResource REST controller.
@@ -46,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class AccountRestIntTest {
+public class AccountRestTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -93,7 +95,7 @@ public class AccountRestIntTest {
 
     @Test
     public void testNonAuthenticatedUser() throws Exception {
-        restUserMockMvc.perform(get("/api/authenticate")
+        restUserMockMvc.perform(get(RestRouter.User.AUTHENTICATE)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
@@ -101,7 +103,7 @@ public class AccountRestIntTest {
 
     @Test
     public void testAuthenticatedUser() throws Exception {
-        restUserMockMvc.perform(get("/api/authenticate")
+        restUserMockMvc.perform(get(RestRouter.User.AUTHENTICATE)
                 .with(request -> {
                     request.setRemoteUser("test");
                     return request;
@@ -127,7 +129,7 @@ public class AccountRestIntTest {
         user.setAuthorities(authorities);
         when(mockUserService.getUserWithAuthorities()).thenReturn(user);
 
-        restUserMockMvc.perform(get("/api/account")
+        restUserMockMvc.perform(get(RestRouter.Account.BASE)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -143,7 +145,7 @@ public class AccountRestIntTest {
     public void testGetUnknownAccount() throws Exception {
         when(mockUserService.getUserWithAuthorities()).thenReturn(null);
 
-        restUserMockMvc.perform(get("/api/account")
+        restUserMockMvc.perform(get(RestRouter.Account.BASE)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
@@ -169,7 +171,7 @@ public class AccountRestIntTest {
                 new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(validUser)))
                 .andExpect(status().isCreated());
@@ -199,7 +201,7 @@ public class AccountRestIntTest {
                 new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restUserMockMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
                 .andExpect(status().isBadRequest());
@@ -229,7 +231,7 @@ public class AccountRestIntTest {
                 new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restUserMockMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
                 .andExpect(status().isBadRequest());
@@ -259,7 +261,7 @@ public class AccountRestIntTest {
                 new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)));
 
         restUserMockMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
                 .andExpect(status().isBadRequest());
@@ -295,14 +297,14 @@ public class AccountRestIntTest {
 
         // Good user
         restMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(validUser)))
                 .andExpect(status().isCreated());
 
         // Duplicate login
         restMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
                 .andExpect(status().is4xxClientError());
@@ -338,14 +340,14 @@ public class AccountRestIntTest {
 
         // Good user
         restMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(validUser)))
                 .andExpect(status().isCreated());
 
         // Duplicate e-mail
         restMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
                 .andExpect(status().is4xxClientError());
@@ -375,7 +377,7 @@ public class AccountRestIntTest {
                 new HashSet<>(Arrays.asList(AuthoritiesConstants.ADMIN)));
 
         restMvc.perform(
-                post("/api/register")
+                post(RestRouter.User.REGISTER)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(validUser)))
                 .andExpect(status().isCreated());
@@ -407,7 +409,7 @@ public class AccountRestIntTest {
         );
 
         restUserMockMvc.perform(
-                post("/api/account")
+                post(RestRouter.Account.BASE)
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
                 .andExpect(status().isBadRequest());

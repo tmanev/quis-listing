@@ -2,6 +2,33 @@ package com.manev.quislisting.web.rest;
 
 public final class RestRouter {
 
+    public class Account {
+        public static final String BASE = "/api/account";
+        public static final String CHANGE_PASS = "/api/account/change_password";
+        public static final String RESET_PASS_INIT = "/api/account/reset_password/init";
+        public static final String RESET_PASS_FINISH = "/api/account/reset_password/finish";
+
+        private Account() {
+        }
+    }
+
+    public class User {
+        public static final String REGISTER = "/api/register";
+        public static final String ACTIVATE = "/api/activate";
+        public static final String AUTHENTICATE = "/api/authenticate";
+
+        private User() {
+        }
+    }
+
+    public class Application {
+
+        public static final String PROFILE = "/api/profile-info";
+
+        private Application() {
+        }
+    }
+
     public class Contact {
         public static final String BASE = "/api/contacts";
 

@@ -19,7 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +36,6 @@ import java.util.Optional;
  * REST controller for managing the current user's account.
  */
 @RestController
-@RequestMapping("/api")
 public class AccountRest {
 
     private final Logger log = LoggerFactory.getLogger(AccountRest.class);
@@ -65,7 +68,7 @@ public class AccountRest {
      * @param managedUserVM the managed user View Model
      * @return the ResponseEntity with status 201 (Created) if the user is registered or 400 (Bad Request) if the login or e-mail is already in use
      */
-    @PostMapping(path = "/register",
+    @PostMapping(path = RestRouter.User.REGISTER,
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
 
@@ -94,7 +97,7 @@ public class AccountRest {
      * @param key the activation key
      * @return the ResponseEntity with status 200 (OK) and the activated user in body, or status 500 (Internal Server Error) if the user couldn't be activated
      */
-    @GetMapping("/activate")
+    @GetMapping(RestRouter.User.ACTIVATE)
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
         return userService.activateRegistration(key)
                 .map(user -> new ResponseEntity<String>(HttpStatus.OK))
@@ -107,7 +110,7 @@ public class AccountRest {
      * @param request the HTTP request
      * @return the login if the user is authenticated
      */
-    @GetMapping("/authenticate")
+    @GetMapping(RestRouter.User.AUTHENTICATE)
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
         return request.getRemoteUser();
@@ -118,7 +121,7 @@ public class AccountRest {
      *
      * @return the ResponseEntity with status 200 (OK) and the current user in body, or status 500 (Internal Server Error) if the user couldn't be returned
      */
-    @GetMapping("/account")
+    @GetMapping(RestRouter.Account.BASE)
     public ResponseEntity<UserDTO> getAccount() {
         return Optional.ofNullable(userService.getUserWithAuthorities())
                 .map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
@@ -131,7 +134,7 @@ public class AccountRest {
      * @param userDTO the current user information
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) or 500 (Internal Server Error) if the user couldn't be updated
      */
-    @PostMapping("/account")
+    @PostMapping(RestRouter.Account.BASE)
     public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO, HttpServletRequest request,
                                               HttpServletResponse response) {
         Locale locale = localeResolver.resolveLocale(request);
@@ -157,7 +160,7 @@ public class AccountRest {
      * @param password the new password
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) if the new password is not strong enough
      */
-    @PostMapping(path = "/account/change_password",
+    @PostMapping(path = RestRouter.Account.CHANGE_PASS,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordVM password, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
@@ -186,7 +189,7 @@ public class AccountRest {
      * @param mail the mail of the user
      * @return the ResponseEntity with status 200 (OK) if the e-mail was sent, or status 400 (Bad Request) if the e-mail address is not registered
      */
-    @PostMapping(path = "/account/reset_password/init",
+    @PostMapping(path = RestRouter.Account.RESET_PASS_INIT,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity requestPasswordReset(@RequestBody String mail, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
@@ -207,7 +210,7 @@ public class AccountRest {
      * @return the ResponseEntity with status 200 (OK) if the password has been reset,
      * or status 400 (Bad Request) or 500 (Internal Server Error) if the password could not be reset
      */
-    @PostMapping(path = "/account/reset_password/finish",
+    @PostMapping(path = RestRouter.Account.RESET_PASS_FINISH,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword,
                                                       HttpServletRequest request) {
