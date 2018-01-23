@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.taxonomy;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
@@ -11,8 +11,8 @@ import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.taxonomy.DlLocationService;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
-import com.manev.quislisting.web.rest.admin.DlLocationAdminRest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +30,19 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_LOCATIONS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlLocationResourceIntTest {
+public class DlLocationAdminRestTest {
 
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "DEFAULT_SLUG";
@@ -132,7 +136,7 @@ public class DlLocationResourceIntTest {
         // Create the DlLocation
         DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(dlLocation);
 
-        restDlLocationMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LOCATIONS)
+        restDlLocationMockMvc.perform(post(AdminRestRouter.DlLocation.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlLocationDTO)))
                 .andExpect(status().isCreated());
@@ -159,7 +163,7 @@ public class DlLocationResourceIntTest {
         existingDlLocationDTO.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restDlLocationMockMvc.perform(post(RESOURCE_API_ADMIN_DL_LOCATIONS)
+        restDlLocationMockMvc.perform(post(AdminRestRouter.DlLocation.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingDlLocationDTO)))
                 .andExpect(status().isBadRequest());
@@ -176,7 +180,7 @@ public class DlLocationResourceIntTest {
         dlLocationRepository.saveAndFlush(dlLocation);
 
         // Get all the dlLocations
-        restDlLocationMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LOCATIONS + "?sort=id,desc&languageCode=en"))
+        restDlLocationMockMvc.perform(get(AdminRestRouter.DlLocation.LIST + "?sort=id,desc&languageCode=en"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlLocation.getId().intValue())))
@@ -193,7 +197,7 @@ public class DlLocationResourceIntTest {
         dlLocationRepository.saveAndFlush(dlLocation);
 
         // Get the DlLocation
-        restDlLocationMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LOCATIONS + "/{id}", dlLocation.getId()))
+        restDlLocationMockMvc.perform(get(AdminRestRouter.DlLocation.DETAIL, dlLocation.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(dlLocation.getId().intValue()))
@@ -207,7 +211,7 @@ public class DlLocationResourceIntTest {
     @Transactional
     public void getNonExistingDlLocation() throws Exception {
         // Get the dlLocation
-        restDlLocationMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LOCATIONS + "/{id}", Long.MAX_VALUE))
+        restDlLocationMockMvc.perform(get(AdminRestRouter.DlLocation.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -229,7 +233,7 @@ public class DlLocationResourceIntTest {
         updatedDlLocation.setCount(UPDATED_COUNT);
         DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(updatedDlLocation);
 
-        restDlLocationMockMvc.perform(put(RESOURCE_API_ADMIN_DL_LOCATIONS)
+        restDlLocationMockMvc.perform(put(AdminRestRouter.DlLocation.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlLocationDTO)))
                 .andExpect(status().isOk());
@@ -254,7 +258,7 @@ public class DlLocationResourceIntTest {
         DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(dlLocation);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restDlLocationMockMvc.perform(put(RESOURCE_API_ADMIN_DL_LOCATIONS)
+        restDlLocationMockMvc.perform(put(AdminRestRouter.DlLocation.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dlLocationDTO)))
                 .andExpect(status().isCreated());
@@ -272,7 +276,7 @@ public class DlLocationResourceIntTest {
         int databaseSizeBeforeDelete = dlLocationRepository.findAll().size();
 
         // Get the dlLocation
-        restDlLocationMockMvc.perform(delete(RESOURCE_API_ADMIN_DL_LOCATIONS + "/{id}", dlLocation.getId())
+        restDlLocationMockMvc.perform(delete(AdminRestRouter.DlLocation.DETAIL, dlLocation.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -297,7 +301,7 @@ public class DlLocationResourceIntTest {
         languageRepository.saveAndFlush(lanRu);
 
         // Get active languages
-        restDlLocationMockMvc.perform(get(RESOURCE_API_ADMIN_DL_LOCATIONS + "/active-languages"))
+        restDlLocationMockMvc.perform(get(AdminRestRouter.DlLocation.ACTIVE_LANGUAGES))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))

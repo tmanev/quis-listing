@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_DL_LOCATIONS;
-
 @RestController
 public class DlCategoryAdminRest {
 
@@ -52,7 +50,7 @@ public class DlCategoryAdminRest {
         }
 
         DlCategoryDTO result = dlCategoryService.save(dlCategoryDTO);
-        return ResponseEntity.created(new URI(RESOURCE_API_ADMIN_DL_LOCATIONS + String.format("/%s", result.getId())))
+        return ResponseEntity.created(new URI(AdminRestRouter.DlCategory.LIST + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
@@ -73,7 +71,7 @@ public class DlCategoryAdminRest {
     public ResponseEntity<List<DlCategoryDTO>> getAllDlCategories(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of DlCategoryDTO");
         Page<DlCategoryDTO> page = dlCategoryService.findAll(pageable, allRequestParams);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_DL_LOCATIONS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.DlCategory.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

@@ -179,8 +179,8 @@ public class DlContentFieldAdminRestTest {
         dlContentField = createEntity();
 
         dlCategoryRepository.deleteAllByParent(null);
-        dlCategory = DlCategoryAdminRestIntTest.createEntity("en");
-        dlCategory2 = DlCategoryAdminRestIntTest.createEntity2();
+        dlCategory = DlCategoryAdminRestTest.createEntity("en");
+        dlCategory2 = DlCategoryAdminRestTest.createEntity2();
         dlContentFieldGroup = DlContentFieldGroupAdminRestTest.createEntity();
     }
 

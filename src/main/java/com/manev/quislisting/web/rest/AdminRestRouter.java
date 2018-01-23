@@ -2,6 +2,17 @@ package com.manev.quislisting.web.rest;
 
 public class AdminRestRouter {
 
+    public class DlLocation {
+        private DlLocation() {
+        }
+
+        public static final String LIST = "/api/admin/dl-locations";
+        public static final String DETAIL = "/api/admin/dl-locations/{id}";
+        public static final String DETAIL_BY_TRANSLATION = "/api/admin/dl-locations/by-translation/{id}";
+        public static final String BIND_LOCATIONS = "/api/admin/dl-locations/bind-locations";
+        public static final String ACTIVE_LANGUAGES = "/api/admin/dl-locations/active-languages";
+    }
+
     public class DlCategory {
         private DlCategory() {
         }

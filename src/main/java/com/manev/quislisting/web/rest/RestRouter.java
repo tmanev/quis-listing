@@ -8,7 +8,6 @@ public final class RestRouter {
 
     private static final String RESOURCE_ADMIN = "/admin";
 
-    public static final String RESOURCE_API_ADMIN_DL_LOCATIONS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/dl-locations";
     public static final String RESOURCE_API_ADMIN_NAV_MENUS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/nav-menus";
 
 

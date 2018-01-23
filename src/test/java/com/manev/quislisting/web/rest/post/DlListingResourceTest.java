@@ -33,7 +33,7 @@ import com.manev.quislisting.web.rest.RestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
 import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
-import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestIntTest;
+import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -158,8 +158,8 @@ public class DlListingResourceTest extends GenericResourceTest {
                 .andExpect(jsonPath("$.[*].content").value(hasItem(DlListingTestComponent.DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DlListingTestComponent.DEFAULT_NAME)))
                 .andExpect(jsonPath("$.[*].status").value(hasItem(DlListingTestComponent.DEFAULT_STATUS.toString())))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryAdminRestIntTest.DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryAdminRestIntTest.DEFAULT_SLUG)));
+                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryAdminRestTest.DEFAULT_NAME)))
+                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryAdminRestTest.DEFAULT_SLUG)));
     }
 
     @Test

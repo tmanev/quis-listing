@@ -2,7 +2,7 @@ package com.manev.quislisting.repository.taxonomy;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
-import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestIntTest;
+import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,12 +34,12 @@ public class DlCategoryRepositoryTest {
     @Test
     public void saveDlCategoryTest() {
         int size = dlCategoryRepository.findAll().size();
-        DlCategory dlCategory = DlCategoryAdminRestIntTest.createEntity("en");
+        DlCategory dlCategory = DlCategoryAdminRestTest.createEntity("en");
         DlCategory dlCategorySaved = dlCategoryRepository.saveAndFlush(dlCategory);
         assertEquals(size + 1, dlCategoryRepository.findAll().size());
 
         // save translation
-        DlCategory entity2 = DlCategoryAdminRestIntTest.createEntity2();
+        DlCategory entity2 = DlCategoryAdminRestTest.createEntity2();
         entity2.getTranslation().setTranslationGroup(dlCategorySaved.getTranslation().getTranslationGroup());
         dlCategoryRepository.saveAndFlush(entity2);
         assertEquals(size + 2, dlCategoryRepository.findAll().size());

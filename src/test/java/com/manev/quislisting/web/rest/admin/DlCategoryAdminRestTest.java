@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class DlCategoryAdminRestIntTest {
+public class DlCategoryAdminRestTest {
 
     public static final String DEFAULT_NAME = "DEFAULT_NAME";
     public static final String DEFAULT_SLUG = "DEFAULT_SLUG";
