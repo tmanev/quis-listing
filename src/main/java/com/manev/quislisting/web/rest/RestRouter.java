@@ -4,14 +4,13 @@ public final class RestRouter {
 
     public static final String CONTACTS = "/api/contacts";
 
-    private static final String RESOURCE_API_BASE = "/api";
+    public class DlLocation {
 
-    private static final String RESOURCE_ADMIN = "/admin";
+        public static final String LIST = "/api/dl-locations";
 
-    public static final String RESOURCE_API_ADMIN_NAV_MENUS = RESOURCE_API_BASE + RESOURCE_ADMIN + "/nav-menus";
-
-
-    public static final String RESOURCE_API_DL_LOCATIONS = RESOURCE_API_BASE + "/dl-locations";
+        private DlLocation() {
+        }
+    }
 
     public class DlContentField {
 

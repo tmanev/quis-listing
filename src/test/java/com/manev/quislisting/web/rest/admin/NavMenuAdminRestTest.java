@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.taxonomy;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.TranslationBuilder;
@@ -11,7 +11,9 @@ import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.taxonomy.NavMenuService;
 import com.manev.quislisting.service.taxonomy.dto.NavMenuDTO;
 import com.manev.quislisting.service.taxonomy.mapper.NavMenuMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
+import com.manev.quislisting.web.rest.admin.NavMenuAdminRest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +32,19 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_NAV_MENUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class NavMenuResourceIntTest {
+public class NavMenuAdminRestTest {
 
     private static final String DEFAULT_NAME = "DEFAULT_NAME";
     private static final String DEFAULT_SLUG = "default_name";
@@ -110,7 +116,7 @@ public class NavMenuResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        NavMenuResource navMenuResource = new NavMenuResource(navMenuService);
+        NavMenuAdminRest navMenuResource = new NavMenuAdminRest(navMenuService);
         this.restNavMenuMockMvc = MockMvcBuilders.standaloneSetup(navMenuResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
@@ -130,7 +136,7 @@ public class NavMenuResourceIntTest {
         // Create the NavMenu
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu, createActiveLanguages());
 
-        restNavMenuMockMvc.perform(post(RESOURCE_API_ADMIN_NAV_MENUS)
+        restNavMenuMockMvc.perform(post(AdminRestRouter.NavMenu.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isCreated());
@@ -157,7 +163,7 @@ public class NavMenuResourceIntTest {
         NavMenuDTO existingNavMenuDTO = navMenuMapper.navMenuToNavMenuDTO(existingNavMenu, createActiveLanguages());
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restNavMenuMockMvc.perform(post(RESOURCE_API_ADMIN_NAV_MENUS)
+        restNavMenuMockMvc.perform(post(AdminRestRouter.NavMenu.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(existingNavMenuDTO)))
                 .andExpect(status().isBadRequest());
@@ -174,7 +180,7 @@ public class NavMenuResourceIntTest {
         navMenuRepository.saveAndFlush(navMenu);
 
         // Get all the navMenus
-        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "?sort=id,desc&languageCode=en"))
+        restNavMenuMockMvc.perform(get(AdminRestRouter.NavMenu.LIST + "?sort=id,desc&languageCode=en"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(navMenu.getId().intValue())))
@@ -191,7 +197,7 @@ public class NavMenuResourceIntTest {
         navMenuRepository.saveAndFlush(navMenu);
 
         // Get the NavMenu
-        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/{id}", navMenu.getId()))
+        restNavMenuMockMvc.perform(get(AdminRestRouter.NavMenu.DETAIL, navMenu.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(navMenu.getId().intValue()))
@@ -205,7 +211,7 @@ public class NavMenuResourceIntTest {
     @Transactional
     public void getNonExistingNavMenu() throws Exception {
         // Get the navMenu
-        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/{id}", Long.MAX_VALUE))
+        restNavMenuMockMvc.perform(get(AdminRestRouter.NavMenu.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -226,7 +232,7 @@ public class NavMenuResourceIntTest {
         updatedNavMenu.setCount(UPDATED_COUNT);
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(updatedNavMenu, createActiveLanguages());
 
-        restNavMenuMockMvc.perform(put(RESOURCE_API_ADMIN_NAV_MENUS)
+        restNavMenuMockMvc.perform(put(AdminRestRouter.NavMenu.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isOk());
@@ -250,7 +256,7 @@ public class NavMenuResourceIntTest {
         NavMenuDTO navMenuDTO = navMenuMapper.navMenuToNavMenuDTO(navMenu, createActiveLanguages());
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restNavMenuMockMvc.perform(put(RESOURCE_API_ADMIN_NAV_MENUS)
+        restNavMenuMockMvc.perform(put(AdminRestRouter.NavMenu.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(navMenuDTO)))
                 .andExpect(status().isCreated());
@@ -268,7 +274,7 @@ public class NavMenuResourceIntTest {
         int databaseSizeBeforeDelete = navMenuRepository.findAll().size();
 
         // Get the navMenu
-        restNavMenuMockMvc.perform(delete(RESOURCE_API_ADMIN_NAV_MENUS + "/{id}", navMenu.getId())
+        restNavMenuMockMvc.perform(delete(AdminRestRouter.NavMenu.DETAIL, navMenu.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -289,7 +295,7 @@ public class NavMenuResourceIntTest {
         }
 
         // Get active languages
-        restNavMenuMockMvc.perform(get(RESOURCE_API_ADMIN_NAV_MENUS + "/active-languages"))
+        restNavMenuMockMvc.perform(get(AdminRestRouter.NavMenu.ACTIVE_LANGUAGES))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))

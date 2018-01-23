@@ -2,6 +2,15 @@ package com.manev.quislisting.web.rest;
 
 public class AdminRestRouter {
 
+    public class NavMenu {
+        public static final String LIST = "/api/admin/nav-menus";
+        public static final String DETAIL = "/api/admin/nav-menus/{id}";
+        public static final String ACTIVE_LANGUAGES = "/api/admin/nav-menus/active-languages";
+
+        private NavMenu() {
+        }
+    }
+
     public class DlLocation {
         private DlLocation() {
         }
