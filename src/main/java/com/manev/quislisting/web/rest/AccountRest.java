@@ -3,12 +3,15 @@ package com.manev.quislisting.web.rest;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.security.jwt.JWTConfigurer;
+import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.vm.ChangePasswordVM;
 import com.manev.quislisting.web.rest.vm.KeyAndPasswordVM;
+import com.manev.quislisting.web.rest.vm.LoginVM;
 import com.manev.quislisting.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +21,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +37,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -46,17 +55,24 @@ public class AccountRest {
 
     private final EmailSendingService emailSendingService;
 
+    private final TokenProvider tokenProvider;
+
+    private final AuthenticationManager authenticationManager;
+
     private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
     private LocaleResolver localeResolver;
 
     public AccountRest(UserRepository userRepository, UserService userService,
                        EmailSendingService emailSendingService,
-                       MessageSource messageSource, LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
+                       TokenProvider tokenProvider, AuthenticationManager authenticationManager, MessageSource messageSource,
+                       LocaleResolver localeResolver, PasswordEncoder passwordEncoder) {
 
         this.userRepository = userRepository;
         this.userService = userService;
         this.emailSendingService = emailSendingService;
+        this.tokenProvider = tokenProvider;
+        this.authenticationManager = authenticationManager;
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
         this.passwordEncoder = passwordEncoder;
@@ -114,6 +130,22 @@ public class AccountRest {
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
         return request.getRemoteUser();
+    }
+
+    @PostMapping(RestRouter.User.AUTHENTICATE)
+    public ResponseEntity authenticate(@Valid @RequestBody LoginVM loginVM, HttpServletResponse response) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
+        try {
+            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
+            String jwt = tokenProvider.createToken(authentication, rememberMe);
+            response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            return ResponseEntity.ok(new JWTToken(jwt));
+        } catch (AuthenticationException exception) {
+            return new ResponseEntity<>(Collections.singletonMap("AuthenticationException",exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     /**

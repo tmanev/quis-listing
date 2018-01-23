@@ -6,6 +6,7 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.AuthorityRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.security.AuthoritiesConstants;
+import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,6 +61,12 @@ public class AccountRestTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Mock
     private UserService mockUserService;
 
@@ -84,10 +92,10 @@ public class AccountRestTest {
         doNothing().when(mockEmailSendingService).sendActivationEmail((User) anyObject());
 
         AccountRest accountResource =
-                new AccountRest(userRepository, userService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+                new AccountRest(userRepository, userService, mockEmailSendingService, tokenProvider, authenticationManager, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         AccountRest accountUserMockResource =
-                new AccountRest(userRepository, mockUserService, mockEmailSendingService, mockMessageSource, mockLocaleResolver, passwordEncoder);
+                new AccountRest(userRepository, mockUserService, mockEmailSendingService, tokenProvider, authenticationManager, mockMessageSource, mockLocaleResolver, passwordEncoder);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
