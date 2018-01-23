@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.User;
@@ -6,6 +6,8 @@ import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.search.UserSearchRepository;
 import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.web.rest.admin.AdminRestRouter;
+import com.manev.quislisting.web.rest.admin.UserAdminRest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,11 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the UserResource REST controller.
  *
- * @see UserRest
+ * @see UserAdminRest
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class UserRestTest {
+public class UserAdminRestTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -69,13 +71,13 @@ public class UserRestTest {
 
     @Before
     public void setup() {
-        UserRest userResource = new UserRest(userRepository, mailService, userService, userSearchRepository);
+        UserAdminRest userResource = new UserAdminRest(userRepository, mailService, userService, userSearchRepository);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 
     @Test
     public void testGetExistingUser() throws Exception {
-        restUserMockMvc.perform(get("/api/users/admin")
+        restUserMockMvc.perform(get(AdminRestRouter.User.LOGIN, "admin")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -84,7 +86,7 @@ public class UserRestTest {
 
     @Test
     public void testGetUnknownUser() throws Exception {
-        restUserMockMvc.perform(get("/api/users/unknown")
+        restUserMockMvc.perform(get(AdminRestRouter.User.LOGIN,"unknown")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

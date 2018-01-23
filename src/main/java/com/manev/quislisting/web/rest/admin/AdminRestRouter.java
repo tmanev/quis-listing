@@ -1,6 +1,14 @@
 package com.manev.quislisting.web.rest.admin;
 
+import com.manev.quislisting.config.Constants;
+
 public class AdminRestRouter {
+
+    public class User {
+        public static final String LIST = "/api/users";
+        public static final String LOGIN = "/api/users/{login:" + Constants.LOGIN_REGEX + "}";
+        public static final String SEARCH = "/api/_search/users/{query}";
+    }
 
     public class NavMenu {
         public static final String LIST = "/api/admin/nav-menus";

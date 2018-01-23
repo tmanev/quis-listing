@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.post;
+package com.manev.quislisting.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.QuisListingApp;

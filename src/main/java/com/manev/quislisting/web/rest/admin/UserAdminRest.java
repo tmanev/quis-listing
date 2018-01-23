@@ -1,6 +1,5 @@
-package com.manev.quislisting.web.rest;
+package com.manev.quislisting.web.rest.admin;
 
-import com.manev.quislisting.config.Constants;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.search.UserSearchRepository;
@@ -56,11 +55,10 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  * <p>Another option would be to have a specific JPA entity graph to handle this case.</p>
  */
 @RestController
-@RequestMapping("/api")
-public class UserRest {
+public class UserAdminRest {
 
     private static final String ENTITY_NAME = "userManagement";
-    private final Logger log = LoggerFactory.getLogger(UserRest.class);
+    private final Logger log = LoggerFactory.getLogger(UserAdminRest.class);
     private final UserRepository userRepository;
 
     private final MailService mailService;
@@ -69,8 +67,8 @@ public class UserRest {
 
     private final UserSearchRepository userSearchRepository;
 
-    public UserRest(UserRepository userRepository, MailService mailService,
-                    UserService userService, UserSearchRepository userSearchRepository) {
+    public UserAdminRest(UserRepository userRepository, MailService mailService,
+                         UserService userService, UserSearchRepository userSearchRepository) {
 
         this.userRepository = userRepository;
         this.mailService = mailService;
@@ -90,7 +88,7 @@ public class UserRest {
      * @return the ResponseEntity with status 201 (Created) and with body the new user, or with status 400 (Bad Request) if the login or email is already in use
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/users")
+    @PostMapping(AdminRestRouter.User.LIST)
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
         log.debug("REST request to save User : {}", managedUserVM);
@@ -121,7 +119,7 @@ public class UserRest {
      * or with status 400 (Bad Request) if the login or email is already in use,
      * or with status 500 (Internal Server Error) if the user couldn't be updated
      */
-    @PutMapping("/users")
+    @PutMapping(AdminRestRouter.User.LIST)
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<UserDTO> updateUser(@RequestBody ManagedUserVM managedUserVM) {
         log.debug("REST request to update User : {}", managedUserVM);
@@ -145,7 +143,7 @@ public class UserRest {
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and with body all users
      */
-    @GetMapping("/users")
+    @GetMapping(AdminRestRouter.User.LIST)
     public ResponseEntity<List<UserDTO>> getAllUsers(@ApiParam Pageable pageable) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
@@ -158,7 +156,7 @@ public class UserRest {
      * @param login the login of the user to find
      * @return the ResponseEntity with status 200 (OK) and with body the "login" user, or with status 404 (Not Found)
      */
-    @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @GetMapping(AdminRestRouter.User.LOGIN)
     public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         return ResponseUtil.wrapOrNotFound(
@@ -172,7 +170,7 @@ public class UserRest {
      * @param login the login of the user to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @DeleteMapping(AdminRestRouter.User.LOGIN)
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
@@ -187,7 +185,7 @@ public class UserRest {
      * @param query the query to search
      * @return the result of the search
      */
-    @GetMapping("/_search/users/{query}")
+    @GetMapping(AdminRestRouter.User.SEARCH)
     public List<User> search(@PathVariable String query) {
         return StreamSupport
                 .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
