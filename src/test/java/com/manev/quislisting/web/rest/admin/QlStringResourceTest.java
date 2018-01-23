@@ -1,11 +1,13 @@
-package com.manev.quislisting.web.rest.qlml;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.repository.qlml.QlStringRepository;
 import com.manev.quislisting.service.qlml.QlStringService;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
+import com.manev.quislisting.web.rest.admin.QlStringResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_QL_STRINGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -91,7 +92,7 @@ public class QlStringResourceTest {
     public void getQlStrings() throws Exception {
         qlStringRepository.saveAndFlush(qlString);
 
-        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS))
+        mockMvc.perform(get(AdminRestRouter.QlString.LIST))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(qlString.getId().intValue())))
@@ -107,7 +108,7 @@ public class QlStringResourceTest {
     public void getQlStringsShouldFilterByValue() throws Exception {
         qlStringRepository.saveAndFlush(qlString);
 
-        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS)
+        mockMvc.perform(get(AdminRestRouter.QlString.LIST)
                 .param("value", DEFAULT_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -124,7 +125,7 @@ public class QlStringResourceTest {
     public void getQlString() throws Exception {
         qlStringRepository.saveAndFlush(qlString);
 
-        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", qlString.getId()))
+        mockMvc.perform(get(AdminRestRouter.QlString.DETAIL, qlString.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(qlString.getId().intValue()))
@@ -138,7 +139,7 @@ public class QlStringResourceTest {
     @Test
     @Transactional
     public void getNonExistingQlString() throws Exception {
-        mockMvc.perform(get(RESOURCE_API_ADMIN_QL_STRINGS + "/{id}", Long.MAX_VALUE))
+        mockMvc.perform(get(AdminRestRouter.QlString.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -157,7 +158,7 @@ public class QlStringResourceTest {
 
         qlString.setStringTranslation(stringTranslationSet);
 
-        mockMvc.perform(put(RESOURCE_API_ADMIN_QL_STRINGS)
+        mockMvc.perform(put(AdminRestRouter.QlString.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(qlString)))
                 .andExpect(status().isOk());

@@ -1,8 +1,9 @@
-package com.manev.quislisting.web.rest.qlml;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.service.filter.QlStringFilter;
 import com.manev.quislisting.service.qlml.QlStringService;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
@@ -14,17 +15,19 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_QL_STRINGS;
-
 @RestController
-@RequestMapping(RESOURCE_API_ADMIN_QL_STRINGS)
 public class QlStringResource {
 
     private static final String ENTITY_NAME = "qlString";
@@ -35,23 +38,23 @@ public class QlStringResource {
         this.qlStringService = qlStringService;
     }
 
-    @GetMapping
+    @GetMapping(AdminRestRouter.QlString.LIST)
     public ResponseEntity<List<QlString>> getAllQlStrings(QlStringFilter qlStringFilter,
             @PageableDefault(value = Integer.MAX_VALUE) Pageable pageable) {
         log.debug("REST request to get a page of QlStrings");
         Page<QlString> page = qlStringService.findAllByFilter(qlStringFilter, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RESOURCE_API_ADMIN_QL_STRINGS);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.QlString.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(AdminRestRouter.QlString.DETAIL)
     public ResponseEntity<QlString> getQlString(@PathVariable Long id) {
         log.debug("REST request to get QlString : {}", id);
         QlString qlString = qlStringService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(qlString));
     }
 
-    @PostMapping
+    @PostMapping(AdminRestRouter.QlString.LIST)
     public ResponseEntity<QlString> createQlString(@RequestBody QlString qlString) throws URISyntaxException {
         log.debug("REST request to save QlString : {}", qlString);
         if (qlString.getId() != null) {
@@ -63,7 +66,7 @@ public class QlStringResource {
                 .body(result);
     }
 
-    @PutMapping
+    @PutMapping(AdminRestRouter.QlString.LIST)
     public ResponseEntity<QlString> updateQlString(@RequestBody QlString qlString) throws URISyntaxException {
         log.debug("REST request to update QlString : {}", qlString);
         if (qlString.getId() == null) {

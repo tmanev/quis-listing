@@ -2,6 +2,14 @@ package com.manev.quislisting.web.rest;
 
 public class AdminRestRouter {
 
+    public class QlString {
+        public static final String LIST = "/api/admin/ql-strings";
+        public static final String DETAIL = "/api/admin/ql-strings/{id}";
+
+        private QlString() {
+        }
+    }
+
     public class Language {
 
         public static final String LIST = "/api/admin/languages";
