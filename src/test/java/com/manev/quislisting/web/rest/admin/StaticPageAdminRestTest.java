@@ -1,4 +1,4 @@
-package com.manev.quislisting.web.rest.post;
+package com.manev.quislisting.web.rest.admin;
 
 import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.StaticPage;
@@ -10,6 +10,7 @@ import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.service.post.StaticPageService;
 import com.manev.quislisting.service.post.dto.StaticPageDTO;
 import com.manev.quislisting.service.post.mapper.QlStaticPageMapper;
+import com.manev.quislisting.web.rest.AdminRestRouter;
 import com.manev.quislisting.web.rest.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,15 +37,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.manev.quislisting.web.rest.RestRouter.RESOURCE_API_ADMIN_QL_PAGES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = QuisListingApp.class)
-public class StaticPageResourceTest {
+public class StaticPageAdminRestTest {
 
     private static final String DEFAULT_TITLE = "DEFAULT_TITLE";
     private static final String DEFAULT_CONTENT = "DEFAULT_CONTENT";
@@ -96,7 +101,7 @@ public class StaticPageResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        StaticPageResource staticPageResource = new StaticPageResource(staticPageService);
+        StaticPageAdminRest staticPageResource = new StaticPageAdminRest(staticPageService);
         this.restQlPageMockMvc = MockMvcBuilders.standaloneSetup(staticPageResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
@@ -116,7 +121,7 @@ public class StaticPageResourceTest {
         staticPageRepository.saveAndFlush(staticPage);
 
         // Get all the navMenus
-        ResultActions resultActions = restQlPageMockMvc.perform(get(RESOURCE_API_ADMIN_QL_PAGES + "?sort=id,desc&languageCode=en"));
+        ResultActions resultActions = restQlPageMockMvc.perform(get(AdminRestRouter.StaticPage.LIST + "?sort=id,desc&languageCode=en"));
         resultActions.andDo(MockMvcResultHandlers.print());
         resultActions
                 .andExpect(status().isOk())
@@ -140,7 +145,7 @@ public class StaticPageResourceTest {
         }
 
         // Get active languages
-        restQlPageMockMvc.perform(get(RESOURCE_API_ADMIN_QL_PAGES + "/active-languages"))
+        restQlPageMockMvc.perform(get(AdminRestRouter.StaticPage.ACTIVE_LANGUAGES))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].code").value(hasItem("en")))
@@ -167,7 +172,7 @@ public class StaticPageResourceTest {
         // Create the DlCategory
         StaticPageDTO staticPageDTO = qlStaticPageMapper.staticPageToStaticPageDTO(staticPage, createActiveLanguages());
 
-        restQlPageMockMvc.perform(post(RESOURCE_API_ADMIN_QL_PAGES)
+        restQlPageMockMvc.perform(post(AdminRestRouter.StaticPage.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(staticPageDTO)))
                 .andExpect(status().isCreated());
@@ -198,7 +203,7 @@ public class StaticPageResourceTest {
         staticPageRepository.saveAndFlush(staticPage);
 
         // Get the DlCategory
-        restQlPageMockMvc.perform(get(RESOURCE_API_ADMIN_QL_PAGES + "/{id}", staticPage.getId()))
+        restQlPageMockMvc.perform(get(AdminRestRouter.StaticPage.DETAIL, staticPage.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.id").value(staticPage.getId().intValue()))
@@ -211,7 +216,7 @@ public class StaticPageResourceTest {
     @Transactional
     public void getNonExistingQlPage() throws Exception {
         // Get the dlCategory
-        restQlPageMockMvc.perform(get(RESOURCE_API_ADMIN_QL_PAGES + "/{id}", Long.MAX_VALUE))
+        restQlPageMockMvc.perform(get(AdminRestRouter.StaticPage.DETAIL, Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 
@@ -231,7 +236,7 @@ public class StaticPageResourceTest {
 
         StaticPageDTO staticPageDTO = qlStaticPageMapper.staticPageToStaticPageDTO(updatedQlPage, createActiveLanguages());
 
-        restQlPageMockMvc.perform(put(RESOURCE_API_ADMIN_QL_PAGES)
+        restQlPageMockMvc.perform(put(AdminRestRouter.StaticPage.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(staticPageDTO)))
                 .andExpect(status().isOk());
@@ -254,7 +259,7 @@ public class StaticPageResourceTest {
         StaticPageDTO staticPageDTO = qlStaticPageMapper.staticPageToStaticPageDTO(staticPage, createActiveLanguages());
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
-        restQlPageMockMvc.perform(put(RESOURCE_API_ADMIN_QL_PAGES)
+        restQlPageMockMvc.perform(put(AdminRestRouter.StaticPage.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(staticPageDTO)))
                 .andExpect(status().isCreated());
@@ -272,7 +277,7 @@ public class StaticPageResourceTest {
         int databaseSizeBeforeDelete = staticPageRepository.findAll().size();
 
         // Delete the dlCategory
-        restQlPageMockMvc.perform(delete(RESOURCE_API_ADMIN_QL_PAGES + "/{id}", staticPage.getId())
+        restQlPageMockMvc.perform(delete(AdminRestRouter.StaticPage.DETAIL, staticPage.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
