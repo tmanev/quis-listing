@@ -37,7 +37,7 @@ Search = {
                         query: JSON.stringify(filter)
                     };
                     this.$http({
-                            url: '/api/public/dl-listings/_search',
+                            url: '/api/dl-listings/_search',
                             method: 'GET',
                             params: params
                         }).then(function (response) {
