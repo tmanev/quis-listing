@@ -16,7 +16,7 @@
 <div th:fragment="content" id="listingApp" class="container">
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-md-2">
-            <a th:if="${showEditButton}" class="btn btn-default btn-sm" th:href="'/my-listings/' + ${dlListingDTO.id}">
+            <a th:if="${showEditButton}" class="btn btn-primary" th:href="'/my-listings/' + ${dlListingDTO.id}">
                 <span class="glyphicon glyphicon-edit"></span>
                 <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
             </a>

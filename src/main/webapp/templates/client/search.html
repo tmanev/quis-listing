@@ -34,7 +34,7 @@
                 <label class="col-sm-1 control-label">Category</label>
                 <div class="col-sm-11">
                     <select class="form-control" id="categoriesGrouped" v-model="selectedCategoryId" v-on:change="onCategoryChange($event)">
-                        <option value="-1">- Select -</option>
+                        <option value="-1" th:text="#{page.search.label.all}">- All -</option>
                         <th:block th:each="instance : ${dlCategoriesGrouped}">
                             <th:block th:if="${#lists.size(instance.value) > 0}">
                                 <optgroup th:label="${instance.key.name}" label="Swedish Cars">
@@ -53,7 +53,7 @@
                 <label class="col-sm-1 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
                 <div class="col-sm-3">
                     <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountryId">
-                        <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                        <option value="-1" th:text="#{page.search.label.all}">- All -
                         </option>
                         <option v-for="dlLocationCountry in dlLocationCountries"
                                 v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
@@ -66,7 +66,7 @@
                 <div class="col-sm-3">
                     <select class="form-control" v-on:change="onStateChange" v-model="selectedStateId"
                             v-bind:class="{loadinggif: isStateSelectLoading}">
-                        <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                        <option value="-1" th:text="#{page.search.label.all}">- All -
                         </option>
                         <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">
                             {{ dlLocationState.name }}
@@ -79,7 +79,7 @@
                 <div class="col-sm-3">
                     <select class="form-control" v-model="selectedCityId"
                             v-bind:class="{loadinggif: isCitySelectLoading}">
-                        <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
+                        <option value="-1" th:text="#{page.search.label.all}">- All -
                         </option>
                         <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
                             dlLocationCity.name }}
