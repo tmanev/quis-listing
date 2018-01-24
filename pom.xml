@@ -4,7 +4,7 @@
 
 	<groupId>com.manev</groupId>
 	<artifactId>quis-listing</artifactId>
-	<version>18.01.004</version>
+	<version>18.01.005-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>quis-listing</name>
@@ -127,6 +127,22 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jcache</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
@@ -198,7 +214,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.193</version>
+			<version>1.4.196</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

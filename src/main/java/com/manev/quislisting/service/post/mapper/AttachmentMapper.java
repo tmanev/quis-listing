@@ -4,12 +4,16 @@ import com.manev.quislisting.domain.DlAttachment;
 import com.manev.quislisting.domain.DlAttachmentResize;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 @Component
 public class AttachmentMapper {
+
+    private final Logger log = LoggerFactory.getLogger(AttachmentMapper.class);
 
     private DlAttachmentResizeMapper dlAttachmentResizeMapper;
 
@@ -78,7 +82,7 @@ public class AttachmentMapper {
                         attachmentMetadata.setSmallImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.SMALL.name(), dlAttachmentResize));
                         break;
                     default:
-                        throw new RuntimeException("This should not happen");
+                        log.warn("Image unknown size: {}", dlAttachmentResize.getSizeType());
                 }
             }
         }

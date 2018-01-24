@@ -37,8 +37,8 @@ import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.util.AttachmentUtil;
 import com.manev.quislisting.service.util.SlugUtil;
-import com.manev.quislisting.web.rest.post.filter.DlContentFieldFilter;
-import com.manev.quislisting.web.rest.post.filter.DlListingSearchFilter;
+import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
+import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -140,7 +140,6 @@ public class DlListingService {
     public DlListingDTO approveListing(Long id) {
         DlListing dlListing = dlListingRepository.findOne(id);
 
-        // TODO: If validation is okay make the approve
         dlListing.setApproved(Boolean.TRUE);
         dlListing.setApprovedModified(new Timestamp(clock.millis()));
         dlListing.setStatus(DlListing.Status.PUBLISHED);
@@ -262,33 +261,36 @@ public class DlListingService {
     }
 
     private void setContentFieldRelationValue(DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlListingContentFieldRel newDlListingContentFieldRel) {
-        try {
-            if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
-                // make relation with the selection items
-                if (!StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue())) {
-                    Long[] ids = new ObjectMapper().readValue(dlListingFieldDTO.getSelectedValue(), Long[].class);
-                    List<Long> idsAsList = Arrays.asList(ids);
-                    if (!idsAsList.isEmpty()) {
-                        Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdInOrderByOrderNum(idsAsList);
-                        newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
-                    } else {
-                        newDlListingContentFieldRel.setDlContentFieldItems(new HashSet<>());
-                    }
+        if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
+            // make relation with the selection items
+            if (!StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue())) {
+                List<Long> idsAsList = getSelectedValuesFromCheckbox(dlListingFieldDTO);
+                if (!idsAsList.isEmpty()) {
+                    Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdInOrderByOrderNum(idsAsList);
+                    newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
+                } else {
+                    newDlListingContentFieldRel.setDlContentFieldItems(new HashSet<>());
                 }
-            } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)
-                    || dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
-                setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
-            } else if (dlContentField.getType().equals(DlContentField.Type.NUMBER_UNIT)) {
-                setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
-                newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
-            } else {
-                // set value
-                newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO do something
+        } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)
+                || dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
+            setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
+        } else if (dlContentField.getType().equals(DlContentField.Type.NUMBER_UNIT)) {
+            setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
+            newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
+        } else {
+            // set value
+            newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
         }
+    }
+
+    private List<Long> getSelectedValuesFromCheckbox(DlListingFieldDTO dlListingFieldDTO) {
+        try {
+            return Arrays.asList(new ObjectMapper().readValue(dlListingFieldDTO.getSelectedValue(), Long[].class));
+        } catch (IOException e) {
+            log.error("Could not parse dlListingFieldDTO selected value: {}, with name: {} ", dlListingFieldDTO.getSelectedValue(), dlListingFieldDTO.getName(), e);
+        }
+        return new ArrayList<>();
     }
 
     private void setSelection(DlListingFieldDTO dlListingFieldDTO, DlListingContentFieldRel newDlListingContentFieldRel) {
@@ -356,8 +358,11 @@ public class DlListingService {
     @Transactional(readOnly = true)
     public DlListingDTO findOne(Long id, String languageCode) {
         log.debug("Request to get DlListingDTO: {}", id);
+        long start = System.currentTimeMillis();
         DlListing result = dlListingRepository.findOne(id);
-        return result != null ? dlListingMapper.dlListingToDlListingDTO(result, languageCode) : null;
+        DlListingDTO dlListingDTO = result != null ? dlListingMapper.dlListingToDlListingDTO(result, languageCode) : null;
+        log.info("finOne id: {}, took: {} ms", id, System.currentTimeMillis() - start);
+        return dlListingDTO;
     }
 
     public void delete(Long id) {
@@ -419,7 +424,7 @@ public class DlListingService {
         return !StringUtils.isEmpty(value) && !value.equals("-1");
     }
 
-    public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) throws IOException {
+    public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) {
         log.debug("Request to delete attachment with id : {}, from DlCategoryDTO : {}", attachmentId, id);
         DlListing dlListing = dlListingRepository.findOne(id);
         DlAttachment attachment = dlListing.removeAttachment(attachmentId);
@@ -441,13 +446,8 @@ public class DlListingService {
         Set<ConstraintViolation<DlListingDTO>> validate = validator.validate(dlListingDTO);
         if (!validate.isEmpty()) {
             // return validation object and status 400
-            for (ConstraintViolation<DlListingDTO> dlListingDTOConstraintViolation : validate) {
-//                String message = messageByLocale.getMessage(dlListingDTOConstraintViolation.getMessage());
-//                System.out.println(message);
-            }
+            log.info("DlListingDTO with id: {}, not valid", dlListingDTO.getId());
         }
-
-
     }
 
     public List<AttachmentDTO> uploadFile(Map<String, MultipartFile> fileMap, Long id) throws IOException {
@@ -480,16 +480,12 @@ public class DlListingService {
         return languageService.findAllActiveLanguages(dlListingRepository);
     }
 
-    public Page<DlListingDTO> findAllByLanguageAndUser(Pageable pageable, String languageCode) {
-        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-        Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
-
-        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, languageCode, oneByLogin.get());
+    public Page<DlListingDTO> findAllByLanguageAndUser(Pageable pageable, String languageCode, User user) {
+        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, languageCode, user);
         return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
     }
 
     public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
-//        Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndStatusAndApprovedOrderByModifiedDesc(pageable, language, DlListing.Status.PUBLISHED, Boolean.TRUE);
         Page<DlListing> result = dlListingRepository.findAllForFrontPage(language, pageable);
         return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, language));
     }

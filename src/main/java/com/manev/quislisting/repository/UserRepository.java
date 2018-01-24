@@ -1,6 +1,7 @@
 package com.manev.quislisting.repository;
 
 import com.manev.quislisting.domain.User;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -27,5 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findOneWithAuthoritiesById(Long id);
 
     @EntityGraph(attributePaths = "authorities")
+    @Cacheable(cacheNames="users")
     Optional<User> findOneWithAuthoritiesByLogin(String login);
 }

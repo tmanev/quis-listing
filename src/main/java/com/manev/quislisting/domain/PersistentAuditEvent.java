@@ -3,7 +3,6 @@ package com.manev.quislisting.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "ql_persistent_audit_event")
-public class PersistentAuditEvent implements Serializable {
+public class PersistentAuditEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

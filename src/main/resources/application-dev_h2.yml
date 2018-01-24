@@ -9,3 +9,9 @@ spring:
         database-platform: com.manev.quislisting.domain.util.FixedH2Dialect
         database: H2
         show-sql: false
+        properties:
+            hibernate.id.new_generator_mappings: false
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: false
+            hibernate.cache.region.factory_class: com.manev.quislisting.config.NoDefaultJCacheRegionFactory

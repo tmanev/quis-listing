@@ -7,6 +7,8 @@ import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.Set;
 
 @Component
 public class DlContentFieldMapper {
+
+    private final Logger log = LoggerFactory.getLogger(DlContentFieldMapper.class);
 
     private DlCategoryMapper dlCategoryMapper;
     private DlContentFieldItemMapper dlContentFieldItemMapper;
@@ -58,9 +62,10 @@ public class DlContentFieldMapper {
 
 
     public DlContentFieldDTO dlContentFieldToDlContentFieldDTO(DlContentField dlContentField, String languageCode) {
+        long start = System.currentTimeMillis();
         String translatedName = TranslateUtil.getTranslatedString(dlContentField, languageCode);
         String translatedDescription = TranslateUtil.getTranslatedStringDescription(dlContentField, languageCode);
-        return new DlContentFieldDTO()
+        DlContentFieldDTO dlContentFieldDTO = new DlContentFieldDTO()
                 .id(dlContentField.getId())
                 .coreField(dlContentField.getCoreField())
                 .orderNum(dlContentField.getOrderNum())
@@ -87,8 +92,9 @@ public class DlContentFieldMapper {
                 .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems(), languageCode))
                 .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
-                .enabled(dlContentField.getEnabled())
-                ;
+                .enabled(dlContentField.getEnabled());
+        log.info("dlContentFieldToDlContentFieldDTO for id: {}, name: {}, took: {} ms", dlContentField.getId(), dlContentField.getName(), System.currentTimeMillis() - start);
+        return dlContentFieldDTO;
     }
 
     public DlContentField dlContentFieldDTOToDlContentField(DlContentFieldDTO dlContentFieldDTO) {

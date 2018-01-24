@@ -3,15 +3,23 @@ package com.manev.quislisting.domain.taxonomy.discriminator;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.taxonomy.TermTaxonomy;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @DiscriminatorValue(value = DlCategory.TAXONOMY)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlCategory extends TermTaxonomy {
     public static final String TAXONOMY = "dl-category";
 
@@ -21,10 +29,12 @@ public class DlCategory extends TermTaxonomy {
     private DlCategory parent;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlCategory> children;
 
     @JsonBackReference(value = "dl_category_listing_reference")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy="dlCategories")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlListing> dlListings;
 
     public DlCategory getParent() {

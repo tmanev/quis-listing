@@ -59,7 +59,7 @@ public class DlContentFieldItemService {
 
     public DlContentFieldItemDTO findOne(Long id, String languageCode) {
         DlContentFieldItem result = dlContentFieldItemRepository.findOne(id);
-        return result != null ? dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(result, null) : null;
+        return result != null ? dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(result, languageCode) : null;
     }
 
     public void delete(Long id) {

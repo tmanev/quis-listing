@@ -4,13 +4,25 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_listing_dl_content_field_relationship")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlListingContentFieldRel implements Comparable<DlListingContentFieldRel> {
 
     @Id
@@ -30,6 +42,7 @@ public class DlListingContentFieldRel implements Comparable<DlListingContentFiel
     @JoinTable(name = "ql_content_field_selection_relationship",
             joinColumns = @JoinColumn(name = "dl_listing_dl_content_field_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "dl_content_field_item_id", referencedColumnName = "id"))
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlContentFieldItem> dlContentFieldItems;
 
     @Column

@@ -94,7 +94,7 @@ public class DlCategoryMapper {
             return translationSet.stream()
                     .map(translationMapper::translationToTranslationDTO).collect(Collectors.toList());
         }
-        return null;
+        return new ArrayList<>();
     }
 
 }

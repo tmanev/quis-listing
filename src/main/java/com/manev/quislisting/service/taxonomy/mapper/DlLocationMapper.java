@@ -1,7 +1,6 @@
 package com.manev.quislisting.service.taxonomy.mapper;
 
 import com.manev.quislisting.domain.Translation;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.domain.taxonomy.discriminator.builder.DlLocationBuilder;
 import com.manev.quislisting.service.post.dto.TranslationDTO;
@@ -96,6 +95,6 @@ public class DlLocationMapper {
             return translationSet.stream()
                     .map(translationMapper::translationToTranslationDTO).collect(Collectors.toList());
         }
-        return null;
+        return new ArrayList<>();
     }
 }

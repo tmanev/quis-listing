@@ -4,13 +4,11 @@ import com.manev.quislisting.domain.Translation;
 import com.manev.quislisting.domain.TranslationBuilder;
 import com.manev.quislisting.domain.TranslationGroup;
 import com.manev.quislisting.domain.qlml.Language;
-import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.mapper.ActiveLanguageMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 
 @Service
 @Transactional
@@ -101,7 +98,7 @@ public class DlLocationService {
         log.debug("Request to get all DlLocationDTO");
         String languageCode = allRequestParams.get("languageCode");
         String parentId = allRequestParams.get("parentId");
-        DlLocation parentLocation = null;
+        DlLocation parentLocation;
         Page<DlLocation> result;
         if (parentId != null) {
             parentLocation = dlLocationRepository.findOne(Long.valueOf(parentId));

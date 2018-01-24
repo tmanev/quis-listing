@@ -6,10 +6,12 @@ import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.exception.MissingConfigurationException;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
 import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CountryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -19,6 +21,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 @Service
+@Scope("singleton")
 public class GeoLocationService {
 
     private static final Logger log = LoggerFactory.getLogger(GeoLocationService.class);
@@ -69,6 +72,8 @@ public class GeoLocationService {
                 }
 
             }
+        } catch (AddressNotFoundException ex) {
+            log.warn("IP address {} not found in database", remoteIp);
         } catch (GeoIp2Exception e) {
             log.error("Country location cannot be read", e);
         } catch (UnknownHostException e) {

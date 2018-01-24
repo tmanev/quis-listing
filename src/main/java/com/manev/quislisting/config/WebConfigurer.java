@@ -1,6 +1,6 @@
 package com.manev.quislisting.config;
 
-import com.manev.quislisting.web.mvc.MyErrorViewResolver;
+import com.manev.quislisting.web.mvc.resolver.MyErrorViewResolver;
 import com.manev.quislisting.web.mvc.PageNotFoundController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

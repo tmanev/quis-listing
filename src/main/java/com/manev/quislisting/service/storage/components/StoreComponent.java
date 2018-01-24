@@ -9,6 +9,8 @@ import com.manev.quislisting.service.storage.ResizedImages;
 import com.manev.quislisting.service.util.SlugUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Component
@@ -30,6 +33,7 @@ public class StoreComponent {
     private static final String DL_MEDIUM = "medium";
     private static final String DL_LARGE = "large";
     private static final String DL_SMALL = "small";
+    private final Logger log = LoggerFactory.getLogger(StoreComponent.class);
     private QuisListingProperties quisListingProperties;
 
     public StoreComponent(QuisListingProperties quisListingProperties) {
@@ -40,7 +44,7 @@ public class StoreComponent {
 
         String fileNameSlug = SlugUtil.getFileNameSlug(file.getOriginalFilename());
 
-        File fileNode = createFileNode(fileNameSlug, inputWatermarked, file.getContentType());
+        File fileNode = createFileNode(fileNameSlug, inputWatermarked);
 
         AttachmentDTO attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName());
 
@@ -75,7 +79,7 @@ public class StoreComponent {
             String extension = FilenameUtils.getExtension(fileNameSlug);
             String fileName = FilenameUtils.getBaseName(fileNameSlug);
             String fileNameSlugResize = fileName + "-" + key + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));
-            File fileNode = createFileNode(fileNameSlugResize, resizedImage, contentType);
+            File fileNode = createFileNode(fileNameSlugResize, resizedImage);
 
             AttachmentMetadata.ImageResizeMeta imageResizeMeta = new AttachmentMetadata.ImageResizeMeta();
             imageResizeMeta.setName(key);
@@ -98,7 +102,7 @@ public class StoreComponent {
         return attachmentDTO;
     }
 
-    private File createFileNode(String fileName, BufferedImage resizedImage, String contentType) throws IOException {
+    private File createFileNode(String fileName, BufferedImage resizedImage) throws IOException {
         DateTime dateTime = new DateTime();
         String yearStr = String.valueOf(dateTime.getYear());
         String monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
@@ -107,32 +111,26 @@ public class StoreComponent {
 
         // check if file path exists
         File pathDir = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + pathStr);
-        try {
-            if (pathDir.exists()) {
-                // store file
-                File checkedFileName = checkFileName(fileName, pathDir);
+        if (pathDir.exists()) {
+            // store file
+            File checkedFileName = checkFileName(fileName, pathDir);
 
-                writeStream(resizedImage, FilenameUtils.getExtension(checkedFileName.getName()), checkedFileName, contentType);
+            writeStream(resizedImage, FilenameUtils.getExtension(checkedFileName.getName()), checkedFileName);
 
-                return checkedFileName;
-            } else {
-                // create and store file
+            return checkedFileName;
+        } else {
+            // create and store file
+            Path directories = Files.createDirectories(pathDir.toPath());
 
-                Path directories = Files.createDirectories(pathDir.toPath());
+            String extension = FilenameUtils.getExtension(fileName);
+            File file = new File(directories.toFile(), fileName);
 
-                String extension = FilenameUtils.getExtension(fileName);
-                File file = new File(directories.toFile(), fileName);
-
-                writeStream(resizedImage, extension, file, contentType);
-                return file;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
+            writeStream(resizedImage, extension, file);
+            return file;
         }
     }
 
-    private void writeStream(BufferedImage resizedImage, String extension, File file, String contentType) throws IOException {
+    private void writeStream(BufferedImage resizedImage, String extension, File file) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, extension.isEmpty() ? "jpg" : extension, os);
         Files.copy(new ByteArrayInputStream(os.toByteArray()), file.toPath());
@@ -157,7 +155,11 @@ public class StoreComponent {
         for (String filePath : filePaths) {
             File file = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + filePath);
             if (file.exists()) {
-                file.delete();
+                try {
+                    Files.delete(Paths.get(file.toURI()));
+                } catch (IOException e) {
+                    log.error("Failed to remove file: {}", filePath, e);
+                }
             }
         }
     }
