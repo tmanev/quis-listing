@@ -8,6 +8,9 @@ public class AdminRestRouter {
         public static final String LIST = "/api/users";
         public static final String LOGIN = "/api/users/{login:" + Constants.LOGIN_REGEX + "}";
         public static final String SEARCH = "/api/_search/users/{query}";
+
+        private User() {
+        }
     }
 
     public class NavMenu {

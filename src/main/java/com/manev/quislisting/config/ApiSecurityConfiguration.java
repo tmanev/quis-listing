@@ -1,5 +1,6 @@
 package com.manev.quislisting.config;
 
+import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.Http401UnauthorizedEntryPoint;
 import com.manev.quislisting.security.jwt.JWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
@@ -122,6 +123,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/contacts").permitAll()
                 .antMatchers(RestRouter.DlListing.RECENT +"/**").permitAll()
                 .antMatchers("/api/**").authenticated()
+                .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .and()
             .apply(securityConfigurerAdapter());
 
