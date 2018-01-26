@@ -216,7 +216,7 @@ public class DlListingService {
         dlListingForSaving.setContent(dlListingDTO.getContent());
 
         // if user is in role ADMIN don't change the status
-        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN) || dlListingForSaving.getStatus() == null) {
             dlListingForSaving.setStatus(DlListing.Status.DRAFT);
         }
 
