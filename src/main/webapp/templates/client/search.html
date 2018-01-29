@@ -20,7 +20,7 @@
             <div class="form-group">
                 <div class="col-md-9">
                     <input class="form-control" placeholder="Search" th:placeholder="#{page.search.title}"
-                           v-model="text"/>
+                           v-model="filter.text"/>
                 </div>
                 <div class="col-md-3">
                     <button id="searchButton" class="btn btn-primary btn-block" th:text="#{page.search.btn_search}"
@@ -33,7 +33,7 @@
             <div class="form-group">
                 <label class="col-sm-1 control-label">Category</label>
                 <div class="col-sm-11">
-                    <select class="form-control" id="categoriesGrouped" v-model="selectedCategoryId" v-on:change="onCategoryChange($event)">
+                    <select class="form-control" id="categoriesGrouped" v-model="filter.selectedCategoryId" v-on:change="onCategoryChange($event)">
                         <option value="-1" th:text="#{page.search.label.all}">- All -</option>
                         <th:block th:each="instance : ${dlCategoriesGrouped}">
                             <th:block th:if="${#lists.size(instance.value) > 0}">
@@ -52,7 +52,7 @@
             <div class="form-group">
                 <label class="col-sm-1 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
                 <div class="col-sm-3">
-                    <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountryId">
+                    <select class="form-control" v-model="filter.selectedCountryId">
                         <option value="-1" th:text="#{page.search.label.all}">- All -
                         </option>
                         <option v-for="dlLocationCountry in dlLocationCountries"
@@ -64,7 +64,7 @@
                 <label class="col-sm-1 control-label"
                        th:text="#{page.my_listings.edit_listing.label.state}">State</label>
                 <div class="col-sm-3">
-                    <select class="form-control" v-on:change="onStateChange" v-model="selectedStateId"
+                    <select class="form-control" v-model="filter.selectedStateId"
                             v-bind:class="{loadinggif: isStateSelectLoading}">
                         <option value="-1" th:text="#{page.search.label.all}">- All -
                         </option>
@@ -77,12 +77,11 @@
                 <label class="col-sm-1 control-label"
                        th:text="#{page.my_listings.edit_listing.label.city}">City</label>
                 <div class="col-sm-3">
-                    <select class="form-control" v-model="selectedCityId"
+                    <select class="form-control" v-model="filter.selectedCityId"
                             v-bind:class="{loadinggif: isCitySelectLoading}">
-                        <option value="-1" th:text="#{page.search.label.all}">- All -
-                        </option>
-                        <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
-                            dlLocationCity.name }}
+                        <option value="-1" th:text="#{page.search.label.all}">- All -</option>
+                        <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">
+                            {{ dlLocationCity.name }}
                         </option>
                     </select>
                 </div>
@@ -91,7 +90,7 @@
         </form>
     </div>
 
-    <div class="row" v-if="selectedCategoryId != '-1'">
+    <div class="row" v-if="filter.selectedCategoryId != '-1'">
         <div class="col-md-12">
             <div class="row" v-for="dlContentField in dlContentFields">
                 <div>
@@ -103,24 +102,53 @@
     </div>
     <hr/>
     <div class="row">
-        <div v-for="dlListing in dlListings" style="display: none;"
-             class="col-sm-6 col-md-4 col-lg-3" v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
-            <div class="thumbnail">
-                <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
-                    <div style="width: 242px; height: 200px; white-space: nowrap; text-align: center;">
-                        <span style="display: inline-block; height: 100%; vertical-align: middle;"></span>
-                        <img v-if="dlListing.attachments.length==0"
-                             alt="100x200" data-src="holder.js/100%x200"
-                             data-holder-rendered="true"
-                             style="height: 200px; width: 100%; display: block;"/>
-                        <img v-else
-                             v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
-                             data-holder-rendered="true"
-                             style="vertical-align: middle; max-width: 242px; max-height: 200px; margin-left: -2px;"
-                        />
+        <div class="col-md-12">
+            <div class="container">
+                <div class="flex-row row">
+                    <div th:each="dlListing : ${dlListings}"
+                         class="col-xs-12 col-sm-4 col-lg-3">
+                        <div class="thumbnail">
+                            <a th:href="'/listings/' + ${dlListing.id} + '/' + ${dlListing.name}">
+                                <img th:if="${dlListing.attachments==null} or ${#lists.size(dlListing.attachments) == 0}" src="../../resources/images/no-image-available.jpg"
+                                     th:src="@{/resources/images/no-image-available.jpg}"
+                                     alt="No image available"
+                                     data-holder-rendered="true"/>
+                                <img th:if="${dlListing.attachments!=null} and ${#lists.size(dlListing.attachments) > 0}"
+                                     th:src="'/content/files' + ${dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file}"
+                                     data-holder-rendered="true" />
+                                <div class="caption"><h4 th:text="${dlListing.title}">Some title</h4></div>
+                            </a>
+                        </div>
                     </div>
-                    <div class="caption"><h4>{{dlListing.title}}</h4></div>
-                </a>
+                </div>
+
+                <!-- Lazy loaded listings -->
+                <div class="flex-row row">
+                    <div v-for="dlListing in dlListings" class="col-xs-12 col-sm-4 col-lg-3"
+                         v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
+                        <div class="thumbnail">
+                            <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
+                                <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
+                                     th:src="@{/resources/images/no-image-available.jpg}"
+                                     alt="No image available"
+                                     data-holder-rendered="true" />
+                                <img v-else
+                                     v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
+                                     data-holder-rendered="true" />
+                                <div class="caption"><h4>{{dlListing.title}}</h4></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row text-center" v-if="pagingParams.loadedDlListings<pagingParams.totalDlListings">
+                    <div style="margin-bottom: 20px;">
+                        <button id="btnLoadMore" href="#" class="btn btn-default btn-block btn-lg" role="button"
+                                th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.default.btn_load_mode}"
+                                v-bind:disabled="pagingParams.isLoading"
+                                v-on:click="onLoadNext">Load more</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -130,8 +158,10 @@
             th:src="@{/resources/js/search.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
+            var totalDlListings = [[${totalDlListings}]];
+            var loadedDlListings = [[${loadedDlListings}]];
             var dlLocationCountries = [[${dlLocationCountries}]];
-            Search.init(dlLocationCountries);
+            Search.init(dlLocationCountries, totalDlListings, loadedDlListings);
         };
     </script>
 </div>

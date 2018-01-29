@@ -33,7 +33,7 @@ public class DlLocationRest {
         log.debug("REST request to get a page of DlLocationDTO");
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        return new ResponseEntity<>(dlLocationService.findAllByParentId(parentId, language), HttpStatus.OK);
+        return new ResponseEntity<>(dlLocationService.findAllByParentId(Long.valueOf(parentId), language), HttpStatus.OK);
     }
 
 }

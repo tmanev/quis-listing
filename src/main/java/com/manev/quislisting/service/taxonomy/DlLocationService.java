@@ -142,10 +142,10 @@ public class DlLocationService {
         return result;
     }
 
-    public List<DlLocationDTO> findAllByParentId(String parentId, String language) {
+    public List<DlLocationDTO> findAllByParentId(Long parentId, String language) {
         DlLocation parent = null;
-        if (parentId !=null) {
-            parent = dlLocationRepository.findOne(Long.valueOf(parentId));
+        if (parentId != null) {
+            parent = dlLocationRepository.findOne(parentId);
         }
         List<DlLocation> dlLocations = dlLocationRepository.findAllByParentAndTranslation_languageCode(parent, language);
         return dlLocations.stream().map(dlLocationMapper::dlLocationToDlLocationDTO).collect(Collectors.toList());

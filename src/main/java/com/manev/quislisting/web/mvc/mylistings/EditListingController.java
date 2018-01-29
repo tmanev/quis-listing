@@ -81,8 +81,8 @@ public class EditListingController extends BaseController {
         List<DlLocationDTO> dlLocations = dlListingDTO.getDlLocations();
         if (dlLocations != null && !dlLocations.isEmpty()) {
             DlLocationDTO dlLocationDTO = dlLocations.get(0);
-            modelMap.addAttribute("dlLocationStates", dlLocationService.findAllByParentId(String.valueOf(dlLocationDTO.getParent().getParent().getId()), language));
-            modelMap.addAttribute("dlLocationCities", dlLocationService.findAllByParentId(String.valueOf(dlLocationDTO.getParent().getId()), language));
+            modelMap.addAttribute("dlLocationStates", dlLocationService.findAllByParentId(dlLocationDTO.getParent().getParent().getId(), language));
+            modelMap.addAttribute("dlLocationCities", dlLocationService.findAllByParentId(dlLocationDTO.getParent().getId(), language));
         } else {
             modelMap.addAttribute("dlLocationStates", Collections.emptyList());
             modelMap.addAttribute("dlLocationCities", Collections.emptyList());
