@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title th:text="${title}">Home</title>
-
+    <th:block th:if="${baseModel.analytics} != null" th:utext="${baseModel.analytics}">Analytics body</th:block>
     <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
           rel="stylesheet"/>
