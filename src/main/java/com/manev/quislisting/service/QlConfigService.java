@@ -65,4 +65,8 @@ public class QlConfigService {
         }
         return qlConfig;
     }
+
+    public QlConfig findOneByKeyOptional(String key) {
+        return qlConfigRepository.findOneByQlKey(key);
+    }
 }

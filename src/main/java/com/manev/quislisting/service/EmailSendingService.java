@@ -174,6 +174,10 @@ public class EmailSendingService {
 
         String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
         mailService.sendEmail(user.getEmail(), subject, emailContent, false, true);
+
+        // re-sent the email to admin
+        QlConfig adminEmailConfig = qlConfigService.findOneByKey("admin_email");
+        mailService.sendEmail(adminEmailConfig.getValue(), subject, emailContent, false, true);
     }
 
     private String getValueByLanguage(String languageCode, QlString qlString) {

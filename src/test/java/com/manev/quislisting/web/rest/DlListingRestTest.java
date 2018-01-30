@@ -27,13 +27,9 @@ import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
-import com.manev.quislisting.web.rest.DlListingRest;
-import com.manev.quislisting.web.rest.GenericResourceTest;
-import com.manev.quislisting.web.rest.RestRouter;
-import com.manev.quislisting.web.rest.TestUtil;
+import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestTest;
 import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
 import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
-import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -515,7 +511,7 @@ public class DlListingRestTest extends GenericResourceTest {
         dlListingService.approveListing(savedDlListingDTO2.getId());
 
         DlListingSearchFilter dlListingSearchFilter = new DlListingSearchFilter();
-        dlListingSearchFilter.setLocationId(String.valueOf(dlLocation2.getId()));
+        dlListingSearchFilter.setCountryId(String.valueOf(dlLocation2.getId()));
         dlListingSearchFilter.setLanguageCode("en");
 
         String query = TestUtil.convertObjectToJsonString(dlListingSearchFilter);

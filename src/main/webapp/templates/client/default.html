@@ -8,6 +8,32 @@
 <div class="container" th:fragment="content">
     <div id="landingApp" v-cloak>
         <div class="row">
+            <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="text-align: center;" th:text="#{page.home.label.add_your_listing}">Add your listing!</h2>
+                <p style="text-align: center;" th:text="#{page.home.label.easy_setup}">Easy setup, 100% free</p>
+                <p style="text-align: center;">
+                    <a class="btn btn-primary btn-lg" href="my-listings/add" role="button" th:text="#{page.home.label.get_started}">
+                        Get started
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" >
+                <div class="well well-sm" >
+                    <div class="input-group" >
+                        <input type="text" class="form-control" v-model="filter.text" v-on:keyup.enter="onSearch"
+                               th:placeholder="#{page.home.label.search_for_listing}"
+                               placeholder="Search for a listing ...">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" v-on:click="onSearch" th:text="#{page.home.label.go}">Go!</button>
+                      </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h4 style="margin-top: 0;"><span class="label label-default" th:text="#{page.home.label.latest_listings}">Latest listings</span></h4>
             <div class="col-md-12">
                 <div class="container">
                     <div class="flex-row row">
@@ -37,12 +63,10 @@
                                     <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
                                          th:src="@{/resources/images/no-image-available.jpg}"
                                          alt="No image available"
-                                         data-holder-rendered="true"
-                                         />
+                                         data-holder-rendered="true" />
                                     <img v-else
                                          v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
-                                         data-holder-rendered="true"
-                                         />
+                                         data-holder-rendered="true" />
                                     <div class="caption"><h4>{{dlListing.title}}</h4></div>
                                 </a>
                             </div>

@@ -81,6 +81,11 @@ public class BaseController {
             }
         }
 
+        QlConfig qlAnalyticsConfig = qlConfigService.findOneByKeyOptional("ql-analytics");
+        if (qlAnalyticsConfig != null) {
+            baseModel.setAnalytics(qlAnalyticsConfig.getValue());
+        }
+
         List<Language> activeLanguages = languageRepository.findAllByActive(true);
 
         if (!language.equals("en")) {

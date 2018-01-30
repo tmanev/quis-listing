@@ -1,5 +1,5 @@
 var MyListings = {
-    init: function () {
+    init: function (jsTranslations) {
         Vue.use(window.vuelidate.default);
 
         function parseLinks(header) {
@@ -227,7 +227,7 @@ var MyListings = {
                         let index = this.dlListings.indexOf(this.confirmModal.listingToDelete);
                         this.dlListings.splice(index, 1);
                         $.notify({
-                            message: response.headers.get('X-qlService-alert')
+                            message: jsTranslations['page.my_listings.notifications.delete_listing_success']
                         }, {
                             type: 'success'
                         });

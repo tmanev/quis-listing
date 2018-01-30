@@ -72,6 +72,8 @@ import java.util.Set;
 public class DlListingService {
 
     private static final String USER_S_WAS_NOT_FOUND_IN_THE_DATABASE = "User : %s was not found in the database";
+    public static final String TRANSLATED_LOCATIONS = "translatedLocations";
+    public static final String TRANSLATED_LOCATIONS_ID = "translatedLocations.id";
     private static Clock clock = Clock.systemUTC();
     private final Logger log = LoggerFactory.getLogger(DlListingService.class);
     private final EmailSendingService emailSendingService;
@@ -387,15 +389,15 @@ public class DlListingService {
                 .should(QueryBuilders.termQuery("languageCode", query.getLanguageCode()));
 
         if (hasSelection(query.getCategoryId())) {
-            boolQueryBuilder.must(QueryBuilders.nestedQuery("translatedCategories",
-                    QueryBuilders.boolQuery()
-                            .must(QueryBuilders.termQuery("translatedCategories.id", query.getCategoryId()))));
+            setLocationFilter(boolQueryBuilder, "translatedCategories", "translatedCategories.id", query.getCategoryId());
         }
 
-        if (hasSelection(query.getLocationId())) {
-            boolQueryBuilder.must(QueryBuilders.nestedQuery("translatedLocations",
-                    QueryBuilders.boolQuery()
-                            .must(QueryBuilders.termQuery("translatedLocations.id", query.getLocationId()))));
+        if (hasSelection(query.getCityId())) {
+            setLocationFilter(boolQueryBuilder, TRANSLATED_LOCATIONS, TRANSLATED_LOCATIONS_ID, query.getCityId());
+        } else if (hasSelection(query.getStateId())) {
+            setLocationFilter(boolQueryBuilder, TRANSLATED_LOCATIONS, TRANSLATED_LOCATIONS_ID, query.getStateId());
+        } else if (hasSelection(query.getCountryId())) {
+            setLocationFilter(boolQueryBuilder, TRANSLATED_LOCATIONS, TRANSLATED_LOCATIONS_ID, query.getCountryId());
         }
 
         List<DlContentFieldFilter> dlContentFields = query.getContentFields();
@@ -418,6 +420,12 @@ public class DlListingService {
         }
 
         return dlListingSearchRepository.search(boolQueryBuilder, pageable);
+    }
+
+    private void setLocationFilter(BoolQueryBuilder boolQueryBuilder, String translatedLocations, String s, String locationId) {
+        boolQueryBuilder.must(QueryBuilders.nestedQuery(translatedLocations,
+                QueryBuilders.boolQuery()
+                        .must(QueryBuilders.termQuery(s, locationId))));
     }
 
     private boolean hasSelection(String value) {

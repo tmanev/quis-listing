@@ -15,6 +15,9 @@ LandingPage = {
                     url: '/api/dl-listings/recent',
                     isLoading: false
                 },
+                filter: {
+                    text: ''
+                },
                 dlListings: []
             },
             validations: {},
@@ -48,7 +51,18 @@ LandingPage = {
                         this.pagingParams.isLoading = false;
                         $btn.button('reset');
                     });
-                }
+                },
+                onSearch: function (event) {
+                    if (this.filter.text !== '') {
+                        var filter = {};
+                        filter.text = this.filter.text;
+                        let params = {
+                            query: JSON.stringify(filter)
+                        };
+                        document.location.href='/search?query=' + encodeURIComponent(params.query);
+                    }
+
+                },
             },
             created: function() {
 

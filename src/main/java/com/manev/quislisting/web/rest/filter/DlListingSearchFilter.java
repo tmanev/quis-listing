@@ -6,7 +6,9 @@ public class DlListingSearchFilter {
 
     private String text;
     private String categoryId;
-    private String locationId;
+    private String cityId;
+    private String stateId;
+    private String countryId;
     private List<DlContentFieldFilter> contentFields;
     private String languageCode;
 
@@ -26,14 +28,6 @@ public class DlListingSearchFilter {
         this.categoryId = categoryId;
     }
 
-    public String getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(String locationId) {
-        this.locationId = locationId;
-    }
-
     public List<DlContentFieldFilter> getContentFields() {
         return contentFields;
     }
@@ -48,5 +42,29 @@ public class DlListingSearchFilter {
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(String stateId) {
+        this.stateId = stateId;
+    }
+
+    public String getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(String countryId) {
+        this.countryId = countryId;
     }
 }

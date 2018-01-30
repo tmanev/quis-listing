@@ -1,7 +1,7 @@
 package com.manev.quislisting.web.mvc.model;
 
-import com.manev.quislisting.domain.StaticPage;
 import com.manev.quislisting.domain.NavMenuItem;
+import com.manev.quislisting.domain.StaticPage;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 
 import java.util.List;
@@ -14,6 +14,7 @@ public class BaseModel {
     private List<ActiveLanguageBean> activeLanguages;
     private StaticPage profilePage;
     private String baseUrl;
+    private String analytics;
 
     public Set<NavMenuItem> getTopHeaderMenus() {
         return topHeaderMenus;
@@ -63,5 +64,13 @@ public class BaseModel {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public String getAnalytics() {
+        return analytics;
+    }
+
+    public void setAnalytics(String analytics) {
+        this.analytics = analytics;
     }
 }
