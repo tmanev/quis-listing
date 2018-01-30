@@ -124,7 +124,8 @@
             th:src="@{/resources/js/my-listings/my-listings.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            MyListings.init();
+            var jsTranslations = [[${jsTranslations}]];
+            MyListings.init(jsTranslations);
         };
     </script>
 </div>
