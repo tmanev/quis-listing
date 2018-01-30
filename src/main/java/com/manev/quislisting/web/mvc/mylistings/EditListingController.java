@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import static com.manev.quislisting.security.AuthoritiesConstants.ADMIN;
+
 @Controller
 public class EditListingController extends BaseController {
 
@@ -56,7 +58,7 @@ public class EditListingController extends BaseController {
         Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(currentUserLogin);
 
         if (userWithAuthoritiesByLogin.isPresent()) {
-            if (!dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId())) {
+            if (!SecurityUtils.isCurrentUserInRole(ADMIN) || !dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId())) {
                 return redirectToPageNotFound();
             }
         } else {

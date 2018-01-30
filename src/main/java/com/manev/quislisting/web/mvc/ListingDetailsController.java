@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Locale;
 
+import static com.manev.quislisting.security.AuthoritiesConstants.ADMIN;
+
 @Controller
 public class ListingDetailsController extends BaseController {
 
@@ -36,7 +38,7 @@ public class ListingDetailsController extends BaseController {
             return redirectToPageNotFound();
         }
 
-        modelMap.addAttribute("showEditButton", dlListingDTO.getAuthor().getLogin().equals(SecurityUtils.getCurrentUserLogin()));
+        modelMap.addAttribute("showEditButton", shouldShowEditButton(dlListingDTO.getAuthor().getLogin()));
 
         modelMap.addAttribute("dlListingDTO", dlListingDTO);
 
@@ -45,6 +47,10 @@ public class ListingDetailsController extends BaseController {
 
         log.info("Loading of listing id: {}, name: {}, took: {} ms", dlListingDTO.getId(), dlListingDTO.getName(), System.currentTimeMillis() - start);
         return "client/index";
+    }
+
+    private boolean shouldShowEditButton(String login) {
+        return login.equals(SecurityUtils.getCurrentUserLogin()) || SecurityUtils.isCurrentUserInRole(ADMIN);
     }
 
 }
