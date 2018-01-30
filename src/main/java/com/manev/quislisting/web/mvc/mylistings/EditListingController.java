@@ -58,7 +58,7 @@ public class EditListingController extends BaseController {
         Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(currentUserLogin);
 
         if (userWithAuthoritiesByLogin.isPresent()) {
-            if (!SecurityUtils.isCurrentUserInRole(ADMIN) || !dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId())) {
+            if (!dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId()) && !SecurityUtils.isCurrentUserInRole(ADMIN)) {
                 return redirectToPageNotFound();
             }
         } else {
