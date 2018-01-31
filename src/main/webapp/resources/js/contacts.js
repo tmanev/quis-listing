@@ -1,5 +1,5 @@
 Contacts = {
-    init: function () {
+    init: function (jsTranslations) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, between, email} = window.validators;
 
@@ -45,7 +45,7 @@ Contacts = {
                             };
                             this.$v.contact.$reset();
                             $.notify({
-                                message: response.headers.get('X-qlService-alert')
+                                message: jsTranslations['page.contact.message.sent_success']
                             },{
                                 type: 'success'
                             });
