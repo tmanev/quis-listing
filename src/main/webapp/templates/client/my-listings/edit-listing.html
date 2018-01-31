@@ -342,17 +342,10 @@
                 </div>
             </div>
         </div>
+        <hr/>
         <form class="form-horizontal">
             <div class="form-group">
-                <button type="button" class="btn btn-default col-sm-5 col-xs-5"
-                        id="btnSaveAndGoBack"
-                        v-on:click="onSaveAndGoBack"
-                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_save_and_go_back}">
-                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span
-                        th:text="#{page.my_listings.edit_listing.btn_save_and_go_back}">Save and go back</span>
-                </button>
-                <div class="col-sm-2 col-xs-2"></div>
-                <button type="button" class="btn btn-primary col-sm-5 col-xs-5"
+                <button type="button" class="btn btn-primary btn-lg col-xs-12"
                         id="btnPublish"
                         v-on:click="onPublish"
                         v-bind:disabled="listing.status == 'PUBLISHED'"
