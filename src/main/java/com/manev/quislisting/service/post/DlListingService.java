@@ -126,17 +126,27 @@ public class DlListingService {
         return savedDlListingDTO;
     }
 
-    public DlListingDTO saveAndRequestPublishing(DlListingDTO dlListingDTO, String languageCode) {
+    public DlListingDTO saveAndPublish(DlListingDTO dlListingDTO, String languageCode) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
         DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, languageCode, null);
-        dlListingForSaving.setStatus(DlListing.Status.PUBLISH_REQUEST);
+        dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving, null);
         dlListingSearchRepository.save(savedDlListingDTO);
-        emailSendingService.sendPublishRequest(savedDlListing);
+        emailSendingService.sendPublishedNotification(savedDlListing);
+        emailSendingService.sendListingApprovedEmail(savedDlListing);
+        // send to user that publication is published
         return savedDlListingDTO;
+    }
+
+    public void publishListing(Long id) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(id);
+        dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, null);
+        dlListingSearchRepository.save(savedDlListingDTO);
     }
 
     public DlListingDTO approveListing(Long id) {
@@ -144,13 +154,10 @@ public class DlListingService {
 
         dlListing.setApproved(Boolean.TRUE);
         dlListing.setApprovedModified(new Timestamp(clock.millis()));
-        dlListing.setStatus(DlListing.Status.PUBLISHED);
         DlListing save = dlListingRepository.save(dlListing);
 
         DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save, null);
         dlListingSearchRepository.save(dlListingDTO);
-
-        emailSendingService.sendListingApprovedEmail(save);
 
         return dlListingDTO;
     }

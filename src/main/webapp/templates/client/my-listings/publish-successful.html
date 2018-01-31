@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${title}">Reset your password</title>
@@ -16,21 +16,28 @@
 <div th:fragment="content" id="passwordResetFinishApp" class="container">
     <div class="text-center">
         <div class="alert alert-success" role="alert">
-            <h1 th:text="#{page.my_listings.publish_successful.msg_01}">Your listing has been successfully added for publishing.</h1>
+            <h3 style="margin-top: 0; margin-bottom: 0;" th:text="#{page.my_listings.publish_successful.msg_01}">Your listing has been successfully published</h3>
         </div>
-        <div class="alert alert-info" role="alert">
-            <h2>
-                <span th:text="#{page.my_listings.publish_successful.msg_02}">Once is reviewed by our team we will make it public.</span>
-                <br />
-                <span th:text="#{page.my_listings.publish_successful.msg_03}">You will be notified by email</span>
-            </h2>
+
+        <div class="thumbnail" style="display: inline-block;">
+            <a th:href="'/listings/' + ${dlListing.id} + '/' + ${dlListing.name}">
+                <img th:if="${dlListing.attachments==null} or ${#lists.size(dlListing.attachments) == 0}" src="../../resources/images/no-image-available.jpg"
+                     th:src="@{/resources/images/no-image-available.jpg}"
+                     alt="No image available"
+                     data-holder-rendered="true"/>
+                <img th:if="${dlListing.attachments!=null} and ${#lists.size(dlListing.attachments) > 0}"
+                     th:src="'/content/files' + ${dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file}"
+                     data-holder-rendered="true" />
+                <div class="caption"><h4 th:text="${dlListing.title}">Some title</h4></div>
+            </a>
         </div>
+
         <h2>
-            <a href="/" class="btn btn-primary btn-lg">
+            <a href="/" class="btn btn-default">
                 <span class="glyphicon glyphicon-home"></span>
                 <span th:text="#{page.page_not_found.button.take_me_home}"> Take Me Home</span>
             </a>
-            <a href="/my-listings" class="btn btn-primary btn-lg">
+            <a href="/my-listings" class="btn btn-default">
                 <span class="glyphicon glyphicon-th-list"></span>
                 <span th:text="#{page.my_listings.label.my_listings}"> My Listings</span>
             </a>
