@@ -126,9 +126,9 @@
                          th:alt="${attachment.id}"
                          style="display: none;"
                     />
-                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta == null && attachment.attachmentMetadata.smallImageResizeMeta != null}"
+                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta == null}"
                          th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
-                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
+                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.detail.file}"
                          th:alt="${attachment.id}"
                          style="display: none;"
                     />
