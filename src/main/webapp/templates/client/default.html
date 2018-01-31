@@ -81,6 +81,7 @@
                         <div style="margin-bottom: 20px;">
                             <button id="btnLoadMore" href="#" class="btn btn-default btn-block btn-lg" role="button"
                                     th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.default.btn_load_mode}"
+                                    th:text="#{page.default.btn_load_mode}"
                                     v-bind:disabled="pagingParams.isLoading"
                                     v-on:click="onLoadNext">Load more</button>
                         </div>
