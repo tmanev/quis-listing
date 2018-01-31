@@ -539,8 +539,7 @@ EditListing = {
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
                         }, {
-                            type: 'danger',
-                            timer: 0
+                            type: 'danger'
                         });
                     } else {
                         let payload = this.getPayload();
