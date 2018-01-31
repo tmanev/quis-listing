@@ -187,16 +187,18 @@ public class DlListingMapper {
         DlContentFieldValue dlContentFieldValue = new DlContentFieldValue();
 
         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
-        dlContentFieldValue.setValue(dlListingContentFieldRel.getValue());
+        String value = dlListingContentFieldRel.getValue();
+        dlContentFieldValue.setValue(value);
 
-        StringBuilder translatedValue = new StringBuilder(dlListingContentFieldRel.getValue());
+        if (value != null) {
+            StringBuilder translatedValue = new StringBuilder(value);
+            if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+                dlContentFieldValue.setSelectedValue(String.valueOf(dlContentFieldItems.iterator().next().getId()));
+                translatedValue.append(" ").append(TranslateUtil.getTranslatedString(dlContentFieldItems.iterator().next(), languageCode));
+            }
 
-        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
-            dlContentFieldValue.setSelectedValue(String.valueOf(dlContentFieldItems.iterator().next().getId()));
-            translatedValue.append(" ").append(TranslateUtil.getTranslatedString(dlContentFieldItems.iterator().next(), languageCode));
+            dlContentFieldValue.setTranslatedValue(translatedValue.toString());
         }
-
-        dlContentFieldValue.setTranslatedValue(translatedValue.toString());
 
         return dlContentFieldValue;
     }
