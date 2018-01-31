@@ -263,3 +263,8 @@ table.loading tbody:after {
     width: 100%;
 }
 /** Front page end **/
+
+.form-group.required .control-label:after {
+    content:" *";
+    color:red;
+}
