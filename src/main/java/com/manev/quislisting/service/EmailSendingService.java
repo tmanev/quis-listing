@@ -195,13 +195,13 @@ public class EmailSendingService {
         return qlString.getValue();
     }
 
-    public void sendPublishRequest(DlListing savedDlListing) {
-        log.debug("Sending publish request e-mail.");
+    public void sendPublishedNotification(DlListing savedDlListing) {
+        log.debug("Sending published info e-mail.");
 
         QlConfig publishRequestAdmin = qlConfigService.findOneByKey("publish_request_admin");
 
-        String subject = String.format("Listing publish request! Id: %s", savedDlListing.getId());
-        String publishText = String.format("Listing with title: %s, </br> has requested publishing", savedDlListing.getTitle());
+        String subject = String.format("Listing published! Id: %s", savedDlListing.getId());
+        String publishText = String.format("Listing with title: %s, </br> has been published", savedDlListing.getTitle());
 
         mailService.sendEmail(publishRequestAdmin.getValue(), subject, publishText, false, true);
     }

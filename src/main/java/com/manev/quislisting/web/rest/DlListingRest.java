@@ -8,9 +8,9 @@ import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
-import com.manev.quislisting.web.rest.util.LanguageUtil;
 import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
+import com.manev.quislisting.web.rest.util.LanguageUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
@@ -97,7 +97,7 @@ public class DlListingRest {
 
         String languageCode = LanguageUtil.getLanguageCode(request, localeResolver);
         dlListingService.validateForPublishing(dlListingDTO);
-        DlListingDTO result = dlListingService.saveAndRequestPublishing(dlListingDTO, languageCode);
+        DlListingDTO result = dlListingService.saveAndPublish(dlListingDTO, languageCode);
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))

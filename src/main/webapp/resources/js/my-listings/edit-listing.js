@@ -478,20 +478,6 @@ EditListing = {
                 callbackSave: function () {
                     this.saveModal.callback();
                 },
-                onSaveAndGoBack: function (event) {
-                    if (this.listing.status == 'PUBLISHED') {
-                        // open confirmation dialog
-                        this.saveModal.callback = function () {
-                            var $btn = $('#btnSaveAndGoBack').button('loading');
-                            $('#save-warning-modal').modal('hide');
-                            editListingApp.doSave($btn, "/my-listings");
-                        };
-                        $('#save-warning-modal').modal('show');
-                    } else {
-                        var $btn = $('#btnSaveAndGoBack').button('loading');
-                        this.doSave($btn, "/my-listings");
-                    }
-                },
                 onSave: function (event) {
                     if (this.listing.status == 'PUBLISHED') {
                         this.saveModal.callback = function () {
@@ -539,8 +525,7 @@ EditListing = {
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
                         }, {
-                            type: 'danger',
-                            timer: 0
+                            type: 'danger'
                         });
                     } else {
                         let payload = this.getPayload();
