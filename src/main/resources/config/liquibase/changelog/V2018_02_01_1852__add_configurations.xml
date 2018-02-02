@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="V2018_02_01_1852" author="tmanev">
+        <comment>Add base email template</comment>
+        <sqlFile path="classpath:config/liquibase/sql/V2018_02_01_1852__add_configurations.sql" relativeToChangelogFile="false" />
+    </changeSet>
+
+</databaseChangeLog>

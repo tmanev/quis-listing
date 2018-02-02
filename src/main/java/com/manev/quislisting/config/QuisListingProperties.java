@@ -130,7 +130,6 @@ public class QuisListingProperties {
 
     public static class Mail {
         private String from = "";
-        private String baseUrl = "";
 
         public String getFrom() {
             return this.from;
@@ -140,13 +139,6 @@ public class QuisListingProperties {
             this.from = from;
         }
 
-        public String getBaseUrl() {
-            return this.baseUrl;
-        }
-
-        public void setBaseUrl(String baseUrl) {
-            this.baseUrl = baseUrl;
-        }
     }
 
     public static class Async {

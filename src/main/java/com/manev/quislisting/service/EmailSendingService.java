@@ -1,6 +1,5 @@
 package com.manev.quislisting.service;
 
-import com.manev.quislisting.config.QuisListingProperties;
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.User;
@@ -15,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -23,17 +23,19 @@ import java.util.Set;
 @Service
 public class EmailSendingService {
 
-    private static final String ACTIVATE_PAGE = "activatePage";
     private static final String BASE_URL = "baseUrl";
     private static final String USER = "user";
     private static final String BASE_NAME = "baseName";
-    private static final String SUBJECT = "subject";
-    private static final String ACTIVATION_TEXT = "activationText";
     private static final String DL_LISTING = "dlListing";
     private static final String SITE_NAME = "site-name";
+    private static final String ACTIVATION_LINK = "activationLink";
+    private static final String EMAIL_LOGO_IMAGE = "emailLogoImage";
+    private static final String INNER_EMAIL = "innerEmail";
+    private static final String SUPPORT_EMAIL = "supportEmail";
+    private static final String CURRENT_YEAR = "currentYear";
+    private static final String RESET_LINK = "resetLink";
     private final Logger log = LoggerFactory.getLogger(EmailSendingService.class);
     private final MessageSource messageSource;
-    private final QuisListingProperties quisListingProperties;
     private final QlConfigService qlConfigService;
     private final EmailTemplateService emailTemplateService;
     private MailService mailService;
@@ -42,10 +44,9 @@ public class EmailSendingService {
 
     public EmailSendingService(MailService mailService,
                                MessageSource messageSource,
-                               QuisListingProperties quisListingProperties, QlConfigService qlConfigService, EmailTemplateService emailTemplateService, TemplateEngineComponent templateEngineComponent) {
+                               QlConfigService qlConfigService, EmailTemplateService emailTemplateService, TemplateEngineComponent templateEngineComponent) {
         this.mailService = mailService;
         this.messageSource = messageSource;
-        this.quisListingProperties = quisListingProperties;
         this.qlConfigService = qlConfigService;
         this.emailTemplateService = emailTemplateService;
         this.templateEngineComponent = templateEngineComponent;
@@ -80,18 +81,17 @@ public class EmailSendingService {
         QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
 
         String html = getValueByLanguage(user.getLangKey(), passwordResetEmailTemplate.getQlString());
-        String title = messageSource.getMessage("email.reset.title", new String[]{siteNameConfig.getValue()}, locale);
+        String title = messageSource.getMessage("email.reset.title", null, locale);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put(USER, user);
-        variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
+        variables.put(BASE_URL, getBaseUrl());
         variables.put(BASE_NAME, siteNameConfig.getValue());
-        variables.put("title", title);
-        variables.put("resetText1", messageSource.getMessage("email.reset.text1", new String[]{siteNameConfig.getValue()}, locale));
-        variables.put("resetFinishPage", "password-reset");
+        variables.put(RESET_LINK, getBaseUrl() + "/password-reset?key=" + user.getResetKey());
 
-        String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
-        mailService.sendEmail(user.getEmail(), title, emailContent, false, true);
+        String innerHtml = templateEngineComponent.getTemplateFromMap(html, variables);
+        String finalHtmlContent = processFinalEmailTemplate(innerHtml, locale.getLanguage());
+        mailService.sendEmail(user.getEmail(), title, finalHtmlContent, false, true);
     }
 
     public void sendListingDisapprovedEmail(DlListing dlListing, String reason) {
@@ -112,9 +112,9 @@ public class EmailSendingService {
 
         variables.put(USER, user);
         variables.put(BASE_NAME, siteNameConfig.getValue());
-        variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-        variables.put("previewListingUrl", UrlUtil.makePreviewListingUrl(quisListingProperties.getMail().getBaseUrl(), dlListing.getId()));
-        variables.put("editListingUrl", UrlUtil.makeEditListingUrl(quisListingProperties.getMail().getBaseUrl(), dlListing.getId()));
+        variables.put(BASE_URL, getBaseUrl());
+        variables.put("previewListingUrl", UrlUtil.makePreviewListingUrl(getBaseUrl(), dlListing.getId()));
+        variables.put("editListingUrl", UrlUtil.makeEditListingUrl(getBaseUrl(), dlListing.getId()));
         variables.put("reason_label", messageSource.getMessage("email.listing_disapproved.label.reason", new String[]{dlListing.getTitle()}, locale));
         variables.put("reason", reason);
         variables.put(DL_LISTING, dlListing);
@@ -141,8 +141,8 @@ public class EmailSendingService {
 
         variables.put(USER, user);
         variables.put(BASE_NAME, siteNameConfig.getValue());
-        variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-        variables.put("listingUrl", UrlUtil.makePublicListingUrl(quisListingProperties.getMail().getBaseUrl(), dlListing.getId(), dlListing.getName()));
+        variables.put(BASE_URL, getBaseUrl());
+        variables.put("listingUrl", UrlUtil.makePublicListingUrl(getBaseUrl(), dlListing.getId(), dlListing.getName()));
         variables.put(DL_LISTING, dlListing);
 
         String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
@@ -155,29 +155,24 @@ public class EmailSendingService {
         Locale locale = Locale.forLanguageTag(user.getLangKey());
 
         EmailTemplate activationEmailTemplate = emailTemplateService.findOneByName("activation_email");
-
-        QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
-
-        String subject = messageSource.getMessage("email.activation.title", new String[]{siteNameConfig.getValue()}, locale);
-        String activationText = messageSource.getMessage("email.activation.text1", new String[]{siteNameConfig.getValue()}, locale);
+        String subject = messageSource.getMessage("email.activation.title", null, locale);
 
         String html = getValueByLanguage(user.getLangKey(), activationEmailTemplate.getQlString());
 
         Map<String, Object> variables = new HashMap<>();
-
+        variables.put(BASE_NAME, getSiteName());
+        variables.put(BASE_URL, getBaseUrl());
         variables.put(USER, user);
-        variables.put(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-        variables.put(BASE_NAME, siteNameConfig.getValue());
-        variables.put(ACTIVATE_PAGE, "account-activate");
-        variables.put(SUBJECT, subject);
-        variables.put(ACTIVATION_TEXT, activationText);
+        variables.put(ACTIVATION_LINK, getBaseUrl() + "/account-activate?key=" + user.getActivationKey());
+        variables.put(SUPPORT_EMAIL, getSupportEmail());
 
-        String emailContent = templateEngineComponent.getTemplateFromMap(html, variables);
+        String innerEmailContent = templateEngineComponent.getTemplateFromMap(html, variables);
+        String emailContent = processFinalEmailTemplate(innerEmailContent, locale.getLanguage());
         mailService.sendEmail(user.getEmail(), subject, emailContent, false, true);
 
         // re-sent the email to admin
         QlConfig adminEmailConfig = qlConfigService.findOneByKey("admin_email");
-        mailService.sendEmail(adminEmailConfig.getValue(), subject, emailContent, false, true);
+        mailService.sendEmail(adminEmailConfig.getValue(), "New user has been registered", String.format("User id is: %s, with email: %s", user.getId(), user.getEmail()), false, true);
     }
 
     private String getValueByLanguage(String languageCode, QlString qlString) {
@@ -206,4 +201,32 @@ public class EmailSendingService {
         mailService.sendEmail(publishRequestAdmin.getValue(), subject, publishText, false, true);
     }
 
+    private String processFinalEmailTemplate(String innerEmail, String languageCode) {
+        EmailTemplate baseEmailTemplate = emailTemplateService.findOneByName("base_email_template");
+        String baseHtml = getValueByLanguage(languageCode, baseEmailTemplate.getQlString());
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(BASE_NAME, getSiteName());
+        variables.put(BASE_URL, getBaseUrl());
+        variables.put(EMAIL_LOGO_IMAGE, getBaseUrl()+"/resources/images/logo-ql.png");
+        variables.put(CURRENT_YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        variables.put(INNER_EMAIL, innerEmail);
+
+        return templateEngineComponent.getTemplateFromMap(baseHtml, variables);
+    }
+
+    private String getSiteName() {
+        QlConfig siteNameConfig = qlConfigService.findOneByKey(SITE_NAME);
+        return siteNameConfig.getValue();
+    }
+
+    private String getBaseUrl() {
+        QlConfig baseUrl = qlConfigService.findOneByKey("base-url");
+        return baseUrl.getValue();
+    }
+
+    private String getSupportEmail() {
+        QlConfig baseUrl = qlConfigService.findOneByKey("support_email");
+        return baseUrl.getValue();
+    }
 }

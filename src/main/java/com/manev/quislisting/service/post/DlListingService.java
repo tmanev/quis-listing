@@ -135,8 +135,8 @@ public class DlListingService {
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving, null);
         dlListingSearchRepository.save(savedDlListingDTO);
+
         emailSendingService.sendPublishedNotification(savedDlListing);
-        emailSendingService.sendListingApprovedEmail(savedDlListing);
         // send to user that publication is published
         return savedDlListingDTO;
     }
