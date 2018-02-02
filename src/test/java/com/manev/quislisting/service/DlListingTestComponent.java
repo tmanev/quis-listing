@@ -106,7 +106,7 @@ public class DlListingTestComponent {
     }
 
     public DlListingDTO createDlListingDTO(String title, String languageCode, DlCategory dlCategory, DlLocation dlLocation, List<DlContentFieldInput> contentFieldInputs) {
-        DlListingDTO dlListingDTO = createDlListingDTO(dlCategory, dlLocation, contentFieldInputs);
+        DlListingDTO dlListingDTO = createDlListingDTO(dlCategory, dlLocation, contentFieldInputs, languageCode);
         dlListingDTO.setTitle(title);
         dlListingDTO.setName(SlugUtil.slugify(title));
         dlListingDTO.setLanguageCode(languageCode);
@@ -114,7 +114,7 @@ public class DlListingTestComponent {
     }
 
     public DlListingDTO createDlListingDTO(DlCategory dlCategory, DlLocation dlLocation,
-                                           List<DlContentFieldInput> contentFieldInputs) {
+                                           List<DlContentFieldInput> contentFieldInputs, String languageCode) {
         DlListingDTO dlListingDTO = DlListingDTOBuilder.aDlListingDTO()
                 .withTitle(DlListingTestComponent.DEFAULT_TITLE)
                 .withContent(DlListingTestComponent.DEFAULT_CONTENT)
@@ -122,8 +122,8 @@ public class DlListingTestComponent {
                 .withCreated(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS)
                 .withModified(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS)
                 .withAuthor(new UserDTO(10000L, "some_login", "some first name", "some last name"))
-                .withLanguageCode(LANGUAGE_CODE_SHOULD_NOT_BE_THIS)
-                .withSourceLanguageCode(SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS)
+                .withLanguageCode(languageCode)
+                .withSourceLanguageCode(languageCode)
                 .withTranslationGroupId(TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS)
                 .addTranslation(TranslationDTOBuilder.aTranslationDTO()
                         .withId(1000L)

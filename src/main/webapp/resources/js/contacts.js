@@ -11,7 +11,8 @@ Contacts = {
                     name: '',
                     email: '',
                     subject: '',
-                    message: ''
+                    message: '',
+                    languageCode: Cookies.get('ql-lang-key')
                 }
             },
             validations: {
@@ -41,7 +42,8 @@ Contacts = {
                               name: '',
                                 email: '',
                                 subject: '',
-                                message: ''
+                                message: '',
+                                languageCode: Cookies.get('ql-lang-key')
                             };
                             this.$v.contact.$reset();
                             $.notify({

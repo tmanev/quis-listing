@@ -3,7 +3,7 @@ package com.manev.quislisting.config;
 import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.ContinueEntryPoint;
 import com.manev.quislisting.security.MvcAuthenticationSuccessHandler;
-import com.manev.quislisting.security.jwt.JWTConfigurer;
+import com.manev.quislisting.security.jwt.MvcJWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.GeoLocationService;
 import org.springframework.context.annotation.Bean;
@@ -35,17 +35,17 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
-    private final MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler;
+    private final MvcAuthenticationSuccessHandler mvcAuthenticationSuccessHandler;
 
     private final GeoLocationService geoLocationService;
 
     public MvcSecurityConfiguration(TokenProvider tokenProvider, SessionRegistry sessionRegistry,
-                                    CorsFilter corsFilter, MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler, GeoLocationService geoLocationService) {
+                                    CorsFilter corsFilter, MvcAuthenticationSuccessHandler mvcAuthenticationSuccessHandler, GeoLocationService geoLocationService) {
 
         this.tokenProvider = tokenProvider;
         this.sessionRegistry = sessionRegistry;
         this.corsFilter = corsFilter;
-        this.quisAuthenticationSuccessHandler = quisAuthenticationSuccessHandler;
+        this.mvcAuthenticationSuccessHandler = mvcAuthenticationSuccessHandler;
         this.geoLocationService = geoLocationService;
     }
 
@@ -100,7 +100,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
 
-                .successHandler(quisAuthenticationSuccessHandler)
+                .successHandler(mvcAuthenticationSuccessHandler)
 
                 .loginPage("/sign-in")
 
@@ -114,8 +114,8 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-    private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider, geoLocationService);
+    private MvcJWTConfigurer securityConfigurerAdapter() {
+        return new MvcJWTConfigurer(tokenProvider, geoLocationService);
     }
 
     @Bean

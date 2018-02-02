@@ -189,7 +189,8 @@ var MyListings = {
                         params: {
                             page: this.pagingParams.page - 1,
                             size: this.pagingParams.itemsPerPage,
-                            sort: this.pagingParams.sort
+                            sort: this.pagingParams.sort,
+                            languageCode: Cookies.get('ql-lang-key')
                         },
                         method: 'GET'
                     }).then(function (response) {

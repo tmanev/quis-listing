@@ -1,6 +1,6 @@
 package com.manev.quislisting.security;
 
-import com.manev.quislisting.security.jwt.JWTFilter;
+import com.manev.quislisting.security.jwt.ApiJWTFilter;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
 
-import static com.manev.quislisting.config.ThymeleafConfiguration.QUIS_LISTING_LOCALE_COOKIE;
-import static com.manev.quislisting.security.jwt.JWTConfigurer.AUTHORIZATION_HEADER;
+import static com.manev.quislisting.config.ThymeleafConfiguration.QL_LANG_KEY;
 import static org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME;
 
 @Component
@@ -37,13 +36,17 @@ public class MvcAuthenticationSuccessHandler implements AuthenticationSuccessHan
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.createToken(authentication, isRememberMe(httpServletRequest));
-        httpServletResponse.addHeader(AUTHORIZATION_HEADER, "Bearer " + jwt);
-        httpServletResponse.addCookie(new Cookie(JWTFilter.QL_AUTH, "Bearer:" + jwt));
+
+        Cookie cookie = new Cookie(ApiJWTFilter.QL_AUTH, "Bearer:" + jwt);
+        if (!isRememberMe(httpServletRequest)) {
+            cookie.setMaxAge(2592000);
+        }
+        httpServletResponse.addCookie(cookie);
 
         if (authentication.isAuthenticated()) {
             QlUserDetails principal = (QlUserDetails) authentication.getPrincipal();
             httpServletRequest.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(principal.getLangKey()));
-            httpServletResponse.addCookie(new Cookie(QUIS_LISTING_LOCALE_COOKIE, principal.getLangKey()));
+            httpServletResponse.addCookie(new Cookie(QL_LANG_KEY, principal.getLangKey()));
         }
 
         String redirectUrl = "/";

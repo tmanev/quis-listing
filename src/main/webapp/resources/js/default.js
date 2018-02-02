@@ -28,7 +28,8 @@ LandingPage = {
                     this.$http({
                         params: {
                             page: this.pagingParams.page,
-                            size: this.pagingParams.itemsPerPage
+                            size: this.pagingParams.itemsPerPage,
+                            languageCode: Cookies.get('ql-lang-key')
                         },
                         url: this.pagingParams.url,
                         method: 'GET'

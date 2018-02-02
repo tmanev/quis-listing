@@ -7,10 +7,9 @@ public class ContactDTO {
     private String name;
     @NotNull
     private String email;
-
     private String subject;
-
     private String message;
+    private String languageCode;
 
     public String getName() {
         return name;
@@ -42,5 +41,13 @@ public class ContactDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

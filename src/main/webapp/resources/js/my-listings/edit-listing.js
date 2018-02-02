@@ -423,7 +423,8 @@ EditListing = {
                         this.selectedCity = -1;
                     } else {
                         var params = {
-                            parentId: this.selectedCountry
+                            parentId: this.selectedCountry,
+                            languageCode: Cookies.get('ql-lang-key')
                         };
                         this.isStateSelectLoading = true;
                         this.selectedState = -1;
@@ -449,7 +450,8 @@ EditListing = {
                         this.selectedCity = -1;
                     } else {
                         var params = {
-                            parentId: this.selectedState
+                            parentId: this.selectedState,
+                            languageCode: Cookies.get('ql-lang-key')
                         };
                         this.isCitySelectLoading = true;
                         this.selectedCity = -1;

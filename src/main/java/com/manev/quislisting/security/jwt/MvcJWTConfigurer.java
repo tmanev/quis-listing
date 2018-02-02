@@ -6,22 +6,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-public class JWTConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+public class MvcJWTConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private TokenProvider tokenProvider;
 
     private GeoLocationService geoLocationService;
 
-    public JWTConfigurer(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
+    public MvcJWTConfigurer(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
         this.tokenProvider = tokenProvider;
         this.geoLocationService = geoLocationService;
     }
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
-        JWTFilter customFilter = new JWTFilter(tokenProvider, geoLocationService);
+    public void configure(HttpSecurity http) {
+        MvcJWTFilter customFilter = new MvcJWTFilter(tokenProvider, geoLocationService);
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

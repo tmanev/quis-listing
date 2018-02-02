@@ -20,23 +20,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
 
-import static com.manev.quislisting.config.ThymeleafConfiguration.QUIS_LISTING_LOCALE_COOKIE;
+import static com.manev.quislisting.config.ThymeleafConfiguration.QL_LANG_KEY;
 import static org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME;
 
 /**
  * Filters incoming requests and installs a Spring Security principal if a header corresponding to a valid user is
  * found.
  */
-public class JWTFilter extends GenericFilterBean {
+public class MvcJWTFilter extends GenericFilterBean {
 
-    public static final String QL_AUTH = "ql-auth";
-    private final Logger log = LoggerFactory.getLogger(JWTFilter.class);
+    private static final String QL_AUTH = "ql-auth";
+    private final Logger log = LoggerFactory.getLogger(MvcJWTFilter.class);
 
     private TokenProvider tokenProvider;
 
     private GeoLocationService geoLocationService;
 
-    JWTFilter(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
+    MvcJWTFilter(TokenProvider tokenProvider, GeoLocationService geoLocationService) {
         this.tokenProvider = tokenProvider;
         this.geoLocationService = geoLocationService;
     }
@@ -72,21 +72,17 @@ public class JWTFilter extends GenericFilterBean {
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (ExpiredJwtException eje) {
             log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
-            HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-            httpServletResponse.addCookie(new Cookie(QL_AUTH, null)); // invalidate auth cookie
+            Cookie cookie = new Cookie(QL_AUTH, null);
+            cookie.setMaxAge(0);
+            httpServletResponse.addCookie(cookie); // invalidate auth cookie
 
-            if (httpServletRequest.getRequestURL().toString().contains("/api")
-                    && !httpServletRequest.getRequestURL().toString().contains("/api/public")) {
-                ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            } else {
-                filterChain.doFilter(servletRequest, servletResponse);
-            }
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 
     private void resolveLanguage(HttpServletRequest request, ServletResponse servletResponse) {
-        Cookie qlLocaleCookie = WebUtils.getCookie(request, QUIS_LISTING_LOCALE_COOKIE);
+        Cookie qlLocaleCookie = WebUtils.getCookie(request, QL_LANG_KEY);
         String languageToken = qlLocaleCookie != null ? qlLocaleCookie.getValue() : null;
 
         if (languageToken == null || !StringUtils.hasText(languageToken)) {
@@ -96,20 +92,18 @@ public class JWTFilter extends GenericFilterBean {
             log.info("Remote IP is {}", remoteIp);
             String countryIso = geoLocationService.countryIsoFromIp(remoteIp);
             log.info("Country iso is: {}", countryIso);
+            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
             if (countryIso != null) {
-                HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
                 request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(countryIso));
-                httpServletResponse.addCookie(new Cookie(QUIS_LISTING_LOCALE_COOKIE, countryIso));
+                httpServletResponse.addCookie(new Cookie(QL_LANG_KEY, countryIso));
+            } else {
+                request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale("en"));
+                httpServletResponse.addCookie(new Cookie(QL_LANG_KEY, "en"));
             }
         }
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(JWTConfigurer.AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
-        }
-
         Cookie qlAuthCookie = WebUtils.getCookie(request, QL_AUTH);
         String bearerCookieToken = qlAuthCookie != null ? qlAuthCookie.getValue() : null;
         if (bearerCookieToken != null && StringUtils.hasText(bearerCookieToken) && bearerCookieToken.startsWith("Bearer:")) {

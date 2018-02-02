@@ -4,10 +4,7 @@ import com.manev.QuisListingApp;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.search.UserSearchRepository;
-import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
-import com.manev.quislisting.web.rest.admin.AdminRestRouter;
-import com.manev.quislisting.web.rest.admin.UserAdminRest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +20,9 @@ import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the UserResource REST controller.
@@ -36,9 +35,6 @@ public class UserAdminRestTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private MailService mailService;
 
     @Autowired
     private UserService userService;
@@ -71,7 +67,7 @@ public class UserAdminRestTest {
 
     @Before
     public void setup() {
-        UserAdminRest userResource = new UserAdminRest(userRepository, mailService, userService, userSearchRepository);
+        UserAdminRest userResource = new UserAdminRest(userRepository, userService, userSearchRepository);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 

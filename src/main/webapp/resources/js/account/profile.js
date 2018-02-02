@@ -69,7 +69,7 @@ Profile = {
                         }).then(function (response) {
                             console.log('Success!:', response.data);
                             var headerLocaleKey = "ql-locale-header";
-                            var localeCookie = "QuisListingLocaleCookie";
+                            var localeCookie = "ql-lang-key";
                             if (response.headers.get(headerLocaleKey)) {
                                 eraseCookie(localeCookie);
                                 createCookie(localeCookie, response.headers.get(headerLocaleKey));

@@ -100,7 +100,8 @@ Search = {
                         method: 'GET',
                         params: {
                             page: this.pagingParams.page,
-                            size: this.pagingParams.itemsPerPage
+                            size: this.pagingParams.itemsPerPage,
+                            languageCode: Cookies.get('ql-lang-key')
                         }
                     }).then(function (response) {
                         console.log('Success!:', response.data);
@@ -169,7 +170,8 @@ Search = {
                 },
                 fetchStates: function (parentId) {
                     var params = {
-                        parentId: parentId
+                        parentId: parentId,
+                        languageCode: Cookies.get('ql-lang-key')
                     };
                     this.isStateSelectLoading = true;
                     this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
@@ -188,7 +190,8 @@ Search = {
                 },
                 fetchCities: function (parentId) {
                     var params = {
-                        parentId: parentId
+                        parentId: parentId,
+                        languageCode: Cookies.get('ql-lang-key')
                     };
                     this.isCitySelectLoading = true;
                     this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {

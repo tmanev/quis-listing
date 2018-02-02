@@ -53,13 +53,13 @@ public class EmailSendingService {
     }
 
     @Async
-    public void sendContactUs(ContactDTO contactDTO, String language) {
+    public void sendContactUs(ContactDTO contactDTO) {
         QlConfig adminEmailConfig = qlConfigService.findOneByKey("admin_email");
 
         // try and find the template by the selected language
         EmailTemplate contactUsEmailTemplate = emailTemplateService.findOneByName("contact-us");
 
-        String html = getValueByLanguage(language, contactUsEmailTemplate.getQlString());
+        String html = getValueByLanguage(contactDTO.getLanguageCode(), contactUsEmailTemplate.getQlString());
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", contactDTO.getName());
         variables.put("email", contactDTO.getEmail());

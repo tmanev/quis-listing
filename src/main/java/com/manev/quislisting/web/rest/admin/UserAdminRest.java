@@ -4,7 +4,6 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.search.UserSearchRepository;
 import com.manev.quislisting.security.AuthoritiesConstants;
-import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -67,17 +66,13 @@ public class UserAdminRest {
     private final Logger log = LoggerFactory.getLogger(UserAdminRest.class);
     private final UserRepository userRepository;
 
-    private final MailService mailService;
-
     private final UserService userService;
 
     private final UserSearchRepository userSearchRepository;
 
-    public UserAdminRest(UserRepository userRepository, MailService mailService,
-                         UserService userService, UserSearchRepository userSearchRepository) {
+    public UserAdminRest(UserRepository userRepository, UserService userService, UserSearchRepository userSearchRepository) {
 
         this.userRepository = userRepository;
-        this.mailService = mailService;
         this.userService = userService;
         this.userSearchRepository = userSearchRepository;
     }

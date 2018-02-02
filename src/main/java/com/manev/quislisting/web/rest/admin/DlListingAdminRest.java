@@ -55,7 +55,7 @@ public class DlListingAdminRest {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
         }
 
-        DlListingDTO result = dlListingService.save(dlListingDTO, null);
+        DlListingDTO result = dlListingService.save(dlListingDTO);
         return ResponseEntity.created(new URI(AdminRestRouter.DlListing.LIST + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
@@ -67,7 +67,7 @@ public class DlListingAdminRest {
         if (dlListingDTO.getId() == null) {
             return createDlListing(dlListingDTO);
         }
-        DlListingDTO result = dlListingService.save(dlListingDTO, null);
+        DlListingDTO result = dlListingService.save(dlListingDTO);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
@@ -80,7 +80,7 @@ public class DlListingAdminRest {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
         }
 
-        DlListingDTO result = dlListingService.save(dlListingDTO, null);
+        DlListingDTO result = dlListingService.save(dlListingDTO);
         dlListingService.validateForPublishing(result);
 
         return ResponseEntity.ok()

@@ -72,8 +72,8 @@ import java.util.Set;
 public class DlListingService {
 
     private static final String USER_S_WAS_NOT_FOUND_IN_THE_DATABASE = "User : %s was not found in the database";
-    public static final String TRANSLATED_LOCATIONS = "translatedLocations";
-    public static final String TRANSLATED_LOCATIONS_ID = "translatedLocations.id";
+    private static final String TRANSLATED_LOCATIONS = "translatedLocations";
+    private static final String TRANSLATED_LOCATIONS_ID = "translatedLocations.id";
     private static Clock clock = Clock.systemUTC();
     private final Logger log = LoggerFactory.getLogger(DlListingService.class);
     private final EmailSendingService emailSendingService;
@@ -114,26 +114,26 @@ public class DlListingService {
         this.translationGroupRepository = translationGroupRepository;
     }
 
-    public DlListingDTO save(DlListingDTO dlListingDTO, String languageCode) {
+    public DlListingDTO save(DlListingDTO dlListingDTO) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
-        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, languageCode, null);
+        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, null);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
 
-        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, languageCode);
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, savedDlListing.getTranslation().getLanguageCode());
         dlListingSearchRepository.save(savedDlListingDTO);
         return savedDlListingDTO;
     }
 
-    public DlListingDTO saveAndPublish(DlListingDTO dlListingDTO, String languageCode) {
+    public DlListingDTO saveAndPublish(DlListingDTO dlListingDTO) {
         log.debug("Request to save DlListingDTO : {}", dlListingDTO);
 
-        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, languageCode, null);
+        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, null);
         dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving, null);
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving, savedDlListing.getTranslation().getLanguageCode());
         dlListingSearchRepository.save(savedDlListingDTO);
 
         emailSendingService.sendPublishedNotification(savedDlListing);
@@ -145,7 +145,7 @@ public class DlListingService {
         DlListing dlListingForSaving = dlListingRepository.findOne(id);
         dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, null);
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, dlListingForSaving.getTranslation().getLanguageCode());
         dlListingSearchRepository.save(savedDlListingDTO);
     }
 
@@ -178,7 +178,7 @@ public class DlListingService {
         return dlListingDTO;
     }
 
-    private DlListing getDlListingForSaving(DlListingDTO dlListingDTO, String langKey, Long translationGroupId) {
+    private DlListing getDlListingForSaving(DlListingDTO dlListingDTO, Long translationGroupId) {
         DlListing dlListingForSaving;
         Timestamp now = new Timestamp(clock.millis());
         if (dlListingDTO.getId() != null) {
@@ -187,6 +187,7 @@ public class DlListingService {
             setCommonProperties(dlListingDTO, dlListingForSaving);
             dlListingForSaving.setModified(now);
         } else {
+            // only when initially is created
             String currentUserLogin = SecurityUtils.getCurrentUserLogin();
             Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
             if (oneByLogin.isPresent()) {
@@ -197,7 +198,7 @@ public class DlListingService {
                 TranslationGroup translationGroup = getTranslationGroup(translationGroupId);
                 dlListingForSaving.setTranslation(
                         TranslationBuilder.aTranslation()
-                                .withLanguageCode(langKey)
+                                .withLanguageCode(dlListingDTO.getLanguageCode())
                                 .withTranslationGroup(translationGroup)
                                 .build());
 
