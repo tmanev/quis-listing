@@ -3,6 +3,8 @@ package com.manev.quislisting.web.mvc.mylistings;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
+import com.manev.quislisting.service.model.DlListingModel;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.web.mvc.BaseController;
@@ -27,12 +29,15 @@ public class PreviewListingController extends BaseController {
     private DlListingService dlListingService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper;
 
     @RequestMapping(value = MvcRouter.MyListings.PREVIEW, method = RequestMethod.GET)
     public String showPreviewListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
+        DlListingModel dlListingModel = dlListingDtoToDlListingModelMapper.convert(dlListingDTO, language);
 
         if (dlListingDTO == null) {
             return redirectToPageNotFound();
@@ -49,7 +54,7 @@ public class PreviewListingController extends BaseController {
                     "database");
         }
 
-        modelMap.addAttribute("dlListingDTO", dlListingDTO);
+        modelMap.addAttribute("dlListingDTO", dlListingModel);
 
         modelMap.addAttribute(ATTRIBUTE_TITLE, dlListingDTO.getTitle());
         modelMap.addAttribute("view", "client/listing");

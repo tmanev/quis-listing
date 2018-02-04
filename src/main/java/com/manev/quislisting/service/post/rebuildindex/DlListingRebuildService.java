@@ -46,7 +46,7 @@ public class DlListingRebuildService {
                 dlListingSearchRepository.delete(one);
             }
 
-            DlListingDTO reBuildDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing, dlListing.getTranslation().getLanguageCode());
+            DlListingDTO reBuildDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing);
             dlListingSearchRepository.save(reBuildDlListingDTO);
         }
 

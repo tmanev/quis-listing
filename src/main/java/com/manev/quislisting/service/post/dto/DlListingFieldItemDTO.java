@@ -1,9 +1,13 @@
 package com.manev.quislisting.service.post.dto;
 
+import com.manev.quislisting.service.model.QlStringTranslationModel;
+
+import java.util.List;
+
 public class DlListingFieldItemDTO {
     private Long id;
     private String value;
-    private String translatedValue;
+    private List<QlStringTranslationModel> translatedValues;
 
     public Long getId() {
         return id;
@@ -31,16 +35,11 @@ public class DlListingFieldItemDTO {
         return this;
     }
 
-    public String getTranslatedValue() {
-        return translatedValue;
+    public List<QlStringTranslationModel> getTranslatedValues() {
+        return translatedValues;
     }
 
-    public void setTranslatedValue(String translatedValue) {
-        this.translatedValue = translatedValue;
-    }
-
-    public DlListingFieldItemDTO translatedValue(String translatedValue) {
-        this.translatedValue = translatedValue;
-        return this;
+    public void setTranslatedValues(List<QlStringTranslationModel> translatedValues) {
+        this.translatedValues = translatedValues;
     }
 }

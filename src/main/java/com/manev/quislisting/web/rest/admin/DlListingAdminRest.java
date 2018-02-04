@@ -2,7 +2,6 @@ package com.manev.quislisting.web.rest.admin;
 
 import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.post.DlListingService;
-import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.rebuildindex.DlListingRebuildService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
@@ -19,17 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,56 +41,6 @@ public class DlListingAdminRest {
         this.dlListingRebuildService = dlListingRebuildService;
     }
 
-    @PostMapping(AdminRestRouter.DlListing.LIST)
-    public ResponseEntity<DlListingDTO> createDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
-        log.debug("REST request to save DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
-        }
-
-        DlListingDTO result = dlListingService.save(dlListingDTO);
-        return ResponseEntity.created(new URI(AdminRestRouter.DlListing.LIST + String.format("/%s", result.getId())))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
-    }
-
-    @PutMapping(AdminRestRouter.DlListing.LIST)
-    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
-        log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() == null) {
-            return createDlListing(dlListingDTO);
-        }
-        DlListingDTO result = dlListingService.save(dlListingDTO);
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
-    }
-
-    @PutMapping(AdminRestRouter.DlListing.PUBLISH)
-    public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO) {
-        log.debug("REST request to publish DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() == null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
-        }
-
-        DlListingDTO result = dlListingService.save(dlListingDTO);
-        dlListingService.validateForPublishing(result);
-
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))
-                .body(result);
-    }
-
-    @PostMapping(value = AdminRestRouter.DlListing.UPLOAD)
-    public ResponseEntity<List<AttachmentDTO>> handleFileUpload(MultipartRequest multipartRequest, @PathVariable Long id) throws IOException {
-
-        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-
-        List<AttachmentDTO> result = dlListingService.uploadFile(fileMap, id);
-
-        return ResponseEntity.ok().body(result);
-    }
-
     @GetMapping(AdminRestRouter.DlListing.LIST)
     public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of DlListingDTO");
@@ -109,7 +52,7 @@ public class DlListingAdminRest {
     @GetMapping(AdminRestRouter.DlListing.DETAIL)
     public ResponseEntity<DlListingDTO> getDlListing(@PathVariable Long id) {
         log.debug("REST request to get DlListingDTO : {}", id);
-        DlListingDTO dlListingDTO = dlListingService.findOne(id, null);
+        DlListingDTO dlListingDTO = dlListingService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlListingDTO));
     }
 

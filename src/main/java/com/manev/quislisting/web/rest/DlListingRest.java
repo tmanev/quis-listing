@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
+import com.manev.quislisting.service.model.DlListingBaseModel;
+import com.manev.quislisting.service.model.DlListingModel;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
@@ -48,62 +53,55 @@ public class DlListingRest {
     private final Logger log = LoggerFactory.getLogger(DlListingRest.class);
     private final DlListingService dlListingService;
     private final UserService userService;
+    private final DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
+    private final DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper;
 
-    public DlListingRest(DlListingService dlListingService, UserService userService) {
+    public DlListingRest(DlListingService dlListingService, UserService userService, DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper, DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper) {
         this.dlListingService = dlListingService;
         this.userService = userService;
+        this.dlListingDtoToDlListingBaseMapper = dlListingDtoToDlListingBaseMapper;
+        this.dlListingDtoToDlListingModelMapper = dlListingDtoToDlListingModelMapper;
     }
 
     @PostMapping(RestRouter.DlListing.LIST)
-    public ResponseEntity<DlListingDTO> createDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
-        log.debug("REST request to save DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() != null) {
+    public ResponseEntity<DlListingDTO> createDlListing(@RequestBody DlListingForm dlListingForm) throws URISyntaxException {
+        log.debug("REST request to save DlListingDTO : {}", dlListingForm);
+        if (dlListingForm.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new entity cannot already have an ID")).body(null);
         }
 
         User loggedUser = getAuthenticatedUser(SecurityUtils.getCurrentUserLogin());
-        dlListingDTO.setLanguageCode(loggedUser.getLangKey());
-
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+        DlListingDTO result = dlListingService.create(dlListingForm, loggedUser, loggedUser.getLangKey());
         return ResponseEntity.created(new URI(RestRouter.DlListing.LIST + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
-    private User getAuthenticatedUser(String login) {
-        Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(login);
-        if (userWithAuthoritiesByLogin.isPresent()) {
-            return userWithAuthoritiesByLogin.get();
-        }
-        throw new UsernameNotFoundException("User " + login + " was not found in the " +
-                "database");
-    }
-
     @PutMapping(RestRouter.DlListing.LIST)
-    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingDTO dlListingDTO) throws URISyntaxException {
-        log.debug("REST request to update DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() == null) {
-            return createDlListing(dlListingDTO);
+    public ResponseEntity<DlListingDTO> updateDlListing(@RequestBody DlListingForm dlListingForm) throws URISyntaxException {
+        log.debug("REST request to update DlListingDTO : {}", dlListingForm);
+        if (dlListingForm.getId() == null) {
+            return createDlListing(dlListingForm);
         }
 
-        DlListingDTO result = dlListingService.save(dlListingDTO);
+        DlListingDTO result = dlListingService.update(dlListingForm);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
     @PutMapping(RestRouter.DlListing.PUBLISH)
-    public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingDTO dlListingDTO) {
-        log.debug("REST request to publish DlListingDTO : {}", dlListingDTO);
-        if (dlListingDTO.getId() == null) {
+    public ResponseEntity<DlListingDTO> updateAndPublish(@RequestBody DlListingForm dlListingForm) {
+        log.debug("REST request to publish DlListingDTO : {}", dlListingForm);
+        if (dlListingForm.getId() == null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idnotexists", "Listing must have an ID")).body(null);
         }
 
-        dlListingService.validateForPublishing(dlListingDTO);
-        DlListingDTO result = dlListingService.saveAndPublish(dlListingDTO);
+        dlListingService.validateForPublishing(dlListingForm);
+        DlListingDTO result = dlListingService.saveAndPublish(dlListingForm);
 
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingDTO.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingForm.getId().toString()))
                 .body(result);
     }
 
@@ -134,11 +132,11 @@ public class DlListingRest {
     }
 
     @GetMapping(RestRouter.DlListing.DETAIL)
-    public ResponseEntity<DlListingDTO> getDlListing(@PathVariable Long id,
-                                                     @RequestParam(required = false, defaultValue = "en") String languageCode) {
+    public ResponseEntity<DlListingModel> getDlListing(@PathVariable Long id,
+                                                           @RequestParam(required = false, defaultValue = "en") String languageCode) {
         log.debug("REST request to get DlListingDTO : {}", id);
-        DlListingDTO dlListingDTO = dlListingService.findOne(id, languageCode);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlListingDTO));
+        DlListingDTO dlListingDTO = dlListingService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dlListingDtoToDlListingModelMapper.convert(dlListingDTO, languageCode)));
     }
 
     @DeleteMapping(RestRouter.DlListing.DETAIL)
@@ -164,17 +162,19 @@ public class DlListingRest {
     }
 
     @GetMapping(RestRouter.DlListing.RECENT)
-    public ResponseEntity<List<DlListingDTO>> getRecentListings(Pageable pageable,
+    public ResponseEntity<List<DlListingBaseModel>> getRecentListings(Pageable pageable,
                                                                 @RequestParam(required = false, defaultValue = "en") String languageCode) {
         log.debug("REST request to get a page of DlListingDTO");
 
         Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, languageCode);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlListing.RECENT);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.RECENT);
+        return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping(RestRouter.DlListing.SEARCH)
-    public ResponseEntity<List<DlListingDTO>> searchListings(@RequestParam String query, @ApiParam Pageable pageable,
+    public ResponseEntity<List<DlListingBaseModel>> searchListings(@RequestParam String query, @ApiParam Pageable pageable,
                                                              @RequestParam(required = false, defaultValue = "en") String languageCode) throws IOException {
         log.debug("REST request to search for a page of Books for query {}", query);
 
@@ -186,7 +186,17 @@ public class DlListingRest {
         }
 
         Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, RestRouter.DlListing.SEARCH);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, dlListingBaseModels, RestRouter.DlListing.SEARCH);
+        return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
+    }
+
+    private User getAuthenticatedUser(String login) {
+        Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(login);
+        if (userWithAuthoritiesByLogin.isPresent()) {
+            return userWithAuthoritiesByLogin.get();
+        }
+        throw new UsernameNotFoundException("User " + login + " was not found in the " +
+                "database");
     }
 }

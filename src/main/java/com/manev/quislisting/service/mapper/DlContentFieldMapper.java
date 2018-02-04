@@ -10,6 +10,7 @@ import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -89,7 +90,7 @@ public class DlContentFieldMapper {
                 .options(dlContentField.getOptions())
                 .searchOptions(dlContentField.getSearchOptions())
                 .dlCategories(getDlCategoriesDTO(dlContentField.getDlCategories()))
-                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems(), languageCode))
+                .dlContentFieldItems(getDlContentFieldItemsDTO(dlContentField, dlContentField.getDlContentFieldItems(), languageCode))
                 .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
                 .enabled(dlContentField.getEnabled());
@@ -121,14 +122,15 @@ public class DlContentFieldMapper {
         return dlCategoryDTOList;
     }
 
-    private List<DlContentFieldItemDTO> getDlContentFieldsDTO(Set<DlContentFieldItem> dlContentFieldItems, String languageCode) {
+    private List<DlContentFieldItemDTO> getDlContentFieldItemsDTO(DlContentField dlContentField, Set<DlContentFieldItem> dlContentFieldItems, String languageCode) {
+        long start = System.currentTimeMillis();
         List<DlContentFieldItemDTO> result = new ArrayList<>();
-        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlContentFieldItems)) {
             for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
                 result.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, languageCode));
             }
         }
-
+        log.info("getDlContentFieldItemsDTO for id: {}, name: {}, took: {} ms", dlContentField.getId(), dlContentField.getName(), System.currentTimeMillis() - start);
         return result;
     }
 

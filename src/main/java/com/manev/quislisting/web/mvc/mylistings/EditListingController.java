@@ -49,7 +49,7 @@ public class EditListingController extends BaseController {
     public String showEditListingPage(@PathVariable String id, final ModelMap modelMap, HttpServletRequest request) throws IOException {
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
 
         if (dlListingDTO == null) {
             return redirectToPageNotFound();

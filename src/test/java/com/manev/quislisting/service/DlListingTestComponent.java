@@ -6,26 +6,22 @@ import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.post.discriminator.builder.DlListingBuilder;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
-import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
-import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
-import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
-import com.manev.quislisting.service.dto.UserDTO;
+import com.manev.quislisting.service.form.DlCategoryForm;
+import com.manev.quislisting.service.form.DlListingFieldForm;
+import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.form.DlLocationForm;
 import com.manev.quislisting.service.model.DlContentFieldInput;
-import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.DlListingDTOBuilder;
-import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
-import com.manev.quislisting.service.post.dto.TranslationDTOBuilder;
-import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
-import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
-import com.manev.quislisting.service.util.SlugUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -40,42 +36,15 @@ public class DlListingTestComponent {
     public static final long TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS = 10000L;
     private static final Timestamp DEFAULT_CREATED = Timestamp.valueOf(LocalDateTime.parse("2007-12-03T10:15:30"));
     private static final Timestamp DEFAULT_MODIFIED = Timestamp.valueOf(LocalDateTime.parse("2007-12-03T10:15:30"));
-    private static final String SHOULD_NOT_BE_THIS_NAME = "SHOULD_NOT_BE_THIS_NAME";
-    private static final String LANGUAGE_CODE_SHOULD_NOT_BE_THIS = "LANGUAGE_CODE_SHOULD_NOT_BE_THIS";
-    private static final String SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS = "SOURCE_LANGUAGE_CODE_SHOULD_NOT_BE_THIS";
     private static Boolean DEFAULT_APPROVED = Boolean.FALSE;
     private static Clock clock = Clock.systemUTC();
     public static final Timestamp ZONED_DATE_TIME_SHOULD_NOT_BE_THIS = new Timestamp(clock.millis());
-
-    @Autowired
-    private DlCategoryRepository dlCategoryRepository;
-
-    @Autowired
-    private DlLocationRepository dlLocationRepository;
-
-    @Autowired
-    private DlContentFieldRepository dlContentFieldRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private DlListingRepository dlListingRepository;
-
-    @Autowired
-    private DlCategoryTestComponent dlCategoryTestComponent;
-
-    @Autowired
-    private DlLocationTestComponent dlLocationTestComponent;
-
-    @Autowired
-    private DlContentFieldTestComponent dlContentFieldTestComponent;
-
-    @Autowired
-    private DlCategoryMapper dlCategoryMapper;
-
-    @Autowired
-    private DlLocationMapper dlLocationMapper;
 
     public static DlListing createEntity() {
         return DlListingBuilder.aDlListing()
@@ -105,51 +74,44 @@ public class DlListingTestComponent {
         return dlListingRepository.saveAndFlush(dlListing);
     }
 
-    public DlListingDTO createDlListingDTO(String title, String languageCode, DlCategory dlCategory, DlLocation dlLocation, List<DlContentFieldInput> contentFieldInputs) {
-        DlListingDTO dlListingDTO = createDlListingDTO(dlCategory, dlLocation, contentFieldInputs, languageCode);
-        dlListingDTO.setTitle(title);
-        dlListingDTO.setName(SlugUtil.slugify(title));
-        dlListingDTO.setLanguageCode(languageCode);
-        return dlListingDTO;
+    public DlListingForm createDlListingForm(String title, DlCategory dlCategory, DlLocation dlLocation, List<DlContentFieldInput> contentFieldInputs) {
+        DlListingForm dlListingForm = createDlListingForm(dlCategory, dlLocation, contentFieldInputs);
+        dlListingForm.setTitle(title);
+        return dlListingForm;
     }
 
-    public DlListingDTO createDlListingDTO(DlCategory dlCategory, DlLocation dlLocation,
-                                           List<DlContentFieldInput> contentFieldInputs, String languageCode) {
-        DlListingDTO dlListingDTO = DlListingDTOBuilder.aDlListingDTO()
-                .withTitle(DlListingTestComponent.DEFAULT_TITLE)
-                .withContent(DlListingTestComponent.DEFAULT_CONTENT)
-                .withName(SHOULD_NOT_BE_THIS_NAME)
-                .withCreated(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS)
-                .withModified(ZONED_DATE_TIME_SHOULD_NOT_BE_THIS)
-                .withAuthor(new UserDTO(10000L, "some_login", "some first name", "some last name"))
-                .withLanguageCode(languageCode)
-                .withSourceLanguageCode(languageCode)
-                .withTranslationGroupId(TRANSLATION_GROUP_ID_SHOULD_NOT_BE_THIS)
-                .addTranslation(TranslationDTOBuilder.aTranslationDTO()
-                        .withId(1000L)
-                        .build())
-                .withStatus(DlListing.Status.DRAFT)
-                .withExpirationDate("2020-01-01")
-                .build();
+    public DlListingForm createDlListingForm(DlCategory dlCategory, DlLocation dlLocation,
+                                              List<DlContentFieldInput> contentFieldInputs) {
+        DlListingForm dlListingForm = new DlListingForm();
+        dlListingForm.setTitle(DlListingTestComponent.DEFAULT_TITLE);
+        dlListingForm.setContent(DlListingTestComponent.DEFAULT_CONTENT);
 
         if (dlCategory != null) {
-            dlListingDTO.addDlCategoryDto(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
+            DlCategoryForm dlCategoryForm = new DlCategoryForm();
+            dlCategoryForm.setId(dlCategory.getId());
+            dlListingForm.setDlCategories(new ArrayList<>(Collections.singletonList(dlCategoryForm)));
         }
 
         if (dlLocation != null) {
-            dlListingDTO.addDlLocationDto(dlLocationMapper.dlLocationToDlLocationDTO(dlLocation));
+            DlLocationForm dlLocationForm = new DlLocationForm();
+            dlLocationForm.setId(dlLocation.getId());
+            dlListingForm.setDlLocations(new ArrayList<>(Collections.singletonList(dlLocationForm)));
         }
 
-        if (contentFieldInputs != null) {
+        if (!CollectionUtils.isEmpty(contentFieldInputs)) {
+            List<DlListingFieldForm> inputs = new ArrayList<>();
             for (DlContentFieldInput contentFieldInput : contentFieldInputs) {
-                dlListingDTO.addDlListingField(new DlListingFieldDTO()
-                        .id(contentFieldInput.getDlContentField().getId())
-                        .value(contentFieldInput.getValue())
-                        .selectedValue(contentFieldInput.getSelectionValue()));
+                DlListingFieldForm dlListingFieldForm = new DlListingFieldForm();
+                dlListingFieldForm.setId(contentFieldInput.getDlContentField().getId());
+                dlListingFieldForm.setValue(contentFieldInput.getValue());
+                dlListingFieldForm.setSelectedValue(contentFieldInput.getSelectionValue());
+
+                inputs.add(dlListingFieldForm);
             }
+            dlListingForm.setDlListingFields(inputs);
         }
 
-        return dlListingDTO;
+        return dlListingForm;
     }
 
 }

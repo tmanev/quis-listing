@@ -15,7 +15,6 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.DlAttachmentRepository;
 import com.manev.quislisting.repository.DlContentFieldItemRepository;
 import com.manev.quislisting.repository.DlContentFieldRepository;
-import com.manev.quislisting.repository.TranslationGroupRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.search.DlListingSearchRepository;
@@ -25,16 +24,17 @@ import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.dto.ApproveDTO;
+import com.manev.quislisting.service.form.DlCategoryForm;
+import com.manev.quislisting.service.form.DlListingFieldForm;
+import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.form.DlLocationForm;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
-import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.qlml.LanguageService;
 import com.manev.quislisting.service.storage.StorageService;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
-import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
-import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.util.AttachmentUtil;
 import com.manev.quislisting.service.util.SlugUtil;
 import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
@@ -89,7 +89,6 @@ public class DlListingService {
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlAttachmentRepository dlAttachmentRepository;
     private DlListingSearchRepository dlListingSearchRepository;
-    private TranslationGroupRepository translationGroupRepository;
 
     public DlListingService(DlListingRepository dlListingRepository, UserRepository userRepository,
                             DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository,
@@ -97,7 +96,7 @@ public class DlListingService {
                             StorageService storageService, LanguageService languageService,
                             DlContentFieldRepository dlContentFieldRepository,
                             DlContentFieldItemRepository dlContentFieldItemRepository,
-                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository, EmailSendingService emailSendingService, TranslationGroupRepository translationGroupRepository) {
+                            DlAttachmentRepository dlAttachmentRepository, DlListingSearchRepository dlListingSearchRepository, EmailSendingService emailSendingService) {
         this.dlListingRepository = dlListingRepository;
         this.userRepository = userRepository;
         this.dlCategoryRepository = dlCategoryRepository;
@@ -111,29 +110,59 @@ public class DlListingService {
         this.dlAttachmentRepository = dlAttachmentRepository;
         this.dlListingSearchRepository = dlListingSearchRepository;
         this.emailSendingService = emailSendingService;
-        this.translationGroupRepository = translationGroupRepository;
     }
 
-    public DlListingDTO save(DlListingDTO dlListingDTO) {
-        log.debug("Request to save DlListingDTO : {}", dlListingDTO);
+    public DlListingDTO create(DlListingForm dlListingForm, User user, String languageCode) {
+        Timestamp now = new Timestamp(clock.millis());
 
-        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, null);
+        DlListing dlListingForSaving = new DlListing();
+
+        setCommonProperties(dlListingForm, dlListingForSaving);
+
+        TranslationGroup translationGroup = new TranslationGroup();
+        dlListingForSaving.setTranslation(
+                TranslationBuilder.aTranslation()
+                        .withLanguageCode(languageCode)
+                        .withTranslationGroup(translationGroup)
+                        .build());
+
+        dlListingForSaving.setCreated(now);
+        dlListingForSaving.setModified(now);
+        dlListingForSaving.setUser(user);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
 
-        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, savedDlListing.getTranslation().getLanguageCode());
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
         dlListingSearchRepository.save(savedDlListingDTO);
         return savedDlListingDTO;
     }
 
-    public DlListingDTO saveAndPublish(DlListingDTO dlListingDTO) {
-        log.debug("Request to save DlListingDTO : {}", dlListingDTO);
+    public DlListingDTO update(DlListingForm dlListingForm) {
+        DlListing dlListingForSaving = prepListingForUpdate(dlListingForm);
 
-        DlListing dlListingForSaving = getDlListingForSaving(dlListingDTO, null);
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
+    }
+
+    private DlListing prepListingForUpdate(DlListingForm dlListingForm) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(dlListingForm.getId());
+
+        setCommonProperties(dlListingForm, dlListingForSaving);
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
+        return dlListingForSaving;
+    }
+
+    public DlListingDTO saveAndPublish(DlListingForm dlListingForm) {
+        log.debug("Request to save DlListingDTO : {}", dlListingForm);
+
+        DlListing dlListingForSaving = prepListingForUpdate(dlListingForm);
         dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving, savedDlListing.getTranslation().getLanguageCode());
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListingForSaving);
         dlListingSearchRepository.save(savedDlListingDTO);
 
         emailSendingService.sendPublishedNotification(savedDlListing);
@@ -145,7 +174,7 @@ public class DlListingService {
         DlListing dlListingForSaving = dlListingRepository.findOne(id);
         dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
-        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing, dlListingForSaving.getTranslation().getLanguageCode());
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
         dlListingSearchRepository.save(savedDlListingDTO);
     }
 
@@ -156,7 +185,7 @@ public class DlListingService {
         dlListing.setApprovedModified(new Timestamp(clock.millis()));
         DlListing save = dlListingRepository.save(dlListing);
 
-        DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save, null);
+        DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save);
         dlListingSearchRepository.save(dlListingDTO);
 
         return dlListingDTO;
@@ -170,7 +199,7 @@ public class DlListingService {
         dlListing.setStatus(DlListing.Status.PUBLISH_DISAPPROVED);
         DlListing save = dlListingRepository.save(dlListing);
 
-        DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save, null);
+        DlListingDTO dlListingDTO = dlListingMapper.dlListingToDlListingDTO(save);
         dlListingSearchRepository.save(dlListingDTO);
 
         emailSendingService.sendListingDisapprovedEmail(save, approveDTO.getMessage());
@@ -178,52 +207,10 @@ public class DlListingService {
         return dlListingDTO;
     }
 
-    private DlListing getDlListingForSaving(DlListingDTO dlListingDTO, Long translationGroupId) {
-        DlListing dlListingForSaving;
-        Timestamp now = new Timestamp(clock.millis());
-        if (dlListingDTO.getId() != null) {
-            dlListingForSaving = dlListingRepository.findOne(dlListingDTO.getId());
-
-            setCommonProperties(dlListingDTO, dlListingForSaving);
-            dlListingForSaving.setModified(now);
-        } else {
-            // only when initially is created
-            String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-            Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
-            if (oneByLogin.isPresent()) {
-                dlListingForSaving = new DlListing();
-
-                setCommonProperties(dlListingDTO, dlListingForSaving);
-
-                TranslationGroup translationGroup = getTranslationGroup(translationGroupId);
-                dlListingForSaving.setTranslation(
-                        TranslationBuilder.aTranslation()
-                                .withLanguageCode(dlListingDTO.getLanguageCode())
-                                .withTranslationGroup(translationGroup)
-                                .build());
-
-                dlListingForSaving.setCreated(now);
-                dlListingForSaving.setModified(now);
-                dlListingForSaving.setUser(oneByLogin.get());
-            } else {
-                throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
-            }
-        }
-        return dlListingForSaving;
-    }
-
-    private TranslationGroup getTranslationGroup(Long translationGroupId) {
-        if (translationGroupId != null) {
-            return translationGroupRepository.findOne(translationGroupId);
-        } else {
-            return new TranslationGroup();
-        }
-    }
-
-    private void setCommonProperties(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
-        dlListingForSaving.setTitle(dlListingDTO.getTitle());
-        dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingDTO.getTitle()));
-        dlListingForSaving.setContent(dlListingDTO.getContent());
+    private void setCommonProperties(DlListingForm dlListingForm, DlListing dlListingForSaving) {
+        dlListingForSaving.setTitle(dlListingForm.getTitle());
+        dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingForm.getTitle()));
+        dlListingForSaving.setContent(dlListingForm.getContent());
 
         // if user is in role ADMIN don't change the status
         if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN) || dlListingForSaving.getStatus() == null) {
@@ -233,48 +220,48 @@ public class DlListingService {
         dlListingForSaving.setApproved(null);
         dlListingForSaving.setApprovedModified(null);
 
-        setCategory(dlListingDTO, dlListingForSaving);
-        setLocation(dlListingDTO, dlListingForSaving);
-        setFeaturedAttachment(dlListingDTO, dlListingForSaving);
+        setCategory(dlListingForm, dlListingForSaving);
+        setLocation(dlListingForm, dlListingForSaving);
+        setFeaturedAttachment(dlListingForm, dlListingForSaving);
 
-        List<DlListingFieldDTO> dlListingFieldDTOS = dlListingDTO.getDlListingFields();
+        List<DlListingFieldForm> dlListingFieldDTOS = dlListingForm.getDlListingFields();
 
-        if (dlListingFieldDTOS != null) {
+        if (!CollectionUtils.isEmpty(dlListingFieldDTOS)) {
             Set<DlListingContentFieldRel> existingDlListingContentFieldRels = dlListingForSaving.getDlListingContentFieldRels();
-            for (DlListingFieldDTO dlListingFieldDTO : dlListingFieldDTOS) {
-                DlContentField dlContentField = dlContentFieldRepository.findOne(dlListingFieldDTO.getId());
+            for (DlListingFieldForm dlListingFieldForm : dlListingFieldDTOS) {
+                DlContentField dlContentField = dlContentFieldRepository.findOne(dlListingFieldForm.getId());
                 DlListingContentFieldRel dlListingContentFieldRel = findDlContentFieldRelationship(dlContentField, existingDlListingContentFieldRels);
 
-                updateDlContentFieldRelationship(dlListingForSaving, dlListingFieldDTO, dlContentField, dlListingContentFieldRel);
+                updateDlContentFieldRelationship(dlListingForSaving, dlListingFieldForm, dlContentField, dlListingContentFieldRel);
             }
         }
     }
 
-    private void setFeaturedAttachment(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
-        if (dlListingDTO.getFeaturedAttachment() != null) {
-            dlListingForSaving.setFeaturedAttachment(dlAttachmentRepository.findOne(dlListingDTO.getFeaturedAttachment().getId()));
+    private void setFeaturedAttachment(DlListingForm dlListingForm, DlListing dlListingForSaving) {
+        if (dlListingForm.getFeaturedAttachment() != null) {
+            dlListingForSaving.setFeaturedAttachment(dlAttachmentRepository.findOne(dlListingForm.getFeaturedAttachment().getId()));
         }
     }
 
-    private void updateDlContentFieldRelationship(DlListing dlListingForSaving, DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlListingContentFieldRel dlListingContentFieldRel) {
+    private void updateDlContentFieldRelationship(DlListing dlListingForSaving, DlListingFieldForm dlListingFieldForm, DlContentField dlContentField, DlListingContentFieldRel dlListingContentFieldRel) {
         if (dlListingContentFieldRel != null) {
             // update existing relationship object
-            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, dlListingContentFieldRel);
+            setContentFieldRelationValue(dlListingFieldForm, dlContentField, dlListingContentFieldRel);
         } else {
             // create new relationship object
             DlListingContentFieldRel newDlListingContentFieldRel = new DlListingContentFieldRel();
             newDlListingContentFieldRel.setDlContentField(dlContentField);
             newDlListingContentFieldRel.setDlListing(dlListingForSaving);
-            setContentFieldRelationValue(dlListingFieldDTO, dlContentField, newDlListingContentFieldRel);
+            setContentFieldRelationValue(dlListingFieldForm, dlContentField, newDlListingContentFieldRel);
             dlListingForSaving.addDlContentFieldRelationships(newDlListingContentFieldRel);
         }
     }
 
-    private void setContentFieldRelationValue(DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField, DlListingContentFieldRel newDlListingContentFieldRel) {
+    private void setContentFieldRelationValue(DlListingFieldForm dlListingFieldForm, DlContentField dlContentField, DlListingContentFieldRel newDlListingContentFieldRel) {
         if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
             // make relation with the selection items
-            if (!StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue())) {
-                List<Long> idsAsList = getSelectedValuesFromCheckbox(dlListingFieldDTO);
+            if (!StringUtils.isEmpty(dlListingFieldForm.getSelectedValue())) {
+                List<Long> idsAsList = getSelectedValuesFromCheckbox(dlListingFieldForm);
                 if (!idsAsList.isEmpty()) {
                     Set<DlContentFieldItem> byIdIn = dlContentFieldItemRepository.findByIdInOrderByOrderNum(idsAsList);
                     newDlListingContentFieldRel.setDlContentFieldItems(byIdIn);
@@ -284,31 +271,33 @@ public class DlListingService {
             }
         } else if (dlContentField.getType().equals(DlContentField.Type.SELECT)
                 || dlContentField.getType().equals(DlContentField.Type.DEPENDENT_SELECT)) {
-            setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
+            setSelection(dlListingFieldForm, newDlListingContentFieldRel);
         } else if (dlContentField.getType().equals(DlContentField.Type.NUMBER_UNIT)) {
-            setSelection(dlListingFieldDTO, newDlListingContentFieldRel);
-            newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
+            setSelection(dlListingFieldForm, newDlListingContentFieldRel);
+            newDlListingContentFieldRel.setValue(dlListingFieldForm.getValue());
         } else {
             // set value
-            newDlListingContentFieldRel.setValue(dlListingFieldDTO.getValue());
+            newDlListingContentFieldRel.setValue(dlListingFieldForm.getValue());
         }
     }
 
-    private List<Long> getSelectedValuesFromCheckbox(DlListingFieldDTO dlListingFieldDTO) {
+    private List<Long> getSelectedValuesFromCheckbox(DlListingFieldForm dlListingFieldForm) {
         try {
-            return Arrays.asList(new ObjectMapper().readValue(dlListingFieldDTO.getSelectedValue(), Long[].class));
+            return Arrays.asList(new ObjectMapper().readValue(dlListingFieldForm.getSelectedValue(), Long[].class));
         } catch (IOException e) {
-            log.error("Could not parse dlListingFieldDTO selected value: {}, with name: {} ", dlListingFieldDTO.getSelectedValue(), dlListingFieldDTO.getName(), e);
+            log.error("Could not parse dlListingFieldForm selected value: {}, with id: {} ", dlListingFieldForm.getSelectedValue(), dlListingFieldForm.getId(), e);
         }
         return new ArrayList<>();
     }
 
-    private void setSelection(DlListingFieldDTO dlListingFieldDTO, DlListingContentFieldRel newDlListingContentFieldRel) {
-        if (!StringUtils.isEmpty(dlListingFieldDTO.getSelectedValue()) && !dlListingFieldDTO.getSelectedValue().equals("-1")) {
-            DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldDTO.getSelectedValue()));
+    private void setSelection(DlListingFieldForm dlListingFieldForm, DlListingContentFieldRel newDlListingContentFieldRel) {
+        if (!StringUtils.isEmpty(dlListingFieldForm.getSelectedValue()) && !dlListingFieldForm.getSelectedValue().equals("-1")) {
+            DlContentFieldItem dlContentFieldItem = dlContentFieldItemRepository.findOne(Long.valueOf(dlListingFieldForm.getSelectedValue()));
             Set<DlContentFieldItem> dlContentFieldItemSet = new HashSet<>();
             dlContentFieldItemSet.add(dlContentFieldItem);
             newDlListingContentFieldRel.setDlContentFieldItems(dlContentFieldItemSet);
+        } else {
+            newDlListingContentFieldRel.setDlContentFieldItems(new HashSet<>());
         }
     }
 
@@ -324,12 +313,12 @@ public class DlListingService {
         return null;
     }
 
-    private void setLocation(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
+    private void setLocation(DlListingForm dlListingForm, DlListing dlListingForSaving) {
         // set location
-        if (dlListingDTO.getDlLocations() != null && !dlListingDTO.getDlLocations().isEmpty()) {
-            DlLocationDTO dlLocationDTO = dlListingDTO.getDlLocations().get(0);
-            if (dlLocationDTO.getId() != -1L) {
-                DlLocation dlLocation = dlLocationRepository.findOne(dlLocationDTO.getId());
+        if (dlListingForm.getDlLocations() != null && !dlListingForm.getDlLocations().isEmpty()) {
+            DlLocationForm dlLocationForm = dlListingForm.getDlLocations().get(0);
+            if (dlLocationForm.getId() != -1L) {
+                DlLocation dlLocation = dlLocationRepository.findOne(dlLocationForm.getId());
                 Set<DlListingLocationRel> dlListingLocationRels = dlListingForSaving.getDlListingLocationRels();
                 if (dlListingLocationRels != null && !dlListingLocationRels.isEmpty()) {
                     // update
@@ -346,31 +335,30 @@ public class DlListingService {
         }
     }
 
-    private void setCategory(DlListingDTO dlListingDTO, DlListing dlListingForSaving) {
+    private void setCategory(DlListingForm dlListingForm, DlListing dlListingForSaving) {
         // set category
-        if (dlListingDTO.getDlCategories() != null && !dlListingDTO.getDlCategories().isEmpty()) {
-            DlCategoryDTO dlCategoryDTO = dlListingDTO.getDlCategories().get(0);
-            DlCategory dlCategory = dlCategoryRepository.findOne(dlCategoryDTO.getId());
+        if (dlListingForm.getDlCategories() != null && !dlListingForm.getDlCategories().isEmpty()) {
+            DlCategoryForm dlCategoryForm = dlListingForm.getDlCategories().get(0);
+            DlCategory dlCategory = dlCategoryRepository.findOne(dlCategoryForm.getId());
             Set<DlCategory> dlCategories = new HashSet<>();
             dlCategories.add(dlCategory);
             dlListingForSaving.setDlCategories(dlCategories);
         }
     }
 
-
     public Page<DlListingDTO> findAll(Pageable pageable, Map<String, String> allRequestParams) {
         log.debug("Request to get all DlListingDTO");
         String languageCode = allRequestParams.get("languageCode");
         Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCode(pageable, languageCode);
-        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
+        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing));
     }
 
     @Transactional(readOnly = true)
-    public DlListingDTO findOne(Long id, String languageCode) {
+    public DlListingDTO findOne(Long id) {
         log.debug("Request to get DlListingDTO: {}", id);
         long start = System.currentTimeMillis();
         DlListing result = dlListingRepository.findOne(id);
-        DlListingDTO dlListingDTO = result != null ? dlListingMapper.dlListingToDlListingDTO(result, languageCode) : null;
+        DlListingDTO dlListingDTO = result != null ? dlListingMapper.dlListingToDlListingDTO(result) : null;
         log.info("finOne id: {}, took: {} ms", id, System.currentTimeMillis() - start);
         return dlListingDTO;
     }
@@ -453,16 +441,16 @@ public class DlListingService {
             storageService.delete(filePaths);
         }
 
-        return dlListingMapper.dlListingToDlListingDTO(result, null);
+        return dlListingMapper.dlListingToDlListingDTO(result);
     }
 
-    public void validateForPublishing(DlListingDTO dlListingDTO) {
+    public void validateForPublishing(DlListingForm dlListingForm) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         javax.validation.Validator validator = factory.getValidator();
-        Set<ConstraintViolation<DlListingDTO>> validate = validator.validate(dlListingDTO);
+        Set<ConstraintViolation<DlListingForm>> validate = validator.validate(dlListingForm);
         if (!validate.isEmpty()) {
             // return validation object and status 400
-            log.info("DlListingDTO with id: {}, not valid", dlListingDTO.getId());
+            log.info("DlListingForm with id: {}, not valid", dlListingForm.getId());
         }
     }
 
@@ -498,11 +486,11 @@ public class DlListingService {
 
     public Page<DlListingDTO> findAllByLanguageAndUser(Pageable pageable, String languageCode, User user) {
         Page<DlListing> result = dlListingRepository.findAllByTranslation_languageCodeAndUser(pageable, languageCode, user);
-        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, languageCode));
+        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing));
     }
 
     public Page<DlListingDTO> findAllForFrontPage(Pageable pageable, String language) {
         Page<DlListing> result = dlListingRepository.findAllForFrontPage(language, pageable);
-        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing, language));
+        return result.map((DlListing dlListing) -> dlListingMapper.dlListingToDlListingDTO(dlListing));
     }
 }

@@ -1,6 +1,8 @@
 package com.manev.quislisting.web.mvc;
 
 import com.manev.quislisting.repository.model.CategoryCount;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
+import com.manev.quislisting.service.model.DlListingBaseModel;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
@@ -24,6 +26,8 @@ public class HomeController extends BaseController {
     private DlCategoryService dlCategoryService;
     @Autowired
     private DlListingService dlListingService;
+    @Autowired
+    private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(final ModelMap model, HttpServletRequest request) {
@@ -31,7 +35,9 @@ public class HomeController extends BaseController {
         String title = messageSource.getMessage("page.home.title", null, locale);
 
         Page<DlListingDTO> page = dlListingService.findAllForFrontPage(new PageRequest(0, 12), locale.getLanguage());
-        model.addAttribute("dlListings", page.getContent());
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+
+        model.addAttribute("dlListings", dlListingBaseModels.getContent());
         model.addAttribute("totalDlListings", page.getTotalElements());
         model.addAttribute("loadedDlListings", page.getNumberOfElements());
         List<CategoryCount> allCategoriesWithCount = dlCategoryService.findAllCategoriesWithCount();

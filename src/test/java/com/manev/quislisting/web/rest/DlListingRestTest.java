@@ -14,11 +14,15 @@ import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
+import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.DlCategoryTestComponent;
 import com.manev.quislisting.service.DlContentFieldTestComponent;
 import com.manev.quislisting.service.DlListingTestComponent;
 import com.manev.quislisting.service.DlLocationTestComponent;
 import com.manev.quislisting.service.UserService;
+import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
 import com.manev.quislisting.service.model.DlContentFieldInput;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
@@ -40,6 +44,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -75,9 +80,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = QuisListingApp.class)
 public class DlListingRestTest extends GenericResourceTest {
 
-
     private static final String UPDATE_CONTENT = "UPDATE_CONTENT";
-
 
     @Autowired
     private DlListingService dlListingService;
@@ -121,12 +124,17 @@ public class DlListingRestTest extends GenericResourceTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
+    @Autowired
+    private DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper;
+
     private MockMvc restDlListingMockMvc;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingRest dlListingResource = new DlListingRest(dlListingService, userService);
+        DlListingRest dlListingResource = new DlListingRest(dlListingService, userService, dlListingDtoToDlListingBaseMapper, dlListingDtoToDlListingModelMapper);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
@@ -164,15 +172,15 @@ public class DlListingRestTest extends GenericResourceTest {
         DlContentField priceCF = dlContentFieldTestComponent.createNumberField(dlCategory, "Number-price");
         DlContentField dlPhoneCF = dlContentFieldTestComponent.createStringField(dlCategory, "String-Phone");
 
-        DlListingDTO dlListingDTO = dlListingTestComponent.createDlListingDTO(dlCategory, dlLocation,
+        DlListingForm dlListingForm = dlListingTestComponent.createDlListingForm(dlCategory, dlLocation,
                 new ArrayList<DlContentFieldInput>() {{
                     add(new DlContentFieldInput(priceCF, "180"));
                     add(new DlContentFieldInput(dlPhoneCF, "+123 456 555"));
-                }}, "en");
+                }});
 
         restDlListingMockMvc.perform(post(RestRouter.DlListing.LIST)
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(dlListingDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(dlListingForm)))
                 .andExpect(status().isCreated());
 
         // Validate the DlListing in the database
@@ -228,7 +236,7 @@ public class DlListingRestTest extends GenericResourceTest {
 
         DlListing dlListing = dlListingTestComponent.createDlListing(dlCategory);
 
-        DlListingDTO createdDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing, null);
+        DlListingDTO createdDlListingDTO = dlListingMapper.dlListingToDlListingDTO(dlListing);
 
         // making updates to the dlListing so at the end object is updated and published
         createdDlListingDTO.setContent(UPDATE_CONTENT);
@@ -421,12 +429,22 @@ public class DlListingRestTest extends GenericResourceTest {
         DlContentField priceCF = dlContentFieldTestComponent.createNumberField(dlCategory, "Number-price");
         DlContentField dlPhoneCF = dlContentFieldTestComponent.createStringField(dlCategory, "String-Phone");
 
-        DlListingDTO dlListingDTO = dlListingTestComponent.createDlListingDTO(dlCategory, dlLocation, new ArrayList<DlContentFieldInput>() {{
+        DlListingForm dlListingForm = dlListingTestComponent.createDlListingForm(dlCategory, dlLocation, new ArrayList<DlContentFieldInput>() {{
             add(new DlContentFieldInput(priceCF, "180"));
             add(new DlContentFieldInput(dlPhoneCF, "+123 456 555"));
-        }}, "en");
+        }});
 
-        return dlListingService.save(dlListingDTO);
+        User loggedUser = getAuthenticatedUser(SecurityUtils.getCurrentUserLogin());
+        return dlListingService.create(dlListingForm, loggedUser, "en");
+    }
+
+    private User getAuthenticatedUser(String login) {
+        Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(login);
+        if (userWithAuthoritiesByLogin.isPresent()) {
+            return userWithAuthoritiesByLogin.get();
+        }
+        throw new UsernameNotFoundException("User " + login + " was not found in the " +
+                "database");
     }
 
     @Test
@@ -445,20 +463,22 @@ public class DlListingRestTest extends GenericResourceTest {
         DlCategory dlCategory21BG = dlCategoryTestComponent.initCategory(dlCategory21EN.getTranslation().getTranslationGroup().getId(), dlCategory2BG, "Category 21 BG", "bg");
         DlCategory dlCategory22BG = dlCategoryTestComponent.initCategory(dlCategory22EN.getTranslation().getTranslationGroup().getId(), dlCategory2BG, "Category 22 BG", "bg");
 
-        DlListingDTO savedDlListing1 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing One", "en",
-                dlCategory11EN, null, null));
+        User loggedUser = getAuthenticatedUser(SecurityUtils.getCurrentUserLogin());
+
+        DlListingDTO savedDlListing1 = dlListingService.create(dlListingTestComponent.createDlListingForm("Listing One",
+                dlCategory11EN, null, null), loggedUser, "en");
         dlListingService.publishListing(savedDlListing1.getId());
-        DlListingDTO savedDlListing2 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Two", "en",
-                dlCategory21EN, null, null));
+        DlListingDTO savedDlListing2 = dlListingService.create(dlListingTestComponent.createDlListingForm("Listing Two",
+                dlCategory21EN, null, null), loggedUser, "en");
         dlListingService.publishListing(savedDlListing2.getId());
-        DlListingDTO savedDlListing3 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Three", "bg",
-                dlCategory21BG, null, null));
+        DlListingDTO savedDlListing3 = dlListingService.create(dlListingTestComponent.createDlListingForm("Listing Three",
+                dlCategory21BG, null, null), loggedUser, "bg");
         dlListingService.publishListing(savedDlListing3.getId());
-        DlListingDTO savedDlListingDTO4 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Four", "bg",
-                dlCategory22BG, null, null));
+        DlListingDTO savedDlListingDTO4 = dlListingService.create(dlListingTestComponent.createDlListingForm("Listing Four",
+                dlCategory22BG, null, null), loggedUser, "bg");
         dlListingService.publishListing(savedDlListingDTO4.getId());
-        DlListingDTO savedDlListingDTO5 = dlListingService.save(dlListingTestComponent.createDlListingDTO("Listing Five", "bg",
-                dlCategory22BG, null, null));
+        DlListingDTO savedDlListingDTO5 = dlListingService.create(dlListingTestComponent.createDlListingForm("Listing Five",
+                dlCategory22BG, null, null), loggedUser, "bg");
         dlListingService.publishListing(savedDlListingDTO5.getId());
 
         // search by category
@@ -498,12 +518,14 @@ public class DlListingRestTest extends GenericResourceTest {
         DlLocation dlLocation = dlLocationTestComponent.initDlLocation();
         DlLocation dlLocation2 = dlLocationTestComponent.initDlLocation("Second location");
 
-        DlListingDTO dlListingDTO = dlListingTestComponent.createDlListingDTO(dlCategory, dlLocation, null, "en");
-        DlListingDTO dlListingDTO2 = dlListingTestComponent.createDlListingDTO(dlCategory, dlLocation2, null, "en");
+        DlListingForm dlListingForm1 = dlListingTestComponent.createDlListingForm(dlCategory, dlLocation, null);
+        DlListingForm dlListingForm2 = dlListingTestComponent.createDlListingForm(dlCategory, dlLocation2, null);
 
-        DlListingDTO savedDlListingDTO1 = dlListingService.save(dlListingDTO);
+        User loggedUser = getAuthenticatedUser(SecurityUtils.getCurrentUserLogin());
+
+        DlListingDTO savedDlListingDTO1 = dlListingService.create(dlListingForm1, loggedUser, "en");
         dlListingService.publishListing(savedDlListingDTO1.getId());
-        DlListingDTO savedDlListingDTO2 = dlListingService.save(dlListingDTO2);
+        DlListingDTO savedDlListingDTO2 = dlListingService.create(dlListingForm2, loggedUser, "en");
         dlListingService.publishListing(savedDlListingDTO2.getId());
 
         DlListingSearchFilter dlListingSearchFilter = new DlListingSearchFilter();
@@ -529,25 +551,27 @@ public class DlListingRestTest extends GenericResourceTest {
         DlContentField dlPhoneCF = dlContentFieldTestComponent.createStringField(dlCategory, "String-Phone");
         DlContentField dlFuelCF = dlContentFieldTestComponent.createSelectField(dlCategory, "Select-Fuel", Arrays.asList("Diesel", "Gasoline"));
 
-        DlListingDTO dlListingDTO = dlListingTestComponent.createDlListingDTO(dlCategory, null, new ArrayList<DlContentFieldInput>() {{
+        User loggedUser = getAuthenticatedUser(SecurityUtils.getCurrentUserLogin());
+
+        DlListingForm dlListingForm1 = dlListingTestComponent.createDlListingForm(dlCategory, null, new ArrayList<DlContentFieldInput>() {{
             add(new DlContentFieldInput(priceCF, "180"));
             add(new DlContentFieldInput(dlPhoneCF, "+123 456 555"));
             add(new DlContentFieldInput(dlFuelCF, null, String.valueOf(findByName("Diesel", dlFuelCF.getDlContentFieldItems()).getId())));
-        }}, "en");
+        }});
 
-        DlListingDTO dlListingDTO2 = dlListingTestComponent.createDlListingDTO(dlCategory, null, new ArrayList<DlContentFieldInput>() {{
+        DlListingForm dlListingForm2 = dlListingTestComponent.createDlListingForm(dlCategory, null, new ArrayList<DlContentFieldInput>() {{
             add(new DlContentFieldInput(priceCF, "150"));
             add(new DlContentFieldInput(dlPhoneCF, "+123 456 555"));
             add(new DlContentFieldInput(dlFuelCF, null, String.valueOf(findByName("Gasoline", dlFuelCF.getDlContentFieldItems()).getId())));
-        }}, "en");
+        }});
 
-        DlListingDTO savedDlListingDTO1 = dlListingService.save(dlListingDTO);
+        DlListingDTO savedDlListingDTO1 = dlListingService.create(dlListingForm1, loggedUser, "en");
         dlListingService.publishListing(savedDlListingDTO1.getId());
-        DlListingDTO savedDlListingDTO2 = dlListingService.save(dlListingDTO2);
+        DlListingDTO savedDlListingDTO2 = dlListingService.create(dlListingForm2, loggedUser, "en");
         dlListingService.publishListing(savedDlListingDTO2.getId());
 
         DlListingSearchFilter dlListingSearchFilter = new DlListingSearchFilter();
-        dlListingSearchFilter.setContentFields(Arrays.asList(new DlContentFieldFilter(dlFuelCF.getId(), null, String.valueOf(findByName("Gasoline", dlFuelCF.getDlContentFieldItems()).getId()))));
+        dlListingSearchFilter.setContentFields(new ArrayList<>(Collections.singletonList(new DlContentFieldFilter(dlFuelCF.getId(), null, String.valueOf(findByName("Gasoline", dlFuelCF.getDlContentFieldItems()).getId())))));
         dlListingSearchFilter.setLanguageCode("en");
 
         String query = TestUtil.convertObjectToJsonString(dlListingSearchFilter);
