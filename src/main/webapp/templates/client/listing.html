@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${title}">Listing title</title>
@@ -170,12 +171,63 @@
         </div>
     </div>
 
+    <div th:if="${showContactForm} == true">
+        <div class="row" style="margin-bottom: 10px;">
+            <input type="hidden" id="listingId" th:value="${dlListingDTO.id}" />
+            <div class="col-sm-10">
+                <a href="javascript:void(0);" v-on:click="showContactForm()">Contact seller</a><br/><br />
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 10px;">
+            <label class="col-sm-2 control-label" id="nameLabel" for="senderName" style="display: none" th:text="#{page.my_listings.edit_listing.label.name}">Your Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="senderName" id="senderName" style="display: none" th:value="${senderName}"/>
+                <span class="help-block"
+                      v-if="!$v.dlmessage.senderName.required &amp;&amp; $v.dlmessage.senderName.$dirty"
+                      th:text="#{validation.required}">Field is required</span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 10px;">
+            <label class="col-sm-2 control-label" id="emailLabel" for="senderEmail" style="display: none" th:text="#{page.my_listings.edit_listing.label.email}">Your Email</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="senderEmail" id="senderEmail" style="display: none" th:value="${senderEmail}"/>
+                <span class="help-block"
+                      v-if="!$v.dlmessage.senderEmail.required &amp;&amp; $v.dlmessage.senderEmail.$dirty"
+                      th:text="#{validation.required}">Field is required</span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 10px;">
+            <label class="col-sm-2 control-label" id="textLabel" for="text" style="display: none" th:text="#{page.my_listings.edit_listing.label.message}">Your Message</label>
+            <div class="col-sm-10">
+                <textarea rows="4" id="text" type="text" name="text" class="form-control" style="display: none" v-model="dlmessage.text"></textarea>
+                <span class="help-block"
+                      v-if="!$v.dlmessage.text.required &amp;&amp; $v.dlmessage.text.$dirty"
+                      th:text="#{validation.required}">Field is required</span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary" id="btnSend" style="display: none" th:text="#{page.my_listings.edit_listing.label.btn.send}" v-on:click="onSubmit($event)">Send</span>
+                    <span>Send</span>
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Load current page javascript file -->
     <script src="../../resources/js/listing.js"
             th:src="@{/resources/js/listing.js}"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            Listing.init();
+            var senderName = [[${senderName}]];
+            var senderEmail= [[${senderEmail}]];
+            var jsTranslations = [[${jsTranslations}]];
+            Listing.init(senderName, senderEmail, jsTranslations);
             $("#gallery").unitegallery();
         };
     </script>

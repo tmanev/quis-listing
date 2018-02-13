@@ -40,6 +40,14 @@ public class MvcRouter {
         }
     }
 
+    public class MyMessages {
+        public static final String BASE = "/my-messages";
+        public static final String PREVIEW = BASE + "/{id}/preview";
+
+        private MyMessages() {
+        }
+    }
+
     public class Account {
         public static final String PROFILE = "/account/profile";
 

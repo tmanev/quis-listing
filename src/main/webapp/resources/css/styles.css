@@ -263,13 +263,16 @@ table.loading tbody:after {
     min-width: 0;
     width: 100%;
 }
+
+.pageBottom {
+    margin-bottom: 20px;
+}
 /** Front page end **/
 
 .form-group.required label:after {
     content:"*";
     color:red;
 }
-
 
 /** Wizard **/
 

@@ -96,7 +96,7 @@ A `build` method is exposed for generating custom Modernizr builds. Example:
 var modernizr = require("modernizr");
 
 modernizr.build({}, function (result) {
-  console.log(result); // the build
+  console.log(result); buildDlMessageOverview
 });
 ```
 

@@ -66,6 +66,14 @@ public final class RestRouter {
         }
     }
 
+    public class DlMessage {
+        public static final String LIST = "/api/dl-messages";
+        public static final String DETAIL = "/api/dl-messages/{listingId}";
+
+        private DlMessage() {
+        }
+    }
+
     private RestRouter() {
     }
 

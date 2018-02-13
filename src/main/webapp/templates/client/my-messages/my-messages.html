@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title th:text="${title}">My Listings</title>
+
+        <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+              th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+              rel="stylesheet"/>
+        <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+              th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+              rel="stylesheet"/>
+        <link href="../../../resources/css/styles.css"
+              th:href="@{/resources/css/styles.css}"
+              rel="stylesheet"/>
+    </head>
+    <body>
+        <div th:fragment="content" id="messagesApp" class="container">
+            <div class="page-header">
+                <h1 th:text="#{page.my_messages.title}">My Messages</h1>
+            </div>
+
+            <div class="container-fluid">
+                <div class="row" style="margin-top: 10px;">
+                    <table class="table table-hover" v-bind:class="{loading: isLoading}" v-cloak>
+                        <thead>
+                            <tr>
+                                <th th:text="#{page.my_messages.label.from}">From</th>
+                                <th th:text="#{page.my_messages.label.listing}">Listing</th>
+                                <th th:text="#{page.my_messages.label.message}">Message</th>
+                                <th th:text="#{page.my_messages.label.datesent}">Date sent</th>
+                                <th th:text="#{page.my_messages.label.action}">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="dlMessage in dlMessages">
+                                <td>{{dlMessage.senderName}}</td>
+                                <td>
+                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/my-listings/' + dlMessage.listingId + '/preview'">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">
+                                    Preview
+                                </span>
+                                    </a>
+                                </td>
+                                <td>{{dlMessage.text}}</td>
+                                <td>
+                                    <span>{{dlMessage.createdDate | fullTime}}</span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/my-messages/' + dlMessage.listingId + '/preview'">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        <span class="hidden-xs-down" th:text="#{page.my_messages.label.preview}">Preview</span>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" v-on:click="confirmDeleteMessages(dlMessage)">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                        <span class="hidden-xs-down" th:text="#{page.my_messages.label.delete}">Delete</span>
+                                    </a>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalWindow">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title"><i class="fa fa-warning"></i> <span th:text="#{page.my_messages.label.delete}">Delete</span></h4>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" v-on:click="deleteMessages"
+                                    th:text="#{page.my_messages.label.yes}">Yes</button>
+                            <button type="button" class="btn btn-default"  data-dismiss="modal"
+                                    th:text="#{page.my_messages.label.no}">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="../../../resources/js/my-messages/my-messages.js"
+                    th:src="@{/resources/js/my-messages/my-messages.js}"></script>
+            <script type="text/javascript" th:inline="javascript">
+                window.onload = function () {
+                    var jsTranslations = [[${jsTranslations}]];
+                    MyMessages.init(jsTranslations);
+                };
+            </script>
+        </div>
+
+        <!-- JavaScript libraries used to be able to open the html page itself in browser -->
+        <script src="../../resources/vendor/vue/vue.min.js"
+                th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+        <script src="../../resources/vendor/vuelidate/vuelidate.min.js"
+                th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+        <script src="../../resources/vendor/vuelidate/validators.min.js"
+                th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+        <script src="../../resources/vendor/vue-resource/vue-resource.min.js"
+                th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+        <script src="../../resources/vendor/jquery/jquery-3.2.1.min.js"
+                th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+        <script src="../../resources/vendor/bootstrap/js/bootstrap.min.js"
+                th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+        <script src="../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+                th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+    </body>
+</html>
