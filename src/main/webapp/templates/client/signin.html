@@ -69,6 +69,27 @@
             </div>
         </fieldset>
     </form>
+    <form method="POST" action="signin/google">
+        <button type="submit" class="btn-social btn-google">
+            <span>Sign in with Google</span>
+        </button>
+        <input name="scope" value="https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email" type="hidden">
+        <input name="_csrf" value="" type="hidden">
+    </form>
+    <form method="POST" action="signin/facebook">
+        <button type="submit" class="btn-social btn-facebook">
+            <span>Sign in with Facebook</span>
+        </button>
+        <input name="scope" value="public_profile,email" type="hidden">
+        <input name="_csrf" value="" type="hidden">
+    </form>
+    <form method="POST" action="signin/twitter">
+        <button type="submit" class="btn-social btn-twitter">
+            <span>Sign in with Twitter</span>
+        </button>
+        <input name="scope" value="email" type="hidden">
+        <input name="_csrf" value="" type="hidden">
+    </form>
 </div>
 
 </body>

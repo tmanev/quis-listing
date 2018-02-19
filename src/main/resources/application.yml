@@ -7,6 +7,13 @@ management:
 spring:
     application:
         name: quis-listing
+    social:
+      facebook:
+          app-id: 1006698042802363
+          app-secret: beca4808feba16989ff73aa0c80403b2
+      twitter:
+        app-id: pZTGl7gtpEg3vcjyoK7WNsRin
+        app-secret: 4mbAoQXdubouVvKe87KK7W7UOncqKcYiy7hNrcMCbx3qaDKloX
     profiles:
         # The commented value for `active` can be replaced with valid Spring profiles to load.
         # Otherwise, it will be filled in by maven when building the WAR file
@@ -51,6 +58,11 @@ logging:
 # Quis Listing specific properties
 # ===================================================================
 quislisting:
+    social:
+        redirect-after-sign-in: "/"
+    twitter:
+        access-token: 2510170801-mFO3fleqTQoHLllRMncfYcRuoLH2i5YYRljtRSX
+        access-token-secret: kGwd0SXrqyZt0E7QvEbexikPAPdYYw4hLlws4AOnc1zgm
     ribbon:
         # comma separated list of profiles to show a ribbon on the GUI
         displayOnActiveProfiles: dev
@@ -61,3 +73,19 @@ quislisting:
         max-pool-size: 50
         queue-capacity: 10000
     geo-location-db-path: ./geolite2/GeoLite2-Country.mmdb
+
+security:
+  oauth2:
+    client:
+      clientId: 124573898319-pfqf134siljgpfdlc2uo03mn98lk659v.apps.googleusercontent.com
+      clientSecret: I9VmqNaLq-t75IUJ-zZghJoa
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+      clientAuthenticationScheme: form
+      scope:
+        - openid
+        - email
+        - profile
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
