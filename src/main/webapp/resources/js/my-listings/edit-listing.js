@@ -93,23 +93,8 @@ EditListing = {
                 onPublish: function (event) {
                     let vm = this;
 
-                    for (let i = 0; i < vm.$children.length; i++) {
-                        if (vm.$children[i].$options.name === 'listing-description-component'
-                            || vm.$children[i].$options.name === 'listing-category-component'
-                            || vm.$children[i].$options.name === 'listing-details-component'
-                            || vm.$children[i].$options.name === 'listing-location-component') {
-                            vm.$children[i].isInputInvalid();
-                        }
-                    }
-                    if (vm.$v.$invalid) {
-                        vm.$v.$touch();
-                        $.notify({
-                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
-                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
-                        });
-                    } else {
+                    let components = [vm.$refs.listingDescriptionComponent, vm.$refs.listingCategoryComponent, vm.$refs.listingDetailsComponent, vm.$refs.listingLocationComponent];
+                    if (MyListingService.componentsValid(components)) {
                         vm.btnPublishLoading = true;
                         vm.listing.status = 'PUBLISHED';
                         MyListingService.updateListingPartial({path: 'STATUS', value: vm.listing}).then(success).catch(error);
@@ -128,6 +113,13 @@ EditListing = {
                             });
                             vm.btnPublishLoading = false;
                         }
+                    } else {
+                        $.notify({
+                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
+                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
+                        }, {
+                            type: 'danger'
+                        });
                     }
                 },
                 onSettings: function () {
