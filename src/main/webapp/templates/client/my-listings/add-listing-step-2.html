@@ -22,6 +22,7 @@
             <h3 th:text="#{page.my_listings.add_listing.title}">Add listing</h3>
         </div>
         <add-listing-wizard-progress-component v-bind:active-step="1"></add-listing-wizard-progress-component>
+        <div th:replace="client/fragments/indicate-required-fields :: indicate-required-fields"></div>
         <listing-details-component ref="listingDetailsComponent" v-bind:dl-content-fields="dlContentFields"></listing-details-component>
         <div class="form-group row">
             <div class="col-xs-5 col-sm-4">

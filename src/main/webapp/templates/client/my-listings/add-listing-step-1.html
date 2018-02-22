@@ -23,6 +23,7 @@
         </div>
         <add-listing-wizard-progress-component v-bind:active-step="0"></add-listing-wizard-progress-component>
         <form v-on:submit.prevent="onSubmit($event)" v-cloak>
+            <div th:replace="client/fragments/indicate-required-fields :: indicate-required-fields"></div>
             <listing-category-component ref="listingCategoryComponent" v-bind:listing="listing"></listing-category-component>
             <listing-description-component ref="listingDescriptionComponent" v-bind:listing="listing"></listing-description-component>
             <div class="form-group row">
