@@ -217,7 +217,7 @@ var MyListings = {
                 },
                 confirmDeleteListing: function(dlListing) {
                     this.confirmModal.listingToDelete = dlListing;
-                    $('#confirm-delete-listing-modal').modal('show');
+                    this.$refs.confirmDeleteListingModal.show();
                 },
                 deleteListing: function () {
                     this.$http({
