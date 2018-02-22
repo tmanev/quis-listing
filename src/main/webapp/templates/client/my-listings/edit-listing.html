@@ -18,7 +18,7 @@
 <div th:fragment="content" class="container">
     <div id="editListingApp" v-cloak>
         <div class="row justify-content-between mb-3">
-            <div class="col-4">
+            <div class="col-6">
                 <b-btn id="btnSettings"
                        variant="light"
                        ref="button">
@@ -49,7 +49,7 @@
                     </div>
                 </b-popover>
             </div>
-            <div class="col-4 text-right">
+            <div class="col-6 text-right">
                 <a id="previewLink" target="_blank" class="btn btn-outline-secondary"
                    th:href="@{/my-listings/{id}/preview(id=${dlListingDTO.id})}">
                     <i class="fa fa-eye"></i>&nbsp;<span
