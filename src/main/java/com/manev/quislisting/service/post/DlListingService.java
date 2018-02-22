@@ -20,16 +20,17 @@ import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.search.DlListingSearchRepository;
 import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
-import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.form.DlCategoryForm;
+import com.manev.quislisting.service.form.DlFeaturedAttachmentForm;
 import com.manev.quislisting.service.form.DlListingFieldForm;
 import com.manev.quislisting.service.form.DlListingForm;
 import com.manev.quislisting.service.form.DlLocationForm;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.post.dto.QlImageFile;
 import com.manev.quislisting.service.post.mapper.AttachmentMapper;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.qlml.LanguageService;
@@ -53,6 +54,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
@@ -117,7 +119,7 @@ public class DlListingService {
 
         DlListing dlListingForSaving = new DlListing();
 
-        setCommonProperties(dlListingForm, dlListingForSaving);
+        setAllProperties(dlListingForm, dlListingForSaving);
 
         TranslationGroup translationGroup = new TranslationGroup();
         dlListingForSaving.setTranslation(
@@ -129,6 +131,73 @@ public class DlListingService {
         dlListingForSaving.setCreated(now);
         dlListingForSaving.setModified(now);
         dlListingForSaving.setUser(user);
+        dlListingForSaving.setStatus(DlListing.Status.DRAFT);
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
+    }
+
+    public DlListingDTO updateDescription(DlListingForm form) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(form.getId());
+
+        setDescription(dlListingForSaving, form.getTitle(), form.getContent());
+        setCategory(form.getDlCategories(), dlListingForSaving);
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
+    }
+
+    public DlListingDTO updateDetails(DlListingForm form) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(form.getId());
+
+        setDlListingFields(dlListingForSaving, form.getDlListingFields());
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
+    }
+
+    public DlListingDTO updateLocation(DlListingForm form) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(form.getId());
+
+        setLocation(form.getDlLocations(), dlListingForSaving);
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
+    }
+
+    public DlListingDTO updateFeaturedAttachment(DlListingForm form) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(form.getId());
+
+        setFeaturedAttachment(form.getFeaturedAttachment(), dlListingForSaving);
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
+
+        DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
+
+        DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
+        dlListingSearchRepository.save(savedDlListingDTO);
+        return savedDlListingDTO;
+    }
+
+    public DlListingDTO updateStatus(DlListingForm form) {
+        DlListing dlListingForSaving = dlListingRepository.findOne(form.getId());
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
+
+        dlListingForSaving.setStatus(form.getStatus());
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
 
@@ -138,7 +207,10 @@ public class DlListingService {
     }
 
     public DlListingDTO update(DlListingForm dlListingForm) {
-        DlListing dlListingForSaving = prepListingForUpdate(dlListingForm);
+        DlListing dlListingForSaving = dlListingRepository.findOne(dlListingForm.getId());
+
+        setAllProperties(dlListingForm, dlListingForSaving);
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
 
@@ -147,18 +219,13 @@ public class DlListingService {
         return savedDlListingDTO;
     }
 
-    private DlListing prepListingForUpdate(DlListingForm dlListingForm) {
-        DlListing dlListingForSaving = dlListingRepository.findOne(dlListingForm.getId());
-
-        setCommonProperties(dlListingForm, dlListingForSaving);
-        dlListingForSaving.setModified(new Timestamp(clock.millis()));
-        return dlListingForSaving;
-    }
-
     public DlListingDTO saveAndPublish(DlListingForm dlListingForm) {
         log.debug("Request to save DlListingDTO : {}", dlListingForm);
 
-        DlListing dlListingForSaving = prepListingForUpdate(dlListingForm);
+        DlListing dlListingForSaving = dlListingRepository.findOne(dlListingForm.getId());
+
+        setAllProperties(dlListingForm, dlListingForSaving);
+        dlListingForSaving.setModified(new Timestamp(clock.millis()));
         dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
@@ -170,12 +237,12 @@ public class DlListingService {
         return savedDlListingDTO;
     }
 
-    public void publishListing(Long id) {
+    public DlListingDTO publishListing(Long id) {
         DlListing dlListingForSaving = dlListingRepository.findOne(id);
         dlListingForSaving.setStatus(DlListing.Status.PUBLISHED);
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
         DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
-        dlListingSearchRepository.save(savedDlListingDTO);
+        return dlListingSearchRepository.save(savedDlListingDTO);
     }
 
     public DlListingDTO approveListing(Long id) {
@@ -207,25 +274,24 @@ public class DlListingService {
         return dlListingDTO;
     }
 
-    private void setCommonProperties(DlListingForm dlListingForm, DlListing dlListingForSaving) {
-        dlListingForSaving.setTitle(dlListingForm.getTitle());
-        dlListingForSaving.setName(SlugUtil.getFileNameSlug(dlListingForm.getTitle()));
-        dlListingForSaving.setContent(dlListingForm.getContent());
+    private void setDescription(DlListing dlListing, String title, String content) {
+        dlListing.setTitle(title);
+        dlListing.setName(SlugUtil.getFileNameSlug(title));
+        dlListing.setContent(content);
+    }
 
-        // if user is in role ADMIN don't change the status
-        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN) || dlListingForSaving.getStatus() == null) {
-            dlListingForSaving.setStatus(DlListing.Status.DRAFT);
-        }
+    private void setAllProperties(DlListingForm dlListingForm, DlListing dlListingForSaving) {
+        setDescription(dlListingForSaving, dlListingForm.getTitle(), dlListingForm.getContent());
+        setCategory(dlListingForm.getDlCategories(), dlListingForSaving);
+        setDlListingFields(dlListingForSaving, dlListingForm.getDlListingFields());
+        setLocation(dlListingForm.getDlLocations(), dlListingForSaving);
+        setFeaturedAttachment(dlListingForm.getFeaturedAttachment(), dlListingForSaving);
 
         dlListingForSaving.setApproved(null);
         dlListingForSaving.setApprovedModified(null);
+    }
 
-        setCategory(dlListingForm, dlListingForSaving);
-        setLocation(dlListingForm, dlListingForSaving);
-        setFeaturedAttachment(dlListingForm, dlListingForSaving);
-
-        List<DlListingFieldForm> dlListingFieldDTOS = dlListingForm.getDlListingFields();
-
+    private void setDlListingFields(DlListing dlListingForSaving, List<DlListingFieldForm> dlListingFieldDTOS) {
         if (!CollectionUtils.isEmpty(dlListingFieldDTOS)) {
             Set<DlListingContentFieldRel> existingDlListingContentFieldRels = dlListingForSaving.getDlListingContentFieldRels();
             for (DlListingFieldForm dlListingFieldForm : dlListingFieldDTOS) {
@@ -237,9 +303,9 @@ public class DlListingService {
         }
     }
 
-    private void setFeaturedAttachment(DlListingForm dlListingForm, DlListing dlListingForSaving) {
-        if (dlListingForm.getFeaturedAttachment() != null) {
-            dlListingForSaving.setFeaturedAttachment(dlAttachmentRepository.findOne(dlListingForm.getFeaturedAttachment().getId()));
+    private void setFeaturedAttachment(DlFeaturedAttachmentForm form, DlListing dlListingForSaving) {
+        if (form != null) {
+            dlListingForSaving.setFeaturedAttachment(dlAttachmentRepository.findOne(form.getId()));
         }
     }
 
@@ -313,10 +379,10 @@ public class DlListingService {
         return null;
     }
 
-    private void setLocation(DlListingForm dlListingForm, DlListing dlListingForSaving) {
+    private void setLocation(List<DlLocationForm> dlLocationForms, DlListing dlListingForSaving) {
         // set location
-        if (dlListingForm.getDlLocations() != null && !dlListingForm.getDlLocations().isEmpty()) {
-            DlLocationForm dlLocationForm = dlListingForm.getDlLocations().get(0);
+        if (!CollectionUtils.isEmpty(dlLocationForms)) {
+            DlLocationForm dlLocationForm = dlLocationForms.get(0);
             if (dlLocationForm.getId() != -1L) {
                 DlLocation dlLocation = dlLocationRepository.findOne(dlLocationForm.getId());
                 Set<DlListingLocationRel> dlListingLocationRels = dlListingForSaving.getDlListingLocationRels();
@@ -335,10 +401,10 @@ public class DlListingService {
         }
     }
 
-    private void setCategory(DlListingForm dlListingForm, DlListing dlListingForSaving) {
+    private void setCategory(List<DlCategoryForm> dlCategoryForms, DlListing dlListingForSaving) {
         // set category
-        if (dlListingForm.getDlCategories() != null && !dlListingForm.getDlCategories().isEmpty()) {
-            DlCategoryForm dlCategoryForm = dlListingForm.getDlCategories().get(0);
+        if (!CollectionUtils.isEmpty(dlCategoryForms)) {
+            DlCategoryForm dlCategoryForm = dlCategoryForms.get(0);
             DlCategory dlCategory = dlCategoryRepository.findOne(dlCategoryForm.getId());
             Set<DlCategory> dlCategories = new HashSet<>();
             dlCategories.add(dlCategory);
@@ -463,7 +529,8 @@ public class DlListingService {
         Optional<User> oneByLogin = userRepository.findOneByLogin(currentUserLogin);
         if (oneByLogin.isPresent()) {
             for (MultipartFile file : fileMap.values()) {
-                AttachmentDTO attachmentDto = storageService.store(file);
+                QlImageFile qlImageFile = getQlImageFile(file);
+                AttachmentDTO attachmentDto = storageService.store(qlImageFile);
                 DlAttachment dlAttachment = attachmentMapper.attachmentDTOToAttachment(attachmentDto);
                 dlAttachment.setDlListing(dlListing);
                 dlAttachmentRepository.save(dlAttachment);
@@ -471,12 +538,19 @@ public class DlListingService {
                 uploadedAttachments.add(attachmentMapper.attachmentToAttachmentDTO(dlAttachment));
             }
 
-            dlListing.setStatus(DlListing.Status.DRAFT);
             dlListingRepository.save(dlListing);
             return uploadedAttachments;
         } else {
             throw new UsernameNotFoundException(String.format(USER_S_WAS_NOT_FOUND_IN_THE_DATABASE, currentUserLogin));
         }
+    }
+
+    private QlImageFile getQlImageFile(MultipartFile multipartFile) throws IOException {
+        QlImageFile qlImageFile = new QlImageFile();
+        qlImageFile.setOriginalFilename(multipartFile.getOriginalFilename());
+        qlImageFile.setContentType(multipartFile.getContentType());
+        qlImageFile.setBufferedImage(ImageIO.read(multipartFile.getInputStream()));
+        return qlImageFile;
     }
 
     public List<ActiveLanguageDTO> findAllActiveLanguages() {

@@ -1,7 +1,5 @@
 package com.manev.quislisting.service.model;
 
-import com.manev.quislisting.service.post.dto.AttachmentDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class DlListingModel extends DlListingBaseModel {
     private List<DlLocationModel> dlLocations;
     private List<String> dlCategories;
 
-    private List<AttachmentDTO> attachments;
+    private List<AttachmentModel> attachments;
 
     public String getContent() {
         return content;
@@ -62,11 +60,11 @@ public class DlListingModel extends DlListingBaseModel {
         this.dlCategories.add(category);
     }
 
-    public List<AttachmentDTO> getAttachments() {
+    public List<AttachmentModel> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<AttachmentDTO> attachments) {
+    public void setAttachments(List<AttachmentModel> attachments) {
         this.attachments = attachments;
     }
 }

@@ -20,6 +20,7 @@ import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
 import com.manev.quislisting.service.mapper.TranslateUtil;
 import com.manev.quislisting.service.model.QlStringTranslationModel;
+import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldItemDTO;
@@ -258,11 +259,13 @@ public class DlListingMapper {
 
     private void setAttachments(DlListing dlListing, DlListingDTO dlListingDTO) {
         Set<DlAttachment> dlAttachments = dlListing.getDlAttachments();
-        if (dlAttachments != null && !dlAttachments.isEmpty()) {
+        List<AttachmentDTO> attachmentDTOS = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(dlAttachments)) {
             for (DlAttachment attachment : dlAttachments) {
-                dlListingDTO.addAttachmentDto(attachmentMapper.attachmentToAttachmentDTO(attachment));
+                attachmentDTOS.add(attachmentMapper.attachmentToAttachmentDTO(attachment));
             }
         }
+        dlListingDTO.setAttachments(attachmentDTOS);
     }
 
     private void setDlLocations(DlListing dlListing, DlListingDTO dlListingDTO) {

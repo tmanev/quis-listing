@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+<div th:fragment="add-listing-wizard-progress-component">
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="add-listing-wizard-progress-component">
+        <div class="f1-steps" style="text-align: center;">
+            <div class="f1-progress">
+                <div class="f1-progress-line" v-bind:style="{width: progress}" ></div>
+            </div>
+            <div class="f1-step" v-bind:class="{activated: steps[0].activated, active: steps[0].active}">
+                <div class="f1-step-icon"><i class="fa fa-address-card-o"></i></div>
+                <p th:text="#{page.my_listings.edit_listing.label.description}">Description</p>
+            </div>
+            <div class="f1-step" v-bind:class="{activated: steps[1].activated, active: steps[1].active}">
+                <div class="f1-step-icon"><i class="fa fa-list"></i></div>
+                <p th:text="#{page.my_listings.edit_listing.label.details}">Details</p>
+            </div>
+            <div class="f1-step" v-bind:class="{activated: steps[2].activated, active: steps[2].active}">
+                <div class="f1-step-icon"><i class="fa fa-map-marker"></i></div>
+                <p th:text="#{page.my_listings.edit_listing.label.location}">Location</p>
+            </div>
+            <div class="f1-step" v-bind:class="{activated: steps[3].activated, active: steps[3].active}">
+                <div class="f1-step-icon"><i class="fa fa-picture-o"></i></div>
+                <p th:text="#{page.my_listings.edit_listing.label.gallery}">Gallery</p>
+            </div>
+        </div>
+    </script>
+</div>
+
+</body>
+</html>

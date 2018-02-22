@@ -9,6 +9,7 @@ import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,7 @@ public class DlContentFieldService {
         return result.map(dlContentField -> dlContentFieldMapper.dlContentFieldToDlContentFieldDTO(dlContentField, null));
     }
 
+    @Cacheable("findDlContentFieldsByCategoryId")
     public List<DlContentFieldDTO> findAllByCategoryId(Long categoryId, String language) {
         long start = System.currentTimeMillis();
         DlCategory dlCategory = dlCategoryRepository.findOne(categoryId);

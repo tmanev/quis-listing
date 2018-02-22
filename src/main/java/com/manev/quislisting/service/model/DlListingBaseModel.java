@@ -3,7 +3,6 @@ package com.manev.quislisting.service.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
-import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.serializer.TimestampDeserializer;
 import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
 
@@ -22,7 +21,7 @@ public class DlListingBaseModel {
     private Timestamp modified;
     private String languageCode;
     private String sourceLanguageCode;
-    private AttachmentDTO featuredAttachment;
+    private AttachmentModel featuredAttachment;
     private DlListing.Status status;
 
     public Long getId() {
@@ -65,14 +64,6 @@ public class DlListingBaseModel {
         this.created = created;
     }
 
-    public AttachmentDTO getFeaturedAttachment() {
-        return featuredAttachment;
-    }
-
-    public void setFeaturedAttachment(AttachmentDTO featuredAttachment) {
-        this.featuredAttachment = featuredAttachment;
-    }
-
     public String getLanguageCode() {
         return languageCode;
     }
@@ -87,6 +78,14 @@ public class DlListingBaseModel {
 
     public void setSourceLanguageCode(String sourceLanguageCode) {
         this.sourceLanguageCode = sourceLanguageCode;
+    }
+
+    public AttachmentModel getFeaturedAttachment() {
+        return featuredAttachment;
+    }
+
+    public void setFeaturedAttachment(AttachmentModel featuredAttachment) {
+        this.featuredAttachment = featuredAttachment;
     }
 
     public DlListing.Status getStatus() {

@@ -17,15 +17,17 @@
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-md-2">
             <a th:if="${showEditButton}" class="btn btn-primary" th:href="'/my-listings/' + ${dlListingDTO.id}">
-                <span class="glyphicon glyphicon-edit"></span>
+                <i class="fa fa-pencil-square-o"></i>
                 <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
             </a>
         </div>
     </div>
     <div class="row">
-        <div class="jumbotron">
-            <h2 th:text="${dlListingDTO.title}"></h2>
-            <p th:text="${dlListingDTO.content}"></p>
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h2 th:text="${dlListingDTO.title}"></h2>
+                <p th:text="${dlListingDTO.content}"></p>
+            </div>
         </div>
     </div>
 
@@ -128,31 +130,16 @@
 
         </div>
         <div class="col-md-6">
-            <div id="gallery" class="row" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
-                <th:block th:each="attachment : ${dlListingDTO.attachments}">
-
-                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta != null}"
-                         th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
-                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.largeImageResizeMeta.detail.file}"
-                         th:alt="${attachment.id}"
-                         style="display: none;"
-                    />
-                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta != null}"
-                         th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
-                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.mediumImageResizeMeta.detail.file}"
-                         th:alt="${attachment.id}"
-                         style="display: none;"
-                    />
-                    <img th:if="${attachment.attachmentMetadata.largeImageResizeMeta == null && attachment.attachmentMetadata.mediumImageResizeMeta == null}"
-                         th:src="'/content/files' + ${attachment.attachmentMetadata.smallImageResizeMeta.detail.file}"
-                         th:data-image="'/content/files' + ${attachment.attachmentMetadata.detail.file}"
-                         th:alt="${attachment.id}"
-                         style="display: none;"
-                    />
+            <div id="gallery" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
+                <th:block th:each="attachment,iter : ${dlListingDTO.attachments}">
+                    <img th:if="${attachment.smallImage != null}"
+                         th:src="'/content/files' + ${attachment.smallImage}"
+                         th:data-image="'/content/files' + ${attachment.originalImage}"
+                         th:alt="'Image of listing, nbr.' + ${iter.index}"
+                         style="display: none;"/>
                 </th:block>
             </div>
         </div>
-
     </div>
 
     <!-- Load current page javascript file -->

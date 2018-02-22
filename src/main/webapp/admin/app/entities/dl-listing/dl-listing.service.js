@@ -59,6 +59,10 @@
             'rebuildElasticsearch': {
                 method: 'GET',
                 url: resourceUrl + '/rebuild-index'
+            },
+            'rebuildImages': {
+                method: 'GET',
+                url: resourceUrl + '/rebuild-images'
             }
         });
     }

@@ -37,16 +37,18 @@ public class MvcAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         String jwt = tokenProvider.createToken(authentication, isRememberMe(httpServletRequest));
 
-        Cookie cookie = new Cookie(ApiJWTFilter.QL_AUTH, "Bearer:" + jwt);
+        Cookie qlAuthCookie = new Cookie(ApiJWTFilter.QL_AUTH, "Bearer:" + jwt);
         if (!isRememberMe(httpServletRequest)) {
-            cookie.setMaxAge(2592000);
+            qlAuthCookie.setMaxAge(2592000);
         }
-        httpServletResponse.addCookie(cookie);
+        httpServletResponse.addCookie(qlAuthCookie);
 
         if (authentication.isAuthenticated()) {
             QlUserDetails principal = (QlUserDetails) authentication.getPrincipal();
             httpServletRequest.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(principal.getLangKey()));
-            httpServletResponse.addCookie(new Cookie(QL_LANG_KEY, principal.getLangKey()));
+            Cookie qlLangKeyCookie = new Cookie(QL_LANG_KEY, principal.getLangKey());
+            qlLangKeyCookie.setPath("/");
+            httpServletResponse.addCookie(qlLangKeyCookie);
         }
 
         String redirectUrl = "/";

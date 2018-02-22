@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8"/>
@@ -8,92 +8,89 @@
     <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
           rel="stylesheet"/>
-    <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
-          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
-          rel="stylesheet"/>
 </head>
 <body>
 
 <!-- Navbar -->
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" th:fragment="header">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+<div th:fragment="header">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark" >
+        <div class="container">
             <a class="navbar-brand" href="/">
-                <img style="width: 24px; display: inline;" alt="Quis Listing"
-                     src="../../../resources/images/logo-ql.png"
-                     th:src="@{/resources/images/logo-ql.png}"/><span style="margin-left: 5px;">Quis Listing</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li th:each="navMenuItem : ${baseModel.topHeaderMenus}">
-                    <a th:if="${navMenuItem.staticPage} != null" th:href="'/'+${navMenuItem.staticPage.name}" th:text="${navMenuItem.staticPage.title}"></a>
-                    <a th:if="${navMenuItem.staticPage} == null" th:href="'/'+${navMenuItem.slug}" th:text="${navMenuItem.title}"></a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">
-                        <span th:text="#{fragment.header.language}">Language </span>&nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li th:each="activeLanguage : ${baseModel.activeLanguages}">
-                            <a href="#" onclick="changeLanguage(event);" th:attr="ql-data=${activeLanguage.language.code}">
-                                <span th:text="${activeLanguage.language.englishName}">English</span>
+                <img style="width: 32px;" alt="Quis Listing" src="../../../resources/images/logo-ql.png"
+                     th:src="@{/resources/images/logo-ql.png}"/><span style="margin-left: 5px;">Quis Listing</span>
+            </a>
 
-                                <span th:if="${activeLanguage.languageTranslation != null}"
-                                             th:text="' (' + ${activeLanguage.languageTranslation.name} + ')'">English Translated</span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" th:each="navMenuItem : ${baseModel.topHeaderMenus}">
+                        <a class="nav-link" th:if="${navMenuItem.staticPage} != null" th:href="'/'+${navMenuItem.staticPage.name}"
+                           th:text="${navMenuItem.staticPage.title}"></a>
+                        <a class="nav-link" th:if="${navMenuItem.staticPage} == null" th:href="'/'+${navMenuItem.slug}"
+                           th:text="${navMenuItem.title}"></a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav my-2 my-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span th:text="#{fragment.header.language}">Language </span>&nbsp;<span class="caret"></span>
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <th:block th:each="activeLanguage : ${baseModel.activeLanguages}">
+                                <a class="dropdown-item" href="#" onclick="changeLanguage(event);" th:attr="ql-data=${activeLanguage.language.code}">
+                                    <span th:text="${activeLanguage.language.englishName}">English</span>
+
+                                    <span th:if="${activeLanguage.languageTranslation != null}"
+                                          th:text="' (' + ${activeLanguage.languageTranslation.name} + ')'">English Translated</span>
+                                </a>
+                            </th:block>
+                        </div>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/sign-in" th:href="@{/sign-in}">
+                            <i class="fa fa-sign-in" aria-hidden="true"></i>
+                            <span th:text="#{fragment.header.login}">Log In</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" href="/sign-up" th:href="@{/sign-up}">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            <span th:text="#{fragment.header.signup}">Sign Up</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span sec:authentication="name">Bob</span> <b class="caret"></b>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" th:href="@{/account/profile}">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <span th:text="#{fragment.header.account}">Account</span>
                             </a>
-                        </li>
-                    </ul>
-                </li>
-                <li sec:authorize="!isAuthenticated()">
-                    <a href="/sign-in" th:href="@{/sign-in}">
-                        <span class="glyphicon glyphicon-log-in"></span>
-                        <span th:text="#{fragment.header.login}">Log In</span>
-                    </a>
-                </li>
-                <li sec:authorize="!isAuthenticated()">
-                    <a href="/sign-up" th:href="@{/sign-up}">
-                        <span class="glyphicon glyphicon-user"></span>
-                        <span th:text="#{fragment.header.signup}">Sign Up</span>
-                    </a>
-                </li>
-                <li sec:authorize="isAuthenticated()" class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <span sec:authentication="name">Bob</span> <b class="caret"></b>
-                    </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" th:href="@{/account/profile}">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <span th:text="#{fragment.header.account}">Account</span>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li><a href="/sign-out" th:href="@{/sign-out}">
-                                    <span class="glyphicon glyphicon-log-out"></span>
-                                    <span th:text="#{fragment.header.logout}">Log Out</span>
-                                </a>
-                            </li>
-                        </ul>
-                </li>
-            </ul>
+                            <div role="separator" class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/sign-out" th:href="@{/sign-out}">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                <span th:text="#{fragment.header.logout}">Log Out</span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <script type="text/javascript">
+                function changeLanguage(event) {
+                    let langCode = $(event.currentTarget).attr('ql-data');
+                    if (langCode != '' || langCode != 'undefined') {
+                        window.location.replace('?lang=' + langCode);
+                    }
+                }
+            </script>
         </div>
-        <!--/.nav-collapse -->
-    </div>
-    <script type="text/javascript">
-        function changeLanguage(event) {
-            let langCode = $(event.currentTarget).attr('ql-data');
-            if (langCode != '' || langCode != 'undefined') {
-                window.location.replace('?lang=' + langCode);
-            }
-        }
-    </script>
+    </nav>
 </div>
 <!-- JavaScript libraries used to be able to open the html page itself in browser -->
 <script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"

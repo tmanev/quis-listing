@@ -1,474 +1,245 @@
 EditListing = {
-    init: function (dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, jsTranslations, commonVar) {
+    init: function (dlListingDTO, dlContentFieldsDto, jsTranslations) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
-        /**
-         * @return {boolean}
-         */
-        const TwoWordValidator = function (value, component) {
-            var s = value;
-            s = s.replace(/(^\s*)|(\s*$)/gi, "");
-            s = s.replace(/[ ]{2,}/gi, " ");
-            s = s.replace(/\n /, "\n");
-            return s.split(' ').length >= 2;
-        };
-
-        /**
-         * @return {boolean}
-         */
-        const ListHasSelectionValidator = function (selectedValue, component) {
-            return selectedValue != -1;
-        };
-
         const touchMap = new WeakMap();
+        ListingDetailsComponent.setContentFieldValuesFromDlListing(dlListingDTO, dlContentFieldsDto);
 
-        var roots = MyListingsComponent.Utils.flatItemsToTree(dlCategoriesDtoFlat);
-
-        for (var i = 0; i < dlContentFieldsDto.length; i++) {
-            var dlContentField = dlContentFieldsDto[i];
-
-            if (dlContentField.options) {
-                dlContentField.optionsModel = JSON.parse(dlContentField.options);
-            }
-
-            getValueFromContentField(dlContentField, dlListingDTO.dlListingFields);
-        }
-
-        function getValueFromContentField(dlContentField, dlListingFields) {
-
-            if (dlListingFields) {
-                for (let dlListingField of dlListingFields) {
-                    if (dlListingField.id == dlContentField.id) {
-                        if (dlContentField.type === 'CHECKBOX') {
-                            if (dlListingField.selectedValue) {
-                                dlContentField.selectedValue = JSON.parse(dlListingField.selectedValue);
-                            } else {
-                                dlContentField.selectedValue = [];
-                            }
-                            return;
-                        } else if (dlContentField.type === 'DEPENDENT_SELECT') {
-                            if (dlListingField.selectedValue) {
-                                dlContentField.parentValue = findDlContentFieldItem(dlListingField.selectedValue, dlContentField.dlContentFieldItems);
-                                dlContentField.selectedValue = dlListingField.selectedValue;
-                            } else {
-                                dlContentField.parentValue = -1;
-                                dlContentField.selectedValue = -1;
-                            }
-                            return;
-                        } else if (dlContentField.type === 'SELECT') {
-                            if (dlListingField.selectedValue) {
-                                dlContentField.selectedValue = dlListingField.selectedValue;
-                            } else {
-                                dlContentField.selectedValue = -1;
-                            }
-                            return;
-                        } else if (dlContentField.type === 'NUMBER_UNIT') {
-                            if (dlListingField.selectedValue) {
-                                dlContentField.selectedValue = dlListingField.selectedValue;
-                            } else {
-                                dlContentField.selectedValue = -1;
-                            }
-                            dlContentField.value = dlListingField.value;
-                            return;
-                        } else {
-                            dlContentField.value = dlListingField.value;
-                            return;
-                        }
-                    }
-                }
-                // if it gets here means content field is added and there is no relation with the dlListing
-                // return default value for the proper type
-                return defaultValueIfNoRelation(dlContentField);
-            } else {
-                return defaultValueIfNoRelation(dlContentField);
-            }
-
-            function findDlContentFieldItem(id, dlContentFieldItems) {
-                for (let dlContentFieldItem of dlContentFieldItems) {
-                    if (dlContentFieldItem.id == id) {
-                        return dlContentFieldItem.parent.id;
-                    }
-                }
-            }
-
-            function defaultValueIfNoRelation(dlContentField) {
-                if (dlContentField.type === 'CHECKBOX') {
-                    // return empty array to be able to operate checkbox
-                    dlContentField.selectedValue = [];
-                } else if (dlContentField.type === 'SELECT') {
-                    dlContentField.selectedValue = -1;
-                } else if (dlContentField.type === 'DEPENDENT_SELECT') {
-                    dlContentField.parentValue = -1;
-                    dlContentField.selectedValue = -1;
-                } else if (dlContentField.type === 'NUMBER_UNIT') {
-                    dlContentField.selectedValue = -1;
-                }
-            }
-        }
-
-        var selectedCategory = {
-            name: ''
-        };
-        if (dlListingDTO.dlCategories && dlListingDTO.dlCategories.length > 0) {
-            selectedCategory = dlListingDTO.dlCategories[0];
-        }
-
-        var selectedCityId = -1;
-        var selectedStateId = -1;
-        var selectedCountryId = -1;
-        if (dlListingDTO.dlLocations && dlListingDTO.dlLocations.length > 0) {
-            selectedCityId = dlListingDTO.dlLocations[0].id;
-            selectedStateId = dlListingDTO.dlLocations[0].parentId;
-            selectedCountryId = dlListingDTO.dlLocations[0].parent.parent.id;
-        }
-
-        var editListingApp = new Vue({
+        let editListingApp = new Vue({
             el: '#editListingApp',
             data: {
-                queuePos: 0,
-                queueFiles: [],
-                categories: roots,
                 dlContentFields: dlContentFieldsDto,
-                selectedCountry: selectedCountryId,
-                isStateSelectLoading: false,
-                isCitySelectLoading: false,
-                selectedState: selectedStateId,
-                selectedCity: selectedCityId,
-                selectedCategory: selectedCategory,
-                dlLocationCountries: dlLocationCountries,
-                dlLocationStates: dlLocationStates,
-                dlLocationCities: dlLocationCities,
-                listing: {
-                    id: dlListingDTO.id,
-                    title: dlListingDTO.title,
-                    content: dlListingDTO.content,
-                    name: dlListingDTO.name,
-                    translatedName: dlListingDTO.translatedName,
-                    status: dlListingDTO.status,
-                    dlCategories: dlListingDTO.dlCategories,
-                    dlLocations: dlListingDTO.dlLocations,
-                    dlListingFields: dlListingDTO.dlListingFields,
-                    attachments: dlListingDTO.attachments,
-                    featuredAttachment: dlListingDTO.featuredAttachment
-                },
-                image: '',
-                confirmRemoveImageModal: {
-                    attachment: null
-                },
+                listing: listingDtoToListingForm(dlListingDTO),
                 saveModal: {
                     callback: null
-                }
+                },
+                editParts: [
+                    {
+                        uid: 'description',
+                        open: false,
+                        btnSaveLoading: false
+                    },
+                    {
+                        uid: 'details',
+                        open: false,
+                        btnSaveLoading: false
+                    },
+                    {
+                        uid: 'location',
+                        open: false,
+                        btnSaveLoading: false
+                    },
+                    {
+                        uid: 'gallery',
+                        open: false
+                    }
+                ],
+                btnPublishLoading: false,
+                btnConfirmListingDeleteLoading: false
             },
             validations: function () {
-                let validation_dict = {
-                    listing: {
-                        title: {
-                            required: required,
-                            TwoWordValidator: TwoWordValidator
-                        }
-                    },
-                    selectedCity: {
-                        ListHasSelectionValidator: ListHasSelectionValidator
-                    }
-                };
-
-                validation_dict.dlContentFields = {};
-
-                for (let index = 0; index < this.dlContentFields.length; index++) {
-                    validation_dict.dlContentFields[index] = {};
-                    validation_dict.dlContentFields[index].value = {};
-                    validation_dict.dlContentFields[index].selectedValue = {};
-                    if (this.dlContentFields[index].required) {
-                        if (this.dlContentFields[index].type === 'SELECT' || this.dlContentFields[index].type === 'DEPENDENT_SELECT') {
-                            validation_dict.dlContentFields[index].selectedValue.ListHasSelectionValidator = ListHasSelectionValidator;
-                        } else if(this.dlContentFields[index].type === 'NUMBER_UNIT') {
-                            validation_dict.dlContentFields[index].selectedValue.ListHasSelectionValidator = ListHasSelectionValidator;
-                            validation_dict.dlContentFields[index].value.required = required;
-                        } else {
-                            validation_dict.dlContentFields[index].value.required = required;
-                        }
-                    }
-
-                    if (this.dlContentFields[index].type === 'NUMBER' || this.dlContentFields[index].type === 'NUMBER_UNIT') {
-                        let min = Number.MIN_SAFE_INTEGER;
-                        let max = Number.MAX_SAFE_INTEGER;
-
-                        if (this.dlContentFields[index].optionsModel.min && this.dlContentFields[index].optionsModel.min !== '') {
-                            min = this.dlContentFields[index].optionsModel.min;
-                        }
-
-                        if (this.dlContentFields[index].optionsModel.max && this.dlContentFields[index].optionsModel.max !== '') {
-                            max = this.dlContentFields[index].optionsModel.max;
-                        }
-
-                        validation_dict.dlContentFields[index].value.between = between(min, max);
-                    }
-
-                    if (this.dlContentFields[index].type === 'STRING') {
-                        if (this.dlContentFields[index].optionsModel.minLength && this.dlContentFields[index].optionsModel.minLength !== '') {
-                            validation_dict.dlContentFields[index].value.minLength = minLength(this.dlContentFields[index].optionsModel.minLength);
-                        } else {
-                            validation_dict.dlContentFields[index].value.minLength = minLength(0);
-                        }
-
-                        if (this.dlContentFields[index].optionsModel.maxLength && this.dlContentFields[index].optionsModel.maxLength !== '') {
-                            validation_dict.dlContentFields[index].value.maxLength = maxLength(this.dlContentFields[index].optionsModel.maxLength);
-                        } else {
-                            validation_dict.dlContentFields[index].value.maxLength = maxLength(4096);
-                        }
-                    }
-                }
-
-                return validation_dict;
+                return {};
             },
             methods: {
-                getPayload: function () {
-                    let dlListingFields = [];
-                    for (let dlContentField of this.dlContentFields) {
-                        let value;
-                        let selectedValue;
-                        if (dlContentField.type === 'CHECKBOX') {
-                            if (dlContentField.selectedValue) {
-                                selectedValue = JSON.stringify(dlContentField.selectedValue);
-                            } else {
-                                selectedValue = JSON.stringify([]);
-                            }
-                        } else if (dlContentField.type === 'SELECT' || dlContentField.type === 'DEPENDENT_SELECT') {
-                            selectedValue = dlContentField.selectedValue;
-                        } else if (dlContentField.type === 'NUMBER_UNIT') {
-                            selectedValue = dlContentField.selectedValue;
-                            value = dlContentField.value;
-                        } else {
-                            value = dlContentField.value;
-                        }
-                        let listingField = {
-                            id: dlContentField.id,
-                            value: value,
-                            selectedValue: selectedValue
-                        };
-                        dlListingFields.push(listingField);
+                confirmDeleteListing: function () {
+                    this.$refs.confirmDeleteListingModal.show();
+                },
+                cancelDeleteListing: function () {
+                    this.$refs.confirmDeleteListingModal.hide();
+                },
+                deleteListing: function () {
+                    let vm = this;
+                    vm.btnConfirmListingDeleteLoading = true;
+                    MyListingService.deleteListing(this.listing.id).then(success).catch(error);
+                    function success() {
+                        vm.btnConfirmListingDeleteLoading = false;
+                        window.location.href = "/my-listings";
                     }
 
-                    this.listing.dlListingFields = dlListingFields;
-                    if (this.selectedCity !== "-1") {
-                        this.listing.dlLocations = [{
-                            id: this.selectedCity
-                        }];
-                    } else {
-                        this.listing.dlLocations = [];
-                    }
-
-                    this.listing.dlCategories = [this.selectedCategory];
-
-                    return this.listing;
-                },
-                runUpload: function (files) {
-                    for (var i = 0; i< files.length; i++) {
-                        doUpload(editListingApp.listing, editListingApp.queueFiles, files[i]);
-                    }
-
-                    function doUpload(dlListing, queueFiles, file) {
-                        var index = queueFiles.push({
-                            file: file,
-                            progress: 0
-                        });
-                        var local = queueFiles;
-                        var listing = dlListing;
-                        var fd = new FormData();
-                        fd.append(file.name, file);
-                        // Ajax Submit
-                        $.ajax({
-                            url: '/api/dl-listings/' + listing.id + '/upload',
-                            type: 'POST',
-                            dataType: 'json',
-                            data: fd,
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            forceSync: false,
-                            xhr: function () {
-                                var xhrobj = $.ajaxSettings.xhr();
-                                if (xhrobj.upload) {
-                                    xhrobj.upload.addEventListener('progress', function (event) {
-                                        var percent = 0;
-                                        var position = event.loaded || event.position;
-                                        var total = event.total || event.totalSize;
-                                        if (event.lengthComputable) {
-                                            percent = Math.ceil(position / total * 100);
-                                        }
-
-                                        // widget.settings.onUploadProgress.call(widget.element, widget.queuePos, percent);
-                                        console.log(percent);
-                                        local[index - 1].progress = percent;
-                                    }, false);
-                                }
-
-                                return xhrobj;
-                            },
-                            success: function (data, message, xhr) {
-                                // widget.settings.onUploadSuccess.call(widget.element, widget.queuePos, data);
-                                console.log("Success upload");
-                                var successMsg = $('#msg_upload_success').text();
-                                for (var i = 0; i<data.length; i++) {
-                                    listing.attachments.push(data[i]);
-                                }
-
-                                $.notify({
-                                    message: successMsg
-                                }, {
-                                    type: 'success'
-                                });
-
-                            },
-                            error: function (xhr, status, errMsg) {
-                                // widget.settings.onUploadError.call(widget.element, widget.queuePos, errMsg);
-                                console.log("Error upload");
-                            },
-                            complete: function (xhr, textStatus) {
-                                // widget.processQueue();
-                                console.log("Complete upload");
-                            }
-                        });
-                    }
-                },
-                fileUpload: function (files) {
-                    if (this.listing.status == 'PUBLISHED') {
-                        $('#save-warning-modal').modal('show');
-                        this.saveModal.callback = function () {
-                            $('#save-warning-modal').modal('hide');
-                            editListingApp.runUpload(files);
-                            editListingApp.listing.status = 'DRAFT';
-                        };
-                    } else {
-                        this.runUpload(files);
-                    }
-                },
-                onDrop: function (e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    var files = e.dataTransfer.files;
-                    this.fileUpload(files);
-                },
-                onChange: function (e) {
-                    var files = e.target.files;
-                    this.fileUpload(files);
-                },
-                createFile: function (file) {
-                    if (!file.type.match('image.*')) {
-                        alert('Select an image');
-                        return;
-                    }
-                    var img = new Image();
-                    var reader = new FileReader();
-                    var vm = this;
-
-                    reader.onload = function (e) {
-                        vm.image = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                },
-                confirmRemoveImage: function (attachment) {
-                    this.confirmRemoveImageModal.attachment = attachment;
-                    $('#my-modal').modal('show');
-                },
-                removeImage: function (attachment) {
-                    this.$http({
-                        url: '/api/dl-listings/' + this.listing.id + '/attachments/' + attachment.id,
-                        method: 'DELETE'
-                    }).then(function (response) {
-                        console.log('Success!:', response.data);
-
-                        let index = this.listing.attachments.indexOf(attachment);
-                        this.listing.attachments.splice(index, 1);
-                        $.notify({
-                            message: response.headers.get('X-qlService-alert')
-                        }, {
-                            type: 'success'
-                        });
-                        this.confirmRemoveImageModal.attachment = null;
-                        $('#my-modal').modal('hide');
-                    }, function (response) {
+                    function error (response) {
                         console.log('Error!:', response.data);
                         $.notify({
                             message: response.data
                         }, {
                             type: 'danger'
                         });
-                        this.confirmRemoveImageModal.attachment = null;
-                        $('#my-modal').modal('hide');
-                    });
+                        vm.btnConfirmListingDeleteLoading = false;
+                    }
                 },
-                onBoxClick: function (e) {
-                    $('#image-upload').trigger('click');
+                onSaveAsDraft: function () {
+                    let vm = this;
+                    let btn = $('.btn-save-as-draft');
+                    this.listing.status = 'DRAFT';
+                    QlUtil.UI.btnStartLoading(btn);
+                    MyListingService.updateListingPartial({path: 'STATUS', value: this.listing}).then(success).catch(error);
+                    function success(response) {
+                        QlUtil.UI.btnStopLoading(btn);
+                        $.notify({
+                            message: jsTranslations['rest.general.save_success']
+                        }, {
+                            type: 'success'
+                        });
+                    }
+                    function error(error) {
+                        $.notify({
+                            message: error.data
+                        }, {
+                            type: 'danger'
+                        });
+                        QlUtil.UI.btnStopLoading(btn);
+                    }
                 },
-                rootContentFieldItem: function(dlContentFieldItems) {
-                    return dlContentFieldItems.filter(function (dlContentFieldItem) {
-                        return dlContentFieldItem.parent === null;
-                    });
-                },
-                childContentFieldItem: function(dlContentFieldItems, parentId) {
-                    return dlContentFieldItems.filter(function (dlContentFieldItem) {
-                        return dlContentFieldItem.parent !== null && dlContentFieldItem.parent.id == parentId;
-                    });
-                },
-                resetValue: function(dlContentField) {
-                    dlContentField.value = -1;
-                },
-                onCountryChange: function () {
-                    if (this.selectedCountry === "-1") {
-                        this.dlLocationStates = [];
-                        this.selectedState = -1;
-                        this.dlLocationCities = [];
-                        this.selectedCity = -1;
+                onPublish: function (event) {
+                    let vm = this;
+
+                    for (let i = 0; i < vm.$children.length; i++) {
+                        if (vm.$children[i].$options.name === 'listing-description-component'
+                            || vm.$children[i].$options.name === 'listing-category-component'
+                            || vm.$children[i].$options.name === 'listing-details-component'
+                            || vm.$children[i].$options.name === 'listing-location-component') {
+                            vm.$children[i].isInputInvalid();
+                        }
+                    }
+                    if (vm.$v.$invalid) {
+                        vm.$v.$touch();
+                        $.notify({
+                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
+                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
+                        }, {
+                            type: 'danger'
+                        });
                     } else {
-                        var params = {
-                            parentId: this.selectedCountry,
-                            languageCode: Cookies.get('ql-lang-key')
-                        };
-                        this.isStateSelectLoading = true;
-                        this.selectedState = -1;
-                        this.selectedCity = -1;
-                        this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
-                            console.log('Success!:', response.data);
-                            this.dlLocationStates = response.data;
-                            this.isStateSelectLoading = false;
-                        }, function (response) {
+                        vm.btnPublishLoading = true;
+                        vm.listing.status = 'PUBLISHED';
+                        MyListingService.updateListingPartial({path: 'STATUS', value: vm.listing}).then(success).catch(error);
+
+                        function success() {
+                            vm.btnPublishLoading = false;
+                            window.location.href = "/my-listings/" + vm.listing.id + "/publish-successful";
+                        }
+
+                        function error (response) {
                             console.log('Error!:', response.data);
                             $.notify({
                                 message: response.data
                             }, {
                                 type: 'danger'
                             });
-                            this.isStateSelectLoading = false;
+                            vm.btnPublishLoading = false;
+                        }
+                    }
+                },
+                onSettings: function () {
+
+                },
+                onSaveDescription: function () {
+                    let vm = this;
+
+                    let components = [vm.$refs.listingDescriptionComponent, vm.$refs.listingCategoryComponent];
+                    if (MyListingService.componentsValid(components)) {
+                        vm.editParts[0].btnSaveLoading = true;
+                        MyListingService.updateListingPartial({path: 'DESCRIPTION', value: this.listing}).then(success).catch(error);
+                    } else {
+                        $.notify({
+                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
+                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
+                        }, {
+                            type: 'danger'
+                        });
+                    }
+                    function success(response) {
+                        vm.editParts[0].btnSaveLoading = false;
+                        $.notify({
+                            message: jsTranslations['rest.general.save_success']
+                        }, {
+                            type: 'success'
+                        });
+                        vm.editParts[0].open = !vm.editParts[0].open;
+                    }
+                    function error(error) {
+                        $.notify({
+                            message: error.data
+                        }, {
+                            type: 'danger'
+                        });
+                        vm.editParts[0].btnSaveLoading = false;
+                    }
+                },
+                onSaveDetails: function () {
+                    let vm = this;
+                    let components = [vm.$refs.listingDetailsComponent];
+                    if (MyListingService.componentsValid(components)) {
+                        let vm = this;
+                        let listingDetailsComponent = vm.$refs.listingDetailsComponent;
+                        vm.listing.dlListingFields = listingDetailsComponent.getListingFields();
+                        vm.editParts[1].btnSaveLoading = true;
+                        MyListingService.updateListingPartial({path: 'DETAILS', value: this.listing})
+                            .then(function (response) {
+                                vm.editParts[1].btnSaveLoading = false;
+                                $.notify({
+                                    message: jsTranslations['rest.general.save_success']
+                                }, {
+                                    type: 'success'
+                                });
+                                vm.editParts[1].open = !vm.editParts[1].open;
+                            })
+                            .catch(function (error) {
+                                $.notify({
+                                    message: error.data
+                                }, {
+                                    type: 'danger'
+                                });
+                                vm.editParts[1].btnSaveLoading = false;
+                            });
+                    } else {
+                        $.notify({
+                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
+                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
+                        }, {
+                            type: 'danger'
                         });
                     }
                 },
-                onStateChange: function () {
-                    if (this.selectedState === "-1") {
-                        this.dlLocationCities = [];
-                        this.selectedCity = -1;
-                    } else {
-                        var params = {
-                            parentId: this.selectedState,
-                            languageCode: Cookies.get('ql-lang-key')
-                        };
-                        this.isCitySelectLoading = true;
-                        this.selectedCity = -1;
-                        this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
-                            console.log('Success!:', response.data);
-                            this.dlLocationCities = response.data;
-                            this.isCitySelectLoading = false;
-                        }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
+                onSaveLocation: function () {
+                    let vm = this;
+                    let components = [vm.$refs.listingLocationComponent];
+                    if (MyListingService.componentsValid(components)) {
+                        vm.editParts[2].btnSaveLoading = true;
+                        MyListingService.updateListingPartial({path: 'LOCATION', value: vm.listing})
+                            .then(function (response) {
+                                vm.editParts[2].btnSaveLoading = false;
+                                $.notify({
+                                    message: jsTranslations['rest.general.save_success']
+                                }, {
+                                    type: 'success'
+                                });
+                                vm.editParts[2].open = !vm.editParts[2].open;
+                            })
+                            .catch(function (error) {
+                                $.notify({
+                                    message: error.data
+                                }, {
+                                    type: 'danger'
+                                });
+                                vm.editParts[2].btnSaveLoading = false;
                             });
-                            this.isCitySelectLoading = false;
+                    } else {
+                        $.notify({
+                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
+                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
+                        }, {
+                            type: 'danger'
                         });
                     }
+                },
+                openEdit(editPart) {
+                  editPart.open = !editPart.open;
+                },
+                getPayload: function () {
+                    let listingDetailsComponent = MyListingService.getComponentByName('listing-details-component', this.$children);
+                    this.listing.dlListingFields = listingDetailsComponent.getListingFields();
+                    return this.listing;
                 },
                 delayTouch: function ($v) {
                     $v.$reset();
@@ -483,24 +254,24 @@ EditListing = {
                 onSave: function (event) {
                     if (this.listing.status == 'PUBLISHED') {
                         this.saveModal.callback = function () {
-                            var $btn = $('#btnSave').button('loading');
+                            let $btn = $('#btnSave').button('loading');
                             $('#save-warning-modal').modal('hide');
                             editListingApp.doSave($btn, false);
                         };
                         // open confirmation dialog
                         $('#save-warning-modal').modal('show');
                     } else {
-                        var $btn = $('#btnSave').button('loading');
+                        let $btn = $('#btnSave').button('loading');
                         this.doSave($btn, false);
                     }
                 },
                 doSave: function ($btn, locationAfterSave) {
-                    var payload = this.getPayload();
+                    let payload = this.getPayload();
 
                     this.$http({url: '/api/dl-listings', body: payload, method: 'PUT'}).then(function (response) {
                         console.log('Success!:', response.data);
-                        var successMsg = $('#msg_save_success').text();
                         this.listing.status = response.data.status;
+                        let successMsg = $('#msg_save_success').text();
                         $.notify({
                             message: successMsg
                         }, {
@@ -520,73 +291,10 @@ EditListing = {
                         $btn.button('reset');
                     });
                 },
-                onPublish: function (event) {
-                    if (this.$v.$invalid) {
-                        this.$v.$touch();
-                        $.notify({
-                            title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
-                            message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
-                        });
-                    } else {
-                        let payload = this.getPayload();
-                        var $btn = $('#btnPublish').button('loading');
-                        this.$http({
-                            url: '/api/dl-listings/publish',
-                            body: payload,
-                            method: 'PUT'
-                        }).then(function (response) {
-                            console.log('Success!:', response.data);
-
-                            // $.notify({
-                            //     message: response.headers.get('X-qlService-alert')
-                            // }, {
-                            //     type: 'success'
-                            // });
-                            $btn.button('reset');
-                            window.location.href = "/my-listings/" + this.listing.id + "/publish-successful";
-                        }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
-                            $btn.button('reset');
-                        });
-                    }
-                },
                 onGoBack: function (event) {
                     window.location.href = "/my-listings";
-                },
-                openCategorySelection: function ($v) {
-                    // $v.$touch();
-                    // this.delayTouch($v);
-                    $('#myModal').modal('toggle');
-                }
-            }, computed: {
-                thumbnails: function (attachments) {
-                    return attachments.filter(function (attachment) {
-                        for (let imageResizeMeta of attachment.attachmentMetadata.imageResizeMetas) {
-                            if (imageResizeMeta.name === 'dl-thumbnail') {
-                                return true;
-                            }
-                        }
-
-                    });
                 }
             }
-        });
-
-        commonVar.addListingApp = editListingApp;
-
-        editListingApp.$on('id-selected', function (category) {
-            if (this.selectedCategory) {
-                this.selectedCategory.active = false;
-            }
-            this.selectedCategory = category;
-            this.selectedCategory.active = true;
         });
     }
 };

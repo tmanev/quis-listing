@@ -17,373 +17,189 @@
 <body>
 <div th:fragment="content" class="container">
     <div id="editListingApp" v-cloak>
-        <!--<div class="row">-->
-        <!--<div class="col-sm-12">-->
-
-        <!--<ul class="nav nav-pills navbar-inverse" style="position: fixed; top: 0;">-->
-        <!--<li role="presentation" class="active"><a href="#description">Description</a></li>-->
-        <!--<li role="presentation"><a href="#details">Details</a></li>-->
-        <!--<li role="presentation"><a href="#location">Location</a></li>-->
-        <!--<li role="presentation"><a href="#gallery">Gallery</a></li>-->
-        <!--</ul>-->
-        <!--</div>-->
-        <!--</div>-->
-        <form class="form-horizontal">
-            <div class="form-group">
-                <button type="button" class="btn btn-default col-sm-5 col-xs-5"
-                        id="btnGoBack"
-                        v-on:click="onGoBack">
-                    <span class="glyphicon glyphicon-th-list"></span>&nbsp;<span
-                        th:text="#{page.my_listings.edit_listing.btn_go_back}">To my listings</span>
-                </button>
-                <div class="col-sm-2 col-xs-2"></div>
-                <button type="button" class="btn btn-default col-sm-2 col-xs-2"
-                        id="btnSave"
-                        v-on:click="onSave"
-                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_save}">
-                    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;<span
-                        th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
-                </button>
-
-                <a id="previewLink" target="_blank" class="btn btn-default col-sm-3 col-xs-3"
+        <div class="row justify-content-between mb-3">
+            <div class="col-4">
+                <b-btn id="btnSettings"
+                       variant="light"
+                       ref="button">
+                    <i class="fa fa-cog" aria-hidden="true"></i>
+                </b-btn>
+                <b-popover target="btnSettings"
+                           triggers="focus"
+                           placement="rightbottom"
+                           ref="popover">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-light btn-block text-left btn-save-as-draft"
+                                    v-on:click="onSaveAsDraft"
+                                    v-bind:disabled="listing.status=='DRAFT'"
+                                    th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_save_as_draft}">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;<span
+                                    th:text="#{page.my_listings.edit_listing.btn_save_as_draft}">Save as draft</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <a class="btn btn-light btn-block text-left" v-on:click="confirmDeleteListing()">
+                                <i class="fa fa-times-circle-o"></i>
+                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">Delete</span>
+                            </a>
+                        </div>
+                    </div>
+                </b-popover>
+            </div>
+            <div class="col-4 text-right">
+                <a id="previewLink" target="_blank" class="btn btn-outline-secondary"
                    th:href="@{/my-listings/{id}/preview(id=${dlListingDTO.id})}">
-                    <span class="glyphicon glyphicon-eye-open"></span>&nbsp;<span
+                    <i class="fa fa-eye"></i>&nbsp;<span
                         th:text="#{page.my_listings.edit_listing.btn_preview}">Preview</span>
                 </a>
-
-            </div>
-        </form>
-        <p class="text-muted">
-            <span style="color: red;">*</span>&nbsp;
-            <span th:text="#{page.my_listings.edit_listing.label.indicates_required_field}">Indicates required field</span>
-        </p>
-        <div id="description" class="container-fluid">
-            <span class="label label-default"
-                  th:text="#{page.my_listings.edit_listing.label.description}">Description</span>
-            <form class="form-horizontal">
-                <div class="form-group required"
-                     v-bind:class="{ 'has-error': $v.listing.title.$error, 'has-success': $v.listing.title.$dirty &amp;&amp; !$v.listing.title.$invalid }">
-                    <label class="col-sm-2 control-label" for="field_title"
-                           th:text="#{page.my_listings.edit_listing.label.title}">Title</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="title" id="field_title"
-                               v-model="listing.title"/>
-                        <span class="help-block"
-                              v-if="!$v.listing.title.required &amp;&amp; $v.listing.title.$dirty"
-                              th:text="#{validation.required}">Field is required</span>
-                        <span class="help-block"
-                              v-if="!$v.listing.title.TwoWordValidator &amp;&amp; $v.listing.title.$dirty"
-                              th:text="#{validation.title_two_words}">Title must have at least two words</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" data-translate="quisListingApp.dlListing.description"
-                           for="field_description" th:text="#{page.my_listings.edit_listing.label.description}">Description</label>
-                    <div class="col-sm-10">
-                    <textarea rows="4" type="text" class="form-control" name="description" id="field_description"
-                              v-model="listing.content">
-                    </textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.category}">
-                        Category
-                    </label>
-                    <div class="col-sm-10">
-                        <div class="input-group">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" data-target="#myModal"
-                                    v-on:click="openCategorySelection($v)"
-                                    th:text="#{page.my_listings.edit_listing.label.select_category}">Select</button>
-                        </span>
-                            <input type="text" class="form-control"
-                                   style="cursor: pointer;"
-                                   readonly="readonly"
-                                   v-model="selectedCategory.name"
-                                   v-on:click="openCategorySelection($v)"/>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <hr/>
-        <div id="details" class="container-fluid">
-            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.details}">Details</span>
-            <form class="form-horizontal">
-                <fieldset v-for="(dlContentField, index) in dlContentFields">
-                    <div class="form-group" v-if="dlContentField.type == 'STRING'"
-                         v-bind:class="{ 'required': dlContentField.required, 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
-                        <label class="col-sm-2 control-label">
-                            {{dlContentField.translatedName}}</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="dlContentField.value"/>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
-                                  th:text="#{validation.required}">Field is required</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.minLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
-                                <span th:text="#{validation.min}">Min</span>
-                                {{ $v.dlContentFields[index].value.$params.minLength.min }}
-                                <span th:text="#{validation.letters}">letters</span>.
-                             </span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.maxLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
-                            <span th:text="#{validation.max}">Max</span>
-                            {{ $v.dlContentFields[index].value.$params.maxLength.max }}
-                            <span th:text="#{validation.letters}">letters</span>.
-                        </span>
-                        </div>
-                    </div>
-                    <div class="form-group" v-if="dlContentField.type == 'SELECT' "
-                         v-bind:class="{ 'required': dlContentField.required, 'has-error': $v.dlContentFields[index].selectedValue.$error, 'has-success': $v.dlContentFields[index].selectedValue.$dirty &amp;&amp; !$v.dlContentFields[index].selectedValue.$invalid }">
-                        <label class="col-sm-2 control-label">
-                            {{dlContentField.translatedName}}</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" v-model="dlContentField.selectedValue">
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
-                                </option>
-                                <option v-for="selectionItem in dlContentField.dlContentFieldItems"
-                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
-                                </option>
-                            </select>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].selectedValue.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].selectedValue.$dirty"
-                                  th:text="#{validation.selection_required}">Selection is required</span>
-                        </div>
-                    </div>
-                    <div class="form-group" v-if="dlContentField.type == 'NUMBER_UNIT' "
-                         v-bind:class="{ 'required': dlContentField.required, 'has-error': $v.dlContentFields[index].selectedValue.$error || $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].selectedValue.$dirty &amp;&amp; !$v.dlContentFields[index].selectedValue.$invalid &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid}">
-                        <label class="col-sm-2 control-label">
-                            {{dlContentField.translatedName}}</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" v-model="dlContentField.value"/>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
-                                  th:text="#{validation.required}">Field is required</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
-                                <span th:text="#{validation.must_be_between}">Must be between</span>
-                                {{ $v.dlContentFields[index].value.$params.between.min }}
-                                <span th:text="#{validation.and}">and</span>
-                                {{ $v.dlContentFields[index].value.$params.between.max }}
-                             </span>
-                        </div>
-                        <div class="col-sm-2">
-                            <select class="form-control" v-model="dlContentField.selectedValue">
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
-                                </option>
-                                <option v-for="selectionItem in dlContentField.dlContentFieldItems"
-                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
-                                </option>
-                            </select>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].selectedValue.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].selectedValue.$dirty"
-                                  th:text="#{validation.selection_required}">Selection is required</span>
-                        </div>
-                    </div>
-                    <div class="form-group" v-if="dlContentField.type == 'DEPENDENT_SELECT'"
-                         v-bind:class="{ 'required': dlContentField.required, 'has-error': $v.dlContentFields[index].selectedValue.$error, 'has-success': $v.dlContentFields[index].selectedValue.$dirty &amp;&amp; !$v.dlContentFields[index].selectedValue.$invalid }">
-                        <label class="col-sm-2 control-label">
-                            {{dlContentField.translatedName}}</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" v-model="dlContentField.parentValue"
-                                    v-on:change="resetValue(dlContentField)"
-                                    style="margin-bottom: 2px;">
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
-                                </option>
-                                <option v-for="selectionItem in rootContentFieldItem(dlContentField.dlContentFieldItems)"
-                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
-                                </option>
-                            </select>
-                            <select class="form-control" v-model="dlContentField.selectedValue">
-                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
-                                </option>
-                                <option v-for="selectionItem in childContentFieldItem(dlContentField.dlContentFieldItems, dlContentField.parentValue)"
-                                        v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
-                                </option>
-                            </select>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].selectedValue.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].selectedValue.$dirty"
-                                  th:text="#{validation.selection_required}">Selection is required</span>
-                        </div>
-                    </div>
-                    <div class="form-group" v-if="dlContentField.type == 'CHECKBOX' ">
-                        <label class="col-sm-2 control-label">
-                            {{dlContentField.translatedName}}</label>
-                        <div class="col-sm-10">
-                            <div class="checkbox col-sm-2"
-                                 v-for="selectionItem in dlContentField.dlContentFieldItems">
-                                <label>
-                                    <input type="checkbox" v-bind:value="selectionItem.id"
-                                           v-model="dlContentField.selectedValue"/>
-                                    {{selectionItem.translatedValue}}
-                                </label>
-                            </div>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                        </div>
-                    </div>
-                    <div class="form-group" v-if="dlContentField.type == 'NUMBER'"
-                         v-bind:class="{ 'required': dlContentField.required, 'has-error': $v.dlContentFields[index].value.$error, 'has-success': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }">
-                        <label class="col-sm-2 control-label">
-                            {{dlContentField.translatedName}}</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" v-model="dlContentField.value"/>
-                            <span class="help-block" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
-                                  th:text="#{validation.required}">Field is required</span>
-                            <span class="help-block"
-                                  v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
-                                <span th:text="#{validation.must_be_between}">Must be between</span>
-                                {{ $v.dlContentFields[index].value.$params.between.min }}
-                                <span th:text="#{validation.and}">and</span>
-                                {{ $v.dlContentFields[index].value.$params.between.max }}
-                             </span>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-        <hr/>
-        <div id="location" class="container-fluid">
-            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.location}">Location</span>
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" th:text="#{page.my_listings.edit_listing.label.country}">Country</label>
-                    <div class="col-sm-10">
-                        <select class="form-control" v-on:change="onCountryChange" v-model="selectedCountry">
-                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
-                            </option>
-                            <option v-for="dlLocationCountry in dlLocationCountries"
-                                    v-bind:value="dlLocationCountry.id">{{ dlLocationCountry.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label"
-                           th:text="#{page.my_listings.edit_listing.label.state}">State</label>
-                    <div class="col-sm-10">
-                        <select class="form-control" v-on:change="onStateChange" v-model="selectedState"
-                                v-bind:class="{loadinggif: isStateSelectLoading}">
-                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
-                            </option>
-                            <option v-for="dlLocationState in dlLocationStates" v-bind:value="dlLocationState.id">{{
-                                dlLocationState.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group required"
-                     v-bind:class="{ 'has-error': $v.selectedCity.$error, 'has-success': $v.selectedCity.$dirty &amp;&amp; !$v.selectedCity.$invalid }">
-                    <label class="col-sm-2 control-label"
-                           th:text="#{page.my_listings.edit_listing.label.city}">City</label>
-                    <div class="col-sm-10">
-                        <select class="form-control" v-model="selectedCity"
-                                v-bind:class="{loadinggif: isCitySelectLoading}">
-                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}">- Select -
-                            </option>
-                            <option v-for="dlLocationCity in dlLocationCities" v-bind:value="dlLocationCity.id">{{
-                                dlLocationCity.name }}
-                            </option>
-                        </select>
-                        <span class="help-block"
-                              v-if="!$v.selectedCity.ListHasSelectionValidator &amp;&amp; $v.selectedCity.$dirty"
-                              th:text="#{validation.selection_required}">Selection is required</span>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <hr/>
-        <div id="gallery" class="container-fluid">
-            <span class="label label-default" th:text="#{page.my_listings.edit_listing.label.gallery}">Gallery</span>
-            <div class="row">
-                <div class="col-sm-6 col-md-4" v-for="attachment in listing.attachments">
-                    <div class="thumbnail">
-                        <img v-bind:src="'/content/files' + attachment.attachmentMetadata.smallImageResizeMeta.detail.file"
-                             data-holder-rendered="true"
-                             style="height: 200px; display: block;"
-                        />
-                        <div class="caption">
-                            <p>
-                                <a class="btn btn-danger btn-sm" v-on:click="confirmRemoveImage(attachment)">
-                                    <span class="glyphicon glyphicon-remove-circle"></span>
-                                    <span class="hidden-sm-down" th:text="#{page.my_listings.edit_listing.btn_remove}">Remove</span>
-                                </a>
-                                <label class="radio-inline">
-                                    <input type="radio" v-bind:value="attachment"
-                                           v-model="listing.featuredAttachment">
-                                    <span th:text="#{page.my_listings.edit_listing.set_featured_attachment}">Set the image as the main one</span>
-                                </label>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop" v-on:click="onBoxClick">
-                <input id="image-upload" type="file" name="image" v-on:change="onChange" style="display: none" accept="image/*" multiple/>
-                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}" >Drop images here or click to upload</span>
-            </div>
-            <div id="upload_info" class="row" v-for="queueFile in queueFiles">
-                <div class="col-md-2">
-                    {{queueFile.file.name}}
-                </div>
-                <div class="col-md-10">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-success" role="progressbar"
-                             v-bind:aria-valuenow="queueFile.progress"
-                             aria-valuemin="0"
-                             aria-valuemax="100"
-                             v-bind:style="{width: queueFile.progress+'%'}">
-                            {{queueFile.progress}}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr/>
-        <form class="form-horizontal">
-            <div class="form-group">
-                <button type="button" class="btn btn-primary btn-lg col-xs-12"
+                <button type="button" class="btn btn-primary"
                         id="btnPublish"
                         v-on:click="onPublish"
-                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_publish}">
-                    <span class="glyphicon glyphicon-globe"></span>&nbsp;<span
-                        th:text="#{page.my_listings.edit_listing.btn_publish}">Publish</span>
+                        v-bind:disabled="listing.status=='PUBLISHED'"
+                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i> ' + #{page.my_listings.edit_listing.btn_publish}">
+                    <i v-if="btnPublishLoading" class="fa fa-circle-o-notch fa-spin"></i>
+                    <i v-if="!btnPublishLoading" class="fa fa-globe" aria-hidden="true"></i>&nbsp;
+                    <span v-if="listing.status != 'PUBLISHED'" th:text="#{page.my_listings.edit_listing.btn_publish}">Publish</span>
+                    <span v-if="listing.status == 'PUBLISHED'" th:text="#{page.my_listings.edit_listing.btn_published}">Published</span>
                 </button>
             </div>
-        </form>
+        </div>
 
-        <div th:replace="client/my-listings/components-category-modal :: category-modal"></div>
-
-        <div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalWindow">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">×</span></button>
-                        <h4 class="modal-title"><i class="fa fa-warning"></i> <span
-                                th:text="#{page.my_listings.label.delete}">Delete</span></h4>
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-10 edit-icon">
+                        <div class="f1-step-icon"><i class="fa fa-address-card-o"></i></div>
+                        <span th:text="#{page.my_listings.edit_listing.label.description}">Description</span>
                     </div>
-
-                    <!--<div class="modal-body"><slot></slot></div>-->
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger"
-                                v-on:click="removeImage(confirmRemoveImageModal.attachment)"
-                                th:text="#{page.my_listings.label.yes}">Yes
+                    <div class="col-sm-2 text-right">
+                        <b-btn class="btn btn-secondary"
+                                v-bind:class="editParts[0].open ? 'collapsed' : null"
+                                aria-controls="description-card-body"
+                            v-bind:aria-expanded="editParts[0].open ? 'true' : 'false'"
+                            v-on:click="openEdit(editParts[0])">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <span v-if="!editParts[0].open" th:text="#{page.my_listings.edit_listing.btn_edit}">Edit</span>
+                            <span v-if="editParts[0].open" th:text="#{page.my_listings.edit_listing.btn_cancel}">Cancel</span>
+                        </b-btn>
+                    </div>
+                </div>
+            </div>
+            <b-collapse id="description-card-body" class="card-body" v-model="editParts[0].open">
+                <listing-description-component ref="listingDescriptionComponent" v-bind:listing="listing"></listing-description-component>
+                <listing-category-component ref="listingCategoryComponent" v-bind:listing="listing"></listing-category-component>
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-2 text-right">
+                        <button type="button" class="btn btn-primary"
+                                id="btnSaveDescription"
+                                v-on:click="onSaveDescription">
+                            <i v-if="editParts[0].btnSaveLoading" class="fa fa-circle-o-notch fa-spin\"></i>
+                            <i v-if="!editParts[0].btnSaveLoading" class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
                         </button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal"
-                                th:text="#{page.my_listings.label.no}">No
+                    </div>
+                </div>
+            </b-collapse>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-10 edit-icon">
+                        <div class="f1-step-icon"><i class="fa fa-list"></i></div>
+                        <span th:text="#{page.my_listings.edit_listing.label.details}">Details</span>
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                v-bind:class="editParts[1].open ? 'collapsed' : null"
+                                aria-controls="details-card-body"
+                                v-bind:aria-expanded="editParts[1].open ? 'true' : 'false'"
+                                v-on:click="openEdit(editParts[1])">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <span v-if="!editParts[1].open" th:text="#{page.my_listings.edit_listing.btn_edit}">Edit</span>
+                            <span v-if="editParts[1].open" th:text="#{page.my_listings.edit_listing.btn_cancel}">Cancel</span>
                         </button>
                     </div>
                 </div>
             </div>
+            <b-collapse id="details-card-body" class="card-body" v-model="editParts[1].open">
+                <listing-details-component ref="listingDetailsComponent" v-bind:dl-content-fields="dlContentFields"></listing-details-component>
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-2 text-right">
+                        <button type="button" class="btn btn-primary"
+                                id="btnSaveDetails"
+                                v-on:click="onSaveDetails">
+                            <i v-if="editParts[1].btnSaveLoading" class="fa fa-circle-o-notch fa-spin\"></i>
+                            <i v-if="!editParts[1].btnSaveLoading" class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
+                        </button>
+                    </div>
+                </div>
+            </b-collapse>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-10 edit-icon">
+                        <div class="f1-step-icon"><i class="fa fa-map-marker"></i></div>
+                        <span th:text="#{page.my_listings.edit_listing.label.location}">Location</span>
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                v-bind:class="editParts[2].open ? 'collapsed' : null"
+                                aria-controls="location-card-body"
+                                v-bind:aria-expanded="editParts[2].open ? 'true' : 'false'"
+                                v-on:click="openEdit(editParts[2])">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <span v-if="!editParts[2].open" th:text="#{page.my_listings.edit_listing.btn_edit}">Edit</span>
+                            <span v-if="editParts[2].open" th:text="#{page.my_listings.edit_listing.btn_cancel}">Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <b-collapse id="location-card-body" class="card-body" v-model="editParts[2].open">
+                <div id="location" class="container-fluid">
+                    <listing-location-component ref="listingLocationComponent" v-bind:listing="listing"></listing-location-component>
+                    <div class="form-group row justify-content-end">
+                        <div class="col-sm-2 text-right">
+                            <button type="button" class="btn btn-primary"
+                                    id="btnSaveLocation"
+                                    v-on:click="onSaveLocation"
+                                    th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.my_listings.edit_listing.btn_save}">
+                                <i v-if="editParts[2].btnSaveLoading" class="fa fa-circle-o-notch fa-spin\"></i>
+                                <i v-if="!editParts[2].btnSaveLoading" class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </b-collapse>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-10 edit-icon">
+                        <div class="f1-step-icon"><i class="fa fa-picture-o"></i></div>
+                        <span th:text="#{page.my_listings.edit_listing.label.gallery}">Gallery</span>
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                v-bind:class="editParts[3].open ? 'collapsed' : null"
+                                aria-controls="gallery-card-body"
+                                v-bind:aria-expanded="editParts[3].open ? 'true' : 'false'"
+                                v-on:click="openEdit(editParts[3])">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <span v-if="!editParts[3].open" th:text="#{page.my_listings.edit_listing.btn_edit}">Edit</span>
+                            <span v-if="editParts[3].open" th:text="#{page.my_listings.edit_listing.btn_close}">Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <b-collapse id="gallery-card-body" class="card-body" v-model="editParts[3].open">
+                <listing-attachment-component ref="listingAttachmentComponent" v-bind:listing="listing"></listing-attachment-component>
+            </b-collapse>
         </div>
 
         <div id="save-warning-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalWindow">
@@ -413,28 +229,52 @@
                 </div>
             </div>
         </div>
-        <label id="msg_save_success" th:text="#{rest.general.save_success}" style="display: none"></label>
-        <label id="msg_upload_success" th:text="#{rest.general.upload_success}" style="display: none"></label>
+
+        <div th:replace="client/my-listings/confirm-delete-listing-modal :: confirm-delete-listing-modal"></div>
     </div>
 
-    <div th:replace="client/my-listings/components :: components"></div>
+    <div th:replace="client/my-listings/components/category-item-component :: category-item-component"></div>
+    <div th:replace="client/my-listings/components/listing-category-component :: listing-category-component"></div>
+    <div th:replace="client/my-listings/components/listing-description-component :: listing-description-component"></div>
+    <div th:replace="client/my-listings/components/listing-details-component :: listing-details-component"></div>
+    <div th:replace="client/my-listings/components/listing-location-component :: listing-location-component"></div>
+    <div th:replace="client/my-listings/components/listing-attachment-component :: listing-attachment-component"></div>
+
     <!-- Load current page javascript file -->
+    <script src="../../../resources/js/my-listings/components/util.js"
+            th:src="@{/resources/js/my-listings/components/util.js}"></script>
+    <script src="../../../resources/js/my-listings/components/my-listing-service.js"
+            th:src="@{/resources/js/my-listings/components/my-listing-service.js}"></script>
     <script src="../../../resources/js/my-listings/edit-listing.js"
             th:src="@{/resources/js/my-listings/edit-listing.js}"></script>
-    <script src="../../../resources/js/my-listings/components.js"
-            th:src="@{/resources/js/my-listings/components.js}"></script>
+    <script src="../../../resources/js/my-listings/components/category-item-component.js"
+            th:src="@{/resources/js/my-listings/components/category-item-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-category-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-category-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-description-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-description-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-details-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-details-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-location-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-location-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-attachment-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-attachment-component.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var commonVar = {};
-            MyListingsComponent.init(commonVar);
-            var dlListingDTO = [[${dlListingDTO}]];
-            var dlCategoriesDtoFlat = [[${dlCategoriesDtoFlat}]];
-            var dlContentFieldsDto = [[${dlContentFieldsDto}]];
-            var dlLocationCountries = [[${dlLocationCountries}]];
-            var dlLocationStates = [[${dlLocationStates}]];
-            var dlLocationCities = [[${dlLocationCities}]];
-            var jsTranslations = [[${jsTranslations}]];
-            EditListing.init(dlListingDTO, dlCategoriesDtoFlat, dlContentFieldsDto, dlLocationCountries, dlLocationStates, dlLocationCities, jsTranslations, commonVar);
+            let dlListingDTO = [[${dlListingDTO}]];
+            let dlCategoriesDtoFlat = [[${dlCategoriesDtoFlat}]];
+            let dlContentFieldsDto = [[${dlContentFieldsDto}]];
+            let dlLocationCountries = [[${dlLocationCountries}]];
+            let dlLocationStates = [[${dlLocationStates}]];
+            let dlLocationCities = [[${dlLocationCities}]];
+            let jsTranslations = [[${jsTranslations}]];
+            CategoryItemComponent.init();
+            ListingCategoryComponent.init(dlCategoriesDtoFlat);
+            ListingDescriptionComponent.init();
+            ListingDetailsComponent.init();
+            ListingLocationComponent.init(dlListingDTO, dlLocationCountries, dlLocationStates, dlLocationCities);
+            ListingAttachmentComponent.init();
+            EditListing.init(dlListingDTO, dlContentFieldsDto, jsTranslations);
         };
     </script>
 

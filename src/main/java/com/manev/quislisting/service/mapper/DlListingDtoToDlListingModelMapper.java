@@ -1,10 +1,12 @@
 package com.manev.quislisting.service.mapper;
 
+import com.manev.quislisting.service.model.AttachmentModel;
 import com.manev.quislisting.service.model.DlListingFieldItemModel;
 import com.manev.quislisting.service.model.DlListingFieldModel;
 import com.manev.quislisting.service.model.DlListingModel;
 import com.manev.quislisting.service.model.DlLocationModel;
 import com.manev.quislisting.service.model.QlStringTranslationModel;
+import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldItemDTO;
@@ -21,9 +23,11 @@ import java.util.List;
 public class DlListingDtoToDlListingModelMapper {
 
     private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
+    private DlAttachmentModelMapper dlAttachmentModelMapper;
 
-    public DlListingDtoToDlListingModelMapper(DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper) {
+    public DlListingDtoToDlListingModelMapper(DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper, DlAttachmentModelMapper dlAttachmentModelMapper) {
         this.dlListingDtoToDlListingBaseMapper = dlListingDtoToDlListingBaseMapper;
+        this.dlAttachmentModelMapper = dlAttachmentModelMapper;
     }
 
     public DlListingModel convert(DlListingDTO dlListingDTO, String languageCode) {
@@ -35,34 +39,45 @@ public class DlListingDtoToDlListingModelMapper {
         setDlCategories(dlListingDTO, model, languageCode);
         setDlListingContentFields(dlListingDTO, model, languageCode);
 
-        model.setAttachments(dlListingDTO.getAttachments());
+        setDlAttachments(dlListingDTO, model);
 
         return model;
+    }
+
+    private void setDlAttachments(DlListingDTO dlListingDTO, DlListingModel model) {
+        List<AttachmentModel> attachmentModels = new ArrayList<>();
+        List<AttachmentDTO> attachments = dlListingDTO.getAttachments();
+        for (AttachmentDTO attachment : attachments) {
+            attachmentModels.add(dlAttachmentModelMapper.convert(attachment));
+        }
+        model.setAttachments(attachmentModels);
     }
 
     private void setDlListingContentFields(DlListingDTO dlListingDTO, DlListingModel model, String languageCode) {
         List<DlListingFieldDTO> dlListingFields = dlListingDTO.getDlListingFields();
         List<DlListingFieldModel> dlListingFieldModels = new ArrayList<>();
 
-        for (DlListingFieldDTO dlListingField : dlListingFields) {
-            DlListingFieldModel dlListingFieldModel = new DlListingFieldModel();
+        if (!CollectionUtils.isEmpty(dlListingFields)) {
+            for (DlListingFieldDTO dlListingField : dlListingFields) {
+                DlListingFieldModel dlListingFieldModel = new DlListingFieldModel();
 
-            dlListingFieldModel.setId(dlListingField.getId());
-            dlListingFieldModel.setType(dlListingField.getType());
-            dlListingFieldModel.setDlContentFieldGroup(dlListingField.getDlContentFieldGroup());
+                dlListingFieldModel.setId(dlListingField.getId());
+                dlListingFieldModel.setType(dlListingField.getType());
+                dlListingFieldModel.setDlContentFieldGroup(dlListingField.getDlContentFieldGroup());
 
-            List<QlStringTranslationModel> translatedNames = dlListingField.getTranslatedNames();
+                List<QlStringTranslationModel> translatedNames = dlListingField.getTranslatedNames();
 
-            String translatedName = findTranslation(translatedNames, languageCode);
-            dlListingFieldModel.setName(translatedName != null ? translatedName : dlListingField.getName());
+                String translatedName = findTranslation(translatedNames, languageCode);
+                dlListingFieldModel.setName(translatedName != null ? translatedName : dlListingField.getName());
 
-            List<QlStringTranslationModel> translatedValues = dlListingField.getTranslatedValues();
-            String translatedValue = findTranslation(translatedValues, languageCode);
-            dlListingFieldModel.setValue(translatedValue != null ? translatedValue : dlListingField.getValue());
+                List<QlStringTranslationModel> translatedValues = dlListingField.getTranslatedValues();
+                String translatedValue = findTranslation(translatedValues, languageCode);
+                dlListingFieldModel.setValue(translatedValue != null ? translatedValue : dlListingField.getValue());
 
-            setItems(languageCode, dlListingField, dlListingFieldModel);
+                setItems(languageCode, dlListingField, dlListingFieldModel);
 
-            dlListingFieldModels.add(dlListingFieldModel);
+                dlListingFieldModels.add(dlListingFieldModel);
+            }
         }
 
         model.setDlListingFields(dlListingFieldModels);

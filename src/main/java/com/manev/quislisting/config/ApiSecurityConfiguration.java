@@ -30,7 +30,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(2)
+@Order(1)
 public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -82,7 +82,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/bower_components/**")
             .antMatchers("/i18n/**")
             .antMatchers("/content/**")
-            .antMatchers("/swagger-ui/index.html")
+            .antMatchers("/swagger-ui.html")
             .antMatchers("/test/**")
             .antMatchers("/h2-console/**");
     }
@@ -109,6 +109,8 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
+                .antMatchers("/api/dl-locations").permitAll()
+                .antMatchers(RestRouter.DlListing.SEARCH).permitAll()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/activate").permitAll()
                 .antMatchers("/api/authenticate").permitAll()

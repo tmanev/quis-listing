@@ -24,7 +24,8 @@ LandingPage = {
             methods: {
                 onLoadNext: function () {
                     this.pagingParams.isLoading = true;
-                    var $btn = $('#btnLoadMore').button('loading');
+                    let $btn = $('#btnLoadMore');
+                    QlUtil.UI.btnStartLoading($btn);
                     this.$http({
                         params: {
                             page: this.pagingParams.page,
@@ -41,7 +42,7 @@ LandingPage = {
                         this.pagingParams.page++;
                         this.pagingParams.loadedDlListings += response.data.length;
                         this.pagingParams.isLoading = false;
-                        $btn.button('reset');
+                        QlUtil.UI.btnStopLoading($btn);
                     }, function (response) {
                         console.log('Error!:', response.data);
                         $.notify({
@@ -50,7 +51,7 @@ LandingPage = {
                             type: 'danger'
                         });
                         this.pagingParams.isLoading = false;
-                        $btn.button('reset');
+                        QlUtil.UI.btnStopLoading($btn);
                     });
                 },
                 onSearch: function (event) {

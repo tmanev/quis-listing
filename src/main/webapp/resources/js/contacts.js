@@ -7,6 +7,7 @@ Contacts = {
         var contactApp = new Vue({
             el: '#contactApp',
             data: {
+                contactWasValidated: false,
                 contact: {
                     name: '',
                     email: '',
@@ -15,16 +16,18 @@ Contacts = {
                     languageCode: Cookies.get('ql-lang-key')
                 }
             },
-            validations: {
-                contact:{
-                    name: {
-                        required: required
-                    },
-                    email: {
-                        required: required,
-                        email: email
+            validations: function() {
+                return {
+                    contact:{
+                        name: {
+                            required: required
+                        },
+                        email: {
+                            required: required,
+                            email: email
+                        }
                     }
-                }
+                };
             },
             methods : {
                 onSubmit: function (event) {

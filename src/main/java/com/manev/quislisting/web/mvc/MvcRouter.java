@@ -26,20 +26,22 @@ public class MvcRouter {
     }
 
     public class MyListings {
-
-        public static final String BASE = "/my-listings";
-        public static final String ADD = BASE + "/add";
-        public static final String EDIT = BASE + "/{id}";
-        public static final String PREVIEW = BASE + "/{id}/preview";
-        public static final String PUBLISH_REQUEST_SUCCESS = BASE + "/{id}/publish-successful";
+        public static final String LIST = "/my-listings";
+        public static final String ADD_LISTING_STEP_1_NEW = "/my-listings/add-listing-step-1";
+        public static final String ADD_LISTING_STEP_1 = "/my-listings/{id}/add-listing-step-1";
+        public static final String ADD_LISTING_STEP_2 = "/my-listings/{id}/add-listing-step-2";
+        public static final String ADD_LISTING_STEP_3 = "/my-listings/{id}/add-listing-step-3";
+        public static final String ADD_LISTING_STEP_4 = "/my-listings/{id}/add-listing-step-4";
+        public static final String EDIT = "/my-listings/{id}";
+        public static final String PREVIEW = "/my-listings/{id}/preview";
+        public static final String PUBLISH_REQUEST_SUCCESS = "/my-listings/{id}/publish-successful";
 
         private MyListings() {
         }
     }
 
     public class Account {
-        private static final String BASE = "/account";
-        public static final String PROFILE = BASE + "/profile";
+        public static final String PROFILE = "/account/profile";
 
         private Account() {
         }

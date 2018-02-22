@@ -95,10 +95,14 @@ public class MvcJWTFilter extends GenericFilterBean {
             HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
             if (countryIso != null) {
                 request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(countryIso));
-                httpServletResponse.addCookie(new Cookie(QL_LANG_KEY, countryIso));
+                Cookie qlLangKeyCookie = new Cookie(QL_LANG_KEY, countryIso);
+                qlLangKeyCookie.setPath("/");
+                httpServletResponse.addCookie(qlLangKeyCookie);
             } else {
                 request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale("en"));
-                httpServletResponse.addCookie(new Cookie(QL_LANG_KEY, "en"));
+                Cookie qlLangKeyCookie = new Cookie(QL_LANG_KEY, "en");
+                qlLangKeyCookie.setPath("/");
+                httpServletResponse.addCookie(qlLangKeyCookie);
             }
         }
     }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+
+
+<div th:fragment="listing-category-component">
+
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="listing-category-component">
+        <div class="form-group row required">
+            <label class="col-sm-2 col-form-label" th:text="#{page.my_listings.edit_listing.label.category}">
+                Category
+            </label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-secondary" type="button"
+                                v-on:click="openCategorySelection($v)"
+                                th:text="#{page.my_listings.edit_listing.label.select_category}">Select</button>
+                    </div>
+                    <input type="text" class="form-control"
+                           style="cursor: pointer;"
+                           readonly="readonly"
+                           v-model="selectedCategory.name"
+                           v-on:click="openCategorySelection()"
+                           v-bind:class="{ 'is-invalid': $v.selectedCategory.name.$error, 'is-valid': $v.selectedCategory.name.$dirty &amp;&amp; !$v.selectedCategory.name.$invalid }"/>
+                    <div class="invalid-feedback"
+                         v-if="!$v.selectedCategory.name.required &amp;&amp; $v.selectedCategory.name.$dirty"
+                         th:text="#{validation.required}">Field is required</div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <b-modal ref="categoryModal" id="categoryModal">
+                <div slot="modal-title">
+                    <h5 id="categoryModalLabel" th:text="#{page.my_listings.add_listing.form.btn.select_category}">Select category</h5>
+                </div>
+                <div>
+                    <category-item-component v-for="category in categories" class="item"
+                                             v-bind:category="category"
+                                             v-bind:selected-category="selectedCategory"
+                                             v-bind:listing="listing">
+                    </category-item-component>
+                </div>
+                <div slot="modal-footer" class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-primary btn-block" v-on:click="hideModal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </b-modal>
+        </div>
+
+
+    </script>
+
+</div>
+</body>
+</html>

@@ -22,11 +22,9 @@ public class AttachmentUtil {
         filePaths.add(attachmentMetadata.getDetail().getFile());
 
         AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = attachmentMetadata.getSmallImageResizeMeta();
-        AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = attachmentMetadata.getMediumImageResizeMeta();
-        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getLargeImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getOriginalImageResizeMeta();
 
         addIfNotNull(filePaths, thumbnailImageResizeMeta);
-        addIfNotNull(filePaths, mediumImageResizeMeta);
         addIfNotNull(filePaths, bigImageResizeMeta);
 
         return filePaths;

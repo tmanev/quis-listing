@@ -1,5 +1,5 @@
 SignUp = {
-    init: function () {
+    init: function (signUpUserBean) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email} = window.validators;
 
@@ -8,11 +8,11 @@ SignUp = {
             el: '#signUpApp',
             data: {
                 signUp: {
-                    email: '',
-                    firstName: '',
-                    lastName: '',
-                    updates: true,
-                    password: ''
+                    email: signUpUserBean.email,
+                    firstName: signUpUserBean.firstName,
+                    lastName: signUpUserBean.lastName,
+                    updates: signUpUserBean.updates,
+                    password: signUpUserBean.password
                 }
             },
             validations: {

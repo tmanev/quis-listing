@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="${title}">Profile</title>
+
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/css/styles.css"
+          th:href="@{/resources/css/styles.css}"
+          rel="stylesheet"/>
+</head>
+<body>
+<div th:fragment="content" class="container">
+    <div id="addListingStep2App">
+        <div class="page-header">
+            <h3 th:text="#{page.my_listings.add_listing.title}">Add listing</h3>
+        </div>
+        <add-listing-wizard-progress-component v-bind:active-step="1"></add-listing-wizard-progress-component>
+        <listing-details-component ref="listingDetailsComponent" v-bind:dl-content-fields="dlContentFields"></listing-details-component>
+        <div class="form-group row">
+            <div class="col-xs-5 col-sm-4">
+                <button class="btn btn-secondary btn-block" id="btnPrevious" v-on:click="onPrevious()"
+                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i> ' + #{page.my_listings.add_listing.form.btn.previous}">
+                    <i class="fa fa-chevron-left"></i>
+                    <span th:text="#{page.my_listings.add_listing.form.btn.previous}">Previous</span>
+                </button>
+            </div>
+            <div class="offset-xs-2 col-xs-5 offset-sm-4 col-sm-4">
+                <button type="submit" class="btn btn-primary btn-block" id="btnNext"
+                        th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i> ' + #{page.my_listings.add_listing.form.btn.next}"
+                        v-on:click="onSubmit()">
+                    <span th:text="#{page.my_listings.add_listing.form.btn.next}">Next</span>
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="client/my-listings/components/add-listing-wizard-progress-component :: add-listing-wizard-progress-component"></div>
+    <div th:replace="client/my-listings/components/listing-details-component :: listing-details-component"></div>
+
+    <script src="../../../resources/js/my-listings/components/util.js"
+            th:src="@{/resources/js/my-listings/components/util.js}"></script>
+    <script src="../../../resources/js/my-listings/components/my-listing-service.js"
+            th:src="@{/resources/js/my-listings/components/my-listing-service.js}"></script>
+    <script src="../../../resources/js/my-listings/add-listing-step-2.js"
+            th:src="@{/resources/js/my-listings/add-listing-step-2.js}"></script>
+    <script src="../../../resources/js/my-listings/components/add-listing-wizard-progress-component.js"
+            th:src="@{/resources/js/my-listings/components/add-listing-wizard-progress-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-details-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-details-component.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        window.onload = function () {
+            let dlListingDTO = [[${dlListingDTO}]];
+            let dlContentFieldsDto = [[${dlContentFieldsDto}]];
+            let jsTranslations = [[${jsTranslations}]];
+            AddListingWizardProgressComponent.init();
+            ListingDetailsComponent.init();
+            AddListingStep2.init(dlListingDTO, dlContentFieldsDto, jsTranslations);
+        };
+    </script>
+</div>
+
+
+<!-- JavaScript libraries used to be able to open the html page itself in browser -->
+<script src="../../../resources/vendor/vue/vue.min.js"
+        th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/vuelidate.min.js"
+        th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/validators.min.js"
+        th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+<script src="../../../resources/vendor/vue-resource/vue-resource.min.js"
+        th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+<script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"
+        th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap/js/bootstrap.min.js"
+        th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+        th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+</body>
+</html>

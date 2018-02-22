@@ -112,6 +112,7 @@ public class DlAttachmentResize {
     public enum SizeType {
         BIG,
         MEDIUM,
-        SMALL
+        SMALL,
+        ORIGINAL
     }
 }

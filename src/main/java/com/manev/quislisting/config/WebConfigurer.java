@@ -1,7 +1,8 @@
 package com.manev.quislisting.config;
 
-import com.manev.quislisting.web.mvc.resolver.MyErrorViewResolver;
 import com.manev.quislisting.web.mvc.PageNotFoundController;
+import com.manev.quislisting.web.mvc.resolver.MyErrorViewResolver;
+import org.apache.catalina.servlets.DefaultServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ErrorViewResolver;
@@ -92,6 +93,10 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         if (env.acceptsProfiles(Constants.SPRING_PROFILE_DEVELOPMENT)) {
             initH2Console(servletContext);
         }
+
+        if (env.acceptsProfiles(Constants.SPRING_PROFILE_SWAGGER)) {
+            initSwagger(servletContext);
+        }
         log.info("Web application fully configured");
     }
 
@@ -104,6 +109,13 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         h2ConsoleServlet.addMapping("/h2-console/*");
         h2ConsoleServlet.setInitParameter("-properties", "src/main/resources/");
         h2ConsoleServlet.setLoadOnStartup(1);
+    }
+
+    private void initSwagger(ServletContext servletContext) {
+        log.debug("Initialize Swagger UI");
+        ServletRegistration.Dynamic swaggerServlet = servletContext.addServlet("swaggerServlet", new DefaultServlet());
+        swaggerServlet.addMapping("/swagger-ui.html");
+        swaggerServlet.setLoadOnStartup(2);
     }
 
     @Bean

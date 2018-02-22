@@ -5,6 +5,7 @@ public class AttachmentMetadata {
     private ImageResizeMeta smallImageResizeMeta;
     private ImageResizeMeta mediumImageResizeMeta;
     private ImageResizeMeta largeImageResizeMeta;
+    private ImageResizeMeta originalImageResizeMeta;
 
     public DetailSize getDetail() {
         return detail;
@@ -83,14 +84,6 @@ public class AttachmentMetadata {
         }
     }
 
-    public ImageResizeMeta getSmallImageResizeMeta() {
-        return smallImageResizeMeta;
-    }
-
-    public void setSmallImageResizeMeta(ImageResizeMeta thumbnailImageResizeMeta) {
-        this.smallImageResizeMeta = thumbnailImageResizeMeta;
-    }
-
     public ImageResizeMeta getMediumImageResizeMeta() {
         return mediumImageResizeMeta;
     }
@@ -105,5 +98,21 @@ public class AttachmentMetadata {
 
     public void setLargeImageResizeMeta(ImageResizeMeta largeImageResizeMeta) {
         this.largeImageResizeMeta = largeImageResizeMeta;
+    }
+
+    public ImageResizeMeta getSmallImageResizeMeta() {
+        return smallImageResizeMeta;
+    }
+
+    public void setSmallImageResizeMeta(ImageResizeMeta thumbnailImageResizeMeta) {
+        this.smallImageResizeMeta = thumbnailImageResizeMeta;
+    }
+
+    public ImageResizeMeta getOriginalImageResizeMeta() {
+        return originalImageResizeMeta;
+    }
+
+    public void setOriginalImageResizeMeta(ImageResizeMeta originalImageResizeMeta) {
+        this.originalImageResizeMeta = originalImageResizeMeta;
     }
 }

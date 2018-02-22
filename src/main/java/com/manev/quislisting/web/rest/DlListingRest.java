@@ -5,6 +5,7 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.form.DlListingPatch;
 import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
 import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
 import com.manev.quislisting.service.model.DlListingBaseModel;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,6 +63,34 @@ public class DlListingRest {
         this.userService = userService;
         this.dlListingDtoToDlListingBaseMapper = dlListingDtoToDlListingBaseMapper;
         this.dlListingDtoToDlListingModelMapper = dlListingDtoToDlListingModelMapper;
+    }
+
+    @PatchMapping(RestRouter.DlListing.LIST)
+    public ResponseEntity<DlListingDTO> updateDlListingPartial(@RequestBody DlListingPatch dlListingPatch) {
+        DlListingDTO result;
+        switch (dlListingPatch.getPath()) {
+            case DESCRIPTION:
+                result = dlListingService.updateDescription(dlListingPatch.getValue());
+                break;
+            case DETAILS:
+                result = dlListingService.updateDetails(dlListingPatch.getValue());
+                break;
+            case LOCATION:
+                result = dlListingService.updateLocation(dlListingPatch.getValue());
+                break;
+            case FEATURED_ATTACHMENT:
+                result = dlListingService.updateFeaturedAttachment(dlListingPatch.getValue());
+                break;
+            case STATUS:
+                result = dlListingService.updateStatus(dlListingPatch.getValue());
+                break;
+                default:
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "Please specify path")).body(null);
+        }
+
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     @PostMapping(RestRouter.DlListing.LIST)
@@ -98,7 +128,7 @@ public class DlListingRest {
         }
 
         dlListingService.validateForPublishing(dlListingForm);
-        DlListingDTO result = dlListingService.saveAndPublish(dlListingForm);
+        DlListingDTO result = dlListingService.publishListing(dlListingForm.getId());
 
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dlListingForm.getId().toString()))

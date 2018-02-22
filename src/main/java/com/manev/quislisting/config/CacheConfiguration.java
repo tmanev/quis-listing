@@ -81,6 +81,9 @@ public class CacheConfiguration {
             cm.createCache(com.manev.quislisting.domain.DlListingContentFieldRel.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.DlListingContentFieldRel.class.getName() + ".dlContentFieldItems", jcacheConfiguration);
 
+            // Services
+            cm.createCache("findDlContentFieldsByCategoryId", jcacheConfiguration);
+
 
         };
     }

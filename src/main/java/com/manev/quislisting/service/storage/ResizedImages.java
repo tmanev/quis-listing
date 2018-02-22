@@ -4,8 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class ResizedImages {
     private BufferedImage small;
-    private BufferedImage medium;
-    private BufferedImage big;
+    private BufferedImage original;
 
     public BufferedImage getSmall() {
         return small;
@@ -15,19 +14,11 @@ public class ResizedImages {
         this.small = small;
     }
 
-    public BufferedImage getMedium() {
-        return medium;
+    public BufferedImage getOriginal() {
+        return original;
     }
 
-    public void setMedium(BufferedImage medium) {
-        this.medium = medium;
-    }
-
-    public BufferedImage getBig() {
-        return big;
-    }
-
-    public void setBig(BufferedImage big) {
-        this.big = big;
+    public void setOriginal(BufferedImage original) {
+        this.original = original;
     }
 }

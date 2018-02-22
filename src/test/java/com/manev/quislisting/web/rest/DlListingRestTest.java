@@ -350,7 +350,7 @@ public class DlListingRestTest extends GenericResourceTest {
         String contentAsStringFromDelete = mvcResultDelete.getResponse().getContentAsString();
         DlListingDTO deletedAttachmentDlListingDTO = new ObjectMapper().readValue(contentAsStringFromDelete,
                 DlListingDTO.class);
-        assertThat(deletedAttachmentDlListingDTO.getAttachments()).isNull();
+        assertThat(deletedAttachmentDlListingDTO.getAttachments()).isEmpty();
 
         // verify it also in database
         DlListing updatedDlListing = dlListingRepository.findOne(deletedAttachmentDlListingDTO.getId());

@@ -26,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(1)
+@Order(2)
 public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final TokenProvider tokenProvider;
@@ -62,7 +62,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/bower_components/**")
                 .antMatchers("/i18n/**")
                 .antMatchers("/content/**")
-                .antMatchers("/swagger-ui/index.html")
+                .antMatchers("/swagger-ui.html")
                 .antMatchers("/test/**")
                 .antMatchers("/h2-console/**");
     }
@@ -96,7 +96,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
-                .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/swagger-ui.html").hasAuthority(AuthoritiesConstants.ADMIN)
                 .and()
                 .formLogin()
 

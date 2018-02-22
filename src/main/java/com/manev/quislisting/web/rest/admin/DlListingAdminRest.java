@@ -1,5 +1,6 @@
 package com.manev.quislisting.web.rest.admin;
 
+import com.manev.quislisting.service.DlAttachmentRegenerateService;
 import com.manev.quislisting.service.dto.ApproveDTO;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,10 +37,12 @@ public class DlListingAdminRest {
     private final Logger log = LoggerFactory.getLogger(DlListingAdminRest.class);
     private final DlListingService dlListingService;
     private final DlListingRebuildService dlListingRebuildService;
+    private final DlAttachmentRegenerateService dlAttachmentRegenerateService;
 
-    public DlListingAdminRest(DlListingService dlListingService, DlListingRebuildService dlListingRebuildService) {
+    public DlListingAdminRest(DlListingService dlListingService, DlListingRebuildService dlListingRebuildService, DlAttachmentRegenerateService dlAttachmentRegenerateService) {
         this.dlListingService = dlListingService;
         this.dlListingRebuildService = dlListingRebuildService;
+        this.dlAttachmentRegenerateService = dlAttachmentRegenerateService;
     }
 
     @GetMapping(AdminRestRouter.DlListing.LIST)
@@ -97,6 +101,12 @@ public class DlListingAdminRest {
     @GetMapping(AdminRestRouter.DlListing.REBUILD_INDEX)
     public ResponseEntity<Void> rebuildIndex() {
         dlListingRebuildService.rebuildElasticsearchData();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(AdminRestRouter.DlListing.REBUILD_IMAGES)
+    public ResponseEntity<Void> rebuildImages() throws IOException {
+        dlAttachmentRegenerateService.reGenerateImages();
         return ResponseEntity.noContent().build();
     }
 }

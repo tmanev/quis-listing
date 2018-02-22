@@ -1,0 +1,1 @@
+UPDATE ql_nav_menu_item SET slug = 'my-listings/add-listing-step-1' WHERE slug = 'my-listings/add';

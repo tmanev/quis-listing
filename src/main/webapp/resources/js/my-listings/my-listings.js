@@ -156,7 +156,8 @@ var MyListings = {
                 dlListings: [],
                 confirmModal: {
                     listingToDelete: null
-                }
+                },
+                btnConfirmListingDeleteLoading: false
             },
             validations: {},
             methods: {
@@ -184,7 +185,7 @@ var MyListings = {
                     this.$http({
                         url: '/api/dl-listings',
                         headers: {
-                            'Authorization': 'Bearer ' + Cookies.get('ql-auth').split(":")[1]
+                            'Authorization': QlUtil.Rest.authorizationBearer()
                         },
                         params: {
                             page: this.pagingParams.page - 1,
@@ -216,7 +217,7 @@ var MyListings = {
                 },
                 confirmDeleteListing: function(dlListing) {
                     this.confirmModal.listingToDelete = dlListing;
-                    $('#my-modal').modal('show');
+                    $('#confirm-delete-listing-modal').modal('show');
                 },
                 deleteListing: function () {
                     this.$http({
@@ -233,7 +234,7 @@ var MyListings = {
                             type: 'success'
                         });
                         this.confirmModal.listingToDelete = null;
-                        $('#my-modal').modal('hide');
+                        $('#confirm-delete-listing-modal').modal('hide');
                     }, function (response) {
                         console.log('Error!:', response.data);
                         $.notify({
@@ -242,8 +243,11 @@ var MyListings = {
                             type: 'danger'
                         });
                         this.confirmModal.listingToDelete = null;
-                        $('#my-modal').modal('hide');
+                        $('#confirm-delete-listing-modal').modal('hide');
                     });
+                },
+                cancelDeleteListing: function () {
+                    this.$refs.confirmDeleteListingModal.hide();
                 }
             },
             created: function () {

@@ -1,5 +1,7 @@
 package com.manev.quislisting.service.form;
 
+import com.manev.quislisting.domain.post.discriminator.DlListing;
+
 import java.util.List;
 
 public class DlListingForm {
@@ -11,6 +13,7 @@ public class DlListingForm {
     private List<DlLocationForm> dlLocations;
     private List<DlCategoryForm> dlCategories;
     private DlFeaturedAttachmentForm featuredAttachment;
+    private DlListing.Status status;
 
     public Long getId() {
         return id;
@@ -68,4 +71,11 @@ public class DlListingForm {
         this.featuredAttachment = featuredAttachment;
     }
 
+    public DlListing.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(DlListing.Status status) {
+        this.status = status;
+    }
 }

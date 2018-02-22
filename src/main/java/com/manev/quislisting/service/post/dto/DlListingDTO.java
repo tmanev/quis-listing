@@ -242,13 +242,6 @@ public class DlListingDTO {
         this.attachments = attachments;
     }
 
-    public void addAttachmentDto(AttachmentDTO attachmentDTO) {
-        if (attachments == null) {
-            attachments = new ArrayList<>();
-        }
-        attachments.add(attachmentDTO);
-    }
-
     public AttachmentDTO getFeaturedAttachment() {
         return featuredAttachment;
     }

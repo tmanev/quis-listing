@@ -12,8 +12,7 @@ public class ImageWatermarkUtil {
         // close the public constructor
     }
 
-    public static BufferedImage addImageWatermark(InputStream watermarkImageFile, InputStream sourceImageFile) throws IOException {
-        BufferedImage sourceImage = ImageIO.read(sourceImageFile);
+    public static BufferedImage addImageWatermark(InputStream watermarkImageFile, BufferedImage sourceImage) throws IOException {
         BufferedImage watermarkImage = ImageIO.read(watermarkImageFile);
 
         // initializes necessary graphic properties

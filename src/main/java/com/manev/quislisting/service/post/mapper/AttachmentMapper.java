@@ -34,14 +34,9 @@ public class AttachmentMapper {
 
         AttachmentMetadata attachmentMetadata = attachmentDTO.getAttachmentMetadata();
 
-        if (attachmentMetadata.getLargeImageResizeMeta() != null) {
-            DlAttachmentResize dlAttachmentResizeBig = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getLargeImageResizeMeta(), DlAttachmentResize.SizeType.BIG, attachment);
+        if (attachmentMetadata.getOriginalImageResizeMeta() != null) {
+            DlAttachmentResize dlAttachmentResizeBig = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getOriginalImageResizeMeta(), DlAttachmentResize.SizeType.ORIGINAL, attachment);
             attachment.addDlAttachmentResize(dlAttachmentResizeBig);
-        }
-
-        if (attachmentMetadata.getMediumImageResizeMeta() != null) {
-            DlAttachmentResize dlAttachmentResizeMedium = dlAttachmentResizeMapper.mapToDlAttachmentResize(attachmentMetadata.getMediumImageResizeMeta(), DlAttachmentResize.SizeType.MEDIUM, attachment);
-            attachment.addDlAttachmentResize(dlAttachmentResizeMedium);
         }
 
         if (attachmentMetadata.getSmallImageResizeMeta() != null) {
@@ -80,6 +75,9 @@ public class AttachmentMapper {
                         break;
                     case SMALL:
                         attachmentMetadata.setSmallImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.SMALL.name(), dlAttachmentResize));
+                        break;
+                    case ORIGINAL:
+                        attachmentMetadata.setOriginalImageResizeMeta(createImageResizeMeta(DlAttachmentResize.SizeType.ORIGINAL.name(), dlAttachmentResize));
                         break;
                     default:
                         log.warn("Image unknown size: {}", dlAttachmentResize.getSizeType());

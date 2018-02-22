@@ -94,6 +94,7 @@ public class AdminRestRouter {
         public static final String APPROVE = "/api/admin/dl-listings/{id}/approve";
         public static final String DISAPPROVE = "/api/admin/dl-listings/{id}/disapprove";
         public static final String REBUILD_INDEX = "/api/admin/dl-listings/rebuild-index";
+        public static final String REBUILD_IMAGES = "/api/admin/dl-listings/rebuild-images";
         public static final String ATTACHMENT_DETAIL = "/api/admin/dl-listings/{id}/attachments/{attachmentId}";
         public static final String ACTIVE_LANGUAGES = "/api/admin/dl-listings/active-languages";
 
