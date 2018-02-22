@@ -114,8 +114,10 @@ public class DlListingDtoToDlListingModelMapper {
     private void setDlLocation(DlListingDTO dlListingDTO, DlListingModel model, String languageCode) {
         List<DlLocationDTO> dlLocations = dlListingDTO.getDlLocations();
         List<TranslatedTermDTO> translatedLocations = dlListingDTO.getTranslatedLocations();
-        for (DlLocationDTO dlLocationDTO : dlLocations) {
-            model.addDlLocation(createDlLocationModelParent(dlLocationDTO, translatedLocations, languageCode));
+        if (!CollectionUtils.isEmpty(dlLocations)) {
+            for (DlLocationDTO dlLocationDTO : dlLocations) {
+                model.addDlLocation(createDlLocationModelParent(dlLocationDTO, translatedLocations, languageCode));
+            }
         }
     }
 
