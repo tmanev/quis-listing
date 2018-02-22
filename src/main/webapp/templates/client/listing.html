@@ -33,22 +33,22 @@
 
     <div class="row" style="margin-bottom: 20px;">
         <div class="col-md-4">
-            <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
-                <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlCategories[0]}">Work</span>
-            </h3>
+            <h4 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
+                <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span th:text="${dlListingDTO.dlCategories[0]}">Work</span>
+            </h4>
         </div>
         <div class="col-md-4">
-            <h3 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
-                <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span class="label label-default" th:text="${dlListingDTO.dlLocations[0].location}">Orlando, Miami, USA</span>
-            </h3>
+            <h4 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
+                <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span th:text="${dlListingDTO.dlLocations[0].location}">Orlando, Miami, USA</span>
+            </h4>
         </div>
         <div class="col-md-4">
             <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
                 <th:block th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'price'">
                     <th:block th:if="${dlListingField.type} == 'NUMBER_UNIT'">
-                        <h3 style="text-align: center; margin-top: 0px;" th:if="!${#strings.isEmpty(dlListingField.value)}">
-                            <span th:text="${dlListingField.name}">Price</span> &nbsp;<span class="label label-default" th:text="${dlListingField.value} + ' ' + ${dlListingField.items[0].value}">2000 EUR</span>
-                        </h3>
+                        <h4 style="text-align: center; margin-top: 0px;" th:if="!${#strings.isEmpty(dlListingField.value)}">
+                            <span th:text="${dlListingField.name}">Price</span> &nbsp;<span th:text="${dlListingField.value} + ' ' + ${dlListingField.items[0].value}">2000 EUR</span>
+                        </h4>
                     </th:block>
 
                 </th:block>
