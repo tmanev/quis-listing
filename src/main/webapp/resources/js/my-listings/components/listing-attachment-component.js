@@ -72,20 +72,14 @@ var ListingAttachmentComponent = {
                             success: function (data, message, xhr) {
                                 // widget.settings.onUploadSuccess.call(widget.element, widget.queuePos, data);
                                 console.log("Success upload");
-                                let successMsg = jsTranslations['rest.general.upload_success'];
                                 for (let i = 0; i < data.length; i++) {
                                     listing.attachments.push(data[i]);
                                 }
 
-                                $.notify({
-                                    message: successMsg
-                                }, {
-                                    type: 'success'
-                                });
+                                QlUtil.UI.Notification.showSuccess({message: jsTranslations['rest.general.upload_success']});
                             },
                             error: function (xhr, status, errMsg) {
-                                // widget.settings.onUploadError.call(widget.element, widget.queuePos, errMsg);
-                                console.log("Error upload");
+                                QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             },
                             complete: function (xhr, textStatus) {
                                 // widget.processQueue();
@@ -136,20 +130,12 @@ var ListingAttachmentComponent = {
 
                         let index = vm.listing.attachments.indexOf(selectedAttachment);
                         vm.listing.attachments.splice(index, 1);
-                        $.notify({
-                            message: response.headers['x-qlservice-alert']
-                        }, {
-                            type: 'success'
-                        });
+                        QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                         vm.confirmRemoveImageModal.attachment = null;
                         $('#confirm-remove-image-modal').modal('hide');
                     }).catch(function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         vm.confirmRemoveImageModal.attachment = null;
                         $('#confirm-remove-image-modal').modal('hide');
                     });
@@ -173,18 +159,10 @@ var ListingAttachmentComponent = {
                 'listing.featuredAttachment': function (val, oldVal) {
                     MyListingService.updateListingPartial({path: 'FEATURED_ATTACHMENT', value: this.listing})
                         .then(function (response) {
-                            $.notify({
-                                message: jsTranslations['info.save_success']
-                            }, {
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                         })
                         .catch(function (error) {
-                            $.notify({
-                                message: error.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         });
                 }
             }

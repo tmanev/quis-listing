@@ -61,7 +61,7 @@
             th:src="@{/resources/js/contacts.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var jsTranslations = [[${jsTranslations}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
             Contacts.init(jsTranslations);
         };
     </script>

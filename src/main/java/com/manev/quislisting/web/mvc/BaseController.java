@@ -109,6 +109,8 @@ public class BaseController {
             baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
         }
 
+        baseModel.setJsTranslations(getJsTranslations(locale));
+
         baseModel.setBaseUrl(qlConfigService.findOneByKey("base-url").getValue());
 
         return baseModel;
@@ -172,6 +174,7 @@ public class BaseController {
         jsTranslations.addTranslation("rest.general.upload_success", messageSource.getMessage("rest.general.upload_success", null, locale));
         jsTranslations.addTranslation("rest.general.save_success", messageSource.getMessage("rest.general.save_success", null, locale));
         jsTranslations.addTranslation("info.save_success", messageSource.getMessage("info.save_success", null, locale));
+        jsTranslations.addTranslation("info.general_server_error", messageSource.getMessage("info.general_server_error", null, locale));
 
         return jsTranslations.getTranslations();
     }

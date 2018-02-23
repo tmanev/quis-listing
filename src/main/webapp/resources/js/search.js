@@ -1,5 +1,5 @@
 Search = {
-    init: function (dlLocationCountries, totalDlListings, loadedDlListings) {
+    init: function (dlLocationCountries, totalDlListings, loadedDlListings, jsTranslations) {
         var filterInit = {
             text: '',
             categoryId: -1,
@@ -115,11 +115,7 @@ Search = {
                         QlUtil.UI.btnStopLoading($btn);
                     }).catch(function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         vm.pagingParams.isLoading = false;
                         QlUtil.UI.btnStopLoading($btn);
                     });
@@ -165,11 +161,7 @@ Search = {
                         this.isStateSelectLoading = false;
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.isStateSelectLoading = false;
                     });
                 },
@@ -185,11 +177,7 @@ Search = {
                         this.isCitySelectLoading = false;
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.isCitySelectLoading = false;
                     });
                 },

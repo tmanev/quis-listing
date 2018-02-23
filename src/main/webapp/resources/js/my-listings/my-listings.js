@@ -207,11 +207,7 @@ var MyListings = {
                         this.isLoading = false;
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.isLoading = false;
                     });
                 },
@@ -228,20 +224,12 @@ var MyListings = {
 
                         let index = this.dlListings.indexOf(this.confirmModal.listingToDelete);
                         this.dlListings.splice(index, 1);
-                        $.notify({
-                            message: jsTranslations['page.my_listings.notifications.delete_listing_success']
-                        }, {
-                            type: 'success'
-                        });
+                        QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.my_listings.notifications.delete_listing_success']});
                         this.confirmModal.listingToDelete = null;
                         $('#confirm-delete-listing-modal').modal('hide');
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.confirmModal.listingToDelete = null;
                         $('#confirm-delete-listing-modal').modal('hide');
                     });

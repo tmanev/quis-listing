@@ -1,5 +1,5 @@
 Profile = {
-    init: function (user) {
+    init: function (user, jsTranslations) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
@@ -75,11 +75,7 @@ Profile = {
                                 createCookie(localeCookie, response.headers.get(headerLocaleKey));
                             }
                             this.$v.profile.$reset();
-                            $.notify({
-                                message: response.bodyText
-                            }, {
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                             $btn.button('reset');
 
                             function createCookie(name,value,days) {
@@ -98,11 +94,7 @@ Profile = {
                             // trigger successful block
                         }, function (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             $btn.button('reset');
                         });
                     }
@@ -129,20 +121,12 @@ Profile = {
                                 newPasswordRepeat: ''
                             };
                             this.$v.profile.$reset();
-                            $.notify({
-                                message: response.bodyText
-                            }, {
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                             $btn.button('reset');
                             // trigger successful block
                         }, function (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             $btn.button('reset');
                         });
                     }

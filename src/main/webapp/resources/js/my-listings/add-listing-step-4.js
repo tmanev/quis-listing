@@ -29,11 +29,7 @@ AddListingStep4 = {
                         // move the user to the next page
                         window.location.href = afterPublishUrl;
                     }).catch(function (error) {
-                        $.notify({
-                            message: error.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         QlUtil.UI.btnStopLoading(btn);
                     });
                 },

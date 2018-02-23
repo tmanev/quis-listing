@@ -117,7 +117,7 @@
             th:src="@{/resources/js/my-listings/my-listings.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var jsTranslations = [[${jsTranslations}]];
+            var jsTranslations = [[${baseModel.jsTranslations}]];
             MyListings.init(jsTranslations);
         };
     </script>

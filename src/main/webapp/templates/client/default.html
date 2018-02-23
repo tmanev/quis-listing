@@ -100,9 +100,10 @@
             th:src="@{/resources/js/default.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var totalDlListings = [[${totalDlListings}]];
-            var loadedDlListings = [[${loadedDlListings}]];
-            LandingPage.init(totalDlListings, loadedDlListings);
+            let totalDlListings = [[${totalDlListings}]];
+            let loadedDlListings = [[${loadedDlListings}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
+            LandingPage.init(totalDlListings, loadedDlListings, jsTranslations);
         };
     </script>
 </div>

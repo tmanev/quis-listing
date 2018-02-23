@@ -38,7 +38,6 @@ public class AddListingStep2Controller extends BaseController {
         modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.add_listing.title", null, locale));
         modelMap.addAttribute("view", "client/my-listings/add-listing-step-2");
 
-        modelMap.addAttribute("jsTranslations", getJsTranslations(locale));
 
         return PAGE_CLIENT_INDEX;
     }

@@ -165,10 +165,11 @@
             th:src="@{/resources/js/search.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var totalDlListings = [[${totalDlListings}]];
-            var loadedDlListings = [[${loadedDlListings}]];
-            var dlLocationCountries = [[${dlLocationCountries}]];
-            Search.init(dlLocationCountries, totalDlListings, loadedDlListings);
+            let totalDlListings = [[${totalDlListings}]];
+            let loadedDlListings = [[${loadedDlListings}]];
+            let dlLocationCountries = [[${dlLocationCountries}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
+            Search.init(dlLocationCountries, totalDlListings, loadedDlListings, jsTranslations);
         };
     </script>
 </div>

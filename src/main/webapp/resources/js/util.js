@@ -9,6 +9,26 @@ QlUtil = {
         btnStopLoading: function (btn) {
             let dataOriginalText = btn.attr('data-original-text');
             btn.html(dataOriginalText);
+        },
+        Notification: {
+            showSuccess: function (msgObj) {
+                $.notify(msgObj, {
+                    type: 'success',
+                    placement: {
+                        from: "top",
+                        align: "center"
+                    }
+                });
+            },
+            showError: function (msgObj) {
+                $.notify(msgObj, {
+                    type: 'danger',
+                    placement: {
+                        from: "top",
+                        align: "center"
+                    }
+                });
+            }
         }
     },
     Rest: {

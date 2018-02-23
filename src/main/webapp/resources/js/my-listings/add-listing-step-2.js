@@ -46,19 +46,13 @@ AddListingStep2 = {
                                 window.location.href = afterSaveUrl;
                             })
                             .catch(function (error) {
-                                $.notify({
-                                    message: error.data
-                                }, {
-                                    type: 'danger'
-                                });
+                                QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                                 QlUtil.UI.btnStopLoading(btn);
                             });
                     } else {
-                        $.notify({
+                        QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
                         });
                     }
                 }

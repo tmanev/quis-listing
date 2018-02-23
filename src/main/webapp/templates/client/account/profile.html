@@ -202,7 +202,9 @@
             th:src="@{/resources/js/account/profile.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            Profile.init(/*[[${user}]]*/);
+            let jsTranslations = [[${baseModel.jsTranslations}]];
+            let user = [[${user}]];
+            Profile.init(user, jsTranslations);
         };
     </script>
 </div>

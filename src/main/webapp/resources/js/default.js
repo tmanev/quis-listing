@@ -1,5 +1,5 @@
 LandingPage = {
-    init: function (totalDlListings, loadedDlListings) {
+    init: function (totalDlListings, loadedDlListings, jsTranslations) {
         Vue.use(window.vuelidate.default);
 
         var landingApp = new Vue({
@@ -44,12 +44,7 @@ LandingPage = {
                         this.pagingParams.isLoading = false;
                         QlUtil.UI.btnStopLoading($btn);
                     }, function (response) {
-                        console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.pagingParams.isLoading = false;
                         QlUtil.UI.btnStopLoading($btn);
                     });

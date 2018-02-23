@@ -71,8 +71,6 @@ public class EditListingController extends BaseController {
         modelMap.addAttribute("dlCategoriesDtoFlat", dlCategories);
         modelMap.addAttribute("dlLocationCountries", dlLocationService.findAllByParentId(null, language));
 
-        modelMap.addAttribute("jsTranslations", getJsTranslations(locale));
-
         fillListingLocationsMode(modelMap, dlListingDTO, language);
 
         modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.edit_listing.title", null, locale));

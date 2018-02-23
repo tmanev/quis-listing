@@ -76,11 +76,7 @@ var ListingLocationComponent = {
                             vm.isStateSelectLoading = false;
                         }).catch(function (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             vm.isStateSelectLoading = false;
                         });
                     }
@@ -103,11 +99,7 @@ var ListingLocationComponent = {
                             vm.isCitySelectLoading = false;
                         }).catch(function (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             vm.isCitySelectLoading = false;
                         });
                     }

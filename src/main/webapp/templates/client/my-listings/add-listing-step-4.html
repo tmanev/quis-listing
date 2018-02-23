@@ -58,7 +58,7 @@
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
             let dlListingDTO = [[${dlListingDTO}]];
-            let jsTranslations = [[${jsTranslations}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
             AddListingWizardProgressComponent.init();
             ListingAttachmentComponent.init(jsTranslations);
             AddListingStep4.init(dlListingDTO);

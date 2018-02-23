@@ -49,19 +49,10 @@ Contacts = {
                                 languageCode: Cookies.get('ql-lang-key')
                             };
                             this.$v.contact.$reset();
-                            $.notify({
-                                message: jsTranslations['page.contact.message.sent_success']
-                            },{
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.contact.message.sent_success']});
                             $btn.button('reset');
                         }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            },{
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             $btn.button('reset');
                         });
 

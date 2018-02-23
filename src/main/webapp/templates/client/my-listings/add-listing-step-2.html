@@ -60,7 +60,7 @@
         window.onload = function () {
             let dlListingDTO = [[${dlListingDTO}]];
             let dlContentFieldsDto = [[${dlContentFieldsDto}]];
-            let jsTranslations = [[${jsTranslations}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
             AddListingWizardProgressComponent.init();
             ListingDetailsComponent.init();
             AddListingStep2.init(dlListingDTO, dlContentFieldsDto, jsTranslations);

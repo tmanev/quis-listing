@@ -44,8 +44,6 @@ public class AddListingStep3Controller extends BaseController {
 
         modelMap.addAttribute("view", "client/my-listings/add-listing-step-3");
 
-        modelMap.addAttribute("jsTranslations", getJsTranslations(locale));
-
         return PAGE_CLIENT_INDEX;
     }
 

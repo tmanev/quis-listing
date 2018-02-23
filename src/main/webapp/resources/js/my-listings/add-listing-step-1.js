@@ -32,11 +32,9 @@ AddListingStep1 = {
                             MyListingService.updateListingPartial({path: 'DESCRIPTION', value: this.listing}).then(success).catch(error);
                         }
                     } else {
-                        $.notify({
+                        QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
                         });
                     }
                     function success(response) {
@@ -45,11 +43,7 @@ AddListingStep1 = {
                         window.location.href = '/my-listings/' + response.data.id + '/add-listing-step-2';
                     }
                     function error(error) {
-                        $.notify({
-                            message: error.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         QlUtil.UI.btnStopLoading(btn);
                     }
                 }

@@ -59,11 +59,7 @@ EditListing = {
 
                     function error (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         vm.btnConfirmListingDeleteLoading = false;
                     }
                 },
@@ -75,18 +71,10 @@ EditListing = {
                     MyListingService.updateListingPartial({path: 'STATUS', value: this.listing}).then(success).catch(error);
                     function success(response) {
                         QlUtil.UI.btnStopLoading(btn);
-                        $.notify({
-                            message: jsTranslations['rest.general.save_success']
-                        }, {
-                            type: 'success'
-                        });
+                        QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                     }
                     function error(error) {
-                        $.notify({
-                            message: error.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         QlUtil.UI.btnStopLoading(btn);
                     }
                 },
@@ -106,19 +94,13 @@ EditListing = {
 
                         function error (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             vm.btnPublishLoading = false;
                         }
                     } else {
-                        $.notify({
+                        QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
                         });
                     }
                 },
@@ -133,28 +115,18 @@ EditListing = {
                         vm.editParts[0].btnSaveLoading = true;
                         MyListingService.updateListingPartial({path: 'DESCRIPTION', value: this.listing}).then(success).catch(error);
                     } else {
-                        $.notify({
+                        QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
                         });
                     }
                     function success(response) {
                         vm.editParts[0].btnSaveLoading = false;
-                        $.notify({
-                            message: jsTranslations['rest.general.save_success']
-                        }, {
-                            type: 'success'
-                        });
+                        QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                         vm.editParts[0].open = !vm.editParts[0].open;
                     }
                     function error(error) {
-                        $.notify({
-                            message: error.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         vm.editParts[0].btnSaveLoading = false;
                     }
                 },
@@ -169,27 +141,17 @@ EditListing = {
                         MyListingService.updateListingPartial({path: 'DETAILS', value: this.listing})
                             .then(function (response) {
                                 vm.editParts[1].btnSaveLoading = false;
-                                $.notify({
-                                    message: jsTranslations['rest.general.save_success']
-                                }, {
-                                    type: 'success'
-                                });
+                                QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                                 vm.editParts[1].open = !vm.editParts[1].open;
                             })
                             .catch(function (error) {
-                                $.notify({
-                                    message: error.data
-                                }, {
-                                    type: 'danger'
-                                });
+                                QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                                 vm.editParts[1].btnSaveLoading = false;
                             });
                     } else {
-                        $.notify({
+                        QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
                         });
                     }
                 },
@@ -201,27 +163,17 @@ EditListing = {
                         MyListingService.updateListingPartial({path: 'LOCATION', value: vm.listing})
                             .then(function (response) {
                                 vm.editParts[2].btnSaveLoading = false;
-                                $.notify({
-                                    message: jsTranslations['rest.general.save_success']
-                                }, {
-                                    type: 'success'
-                                });
+                                QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                                 vm.editParts[2].open = !vm.editParts[2].open;
                             })
                             .catch(function (error) {
-                                $.notify({
-                                    message: error.data
-                                }, {
-                                    type: 'danger'
-                                });
+                                QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                                 vm.editParts[2].btnSaveLoading = false;
                             });
                     } else {
-                        $.notify({
+                        QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
                             message: jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.message']
-                        }, {
-                            type: 'danger'
                         });
                     }
                 },
@@ -264,22 +216,14 @@ EditListing = {
                         console.log('Success!:', response.data);
                         this.listing.status = response.data.status;
                         let successMsg = $('#msg_save_success').text();
-                        $.notify({
-                            message: successMsg
-                        }, {
-                            type: 'success'
-                        });
+                        QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                         $btn.button('reset');
                         if (locationAfterSave) {
                             window.location.href = locationAfterSave;
                         }
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         $btn.button('reset');
                     });
                 },
