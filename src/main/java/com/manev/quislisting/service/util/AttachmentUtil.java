@@ -8,6 +8,7 @@ import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.springframework.util.CollectionUtils;
 
 public class AttachmentUtil {
 
@@ -40,7 +41,7 @@ public class AttachmentUtil {
         Set<DlAttachmentResize> dlAttachmentResizes = attachment.getDlAttachmentResizes();
         List<String> filePaths = new ArrayList<>();
         filePaths.add(attachment.getPath());
-        if (dlAttachmentResizes != null) {
+        if (!CollectionUtils.isEmpty(dlAttachmentResizes)) {
             for (DlAttachmentResize dlAttachmentResize : dlAttachmentResizes) {
                 filePaths.add(dlAttachmentResize.getPath());
             }

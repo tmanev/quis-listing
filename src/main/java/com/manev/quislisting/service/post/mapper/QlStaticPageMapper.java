@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class QlStaticPageMapper {
@@ -53,7 +54,7 @@ public class QlStaticPageMapper {
 
     private void setTranslationsDTO(StaticPage qlPage, StaticPageDTO staticPageDTO, List<Language> activeLanguages) {
         Set<Translation> translations = qlPage.getTranslation().getTranslationGroup().getTranslations();
-        if (translations != null) {
+        if (!CollectionUtils.isEmpty(translations)) {
             Map<String, Translation> stringTranslationMap = mapTranslationsByLanguageCode(translations);
             for (Language activeLanguage : activeLanguages) {
                 // I don't need the language that the page is displayed

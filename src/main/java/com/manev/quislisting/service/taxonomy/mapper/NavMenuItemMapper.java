@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class NavMenuItemMapper {
@@ -54,7 +55,7 @@ public class NavMenuItemMapper {
 
     public List<StaticPageNavMenuDTO> navMenuItemToNavMenuItemDto(Set<NavMenuItem> navMenuItems) {
         List<StaticPageNavMenuDTO> staticPageNavMenuDTOS = new ArrayList<>();
-        if (navMenuItems != null) {
+        if (!CollectionUtils.isEmpty(navMenuItems)) {
             for (NavMenuItem navMenuItem : navMenuItems) {
                 staticPageNavMenuDTOS.add(navMenuItemToNavMenuItemDto(navMenuItem));
             }

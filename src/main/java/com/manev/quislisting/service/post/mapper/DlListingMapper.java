@@ -96,7 +96,7 @@ public class DlListingMapper {
 
     private void setDlListingContentFields(DlListing dlListing, DlListingDTO dlListingDTO) {
         Set<DlListingContentFieldRel> dlListingContentFieldRels = dlListing.getDlListingContentFieldRels();
-        if (dlListingContentFieldRels != null) {
+        if (!CollectionUtils.isEmpty(dlListingContentFieldRels)) {
             for (DlListingContentFieldRel dlListingContentFieldRel : dlListingContentFieldRels) {
                 DlContentField dlContentField = dlListingContentFieldRel.getDlContentField();
                 setContentField(dlListingDTO, dlListingContentFieldRel, dlContentField);
@@ -270,7 +270,7 @@ public class DlListingMapper {
 
     private void setDlLocations(DlListing dlListing, DlListingDTO dlListingDTO) {
         Set<DlListingLocationRel> dlLocations = dlListing.getDlListingLocationRels();
-        if (dlLocations != null && !dlLocations.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlLocations)) {
             for (DlListingLocationRel dlListingLocationRel : dlLocations) {
                 DlLocationDTO dlLocationDTO = dlLocationMapper.dlLocationToDlLocationDTO(dlListingLocationRel.getDlLocation());
                 dlListingDTO.addDlLocationDto(dlLocationDTO);

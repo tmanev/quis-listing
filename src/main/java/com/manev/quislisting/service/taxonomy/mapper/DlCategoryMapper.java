@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class DlCategoryMapper {
@@ -90,7 +91,7 @@ public class DlCategoryMapper {
 
     private List<TranslationDTO> getTranslationDTOS(DlCategory dlCategory) {
         Set<Translation> translationSet = dlCategory.getTranslation().getTranslationGroup().getTranslations();
-        if (translationSet != null) {
+        if (!CollectionUtils.isEmpty(translationSet)) {
             return translationSet.stream()
                     .map(translationMapper::translationToTranslationDTO).collect(Collectors.toList());
         }
