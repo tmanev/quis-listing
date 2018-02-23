@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class NavMenuMapper {
@@ -58,7 +59,7 @@ public class NavMenuMapper {
 
     private void setTranslationsDTO(NavMenu navMenu, NavMenuDTO navMenuDTO, List<Language> activeLanguages) {
         Set<Translation> translations = navMenu.getTranslation().getTranslationGroup().getTranslations();
-        if (translations != null) {
+        if (!CollectionUtils.isEmpty(translations)) {
             Map<String, Translation> stringTranslationMap = mapTranslationsByLanguageCode(translations);
             for (Language activeLanguage : activeLanguages) {
                 // I don't need the language that the page is displayed

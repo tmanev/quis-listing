@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import org.springframework.util.StringUtils;
 
 @Service
 @Scope("singleton")
@@ -42,7 +43,7 @@ public class GeoLocationService {
     public String countryIsoFromIp(String ip) {
         String remoteIp = ip;
         String manualIp = getManualIp();
-        if (manualIp != null) {
+        if (!StringUtils.isEmpty(manualIp)) {
             remoteIp = manualIp;
         }
 

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "ql_dl_listing")
@@ -242,7 +243,7 @@ public class DlListing {
     }
 
     public DlAttachment removeAttachment(Long attachmentId) {
-        if (dlAttachments != null) {
+        if (!CollectionUtils.isEmpty(dlAttachments)) {
             Iterator<DlAttachment> iter = dlAttachments.iterator();
             while (iter.hasNext()) {
                 DlAttachment attachment = iter.next();

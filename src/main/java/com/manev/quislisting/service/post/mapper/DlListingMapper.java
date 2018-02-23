@@ -150,7 +150,7 @@ public class DlListingMapper {
 
         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
         List<Long> selectionIds = new ArrayList<>();
-        if (dlContentFieldItems != null) {
+        if (!CollectionUtils.isEmpty(dlContentFieldItems)) {
             for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
                 selectionIds.add(dlContentFieldItem.getId());
                 QlString qlString = dlContentFieldItem.getQlString();
@@ -193,7 +193,7 @@ public class DlListingMapper {
         DlContentFieldValue dlContentFieldValue = new DlContentFieldValue();
 
         Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
-        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlContentFieldItems)) {
             DlContentFieldItem dlContentFieldItem = dlContentFieldItems.iterator().next();
             DlContentFieldItem parentDlContentFieldItem = dlContentFieldItem.getParent();
             dlContentFieldValue.setSelectedValue(String.valueOf(dlContentFieldItem.getId()));
@@ -304,7 +304,7 @@ public class DlListingMapper {
 
     private void setDlCategories(DlListing dlListing, DlListingDTO dlListingDTO) {
         Set<DlCategory> dlCategories = dlListing.getDlCategories();
-        if (dlCategories != null && !dlCategories.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlCategories)) {
             for (DlCategory dlCategory : dlCategories) {
                 DlCategoryDTO dlCategoryDTO = dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory);
                 dlListingDTO.addDlCategoryDto(dlCategoryDTO);

@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Service class for managing users.
@@ -127,7 +128,7 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        if (userDTO.getAuthorities() != null) {
+        if (!CollectionUtils.isEmpty(userDTO.getAuthorities())) {
             Set<Authority> authorities = new HashSet<>();
             userDTO.getAuthorities().forEach(
                 authority -> authorities.add(authorityRepository.findOne(authority))

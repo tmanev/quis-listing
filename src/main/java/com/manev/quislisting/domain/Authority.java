@@ -44,12 +44,12 @@ public class Authority implements Serializable{
 
         Authority authority = (Authority) o;
 
-        return name != null ? name.equals(authority.name) : authority.name == null;
+        return (name != null && !name.isEmpty()) ? name.equals(authority.name) : authority.name == null;
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return (name != null && !name.isEmpty()) ? name.hashCode() : 0;
     }
 
     @Override

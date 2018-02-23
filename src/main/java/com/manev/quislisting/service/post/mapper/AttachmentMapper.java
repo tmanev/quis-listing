@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class AttachmentMapper {
@@ -64,7 +65,7 @@ public class AttachmentMapper {
         detailSize.setFile(attachment.getPath());
 
         Set<DlAttachmentResize> dlAttachmentResizes = attachment.getDlAttachmentResizes();
-        if (dlAttachmentResizes != null) {
+        if (!CollectionUtils.isEmpty(dlAttachmentResizes)) {
             for (DlAttachmentResize dlAttachmentResize : dlAttachmentResizes) {
                 switch (dlAttachmentResize.getSizeType()) {
                     case BIG:
