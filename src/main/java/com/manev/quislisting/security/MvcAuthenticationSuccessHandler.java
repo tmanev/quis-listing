@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
+import org.springframework.util.StringUtils;
 
 import static com.manev.quislisting.config.ThymeleafConfiguration.QL_LANG_KEY;
 import static org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME;
@@ -53,14 +54,14 @@ public class MvcAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         String redirectUrl = "/";
         String aContinue = httpServletRequest.getParameter("continue");
-        if (aContinue != null) {
+        if (!StringUtils.isEmpty(aContinue)) {
             redirectUrl = aContinue;
         }
         redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, redirectUrl);
     }
 
     private boolean isRememberMe(HttpServletRequest httpServletRequest) {
-        return httpServletRequest.getParameter("rememberMe") != null
+        return !StringUtils.isEmpty(httpServletRequest.getParameter("rememberMe"))
                 && httpServletRequest.getParameter("rememberMe").equals("on");
     }
 }

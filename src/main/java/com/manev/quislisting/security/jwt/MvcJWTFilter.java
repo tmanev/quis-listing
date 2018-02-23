@@ -44,14 +44,14 @@ public class MvcJWTFilter extends GenericFilterBean {
     private static String getRemoteIp(HttpServletRequest req) {
         String ip = req.getRemoteAddr();
 
-        if (req.getHeader("X-Forwarded-For") != null) {
+        if (!StringUtils.isEmpty(req.getHeader("X-Forwarded-For"))) {
             String[] headerParts = req.getHeader("X-Forwarded-For").split(",");
 
             if (headerParts.length > 0 && headerParts[0] != null) {
                 ip = headerParts[0];
             }
 
-        } else if (req.getHeader("X-Real-IP") != null) {
+        } else if (!StringUtils.isEmpty(req.getHeader("X-Real-IP"))) {
             ip = req.getHeader("X-Real-IP");
         }
 
@@ -93,7 +93,7 @@ public class MvcJWTFilter extends GenericFilterBean {
             String countryIso = geoLocationService.countryIsoFromIp(remoteIp);
             log.info("Country iso is: {}", countryIso);
             HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-            if (countryIso != null) {
+            if (!StringUtils.isEmpty(countryIso)) {
                 request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, new Locale(countryIso));
                 Cookie qlLangKeyCookie = new Cookie(QL_LANG_KEY, countryIso);
                 qlLangKeyCookie.setPath("/");
@@ -110,7 +110,8 @@ public class MvcJWTFilter extends GenericFilterBean {
     private String resolveToken(HttpServletRequest request) {
         Cookie qlAuthCookie = WebUtils.getCookie(request, QL_AUTH);
         String bearerCookieToken = qlAuthCookie != null ? qlAuthCookie.getValue() : null;
-        if (bearerCookieToken != null && StringUtils.hasText(bearerCookieToken) && bearerCookieToken.startsWith("Bearer:")) {
+        if (!StringUtils.isEmpty(bearerCookieToken) && StringUtils.hasText(bearerCookieToken)
+                && bearerCookieToken.startsWith("Bearer:")) {
             return bearerCookieToken.substring(7, bearerCookieToken.length());
         }
 
