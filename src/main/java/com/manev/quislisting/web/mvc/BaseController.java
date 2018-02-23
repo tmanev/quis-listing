@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -177,7 +178,7 @@ public class BaseController {
 
     protected void fillListingLocationsMode(ModelMap modelMap, DlListingDTO dlListingDTO, String language) {
         List<DlLocationDTO> dlLocations = dlListingDTO.getDlLocations();
-        if (dlLocations != null && !dlLocations.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlLocations)) {
             DlLocationDTO dlLocationDTO = dlLocations.get(0);
             modelMap.addAttribute("dlLocationStates", dlLocationService.findAllByParentId(dlLocationDTO.getParent().getParent().getId(), language));
             modelMap.addAttribute("dlLocationCities", dlLocationService.findAllByParentId(dlLocationDTO.getParent().getId(), language));

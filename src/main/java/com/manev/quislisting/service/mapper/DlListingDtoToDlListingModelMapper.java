@@ -15,6 +15,7 @@ import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.service.taxonomy.dto.TranslatedTermDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +69,13 @@ public class DlListingDtoToDlListingModelMapper {
                 List<QlStringTranslationModel> translatedNames = dlListingField.getTranslatedNames();
 
                 String translatedName = findTranslation(translatedNames, languageCode);
-                dlListingFieldModel.setName(translatedName != null ? translatedName : dlListingField.getName());
+                dlListingFieldModel.setName(!StringUtils.isEmpty(translatedName) ? translatedName
+                        : dlListingField.getName());
 
                 List<QlStringTranslationModel> translatedValues = dlListingField.getTranslatedValues();
                 String translatedValue = findTranslation(translatedValues, languageCode);
-                dlListingFieldModel.setValue(translatedValue != null ? translatedValue : dlListingField.getValue());
+                dlListingFieldModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue
+                        : dlListingField.getValue());
 
                 setItems(languageCode, dlListingField, dlListingFieldModel);
 
@@ -92,7 +95,8 @@ public class DlListingDtoToDlListingModelMapper {
             dlListingFieldItemModel.setId(dlListingFieldItemDTO.getId());
             List<QlStringTranslationModel> translatedValues = dlListingFieldItemDTO.getTranslatedValues();
             String translatedValue = findTranslation(translatedValues, languageCode);
-            dlListingFieldItemModel.setValue(translatedValue != null ? translatedValue : dlListingFieldItemDTO.getValue());
+            dlListingFieldItemModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue
+                    : dlListingFieldItemDTO.getValue());
 
             items.add(dlListingFieldItemModel);
         }

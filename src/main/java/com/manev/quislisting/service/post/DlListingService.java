@@ -386,7 +386,7 @@ public class DlListingService {
             if (dlLocationForm.getId() != -1L) {
                 DlLocation dlLocation = dlLocationRepository.findOne(dlLocationForm.getId());
                 Set<DlListingLocationRel> dlListingLocationRels = dlListingForSaving.getDlListingLocationRels();
-                if (dlListingLocationRels != null && !dlListingLocationRels.isEmpty()) {
+                if (!CollectionUtils.isEmpty(dlListingLocationRels)) {
                     // update
                     DlListingLocationRel dlListingLocationRel = dlListingLocationRels.iterator().next();
                     dlListingLocationRel.setDlLocation(dlLocation);

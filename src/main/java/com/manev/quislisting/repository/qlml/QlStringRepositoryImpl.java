@@ -33,12 +33,12 @@ public class QlStringRepositoryImpl implements QlStringRepositoryCustom {
         }
 
         String value = filter.getValue();
-        if (value != null && !StringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             query.where(qlString.value.containsIgnoreCase(value));
         }
 
         String context = filter.getContext();
-        if (context != null && !StringUtils.isEmpty(context)) {
+        if (!StringUtils.isEmpty(context)) {
             query.where(qlString.context.eq(context));
         }
 
