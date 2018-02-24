@@ -494,20 +494,25 @@ public class DlListingService {
         return !StringUtils.isEmpty(value) && !value.equals("-1");
     }
 
-    public DlListingDTO deleteDlListingAttachment(Long id, Long attachmentId) {
+    public void deleteDlListingAttachment(Long id, Long attachmentId) {
         log.debug("Request to delete attachment with id : {}, from DlCategoryDTO : {}", attachmentId, id);
         DlListing dlListing = dlListingRepository.findOne(id);
         DlAttachment attachment = dlListing.removeAttachment(attachmentId);
-        dlListing.setModified(new Timestamp(clock.millis()));
-        DlListing result = dlListingRepository.save(dlListing);
-
         if (attachment != null) {
+            dlListing.setModified(new Timestamp(clock.millis()));
+            removeFeaturedAttachmentIfUsed(dlListing, attachment);
+            dlListingRepository.save(dlListing);
             dlAttachmentRepository.delete(attachment);
             List<String> filePaths = AttachmentUtil.getFilePaths(attachment);
             storageService.delete(filePaths);
         }
+    }
 
-        return dlListingMapper.dlListingToDlListingDTO(result);
+    private void removeFeaturedAttachmentIfUsed(DlListing dlListing, DlAttachment attachment) {
+        DlAttachment featuredAttachment = dlListing.getFeaturedAttachment();
+        if (featuredAttachment != null && featuredAttachment.getId().equals(attachment.getId())) {
+            dlListing.setFeaturedAttachment(null);
+        }
     }
 
     public void validateForPublishing(DlListingForm dlListingForm) {

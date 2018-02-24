@@ -177,12 +177,10 @@ public class DlListingRest {
     }
 
     @DeleteMapping(RestRouter.DlListing.ATTACHMENT_DETAIL)
-    public ResponseEntity<DlListingDTO> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) {
+    public ResponseEntity<Void> deleteDlListingAttachment(@PathVariable Long id, @PathVariable Long attachmentId) {
         log.debug("REST request to delete attachment with id : {} in DlListingDTO : {}", attachmentId, id);
-        DlListingDTO result = dlListingService.deleteDlListingAttachment(id, attachmentId);
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        dlListingService.deleteDlListingAttachment(id, attachmentId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(RestRouter.DlListing.ACTIVE_LANGUAGES)
