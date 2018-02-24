@@ -343,17 +343,13 @@ public class DlListingRestTest extends GenericResourceTest {
         AttachmentDTO attachmentDTO = uploadedAttachmentDTOs[0];
 
         // test removal of attachments
-        MvcResult mvcResultDelete = restDlListingMockMvc.perform(delete(RestRouter.DlListing.ATTACHMENT_DETAIL, createdDlListingDTO.getId(), attachmentDTO.getId())
+        restDlListingMockMvc.perform(delete(RestRouter.DlListing.ATTACHMENT_DETAIL, createdDlListingDTO.getId(), attachmentDTO.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andReturn();
-        String contentAsStringFromDelete = mvcResultDelete.getResponse().getContentAsString();
-        DlListingDTO deletedAttachmentDlListingDTO = new ObjectMapper().readValue(contentAsStringFromDelete,
-                DlListingDTO.class);
-        assertThat(deletedAttachmentDlListingDTO.getAttachments()).isEmpty();
 
         // verify it also in database
-        DlListing updatedDlListing = dlListingRepository.findOne(deletedAttachmentDlListingDTO.getId());
+        DlListing updatedDlListing = dlListingRepository.findOne(createdDlListingDTO.getId());
         assertThat(updatedDlListing.getDlAttachments()).isEmpty();
     }
 
