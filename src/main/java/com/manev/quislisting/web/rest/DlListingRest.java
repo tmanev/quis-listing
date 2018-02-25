@@ -146,7 +146,7 @@ public class DlListingRest {
     }
 
     @GetMapping(RestRouter.DlListing.LIST)
-    public ResponseEntity<List<DlListingDTO>> getAllListings(Pageable pageable,
+    public ResponseEntity<List<DlListingBaseModel>> getAllListings(Pageable pageable,
                                                              @RequestParam(required = false, defaultValue = "en") String languageCode) {
         log.debug("REST request to get a page of DlListingDTO");
 
@@ -157,8 +157,11 @@ public class DlListingRest {
         }
 
         Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode, oneByLogin.get());
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlListing.LIST);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.LIST);
+        return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping(RestRouter.DlListing.DETAIL)

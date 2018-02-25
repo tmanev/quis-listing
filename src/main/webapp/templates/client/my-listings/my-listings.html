@@ -32,18 +32,31 @@
             <table class="table table-hover" v-bind:class="{loading: isLoading}">
                 <thead class="thead-light">
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col"></th>
                     <th scope="col" th:text="#{page.my_listings.label.title}">Title</th>
                     <th scope="col" th:text="#{page.my_listings.label.status}">Status</th>
-                    <th scope="col" th:text="#{page.my_listings.label.validity}">Validity</th>
                     <th scope="col" th:text="#{page.my_listings.label.action}">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="dlListing in dlListings">
-                    <th scope="row">{{dlListing.id}}</th>
-                    <td>{{dlListing.title}}</td>
-                    <td>
+                <tr v-for="(dlListing, index) in dlListings">
+                    <th scope="row">
+                        <div class="media">
+                            <img v-if="dlListing.featuredAttachment==null" src="../../resources/images/no-image-available.jpg"
+                                 th:src="@{/resources/images/no-image-available.jpg}"
+                                 alt="No image available"
+                                 data-holder-rendered="true" width="75" height="50"/>
+                            <img v-else
+                                 v-bind:src="'/content/files' + dlListing.featuredAttachment.smallImage"
+                                 data-holder-rendered="true" width="75" height="50"/>
+                        </div>
+                    </th>
+                    <td class="align-middle">
+                        <a class="btn btn-link" v-bind:href="'/my-listings/' + dlListing.id">
+                            {{dlListing.title}}
+                        </a>
+                    </td>
+                    <td class="align-middle">
                         <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
                         <span v-if="dlListing.status==='PUBLISH_REQUEST'"
                               th:text="#{page.my_listings.label.publish_requested}"></span>
@@ -53,24 +66,31 @@
                               th:text="#{page.my_listings.label.published}"></span>
                         <span v-if="dlListing.status==='PUBLISH_EXPIRED'"
                               th:text="#{page.my_listings.label.publish_expired}"></span>
+                        <div>Last modified on {{dlListing.modified | fullTime}}</div>
                     </td>
-                    <td>
-                        <span>Last modified on {{dlListing.modified | fullTime}}</span>
-                    </td>
-                    <td>
-                        <a class="btn btn-outline-success btn-sm" target="_blank"
-                           v-bind:href="'/my-listings/' + dlListing.id + '/preview'">
-                            <i class="fa fa-eye"></i>
-                            <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">Preview</span>
-                        </a>
-                        <a class="btn btn-outline-warning btn-sm" v-bind:href="'/my-listings/' + dlListing.id">
-                            <i class="fa fa-pencil-square-o"></i>
-                            <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
-                        </a>
-                        <a class="btn btn-outline-danger btn-sm " v-on:click="confirmDeleteListing(dlListing)">
-                            <i class="fa fa-times-circle-o"></i>
-                            <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">Delete</span>
-                        </a>
+                    <td class="align-middle">
+                        <b-btn v-bind:id="'btnSettings'+ index"
+                                variant="light" ref="button">
+                            <i class="fa fa-cog" aria-hidden="true"></i>
+                        </b-btn>
+                        <b-popover v-bind:target="'btnSettings'+ index"
+                                   triggers="focus"
+                                   placement="left"
+                                   ref="popover">
+                            <a class="btn btn-outline-success btn-sm" target="_blank"
+                               v-bind:href="'/my-listings/' + dlListing.id + '/preview'">
+                                <i class="fa fa-eye"></i>
+                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">Preview</span>
+                            </a>
+                            <a class="btn btn-outline-warning btn-sm" v-bind:href="'/my-listings/' + dlListing.id">
+                                <i class="fa fa-pencil-square-o"></i>
+                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm " v-on:click="confirmDeleteListing(dlListing)">
+                                <i class="fa fa-times-circle-o"></i>
+                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">Delete</span>
+                            </a>
+                        </b-popover>
                     </td>
                 </tr>
                 </tbody>
