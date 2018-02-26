@@ -31,7 +31,6 @@ import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
 import com.manev.quislisting.service.post.mapper.DlListingMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
-import com.manev.quislisting.web.rest.admin.DlCategoryAdminRestTest;
 import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
 import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
 import org.junit.Before;
@@ -155,11 +154,8 @@ public class DlListingRestTest extends GenericResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(dlListing.getId().intValue())))
                 .andExpect(jsonPath("$.[*].title").value(hasItem(DlListingTestComponent.DEFAULT_TITLE)))
-                .andExpect(jsonPath("$.[*].content").value(hasItem(DlListingTestComponent.DEFAULT_CONTENT)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DlListingTestComponent.DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].status").value(hasItem(DlListingTestComponent.DEFAULT_STATUS.toString())))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].name").value(hasItem(DlCategoryAdminRestTest.DEFAULT_NAME)))
-                .andExpect(jsonPath("$.[*].dlCategories.[*].slug").value(hasItem(DlCategoryAdminRestTest.DEFAULT_SLUG)));
+                .andExpect(jsonPath("$.[*].status").value(hasItem(DlListingTestComponent.DEFAULT_STATUS.toString())));
     }
 
     @Test
