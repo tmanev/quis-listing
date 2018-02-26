@@ -77,19 +77,31 @@
                                    triggers="focus"
                                    placement="left"
                                    ref="popover">
-                            <a class="btn btn-outline-success btn-sm" target="_blank"
-                               v-bind:href="'/my-listings/' + dlListing.id + '/preview'">
-                                <i class="fa fa-eye"></i>
-                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">Preview</span>
-                            </a>
-                            <a class="btn btn-outline-warning btn-sm" v-bind:href="'/my-listings/' + dlListing.id">
-                                <i class="fa fa-pencil-square-o"></i>
-                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
-                            </a>
-                            <a class="btn btn-outline-danger btn-sm " v-on:click="confirmDeleteListing(dlListing)">
-                                <i class="fa fa-times-circle-o"></i>
-                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">Delete</span>
-                            </a>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-light btn-block text-left" target="_blank"
+                                       v-bind:href="'/my-listings/' + dlListing.id + '/preview'">
+                                        <i class="fa fa-eye"></i>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">Preview</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-light btn-block text-left" v-bind:href="'/my-listings/' + dlListing.id">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-light btn-block text-left" v-on:click="confirmDeleteListing(dlListing)">
+                                        <i class="fa fa-times-circle-o"></i>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">Delete</span>
+                                    </a>
+                                </div>
+                            </div>
                         </b-popover>
                     </td>
                 </tr>
