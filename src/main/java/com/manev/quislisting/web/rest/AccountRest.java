@@ -8,6 +8,7 @@ import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
+import com.manev.quislisting.web.rest.RestRouter.Account;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.vm.ChangePasswordVM;
 import com.manev.quislisting.web.rest.vm.KeyAndPasswordVM;
@@ -158,6 +159,18 @@ public class AccountRest {
         return Optional.ofNullable(userService.getUserWithAuthorities())
                 .map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    /**
+     * GET  /account : get the current user.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the current user in body, or status 500 (Internal Server Error) if the user couldn't be returned
+     */
+    @GetMapping(Account.MOBILE_BASE)
+    public ResponseEntity<UserDTO> getAccount(final @RequestParam String login) {
+        final Optional<User> userByLogin = userService.getUserWithAuthoritiesByLogin(login);
+        return userByLogin.map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**

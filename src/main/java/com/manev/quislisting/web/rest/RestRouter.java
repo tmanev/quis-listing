@@ -4,6 +4,7 @@ public final class RestRouter {
 
     public class Account {
         public static final String BASE = "/api/account";
+        public static final String MOBILE_BASE = "/api/mobile/account";
         public static final String CHANGE_PASS = "/api/account/change_password";
         public static final String RESET_PASS_INIT = "/api/account/reset_password/init";
         public static final String RESET_PASS_FINISH = "/api/account/reset_password/finish";
