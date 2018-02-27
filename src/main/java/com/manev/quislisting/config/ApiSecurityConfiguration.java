@@ -119,6 +119,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/profile-info").permitAll()
                 .antMatchers("/api/contacts").permitAll()
                 .antMatchers(RestRouter.DlListing.RECENT +"/**").permitAll()
+                .antMatchers(RestRouter.DlListing.DETAIL +"/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .and()
