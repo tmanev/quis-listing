@@ -23,6 +23,8 @@ public class DlListingDtoToDlListingBaseMapper {
         baseModel.setSourceLanguageCode(dlListing.getSourceLanguageCode());
         baseModel.setFeaturedAttachment(dlListing.getFeaturedAttachment() != null ? dlAttachmentModelMapper.convert(dlListing.getFeaturedAttachment()) : null);
         baseModel.setStatus(dlListing.getStatus());
+        baseModel.setPrice(dlListing.getPrice());
+        baseModel.setPriceCurrency(dlListing.getPriceCurrency());
 
         return baseModel;
     }

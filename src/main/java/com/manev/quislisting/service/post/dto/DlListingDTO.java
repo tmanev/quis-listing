@@ -15,6 +15,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class DlListingDTO {
     private String title;
     private String content;
     private String name;
+    private BigDecimal price;
+    private String priceCurrency;
 
     @JsonSerialize(using = TimestampSerializer.class)
     @JsonDeserialize(using = TimestampDeserializer.class)
@@ -278,5 +281,21 @@ public class DlListingDTO {
             translatedLocations = new ArrayList<>();
         }
         translatedLocations.add(translatedTermDTO);
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getPriceCurrency() {
+        return priceCurrency;
+    }
+
+    public void setPriceCurrency(String priceCurrency) {
+        this.priceCurrency = priceCurrency;
     }
 }

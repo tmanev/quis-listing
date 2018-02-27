@@ -23,7 +23,7 @@ AddListingStep1 = {
                 onSubmit: function () {
                     let vm = this;
                     let btn = $('#btnNext');
-                    let components = [vm.$refs.listingDescriptionComponent, vm.$refs.listingCategoryComponent];
+                    let components = [vm.$refs.listingDescriptionComponent, vm.$refs.listingCategoryComponent, vm.$refs.listingPriceComponent];
                     if (MyListingService.componentsValid(components)) {
                         QlUtil.UI.btnStartLoading(btn);
                         if (this.listing.id == null) {

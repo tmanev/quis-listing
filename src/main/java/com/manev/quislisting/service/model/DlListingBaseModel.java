@@ -6,6 +6,7 @@ import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.service.post.dto.serializer.TimestampDeserializer;
 import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class DlListingBaseModel {
@@ -23,6 +24,8 @@ public class DlListingBaseModel {
     private String sourceLanguageCode;
     private AttachmentModel featuredAttachment;
     private DlListing.Status status;
+    private BigDecimal price;
+    private String priceCurrency;
 
     public Long getId() {
         return id;
@@ -94,5 +97,21 @@ public class DlListingBaseModel {
 
     public void setStatus(DlListing.Status status) {
         this.status = status;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getPriceCurrency() {
+        return priceCurrency;
+    }
+
+    public void setPriceCurrency(String priceCurrency) {
+        this.priceCurrency = priceCurrency;
     }
 }

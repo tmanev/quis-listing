@@ -31,7 +31,9 @@ const listingDtoToListingForm = function (dlListingDTO) {
         dlLocations: dlListingDTO.dlLocations,
         dlListingFields: dlListingDTO.dlListingFields,
         attachments: dlListingDTO.attachments,
-        featuredAttachment: dlListingDTO.featuredAttachment
+        featuredAttachment: dlListingDTO.featuredAttachment,
+        price: dlListingDTO.price,
+        priceCurrency: dlListingDTO.priceCurrency ? dlListingDTO.priceCurrency : "-1"
     }
 };
 

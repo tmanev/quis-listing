@@ -43,16 +43,12 @@
             </h4>
         </div>
         <div class="col-md-4">
-            <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                <th:block th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'price'">
-                    <th:block th:if="${dlListingField.type} == 'NUMBER_UNIT'">
-                        <h4 style="text-align: center; margin-top: 0px;" th:if="!${#strings.isEmpty(dlListingField.value)}">
-                            <span th:text="${dlListingField.name}">Price</span> &nbsp;<span th:text="${dlListingField.value} + ' ' + ${dlListingField.items[0].value}">2000 EUR</span>
-                        </h4>
-                    </th:block>
-
-                </th:block>
-            </th:block>
+            <h4 style="text-align: center; margin-top: 0px;">
+                <span th:text="#{page.listing.label.price}">Price</span>
+                <span th:if="${dlListingDTO.price != null}" th:text="${dlListingDTO.price}">200</span>
+                <span th:if="${dlListingDTO.price == null}">-</span>
+                <span th:if="${dlListingDTO.priceCurrency!=null}" th:text="${dlListingDTO.priceCurrency}">EUR</span>
+            </h4>
         </div>
     </div>
 

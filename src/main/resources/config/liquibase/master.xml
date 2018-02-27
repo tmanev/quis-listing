@@ -19,5 +19,6 @@
     <include file="classpath:config/liquibase/changelog/V2018_01_13_1042__add_dl_content_field_enabled.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2018_02_01_1852__add_configurations.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2018_02_09_2221__update_add_listing_navmenu.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_02_26_2357__dl_listing_price.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

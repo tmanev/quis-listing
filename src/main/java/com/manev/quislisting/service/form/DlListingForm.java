@@ -2,6 +2,7 @@ package com.manev.quislisting.service.form;
 
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class DlListingForm {
@@ -14,6 +15,8 @@ public class DlListingForm {
     private List<DlCategoryForm> dlCategories;
     private DlFeaturedAttachmentForm featuredAttachment;
     private DlListing.Status status;
+    private BigDecimal price;
+    private String priceCurrency;
 
     public Long getId() {
         return id;
@@ -77,5 +80,21 @@ public class DlListingForm {
 
     public void setStatus(DlListing.Status status) {
         this.status = status;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getPriceCurrency() {
+        return priceCurrency;
+    }
+
+    public void setPriceCurrency(String priceCurrency) {
+        this.priceCurrency = priceCurrency;
     }
 }
