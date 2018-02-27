@@ -81,7 +81,12 @@ EditListing = {
                 onPublish: function (event) {
                     let vm = this;
 
-                    let components = [vm.$refs.listingDescriptionComponent, vm.$refs.listingCategoryComponent, vm.$refs.listingDetailsComponent, vm.$refs.listingLocationComponent];
+                    let components = [vm.$refs.listingDescriptionComponent,
+                        vm.$refs.listingCategoryComponent,
+                        vm.$refs.listingPriceComponent,
+                        vm.$refs.listingContactComponent,
+                        vm.$refs.listingDetailsComponent,
+                        vm.$refs.listingLocationComponent];
                     if (MyListingService.componentsValid(components)) {
                         vm.btnPublishLoading = true;
                         vm.listing.status = 'PUBLISHED';

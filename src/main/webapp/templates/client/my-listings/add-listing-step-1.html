@@ -27,6 +27,7 @@
             <listing-category-component ref="listingCategoryComponent" v-bind:listing="listing"></listing-category-component>
             <listing-description-component ref="listingDescriptionComponent" v-bind:listing="listing"></listing-description-component>
             <listing-price-component ref="listingPriceComponent" v-bind:listing="listing"></listing-price-component>
+            <listing-contact-component ref="listingContactComponent" v-bind:listing="listing"></listing-contact-component>
             <div class="form-group row">
                 <div class="offset-xs-7 col-xs-5 offset-sm-8 col-sm-4">
                     <button type="submit" class="btn btn-primary btn-block" id="btnNext"
@@ -44,6 +45,7 @@
     <div th:replace="client/my-listings/components/listing-category-component :: listing-category-component"></div>
     <div th:replace="client/my-listings/components/listing-description-component :: listing-description-component"></div>
     <div th:replace="client/my-listings/components/listing-price-component :: listing-price-component"></div>
+    <div th:replace="client/my-listings/components/listing-contact-component :: listing-contact-component"></div>
 
     <script src="../../../resources/js/my-listings/components/util.js"
             th:src="@{/resources/js/my-listings/components/util.js}"></script>
@@ -61,6 +63,8 @@
             th:src="@{/resources/js/my-listings/components/listing-category-component.js}"></script>
     <script src="../../../resources/js/my-listings/components/listing-price-component.js"
             th:src="@{/resources/js/my-listings/components/listing-price-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-contact-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-contact-component.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
             let dlListingDTO = [[${dlListingDTO}]];
@@ -71,6 +75,7 @@
             CategoryItemComponent.init();
             ListingCategoryComponent.init(dlCategoriesDtoFlat);
             ListingPriceComponent.init();
+            ListingContactComponent.init();
             AddListingStep1.init(dlListingDTO, jsTranslations);
         };
     </script>

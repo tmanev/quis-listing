@@ -78,6 +78,7 @@ public class DlListingMapper {
         dlListingDTO.setApproved(dlListing.getApproved());
         dlListingDTO.setPrice(dlListing.getPrice());
         dlListingDTO.setPriceCurrency(dlListing.getPriceCurrency());
+        dlListingDTO.setContactInfo(dlListing.getContactInfo());
         dlListingDTO.setLanguageCode(dlListing.getTranslation().getLanguageCode());
 
         setDlCategories(dlListing, dlListingDTO);

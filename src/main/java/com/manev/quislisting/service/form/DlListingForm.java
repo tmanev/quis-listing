@@ -17,6 +17,7 @@ public class DlListingForm {
     private DlListing.Status status;
     private BigDecimal price;
     private String priceCurrency;
+    private String contactInfo;
 
     public Long getId() {
         return id;
@@ -96,5 +97,13 @@ public class DlListingForm {
 
     public void setPriceCurrency(String priceCurrency) {
         this.priceCurrency = priceCurrency;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 }

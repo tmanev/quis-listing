@@ -31,6 +31,7 @@ public class DlListingDTO {
     private String name;
     private BigDecimal price;
     private String priceCurrency;
+    private String contactInfo;
 
     @JsonSerialize(using = TimestampSerializer.class)
     @JsonDeserialize(using = TimestampDeserializer.class)
@@ -297,5 +298,13 @@ public class DlListingDTO {
 
     public void setPriceCurrency(String priceCurrency) {
         this.priceCurrency = priceCurrency;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 }

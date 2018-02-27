@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+
+</head>
+<body>
+<div th:fragment="listing-contact-component">
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="listing-contact-component">
+        <div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="field_contact"
+                       th:text="#{page.my_listings.edit_listing.label.contact}">Contact</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="contact" id="field_contact" v-model="listing.contactInfo"/>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+
+</body>
+</html>

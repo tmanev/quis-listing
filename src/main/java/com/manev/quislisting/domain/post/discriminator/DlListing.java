@@ -66,6 +66,9 @@ public class DlListing {
     @Column
     private String priceCurrency;
 
+    @Column
+    private String contactInfo;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "translation_id")
     private Translation translation;
@@ -283,5 +286,13 @@ public class DlListing {
 
     public void setPriceCurrency(String priceCurrency) {
         this.priceCurrency = priceCurrency;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 }

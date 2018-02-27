@@ -146,6 +146,7 @@ public class DlListingService {
         setDescription(dlListingForSaving, form.getTitle(), form.getContent());
         setCategory(form.getDlCategories(), dlListingForSaving);
         setPrice(dlListingForSaving, form);
+        setContactInfo(dlListingForSaving, form);
         dlListingForSaving.setModified(new Timestamp(clock.millis()));
 
         DlListing savedDlListing = dlListingRepository.save(dlListingForSaving);
@@ -153,6 +154,10 @@ public class DlListingService {
         DlListingDTO savedDlListingDTO = dlListingMapper.dlListingToDlListingDTO(savedDlListing);
         dlListingSearchRepository.save(savedDlListingDTO);
         return savedDlListingDTO;
+    }
+
+    private void setContactInfo(DlListing dlListingForSaving, DlListingForm form) {
+        dlListingForSaving.setContactInfo(form.getContactInfo());
     }
 
     private void setPrice(DlListing dlListingForSaving, DlListingForm form) {
@@ -294,6 +299,7 @@ public class DlListingService {
         setDescription(dlListingForSaving, dlListingForm.getTitle(), dlListingForm.getContent());
         setCategory(dlListingForm.getDlCategories(), dlListingForSaving);
         setPrice(dlListingForSaving, dlListingForm);
+        setContactInfo(dlListingForSaving, dlListingForm);
         setDlListingFields(dlListingForSaving, dlListingForm.getDlListingFields());
         setLocation(dlListingForm.getDlLocations(), dlListingForSaving);
         setFeaturedAttachment(dlListingForm.getFeaturedAttachment(), dlListingForSaving);

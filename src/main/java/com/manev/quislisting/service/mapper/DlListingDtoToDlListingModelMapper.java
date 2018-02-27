@@ -35,6 +35,7 @@ public class DlListingDtoToDlListingModelMapper {
         DlListingModel model = (DlListingModel) dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingModel());
 
         model.setContent(dlListingDTO.getContent());
+        model.setContactInfo(dlListingDTO.getContactInfo());
 
         setDlLocation(dlListingDTO, model, languageCode);
         setDlCategories(dlListingDTO, model, languageCode);

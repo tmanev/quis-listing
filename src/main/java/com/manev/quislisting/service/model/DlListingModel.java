@@ -6,6 +6,7 @@ import java.util.List;
 public class DlListingModel extends DlListingBaseModel {
 
     private String content;
+    private String contactInfo;
 
     private List<DlListingFieldModel> dlListingFields;
 
@@ -20,6 +21,14 @@ public class DlListingModel extends DlListingBaseModel {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 
     public List<DlListingFieldModel> getDlListingFields() {

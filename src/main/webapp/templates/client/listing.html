@@ -32,22 +32,29 @@
     </div>
 
     <div class="row" style="margin-bottom: 20px;">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <h4 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
                 <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span th:text="${dlListingDTO.dlCategories[0]}">Work</span>
             </h4>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <h4 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
                 <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span th:text="${dlListingDTO.dlLocations[0].location}">Orlando, Miami, USA</span>
             </h4>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <h4 style="text-align: center; margin-top: 0px;">
                 <span th:text="#{page.listing.label.price}">Price</span>
                 <span th:if="${dlListingDTO.price != null}" th:text="${dlListingDTO.price}">200</span>
                 <span th:if="${dlListingDTO.price == null}">-</span>
                 <span th:if="${dlListingDTO.priceCurrency!=null}" th:text="${dlListingDTO.priceCurrency}">EUR</span>
+            </h4>
+        </div>
+        <div class="col-md-3">
+            <h4 style="text-align: center; margin-top: 0px;">
+                <span th:text="#{page.listing.label.contact}">Contact</span>
+                <span th:if="${dlListingDTO.contactInfo != null}" th:text="${dlListingDTO.contactInfo}">12345567890</span>
+                <span th:if="${dlListingDTO.contactInfo == null}">-</span>
             </h4>
         </div>
     </div>

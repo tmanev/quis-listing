@@ -33,7 +33,8 @@ const listingDtoToListingForm = function (dlListingDTO) {
         attachments: dlListingDTO.attachments,
         featuredAttachment: dlListingDTO.featuredAttachment,
         price: dlListingDTO.price,
-        priceCurrency: dlListingDTO.priceCurrency ? dlListingDTO.priceCurrency : "-1"
+        priceCurrency: dlListingDTO.priceCurrency ? dlListingDTO.priceCurrency : "-1",
+        contactInfo: dlListingDTO.contactInfo
     }
 };
 
