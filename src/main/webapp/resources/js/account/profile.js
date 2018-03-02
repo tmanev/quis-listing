@@ -64,6 +64,9 @@ Profile = {
                         var $btn = $('#btnSaveProfile').button('loading');
                         this.$http({
                             url: '/api/account',
+                            headers: {
+                                'Authorization': QlUtil.Rest.authorizationBearer()
+                            },
                             body: this.profile,
                             method: 'POST'
                         }).then(function (response) {
