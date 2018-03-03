@@ -89,7 +89,7 @@ var ListingDetailsComponent = {
                   for (let dlContentField of this.dlContentFields) {
                       let value;
                       let selectedValue;
-                      if (dlContentField.type === 'CHECKBOX') {
+                      if (dlContentField.type === 'CHECKBOX' || dlContentField.type === 'CHECKBOX_GROUP') {
                           if (dlContentField.selectedValue) {
                               selectedValue = JSON.stringify(dlContentField.selectedValue);
                           } else {
@@ -131,7 +131,7 @@ var ListingDetailsComponent = {
             if (dlListingFields) {
                 for (let dlListingField of dlListingFields) {
                     if (dlListingField.id === dlContentField.id) {
-                        if (dlContentField.type === 'CHECKBOX') {
+                        if (dlContentField.type === 'CHECKBOX' || dlContentField.type === 'CHECKBOX_GROUP') {
                             if (dlListingField.selectedValue) {
                                 dlContentField.selectedValue = JSON.parse(dlListingField.selectedValue);
                             } else {
@@ -184,7 +184,7 @@ var ListingDetailsComponent = {
             }
 
             function defaultValueIfNoRelation(dlContentField) {
-                if (dlContentField.type === 'CHECKBOX') {
+                if (dlContentField.type === 'CHECKBOX' || dlContentField.type === 'CHECKBOX_GROUP') {
                     // return empty array to be able to operate checkbox
                     dlContentField.selectedValue = [];
                 } else if (dlContentField.type === 'SELECT') {

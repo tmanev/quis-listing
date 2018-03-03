@@ -2,6 +2,7 @@ package com.manev.quislisting.service.mapper;
 
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
+import com.manev.quislisting.domain.DlContentFieldItemGroup;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,15 @@ public class TranslateUtil {
 
     private TranslateUtil() {
         // private constructor
+    }
+
+    public static String getTranslatedString(DlContentFieldItemGroup dlContentFieldItemGroup, String languageCode) {
+        if (!StringUtils.isEmpty(languageCode) && dlContentFieldItemGroup.getQlString() != null) {
+            QlString qlString = dlContentFieldItemGroup.getQlString();
+            String translation = searchString(qlString, languageCode);
+            if (!StringUtils.isEmpty(translation)) return translation;
+        }
+        return dlContentFieldItemGroup.getName();
     }
 
     public static String getTranslatedString(DlContentFieldItem dlContentFieldItem, String languageCode) {

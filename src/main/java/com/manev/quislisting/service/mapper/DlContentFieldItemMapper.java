@@ -22,7 +22,8 @@ public class DlContentFieldItemMapper {
                 .value(dlContentFieldItem.getValue())
                 .translatedValue(translatedValue)
                 .parent(dlContentFieldItem.getParent() != null ? dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem.getParent(), languageCode) : null)
-                .orderNum(dlContentFieldItem.getOrderNum());
+                .orderNum(dlContentFieldItem.getOrderNum())
+                .dlContentFieldItemGroupId(dlContentFieldItem.getDlContentFieldItemGroup() != null ? dlContentFieldItem.getDlContentFieldItemGroup().getId() : null);
     }
 
     public DlContentFieldItem dlContentFieldItemDTOToDlContentFieldItem(DlContentFieldItem dlContentFieldItem, DlContentFieldItemDTO dlContentFieldItemDTO) {

@@ -1,6 +1,7 @@
 package com.manev.quislisting.service.mapper;
 
 import com.manev.quislisting.service.model.AttachmentModel;
+import com.manev.quislisting.service.model.DlListingFieldItemGroupModel;
 import com.manev.quislisting.service.model.DlListingFieldItemModel;
 import com.manev.quislisting.service.model.DlListingFieldModel;
 import com.manev.quislisting.service.model.DlListingModel;
@@ -70,15 +71,14 @@ public class DlListingDtoToDlListingModelMapper {
                 List<QlStringTranslationModel> translatedNames = dlListingField.getTranslatedNames();
 
                 String translatedName = findTranslation(translatedNames, languageCode);
-                dlListingFieldModel.setName(!StringUtils.isEmpty(translatedName) ? translatedName
-                        : dlListingField.getName());
+                dlListingFieldModel.setName(!StringUtils.isEmpty(translatedName) ? translatedName : dlListingField.getName());
 
                 List<QlStringTranslationModel> translatedValues = dlListingField.getTranslatedValues();
                 String translatedValue = findTranslation(translatedValues, languageCode);
-                dlListingFieldModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue
-                        : dlListingField.getValue());
+                dlListingFieldModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue : dlListingField.getValue());
 
                 setItems(languageCode, dlListingField, dlListingFieldModel);
+                setDlContentFieldItemGroups(languageCode, dlListingField, dlListingFieldModel);
 
                 dlListingFieldModels.add(dlListingFieldModel);
             }
@@ -96,12 +96,16 @@ public class DlListingDtoToDlListingModelMapper {
             dlListingFieldItemModel.setId(dlListingFieldItemDTO.getId());
             List<QlStringTranslationModel> translatedValues = dlListingFieldItemDTO.getTranslatedValues();
             String translatedValue = findTranslation(translatedValues, languageCode);
-            dlListingFieldItemModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue
-                    : dlListingFieldItemDTO.getValue());
+            dlListingFieldItemModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue : dlListingFieldItemDTO.getValue());
 
             items.add(dlListingFieldItemModel);
         }
         dlListingFieldModel.setItems(items);
+    }
+
+    private void setDlContentFieldItemGroups(String languageCode, DlListingFieldDTO dlListingField, DlListingFieldModel dlListingFieldModel) {
+        List<DlListingFieldItemGroupModel> dlListingFieldItemGroups = dlListingField.getDlListingFieldItemGroups();
+        dlListingFieldModel.setDlListingFieldItemGroups(dlListingFieldItemGroups);
     }
 
     private String findTranslation(List<QlStringTranslationModel> translationModels, String languageCode) {

@@ -38,6 +38,13 @@ public class DlContentFieldTestComponent {
         return dlContentFieldRepository.saveAndFlush(stringContentField);
     }
 
+    public DlContentField createCheckboxField(DlCategory dlCategory, String name) {
+        DlContentField checkboxContentField = DlContentFieldAdminRestTest.createField(DlContentField.Type.CHECKBOX, name, 1,
+                Collections.singleton(dlCategory));
+        checkboxContentField.qlString(createQlString(checkboxContentField, DlContentField.Type.CHECKBOX));
+        return dlContentFieldRepository.saveAndFlush(checkboxContentField);
+    }
+
     private QlString createQlString(DlContentField numberContentField, DlContentField.Type type) {
         return new QlString()
                 .languageCode("en")

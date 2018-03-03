@@ -1,6 +1,7 @@
 package com.manev.quislisting.service.post.dto;
 
 import com.manev.quislisting.service.dto.DlContentFieldGroupDTO;
+import com.manev.quislisting.service.model.DlListingFieldItemGroupModel;
 import com.manev.quislisting.service.model.QlStringTranslationModel;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class DlListingFieldDTO {
     private String selectedValue;
     private List<QlStringTranslationModel> translatedValues;
     private List<DlListingFieldItemDTO> dlListingFieldItemDTOs;
+    private List<DlListingFieldItemGroupModel> dlListingFieldItemGroups;
     private DlContentFieldGroupDTO dlContentFieldGroup;
 
     public String getName() {
@@ -88,6 +90,19 @@ public class DlListingFieldDTO {
             dlListingFieldItemDTOs = new ArrayList<>();
         }
         dlListingFieldItemDTOs.add(dlListingFieldItemDTO);
+    }
+
+    public List<DlListingFieldItemGroupModel> getDlListingFieldItemGroups() {
+        return dlListingFieldItemGroups;
+    }
+
+    public void setDlListingFieldItemGroups(List<DlListingFieldItemGroupModel> dlListingFieldItemGroups) {
+        this.dlListingFieldItemGroups = dlListingFieldItemGroups;
+    }
+
+    public DlListingFieldDTO dlListingFieldItemGroups(List<DlListingFieldItemGroupModel> dlListingFieldItemGroups) {
+        this.dlListingFieldItemGroups = dlListingFieldItemGroups;
+        return this;
     }
 
     public String getType() {

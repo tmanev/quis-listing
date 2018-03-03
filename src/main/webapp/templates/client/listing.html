@@ -97,8 +97,8 @@
 
             <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
                 <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
-                    <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
                     <th:block th:if="${dlListingField.type} == 'CHECKBOX'">
+                        <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
                         <div class="container-fluid">
                             <th:block th:each="dlListingFieldItem : ${dlListingField.items}">
                                 <h4 style="display: inline-block">
@@ -109,6 +109,31 @@
                                 </h4>
                             </th:block>
                         </div>
+                    </th:block>
+                </div>
+            </th:block>
+
+            <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
+                <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
+                    <th:block th:if="${dlListingField.type} == 'CHECKBOX_GROUP'">
+                        <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
+                        <th:block th:each="dlListingFieldItemGroup : ${dlListingField.dlListingFieldItemGroups}">
+                            <div class="card">
+                                <div class="card-header" th:text="${dlListingFieldItemGroup.value}">
+                                    Content field item group name
+                                </div>
+                                <div class="card-body">
+                                    <th:block th:each="dlListingFieldItem : ${dlListingFieldItemGroup.dlListingFieldItems}">
+                                        <h6 style="display: inline-block">
+                                    <span class="label label-default" style="margin: 0 5px 0 5px;">
+                                    <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                    [(${dlListingFieldItem.value})]
+                                    </span>
+                                        </h6>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </th:block>
                     </th:block>
                 </div>
             </th:block>

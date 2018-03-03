@@ -47,6 +47,7 @@
             {key: 'DEPENDENT_SELECT', value: 'Dependent select list'},
             {key: 'RADIO', value: 'Radio buttons'},
             {key: 'CHECKBOX', value: 'Checkboxes'},
+            {key: 'CHECKBOX_GROUP', value: 'Checkboxes grouped'},
             {key: 'WEBSITE', value: 'Website URL'},
             {key: 'EMAIL', value: 'Email'},
             {key: 'OPEN_HOURS', value: 'Opening hours'}

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
 
+import static com.manev.quislisting.security.AuthoritiesConstants.ADMIN;
+
 @Controller
 public class PreviewListingController extends BaseController {
 
@@ -55,11 +57,15 @@ public class PreviewListingController extends BaseController {
         }
 
         modelMap.addAttribute("dlListingDTO", dlListingModel);
-
+        modelMap.addAttribute("showEditButton", shouldShowEditButton(dlListingDTO.getAuthor().getLogin()));
         modelMap.addAttribute(ATTRIBUTE_TITLE, dlListingDTO.getTitle());
         modelMap.addAttribute("view", "client/listing");
 
         return PAGE_CLIENT_INDEX;
+    }
+
+    private boolean shouldShowEditButton(String login) {
+        return login.equals(SecurityUtils.getCurrentUserLogin()) || SecurityUtils.isCurrentUserInRole(ADMIN);
     }
 
 }

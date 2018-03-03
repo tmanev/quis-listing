@@ -2,11 +2,11 @@ package com.manev.quislisting.service.dto;
 
 import java.util.List;
 
-public class DlContentFieldGroupDTO {
+public class DlContentFieldItemGroupDTO {
 
     private Long id;
     private String name;
-    private String slug;
+    private String translatedName;
     private String description;
     private Integer orderNum;
     private List<DlContentFieldItemDTO> dlContentFieldItems;
@@ -27,12 +27,12 @@ public class DlContentFieldGroupDTO {
         this.name = name;
     }
 
-    public String getSlug() {
-        return slug;
+    public String getTranslatedName() {
+        return translatedName;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
+    public void setTranslatedName(String translatedName) {
+        this.translatedName = translatedName;
     }
 
     public String getDescription() {
@@ -58,4 +58,5 @@ public class DlContentFieldGroupDTO {
     public void setDlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
     }
+
 }

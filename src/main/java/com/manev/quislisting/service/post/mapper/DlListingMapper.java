@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.DlAttachment;
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
+import com.manev.quislisting.domain.DlContentFieldItemGroup;
 import com.manev.quislisting.domain.DlListingContentFieldRel;
 import com.manev.quislisting.domain.DlListingLocationRel;
 import com.manev.quislisting.domain.TranslationGroup;
@@ -18,7 +19,9 @@ import com.manev.quislisting.repository.taxonomy.DlCategoryRepository;
 import com.manev.quislisting.repository.taxonomy.DlLocationRepository;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldGroupMapper;
+import com.manev.quislisting.service.mapper.DlListingFieldItemGroupModelMapper;
 import com.manev.quislisting.service.mapper.TranslateUtil;
+import com.manev.quislisting.service.model.DlListingFieldItemGroupModel;
 import com.manev.quislisting.service.model.QlStringTranslationModel;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
@@ -38,7 +41,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -53,9 +58,10 @@ public class DlListingMapper {
     private DlLocationMapper dlLocationMapper;
     private AttachmentMapper attachmentMapper;
     private DlContentFieldGroupMapper dlContentFieldGroupMapper;
+    private DlListingFieldItemGroupModelMapper dlListingFieldItemGroupModelMapper;
 
     @Autowired
-    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, ConversionService conversionService) {
+    public DlListingMapper(DlCategoryMapper dlCategoryMapper, DlLocationMapper dlLocationMapper, AttachmentMapper attachmentMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper, DlCategoryRepository dlCategoryRepository, DlLocationRepository dlLocationRepository, ConversionService conversionService, DlListingFieldItemGroupModelMapper dlListingFieldItemGroupModelMapper) {
         this.dlCategoryMapper = dlCategoryMapper;
         this.dlLocationMapper = dlLocationMapper;
         this.attachmentMapper = attachmentMapper;
@@ -63,6 +69,7 @@ public class DlListingMapper {
         this.dlCategoryRepository = dlCategoryRepository;
         this.dlLocationRepository = dlLocationRepository;
         this.conversionService = conversionService;
+        this.dlListingFieldItemGroupModelMapper = dlListingFieldItemGroupModelMapper;
     }
 
     public DlListingDTO dlListingToDlListingDTO(DlListing dlListing) {
@@ -111,6 +118,9 @@ public class DlListingMapper {
 
             DlContentFieldValue dlContentFieldValue;
             switch (dlContentField.getType()) {
+                case CHECKBOX_GROUP:
+                    dlContentFieldValue = buildCheckboxGroupValue(dlListingContentFieldRel);
+                    break;
                 case CHECKBOX:
                     dlContentFieldValue = buildCheckboxValue(dlListingContentFieldRel);
                     break;
@@ -135,6 +145,7 @@ public class DlListingMapper {
                     .value(dlContentFieldValue.getValue())
                     .selectedValue(dlContentFieldValue.getSelectedValue())
                     .dlListingFieldItemDTOs(dlContentFieldValue.getDlContentFieldItemDTOS())
+                    .dlListingFieldItemGroups(dlContentFieldValue.getDlContentFieldItemGroups())
                     .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ? dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null);
             setTranslatedNames(dlListingFieldDTO, dlContentField);
             dlListingFieldDTO.setTranslatedValues(dlContentFieldValue.getTranslatedValues());
@@ -145,6 +156,53 @@ public class DlListingMapper {
     private void setTranslatedNames(DlListingFieldDTO dlListingFieldDTO, DlContentField dlContentField) {
         QlString qlString = dlContentField.getQlString();
         dlListingFieldDTO.setTranslatedNames(getTranslations(qlString));
+    }
+
+    private DlContentFieldValue buildCheckboxGroupValue(DlListingContentFieldRel dlListingContentFieldRel) {
+        DlContentFieldValue dlContentFieldValue = new DlContentFieldValue();
+
+        Map<DlContentFieldItemGroup, List<DlListingFieldItemDTO>> groups = new LinkedHashMap<>();
+
+        Set<DlContentFieldItem> dlContentFieldItems = dlListingContentFieldRel.getDlContentFieldItems();
+        List<Long> selectionIds = new ArrayList<>();
+        if (dlContentFieldItems != null) {
+            for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
+                selectionIds.add(dlContentFieldItem.getId());
+                QlString qlString = dlContentFieldItem.getQlString();
+                DlListingFieldItemDTO dlListingFieldItemDTO = new DlListingFieldItemDTO()
+                        .id(dlContentFieldItem.getId())
+                        .value(qlString.getValue());
+                dlListingFieldItemDTO.setTranslatedValues(getTranslations(qlString));
+
+                if (dlContentFieldItem.getDlContentFieldItemGroup() != null) {
+                    List<DlListingFieldItemDTO> dlListingFieldItemDTOS = groups.get(dlContentFieldItem.getDlContentFieldItemGroup());
+                    if (dlListingFieldItemDTOS == null) {
+                        dlListingFieldItemDTOS = new ArrayList<>();
+                    }
+                    dlListingFieldItemDTOS.add(dlListingFieldItemDTO);
+                    groups.put(dlContentFieldItem.getDlContentFieldItemGroup(), dlListingFieldItemDTOS);
+                } else {
+                    dlContentFieldValue.addDlContentFieldItemDTOS(dlListingFieldItemDTO);
+                }
+            }
+        }
+
+        List<DlListingFieldItemGroupModel> groupsModel = new ArrayList<>();
+        for (Map.Entry<DlContentFieldItemGroup, List<DlListingFieldItemDTO>> entry : groups.entrySet()) {
+            DlListingFieldItemGroupModel dlListingFieldItemGroupModel = dlListingFieldItemGroupModelMapper.map(entry.getKey());
+            dlListingFieldItemGroupModel.setDlListingFieldItems(entry.getValue());
+            groupsModel.add(dlListingFieldItemGroupModel);
+        }
+
+        dlContentFieldValue.setDlContentFieldItemGroups(groupsModel);
+
+        try {
+            dlContentFieldValue.setSelectedValue(new ObjectMapper().writeValueAsString(selectionIds));
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing selected value: {}, for DlListingContentFieldRel with id: {}", selectionIds, dlListingContentFieldRel.getId(), e);
+        }
+
+        return dlContentFieldValue;
     }
 
     private DlContentFieldValue buildCheckboxValue(DlListingContentFieldRel dlListingContentFieldRel) {
@@ -354,11 +412,30 @@ public class DlListingMapper {
         }
     }
 
+    private List<QlStringTranslationModel> getTranslations(QlString qlString) {
+        List<QlStringTranslationModel> qlStringModels = new ArrayList<>();
+
+        Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
+        if (!CollectionUtils.isEmpty(stringTranslation)) {
+            for (StringTranslation translation : stringTranslation) {
+                QlStringTranslationModel qlStringTranslationModel = new QlStringTranslationModel();
+                qlStringTranslationModel.setId(translation.getId());
+                qlStringTranslationModel.setLanguageCode(translation.getLanguageCode());
+                qlStringTranslationModel.setValue(translation.getValue());
+
+                qlStringModels.add(qlStringTranslationModel);
+            }
+        }
+
+        return qlStringModels;
+    }
+
     class DlContentFieldValue {
         private String value = "";
         private String selectedValue = "";
         private List<QlStringTranslationModel> translatedValues;
         private List<DlListingFieldItemDTO> dlContentFieldItemDTOS = new ArrayList<>();
+        private List<DlListingFieldItemGroupModel> dlContentFieldItemGroups = new ArrayList<>();
 
         String getValue() {
             return value;
@@ -392,23 +469,12 @@ public class DlListingMapper {
             this.translatedValues = translatedValues;
         }
 
-    }
-
-    private List<QlStringTranslationModel> getTranslations(QlString qlString) {
-        List<QlStringTranslationModel> qlStringModels = new ArrayList<>();
-
-        Set<StringTranslation> stringTranslation = qlString.getStringTranslation();
-        if (!CollectionUtils.isEmpty(stringTranslation)) {
-            for (StringTranslation translation : stringTranslation) {
-                QlStringTranslationModel qlStringTranslationModel = new QlStringTranslationModel();
-                qlStringTranslationModel.setId(translation.getId());
-                qlStringTranslationModel.setLanguageCode(translation.getLanguageCode());
-                qlStringTranslationModel.setValue(translation.getValue());
-
-                qlStringModels.add(qlStringTranslationModel);
-            }
+        public List<DlListingFieldItemGroupModel> getDlContentFieldItemGroups() {
+            return dlContentFieldItemGroups;
         }
 
-        return qlStringModels;
+        public void setDlContentFieldItemGroups(List<DlListingFieldItemGroupModel> dlContentFieldItemGroups) {
+            this.dlContentFieldItemGroups = dlContentFieldItemGroups;
+        }
     }
 }

@@ -31,6 +31,7 @@ public class DlContentFieldDTO {
     private String options;
     private String searchOptions;
     private List<DlContentFieldItemDTO> dlContentFieldItems;
+    private List<DlContentFieldItemGroupDTO> dlContentFieldItemGroups;
     private DlContentFieldGroupDTO dlContentFieldGroup;
     private Boolean enabled;
 
@@ -343,6 +344,19 @@ public class DlContentFieldDTO {
 
     public DlContentFieldDTO dlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItems) {
         this.dlContentFieldItems = dlContentFieldItems;
+        return this;
+    }
+
+    public List<DlContentFieldItemGroupDTO> getDlContentFieldItemGroups() {
+        return dlContentFieldItemGroups;
+    }
+
+    public void setDlContentFieldItemGroups(List<DlContentFieldItemGroupDTO> dlContentFieldItemGroups) {
+        this.dlContentFieldItemGroups = dlContentFieldItemGroups;
+    }
+
+    public DlContentFieldDTO dlContentFieldItemGroups(List<DlContentFieldItemGroupDTO> dlContentFieldItemGroups) {
+        this.dlContentFieldItemGroups = dlContentFieldItemGroups;
         return this;
     }
 

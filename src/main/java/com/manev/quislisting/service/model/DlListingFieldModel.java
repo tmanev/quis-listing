@@ -11,6 +11,7 @@ public class DlListingFieldModel {
     private String name;
     private String value;
     private List<DlListingFieldItemModel> items;
+    private List<DlListingFieldItemGroupModel> dlListingFieldItemGroups;
     private DlContentFieldGroupDTO dlContentFieldGroup;
 
     public Long getId() {
@@ -51,6 +52,14 @@ public class DlListingFieldModel {
 
     public void setItems(List<DlListingFieldItemModel> items) {
         this.items = items;
+    }
+
+    public List<DlListingFieldItemGroupModel> getDlListingFieldItemGroups() {
+        return dlListingFieldItemGroups;
+    }
+
+    public void setDlListingFieldItemGroups(List<DlListingFieldItemGroupModel> dlListingFieldItemGroups) {
+        this.dlListingFieldItemGroups = dlListingFieldItemGroups;
     }
 
     public DlContentFieldGroupDTO getDlContentFieldGroup() {

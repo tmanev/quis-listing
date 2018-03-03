@@ -117,6 +117,17 @@ public class AdminRestRouter {
             private DlContentFieldItem() {
             }
         }
+
+        public class DlContentFieldItemGroup {
+
+            private DlContentFieldItemGroup() {
+                // private constructor
+            }
+
+            public static final String LIST = "/api/admin/dl-content-fields/{dlContentFieldId}/dl-content-field-item-groups";
+            public static final String DETAIL = "/api/admin/dl-content-fields/{dlContentFieldId}/dl-content-field-item-groups/{id}";
+
+        }
     }
 
     public class DlContentFieldGroup {
@@ -129,4 +140,6 @@ public class AdminRestRouter {
         public static final String DETAIL = "/api/admin/dl-content-field-groups/{id}";
 
     }
+
+
 }
