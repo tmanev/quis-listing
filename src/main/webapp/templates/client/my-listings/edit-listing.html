@@ -73,7 +73,8 @@
                 <div class="row">
                     <div class="col-sm-10 edit-icon">
                         <div class="f1-step-icon"><i class="fa fa-address-card-o"></i></div>
-                        <span th:text="#{page.my_listings.edit_listing.label.description}">Description</span>
+                        <b><span th:text="#{page.my_listings.edit_listing.label.description}">Description</span></b>
+                        <span>([[#{page.my_listings.edit_listing.label.title}]], [[#{page.my_listings.edit_listing.label.description}]], [[#{page.my_listings.edit_listing.label.price}]], [[#{page.my_listings.edit_listing.label.contact}]])</span>
                     </div>
                     <div class="col-sm-2 text-right">
                         <b-btn class="btn btn-secondary"
@@ -112,7 +113,13 @@
                 <div class="row">
                     <div class="col-sm-10 edit-icon">
                         <div class="f1-step-icon"><i class="fa fa-list"></i></div>
-                        <span th:text="#{page.my_listings.edit_listing.label.details}">Details</span>
+                        <b><span th:text="#{page.my_listings.edit_listing.label.details}">Details</span></b>
+                        (
+                        <span v-for="(dlContentField, index) in dlContentFields">
+                            <span v-if="index == 0">{{dlContentField.translatedName}}</span>
+                            <span v-if="index != 0">, {{dlContentField.translatedName}}</span>
+                        </span>
+                        )
                     </div>
                     <div class="col-sm-2 text-right">
                         <button type="button" class="btn btn-secondary"
@@ -148,7 +155,7 @@
                 <div class="row">
                     <div class="col-sm-10 edit-icon">
                         <div class="f1-step-icon"><i class="fa fa-map-marker"></i></div>
-                        <span th:text="#{page.my_listings.edit_listing.label.location}">Location</span>
+                        <b><span th:text="#{page.my_listings.edit_listing.label.location}">Location</span></b>
                     </div>
                     <div class="col-sm-2 text-right">
                         <button type="button" class="btn btn-secondary"
@@ -187,7 +194,7 @@
                 <div class="row">
                     <div class="col-sm-10 edit-icon">
                         <div class="f1-step-icon"><i class="fa fa-picture-o"></i></div>
-                        <span th:text="#{page.my_listings.edit_listing.label.gallery}">Gallery</span>
+                        <b><span th:text="#{page.my_listings.edit_listing.label.gallery}">Gallery</span></b>
                     </div>
                     <div class="col-sm-2 text-right">
                         <button type="button" class="btn btn-secondary"
