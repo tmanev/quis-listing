@@ -187,6 +187,12 @@ public class DlListingMapper {
             }
         }
 
+        try {
+            dlContentFieldValue.setSelectedValue(new ObjectMapper().writeValueAsString(selectionIds));
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing selected value: {}, for DlListingContentFieldRel with id: {}", selectionIds, dlListingContentFieldRel.getId(), e);
+        }
+
         List<DlListingFieldItemGroupModel> groupsModel = new ArrayList<>();
         for (Map.Entry<DlContentFieldItemGroup, List<DlListingFieldItemDTO>> entry : groups.entrySet()) {
             DlListingFieldItemGroupModel dlListingFieldItemGroupModel = dlListingFieldItemGroupModelMapper.map(entry.getKey());

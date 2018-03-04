@@ -118,7 +118,7 @@ EditListing = {
                     let components = [vm.$refs.listingDescriptionComponent, vm.$refs.listingCategoryComponent];
                     if (MyListingService.componentsValid(components)) {
                         vm.editParts[0].btnSaveLoading = true;
-                        MyListingService.updateListingPartial({path: 'DESCRIPTION', value: this.listing}).then(success).catch(error);
+                        MyListingService.updateListingPartial({path: 'DESCRIPTION', value: vm.listing}).then(success).catch(error);
                     } else {
                         QlUtil.UI.Notification.showError({
                             title: "<strong>" + jsTranslations['page.my_listings.edit_listing.notifications.publish_validation.title'] + "</strong>",
@@ -143,7 +143,7 @@ EditListing = {
                         let listingDetailsComponent = vm.$refs.listingDetailsComponent;
                         vm.listing.dlListingFields = listingDetailsComponent.getListingFields();
                         vm.editParts[1].btnSaveLoading = true;
-                        MyListingService.updateListingPartial({path: 'DETAILS', value: this.listing})
+                        MyListingService.updateListingPartial({path: 'DETAILS', value: vm.listing})
                             .then(function (response) {
                                 vm.editParts[1].btnSaveLoading = false;
                                 QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});

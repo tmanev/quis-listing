@@ -341,7 +341,7 @@ public class DlListingService {
     }
 
     private void setContentFieldRelationValue(DlListingFieldForm dlListingFieldForm, DlContentField dlContentField, DlListingContentFieldRel newDlListingContentFieldRel) {
-        if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX)) {
+        if (dlContentField.getType().equals(DlContentField.Type.CHECKBOX) || dlContentField.getType().equals(DlContentField.Type.CHECKBOX_GROUP)) {
             // make relation with the selection items
             if (!StringUtils.isEmpty(dlListingFieldForm.getSelectedValue())) {
                 List<Long> idsAsList = getSelectedValuesFromCheckbox(dlListingFieldForm);

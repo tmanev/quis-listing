@@ -9,6 +9,7 @@ import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.mapper.DlContentFieldMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,7 @@ public class DlContentFieldService {
         this.dlCategoryRepository = dlCategoryRepository;
     }
 
+    @CacheEvict(value = "findDlContentFieldsByCategoryId", allEntries = true)
     public DlContentFieldDTO save(DlContentFieldDTO dlContentFieldDTO) {
         log.debug("Request to save DlContentFieldDTO : {}", dlContentFieldDTO);
 

@@ -48,7 +48,7 @@ public class PreviewListingController extends BaseController {
         Optional<User> userWithAuthoritiesByLogin = userService.getUserWithAuthoritiesByLogin(currentUserLogin);
 
         if (userWithAuthoritiesByLogin.isPresent()) {
-            if (!dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId())) {
+            if (!dlListingDTO.getAuthor().getId().equals(userWithAuthoritiesByLogin.get().getId()) && !SecurityUtils.isCurrentUserInRole(ADMIN)) {
                 return redirectToPageNotFound();
             }
         } else {
