@@ -18,13 +18,14 @@
 <body>
 <div th:fragment="content" id="profileApp" class="container">
 
-    <div class="row">
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab"
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#information" class="nav-link" aria-controls="information" role="tab"
                                                       data-toggle="tab" th:text="#{page.account.profile.text_01}">Information</a>
             </li>
-            <li role="presentation"><a href="#password-change" aria-controls="password-change" role="tab"
+            <li class="nav-item">
+                <a href="#password-change" class="nav-link" aria-controls="password-change" role="tab"
                                        data-toggle="tab" th:text="#{page.account.profile.text_02}">Password change</a>
             </li>
         </ul>
@@ -32,10 +33,10 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="information">
-                <form id="profileForm" method="post" class="form-horizontal" style="margin-top: 10px;" th:object="${user}"
+                <form id="profileForm" method="post" style="margin-top: 10px;" th:object="${user}"
                       v-on:submit.prevent="onSubmit($event)" v-cloak>
-                    <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label"
+                    <div class="form-group row">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.form.label.email}">Email</label>
                         <div class="col-sm-10">
                             <input type="hidden" th:field="*{login}"
@@ -43,38 +44,35 @@
                             <input type="email" class="form-control" id="inputEmail3"
                                    readonly="readonly"
                                    th:field="*{email}"
-                                   v-model="profile.email"
-                            />
+                                   v-model="profile.email"/>
                         </div>
                     </div>
-                    <div class="form-group"
+                    <div class="form-group row"
                          v-bind:class="{ 'has-error': $v.profile.firstName.$error, 'has-success': $v.profile.firstName.$dirty &amp;&amp; !$v.profile.firstName.$invalid }">
-                        <label for="inputFirstName" class="col-sm-2 control-label"
+                        <label for="inputFirstName" class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.form.label.first_name}">First name</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="inputFirstName"
                                    th:field="*{firstName}"
                                    v-model="profile.firstName"
-                                   v-on:input="delayTouch($v.profile.firstName)"
-                            />
+                                   v-on:input="delayTouch($v.profile.firstName)"/>
                             <span class="help-block"
-                                  v-if="!$v.profile.firstName.maxLength &amp;&amp; $v.profile.firstName.$dirty">
-                                    <span th:text="#{validation.max}">Max</span>
-                                    {{ $v.profile.firstName.$params.maxLength.max }}
-                                    <span th:text="#{validation.letters}">letters</span>.
-                                </span>
+                              v-if="!$v.profile.firstName.maxLength &amp;&amp; $v.profile.firstName.$dirty">
+                                <span th:text="#{validation.max}">Max</span>
+                                {{ $v.profile.firstName.$params.maxLength.max }}
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </span>
                         </div>
                     </div>
-                    <div class="form-group"
+                    <div class="form-group row"
                          v-bind:class="{ 'has-error': $v.profile.lastName.$error, 'has-success': $v.profile.lastName.$dirty &amp;&amp; !$v.profile.lastName.$invalid }">
-                        <label for="inputLastName" class="col-sm-2 control-label"
+                        <label for="inputLastName" class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.form.label.last_name}">Last name</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="inputLastName"
                                    th:field="*{lastName}"
                                    v-model="profile.lastName"
-                                   v-on:input="delayTouch($v.profile.lastName)"
-                            />
+                                   v-on:input="delayTouch($v.profile.lastName)"/>
                             <span class="help-block"
                                   v-if="!$v.profile.lastName.maxLength &amp;&amp; $v.profile.lastName.$dirty">
                                     <span th:text="#{validation.max}">Max</span>
@@ -84,8 +82,8 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
+                    <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" th:field="*{updates}"
@@ -96,8 +94,8 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="inputLanguage" class="col-sm-2 control-label"
+                    <div class="form-group row">
+                        <label for="inputLanguage" class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.form.label.language}">Language</label>
                         <div class="col-sm-10" id="inputLanguage">
                             <select class="form-control"
@@ -114,11 +112,13 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
+                    <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
                             <button type="submit" class="btn btn-primary" id="btnSaveProfile"
-                                    th:attr="data-loading-text=#{page.account.profile.form.saving}"
-                                    th:text="#{page.account.profile.form.btn_save}">Save
+                                    th:attr="data-loading-text=#{page.account.profile.form.saving}">
+                                <i v-if="btnSaveProfileLoading" class="fa fa-circle-o-notch fa-spin\"></i>
+                                <i v-if="!btnSaveProfileLoading" class="fa fa-floppy-o" aria-hidden="true"></i>
+                                <span th:text="#{page.account.profile.form.btn_save}">Save</span>
                             </button>
                         </div>
                     </div>
@@ -127,41 +127,41 @@
             <div role="tabpanel" class="tab-pane" id="password-change">
                 <form id="passwordChangeForm" method="post" class="form-horizontal" style="margin-top: 10px;"
                       v-on:submit.prevent="onSubmitPassword($event)" v-cloak>
-                    <div class="form-group"
-                         v-bind:class="{ 'has-error': $v.password.oldPassword.$error, 'has-success': $v.password.oldPassword.$dirty &amp;&amp; !$v.password.oldPassword.$invalid }">
-                        <label class="col-sm-2 control-label"
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.password_change.label.old_password}">Old
                             password</label>
                         <div class="col-sm-10">
                             <input type="password" class="form-control"
                                    v-model="password.oldPassword"
                                    v-on:input="delayTouch($v.password.oldPassword)"
+                                   v-bind:class="{ 'is-invalid': $v.password.oldPassword.$error, 'is-valid': $v.password.oldPassword.$dirty &amp;&amp; !$v.password.oldPassword.$invalid }"
                             />
-                            <span class="help-block"
+                            <span class="invalid-feedback"
                                   v-if="!$v.password.oldPassword.required &amp;&amp; $v.password.oldPassword.$dirty"
                                   th:text="#{validation.required}">Field is required</span>
                         </div>
                     </div>
-                    <div class="form-group"
-                         v-bind:class="{ 'has-error': $v.password.newPassword.$error, 'has-success': $v.password.newPassword.$dirty &amp;&amp; !$v.password.newPassword.$invalid }">
-                        <label class="col-sm-2 control-label"
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.password_change.label.new_password}">New
                             password</label>
                         <div class="col-sm-10">
                             <input type="password" class="form-control"
                                    v-model="password.newPassword"
                                    v-on:input="delayTouch($v.password.newPassword)"
+                                   v-bind:class="{ 'is-invalid': $v.password.newPassword.$error, 'is-valid': $v.password.newPassword.$dirty &amp;&amp; !$v.password.newPassword.$invalid }"
                             />
-                            <span class="help-block"
+                            <span class="invalid-feedback"
                                   v-if="!$v.password.newPassword.required &amp;&amp; $v.password.newPassword.$dirty"
                                   th:text="#{validation.required}">Field is required</span>
-                            <span class="help-block"
+                            <span class="invalid-feedback"
                                   v-if="!$v.password.newPassword.minLength &amp;&amp; $v.password.newPassword.$dirty">
                                                 <span>Min</span>
                                                 {{ $v.password.newPassword.$params.minLength.min }}
                                                 <span>letters</span>
                                 </span>
-                            <span class="help-block"
+                            <span class="invalid-feedback"
                                   v-if="!$v.password.newPassword.maxLength &amp;&amp; $v.password.newPassword.$dirty">
                                                 <span>Max</span>
                                                 {{ $v.password.newPassword.$params.maxLength.max }}
@@ -169,33 +169,33 @@
                                 </span>
                         </div>
                     </div>
-                    <div class="form-group"
-                         v-bind:class="{ 'has-error': $v.password.newPasswordRepeat.$error, 'has-success': $v.password.newPasswordRepeat.$dirty &amp;&amp; !$v.password.newPasswordRepeat.$invalid }">
-                        <label class="col-sm-2 control-label"
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label"
                                th:text="#{page.account.profile.password_change.label.confirm}">Confirm</label>
                         <div class="col-sm-10">
                             <input type="password" class="form-control"
                                    v-model="password.newPasswordRepeat"
                                    v-on:input="delayTouch($v.password.newPasswordRepeat)"
+                                   v-bind:class="{ 'is-invalid': $v.password.newPasswordRepeat.$error, 'is-valid': $v.password.newPasswordRepeat.$dirty &amp;&amp; !$v.password.newPasswordRepeat.$invalid }"
                             />
-                            <span class="help-block"
+                            <span class="invalid-feedback"
                                   v-if="!$v.password.newPasswordRepeat.sameAsPassword &amp;&amp; $v.password.newPasswordRepeat.$dirty">
                                     Passwords must be identical
                                 </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary" id="btnSavePassword"
-                                    th:attr="data-loading-text=#{page.account.profile.form.saving}"
-                                    th:text="#{page.account.profile.form.btn_save}">Save
+                    <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="btnSavePassword">
+                                <i v-if="btnSavePasswordLoading" class="fa fa-circle-o-notch fa-spin\"></i>
+                                <i v-if="!btnSavePasswordLoading" class="fa fa-floppy-o" aria-hidden="true"></i>
+                                <span th:text="#{page.account.profile.form.btn_save}">Save</span>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
 
     <!-- Load current page javascript file -->
     <script src="../../../resources/js/account/profile.js"
