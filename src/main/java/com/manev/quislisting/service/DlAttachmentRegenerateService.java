@@ -71,9 +71,9 @@ public class DlAttachmentRegenerateService {
                 Set<DlAttachment> dlAttachments = dlListing.getDlAttachments();
                 log.info("Listing with id: {}, has: {} attachments.", dlListing.getId(), dlAttachments.size());
                 for (DlAttachment dlAttachment : dlAttachments) {
-                    File attachmentFile = storageService.getFile(dlAttachment.getPath());
-                    moveOriginalImage(dlAttachment, attachmentFile);
+                    moveOriginalImage(dlAttachment);
 
+                    File attachmentFile = storageService.getFile(dlAttachment.getPath());
                     QlImageFile qlImageFile = getQlImageFile(dlAttachment, attachmentFile);
 
                     Map<Long, String> attachmentResizeToRemove = getAttachmentResizesForRemoval(dlAttachment);
@@ -102,11 +102,12 @@ public class DlAttachmentRegenerateService {
         log.info("DlAttachmentRegenerateService -> reGenerateImages - finished in {} milliseconds", System.currentTimeMillis() - startTime);
     }
 
-    private void moveOriginalImage(DlAttachment dlAttachment, File attachmentFile) throws IOException {
+    private void moveOriginalImage(DlAttachment dlAttachment) throws IOException {
         String path = dlAttachment.getPath();
+
         if (!path.contains("originals")) {
             log.info("Path: {}, does not contain 'originals' moving file.", path);
-
+            File attachmentFile = storageService.getFile(dlAttachment.getPath());
             Path parent = attachmentFile.toPath().getParent();
             File originals = new File(parent.toFile(), "originals");
             if (originals.exists() && originals.isDirectory()) {
