@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+<div th:fragment="listing-details-component">
+
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="listing-details-component">
+        <div>
+            <fieldset v-for="(dlContentField, index) in dlContentFields">
+                <div class="form-group row" v-if="dlContentField.type == 'STRING'"
+                     v-bind:class="{ 'required': dlContentField.required }">
+                    <label class="col-sm-2 col-form-label">
+                        {{dlContentField.translatedName}}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control"
+                               v-model="dlContentField.value"
+                               v-bind:class="{ 'is-invalid': $v.dlContentFields[index].value.$error, 'is-valid': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }"/>
+                        <div class="invalid-feedback" v-if="dlContentField.translatedDescription">
+                            {{dlContentField.translatedDescription}}
+                        </div>
+                        <div class="invalid-feedback"
+                             v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                             th:text="#{validation.required}">Field is required
+                        </div>
+                        <div class="invalid-feedback"
+                             v-if="!$v.dlContentFields[index].value.minLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                            <span th:text="#{validation.min}">Min</span>{{
+                            $v.dlContentFields[index].value.$params.minLength.min }}<span
+                                th:text="#{validation.letters}">letters</span>.
+                        </div>
+                        <div class="invalid-feedback"
+                             v-if="!$v.dlContentFields[index].value.maxLength &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                            <span th:text="#{validation.max}">Max</span>{{
+                            $v.dlContentFields[index].value.$params.maxLength.max }}<span
+                                th:text="#{validation.letters}">letters</span>.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="dlContentField.type == 'SELECT' "
+                     v-bind:class="{ 'required': dlContentField.required }">
+                    <label class="col-sm-2 col-form-label">{{dlContentField.translatedName}}</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-model="dlContentField.selectedValue"
+                                v-bind:class="{ 'is-invalid': $v.dlContentFields[index].selectedValue.$error, 'is-valid': $v.dlContentFields[index].selectedValue.$dirty &amp;&amp; !$v.dlContentFields[index].selectedValue.$invalid }">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                            </option>
+                            <option v-for="selectionItem in dlContentField.dlContentFieldItems"
+                                    v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" v-if="dlContentField.translatedDescription">
+                            {{dlContentField.translatedDescription}}
+                        </div>
+                        <div class="invalid-feedback"
+                             v-if="!$v.dlContentFields[index].selectedValue.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].selectedValue.$dirty"
+                             th:text="#{validation.selection_required}">Selection is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="dlContentField.type == 'NUMBER_UNIT' "
+                     v-bind:class="{ 'required': dlContentField.required }">
+                    <label class="col-sm-2 col-form-label">
+                        {{dlContentField.translatedName}}</label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" v-model="dlContentField.value"
+                               v-bind:class="{ 'is-invalid': $v.dlContentFields[index].value.$error, 'is-valid': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid}"/>
+                        <div class="invalid-feedback" v-if="dlContentField.translatedDescription">
+                            {{dlContentField.translatedDescription}}
+                        </div>
+                        <div class="invalid-feedback"
+                             v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                             th:text="#{validation.required}">Field is required
+                        </div>
+                        <div class="invalid-feedback"
+                             v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                            <span th:text="#{validation.must_be_between}">Must be between</span>{{
+                            $v.dlContentFields[index].value.$params.between.min }}<span
+                                th:text="#{validation.and}">and</span>{{
+                            $v.dlContentFields[index].value.$params.between.max }}
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <select class="form-control" v-model="dlContentField.selectedValue"
+                                v-bind:class="{ 'is-invalid': $v.dlContentFields[index].selectedValue.$error || $v.dlContentFields[index].value.$error, 'is-valid': $v.dlContentFields[index].selectedValue.$dirty &amp;&amp; !$v.dlContentFields[index].selectedValue.$invalid &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid}">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                            </option>
+                            <option v-for="selectionItem in dlContentField.dlContentFieldItems"
+                                    v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</div>
+                        <div class="invalid-feedback"
+                              v-if="!$v.dlContentFields[index].selectedValue.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].selectedValue.$dirty"
+                              th:text="#{validation.selection_required}">Selection is required</div>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="dlContentField.type == 'DEPENDENT_SELECT'"
+                     v-bind:class="{ 'required': dlContentField.required }">
+                    <label class="col-sm-2 col-form-label">
+                        {{dlContentField.translatedName}}</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" v-model="dlContentField.parentValue"
+                                v-on:change="resetValue(dlContentField)"
+                                style="margin-bottom: 2px;">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                            </option>
+                            <option v-for="selectionItem in rootContentFieldItem(dlContentField.dlContentFieldItems)"
+                                    v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
+                            </option>
+                        </select>
+                        <select class="form-control" v-model="dlContentField.selectedValue"
+                                v-bind:class="{ 'is-invalid': $v.dlContentFields[index].selectedValue.$error, 'is-valid': $v.dlContentFields[index].selectedValue.$dirty &amp;&amp; !$v.dlContentFields[index].selectedValue.$invalid }">
+                            <option value="-1" th:text="#{page.my_listings.edit_listing.label.select}"> - Select -
+                            </option>
+                            <option v-for="selectionItem in childContentFieldItem(dlContentField.dlContentFieldItems, dlContentField.parentValue)"
+                                    v-bind:value="selectionItem.id">{{selectionItem.translatedValue}}
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</div>
+                        <div class="invalid-feedback"
+                              v-if="!$v.dlContentFields[index].selectedValue.ListHasSelectionValidator &amp;&amp; $v.dlContentFields[index].selectedValue.$dirty"
+                              th:text="#{validation.selection_required}">Selection is required</div>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="dlContentField.type == 'CHECKBOX' ">
+                    <label class="col-sm-2 col-form-label">
+                        {{dlContentField.translatedName}}</label>
+                    <div class="col-sm-10">
+                        <div class="form-check" v-for="selectionItem in dlContentField.dlContentFieldItems">
+                            <label class="form-check-label">
+                                <input type="checkbox" v-bind:value="selectionItem.id"
+                                       class="form-check-input"
+                                       v-model="dlContentField.selectedValue"/>
+                                {{selectionItem.translatedValue}}
+                            </label>
+                        </div>
+                        <span class="form-text" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="dlContentField.type == 'CHECKBOX_GROUP' ">
+                    <label class="col-sm-2 col-form-label">
+                        {{dlContentField.translatedName}}</label>
+                    <div class="col-sm-10">
+                        <div v-for="dlContentFieldItemGroup in dlContentField.dlContentFieldItemGroups">
+                            <div><b>{{dlContentFieldItemGroup.translatedName}}</b></div>
+                            <div class="form-check form-check-inline" v-for="selectionItem in dlContentFieldItemGroup.dlContentFieldItems">
+                                <label class="form-check-label">
+                                    <input type="checkbox" v-bind:value="selectionItem.id"
+                                           class="form-check-input"
+                                           v-model="dlContentField.selectedValue"/>
+                                    {{selectionItem.translatedValue}}
+                                </label>
+                            </div>
+                        </div>
+                        <span class="form-text" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</span>
+                    </div>
+                </div>
+                <div class="form-group row" v-if="dlContentField.type == 'NUMBER'"
+                     v-bind:class="{ 'required': dlContentField.required }">
+                    <label class="col-sm-2 col-form-label">
+                        {{dlContentField.translatedName}}</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" v-model="dlContentField.value"
+                               v-bind:class="{ 'is-invalid': $v.dlContentFields[index].value.$error, 'is-valid': $v.dlContentFields[index].value.$dirty &amp;&amp; !$v.dlContentFields[index].value.$invalid }"/>
+                        <div class="invalid-feedback" v-if="dlContentField.translatedDescription">{{dlContentField.translatedDescription}}</div>
+                        <div class="invalid-feedback"
+                              v-if="!$v.dlContentFields[index].value.required &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error"
+                              th:text="#{validation.required}">Field is required</div>
+                        <div class="invalid-feedback"
+                              v-if="!$v.dlContentFields[index].value.between &amp;&amp; $v.dlContentFields[index].value.$dirty &amp;&amp; $v.dlContentFields[index].value.$error">
+                            <span th:text="#{validation.must_be_between}">Must be between</span>
+                            {{ $v.dlContentFields[index].value.$params.between.min }}
+                            <span th:text="#{validation.and}">and</span>
+                            {{ $v.dlContentFields[index].value.$params.between.max }}
+                         </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </script>
+</div>
+
+</body>
+</html>

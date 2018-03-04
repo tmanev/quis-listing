@@ -2,8 +2,10 @@ package com.manev.quislisting.service.mapper;
 
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
+import com.manev.quislisting.domain.DlContentFieldItemGroup;
 import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Set;
@@ -14,29 +16,38 @@ public class TranslateUtil {
         // private constructor
     }
 
+    public static String getTranslatedString(DlContentFieldItemGroup dlContentFieldItemGroup, String languageCode) {
+        if (!StringUtils.isEmpty(languageCode) && dlContentFieldItemGroup.getQlString() != null) {
+            QlString qlString = dlContentFieldItemGroup.getQlString();
+            String translation = searchString(qlString, languageCode);
+            if (!StringUtils.isEmpty(translation)) return translation;
+        }
+        return dlContentFieldItemGroup.getName();
+    }
+
     public static String getTranslatedString(DlContentFieldItem dlContentFieldItem, String languageCode) {
-        if (languageCode != null && dlContentFieldItem.getQlString() != null) {
+        if (!StringUtils.isEmpty(languageCode) && dlContentFieldItem.getQlString() != null) {
             QlString qlString = dlContentFieldItem.getQlString();
             String translation = searchString(qlString, languageCode);
-            if (translation != null) return translation;
+            if (!StringUtils.isEmpty(translation)) return translation;
         }
         return dlContentFieldItem.getValue();
     }
 
     public static String getTranslatedString(DlContentField dlContentField, String languageCode) {
-        if (languageCode != null && dlContentField.getQlString() != null) {
+        if (!StringUtils.isEmpty(languageCode) && dlContentField.getQlString() != null) {
             QlString qlString = dlContentField.getQlString();
             String translation = searchString(qlString, languageCode);
-            if (translation != null) return translation;
+            if (!StringUtils.isEmpty(translation)) return translation;
         }
         return dlContentField.getName();
     }
 
     public static String getTranslatedStringDescription(DlContentField dlContentField, String languageCode) {
-        if (languageCode != null && dlContentField.getQlStringDescription() != null) {
+        if (!StringUtils.isEmpty(languageCode) && dlContentField.getQlStringDescription() != null) {
             QlString qlString = dlContentField.getQlStringDescription();
             String translation = searchString(qlString, languageCode);
-            if (translation != null) return translation;
+            if (!StringUtils.isEmpty(translation)) return translation;
         }
         return dlContentField.getDescription();
     }

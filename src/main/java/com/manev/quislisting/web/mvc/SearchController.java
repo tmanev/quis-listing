@@ -2,6 +2,8 @@ package com.manev.quislisting.web.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
+import com.manev.quislisting.service.model.DlListingBaseModel;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.DlCategoryService;
@@ -35,6 +37,8 @@ public class SearchController extends BaseController {
     private DlLocationService dlLocationService;
     @Autowired
     private DlListingService dlListingService;
+    @Autowired
+    private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(final ModelMap model, @RequestParam(required = false) String query, HttpServletRequest request) throws IOException {
@@ -59,7 +63,8 @@ public class SearchController extends BaseController {
                 dlListingSearchFilter.setLanguageCode(locale.getLanguage());
             }
             Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, new PageRequest(0, 8));
-            model.addAttribute("dlListings", page.getContent());
+            Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+            model.addAttribute("dlListings", dlListingBaseModels.getContent());
             model.addAttribute("totalDlListings", page.getTotalElements());
             model.addAttribute("loadedDlListings", page.getNumberOfElements());
         }

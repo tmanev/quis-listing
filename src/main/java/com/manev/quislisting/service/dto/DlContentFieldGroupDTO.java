@@ -1,5 +1,7 @@
 package com.manev.quislisting.service.dto;
 
+import java.util.List;
+
 public class DlContentFieldGroupDTO {
 
     private Long id;
@@ -7,6 +9,7 @@ public class DlContentFieldGroupDTO {
     private String slug;
     private String description;
     private Integer orderNum;
+    private List<DlContentFieldItemDTO> dlContentFieldItems;
 
     public Long getId() {
         return id;
@@ -46,5 +49,13 @@ public class DlContentFieldGroupDTO {
 
     public void setOrderNum(Integer orderNum) {
         this.orderNum = orderNum;
+    }
+
+    public List<DlContentFieldItemDTO> getDlContentFieldItems() {
+        return dlContentFieldItems;
+    }
+
+    public void setDlContentFieldItems(List<DlContentFieldItemDTO> dlContentFieldItems) {
+        this.dlContentFieldItems = dlContentFieldItems;
     }
 }

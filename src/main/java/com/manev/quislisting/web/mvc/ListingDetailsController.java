@@ -1,6 +1,8 @@
 package com.manev.quislisting.web.mvc;
 
 import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
+import com.manev.quislisting.service.model.DlListingModel;
 import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import org.slf4j.Logger;
@@ -26,13 +28,18 @@ public class ListingDetailsController extends BaseController {
     @Autowired
     private DlListingService dlListingService;
 
+    @Autowired
+    private DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper;
+
     @RequestMapping(value = MvcRouter.Listings.VIEW, method = RequestMethod.GET)
     public String showEditListingPage(@PathVariable String id, @PathVariable String slug,
                                       final ModelMap modelMap, HttpServletRequest request) throws IOException {
         long start = System.currentTimeMillis();
         Locale locale = localeResolver.resolveLocale(request);
         String language = locale.getLanguage();
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
+
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
+        DlListingModel dlListingModel = dlListingDtoToDlListingModelMapper.convert(dlListingDTO, language);
 
         if (dlListingDTO == null) {
             return redirectToPageNotFound();
@@ -40,9 +47,8 @@ public class ListingDetailsController extends BaseController {
 
         modelMap.addAttribute("showEditButton", shouldShowEditButton(dlListingDTO.getAuthor().getLogin()));
 
-        modelMap.addAttribute("dlListingDTO", dlListingDTO);
-
-        modelMap.addAttribute("title", dlListingDTO.getTitle());
+        modelMap.addAttribute("dlListingDTO", dlListingModel);
+        modelMap.addAttribute("title", dlListingModel.getTitle());
         modelMap.addAttribute("view", "client/listing");
 
         log.info("Loading of listing id: {}, name: {}, took: {} ms", dlListingDTO.getId(), dlListingDTO.getName(), System.currentTimeMillis() - start);

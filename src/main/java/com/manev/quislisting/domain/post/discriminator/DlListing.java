@@ -12,6 +12,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,6 +60,14 @@ public class DlListing {
 
     @Column
     private Timestamp approvedModified;
+
+    @Column
+    private BigDecimal price;
+    @Column
+    private String priceCurrency;
+
+    @Column
+    private String contactInfo;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "translation_id")
@@ -263,4 +272,27 @@ public class DlListing {
         PUBLISH_EXPIRED
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getPriceCurrency() {
+        return priceCurrency;
+    }
+
+    public void setPriceCurrency(String priceCurrency) {
+        this.priceCurrency = priceCurrency;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
 }

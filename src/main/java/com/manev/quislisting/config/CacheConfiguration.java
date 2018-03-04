@@ -49,6 +49,7 @@ public class CacheConfiguration {
             cm.createCache(com.manev.quislisting.domain.DlContentFieldItem.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.DlContentFieldItem.class.getName() + ".children", jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.DlContentFieldGroup.class.getName(), jcacheConfiguration);
+            cm.createCache(com.manev.quislisting.domain.DlContentFieldItemGroup.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.DlContentField.class.getName() + ".dlContentFieldItems", jcacheConfiguration);
 
             cm.createCache(com.manev.quislisting.domain.Translation.class.getName(), jcacheConfiguration);
@@ -80,6 +81,9 @@ public class CacheConfiguration {
             cm.createCache(com.manev.quislisting.domain.DlAttachmentResize.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.DlListingContentFieldRel.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.DlListingContentFieldRel.class.getName() + ".dlContentFieldItems", jcacheConfiguration);
+
+            // Services
+            cm.createCache("findDlContentFieldsByCategoryId", jcacheConfiguration);
 
 
         };

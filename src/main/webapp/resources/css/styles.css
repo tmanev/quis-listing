@@ -1,11 +1,8 @@
 body { padding-top: 70px; }
 
-.category-green {
-    background-color: rgba(0, 255, 0, 0.14);
-}
-
-.category-red {
-    background-color: rgba(255, 0, 0, 0.11);
+.edit-icon .f1-step-icon {
+    background: #A0006E;
+    text-align: center;
 }
 
 .drop-box {
@@ -21,7 +18,11 @@ body { padding-top: 70px; }
 }
 
 
-
+@media (min-width: 768px) {
+    .form-group.row > .col-form-label {
+        text-align: right;
+    }
+}
 
 
 /* Main Styles */
@@ -263,3 +264,43 @@ table.loading tbody:after {
     width: 100%;
 }
 /** Front page end **/
+
+.form-group.required label:after {
+    content:"*";
+    color:red;
+}
+
+
+/** Wizard **/
+
+.f1 {
+    padding: 25px; background: #fff;
+    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+.f1 h3 { margin-top: 0; margin-bottom: 5px; text-transform: uppercase; }
+
+.f1-steps { overflow: hidden; position: relative; margin-top: 20px; }
+
+.f1-progress { position: absolute; top: 24px; left: 0; width: 100%; height: 1px; background: #ddd; }
+.f1-progress-line { position: absolute; top: 0; left: 0; height: 1px; background: #A0006E; }
+
+.f1-step { position: relative; float: left; width: 25%; padding: 0 5px; }
+
+.f1-step-icon {
+    display: inline-block; width: 40px; height: 40px; margin-top: 4px; background: #ddd;
+    font-size: 16px; color: #fff; line-height: 40px;
+    -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%;
+}
+.f1-step.activated .f1-step-icon {
+    background: #fff; border: 1px solid #A0006E; color: #A0006E; line-height: 38px;
+}
+.f1-step.active .f1-step-icon {
+    width: 48px; height: 48px; margin-top: 0; background: #A0006E; font-size: 22px; line-height: 48px;
+}
+
+.f1-step p { color: #ccc; }
+.f1-step.activated p { color: #A0006E; }
+.f1-step.active p { color: #A0006E; }
+
+
+/** Wizard END **/

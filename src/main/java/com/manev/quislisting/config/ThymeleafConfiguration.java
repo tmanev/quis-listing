@@ -24,7 +24,7 @@ import java.util.Locale;
 @Configuration
 public class ThymeleafConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
-    public static final String QUIS_LISTING_LOCALE_COOKIE = "QuisListingLocaleCookie";
+    public static final String QL_LANG_KEY = "ql-lang-key";
     @SuppressWarnings("unused")
     private final Logger log = LoggerFactory.getLogger(ThymeleafConfiguration.class);
     private ApplicationContext applicationContext;
@@ -77,7 +77,7 @@ public class ThymeleafConfiguration extends WebMvcConfigurerAdapter implements A
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
-        cookieLocaleResolver.setCookieName(QUIS_LISTING_LOCALE_COOKIE);
+        cookieLocaleResolver.setCookieName(QL_LANG_KEY);
         cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
         return cookieLocaleResolver;
     }

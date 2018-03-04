@@ -156,7 +156,8 @@ var MyListings = {
                 dlListings: [],
                 confirmModal: {
                     listingToDelete: null
-                }
+                },
+                btnConfirmListingDeleteLoading: false
             },
             validations: {},
             methods: {
@@ -184,12 +185,13 @@ var MyListings = {
                     this.$http({
                         url: '/api/dl-listings',
                         headers: {
-                            'Authorization': 'Bearer ' + Cookies.get('ql-auth').split(":")[1]
+                            'Authorization': QlUtil.Rest.authorizationBearer()
                         },
                         params: {
                             page: this.pagingParams.page - 1,
                             size: this.pagingParams.itemsPerPage,
-                            sort: this.pagingParams.sort
+                            sort: this.pagingParams.sort,
+                            languageCode: Cookies.get('ql-lang-key')
                         },
                         method: 'GET'
                     }).then(function (response) {
@@ -205,17 +207,13 @@ var MyListings = {
                         this.isLoading = false;
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.isLoading = false;
                     });
                 },
                 confirmDeleteListing: function(dlListing) {
                     this.confirmModal.listingToDelete = dlListing;
-                    $('#my-modal').modal('show');
+                    this.$refs.confirmDeleteListingModal.show();
                 },
                 deleteListing: function () {
                     this.$http({
@@ -226,23 +224,18 @@ var MyListings = {
 
                         let index = this.dlListings.indexOf(this.confirmModal.listingToDelete);
                         this.dlListings.splice(index, 1);
-                        $.notify({
-                            message: jsTranslations['page.my_listings.notifications.delete_listing_success']
-                        }, {
-                            type: 'success'
-                        });
+                        QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.my_listings.notifications.delete_listing_success']});
                         this.confirmModal.listingToDelete = null;
-                        $('#my-modal').modal('hide');
+                        $('#confirm-delete-listing-modal').modal('hide');
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.confirmModal.listingToDelete = null;
-                        $('#my-modal').modal('hide');
+                        $('#confirm-delete-listing-modal').modal('hide');
                     });
+                },
+                cancelDeleteListing: function () {
+                    this.$refs.confirmDeleteListingModal.hide();
                 }
             },
             created: function () {

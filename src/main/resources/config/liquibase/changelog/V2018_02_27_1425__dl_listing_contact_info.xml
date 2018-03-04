@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="V2018_02_27_1425" author="tmanev">
+        <comment>Contact info for listing</comment>
+        <addColumn tableName="ql_dl_listing">
+            <column name="contact_info" type="varchar(250)" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -12,12 +12,18 @@ import com.manev.quislisting.repository.qlml.LanguageTranslationRepository;
 import com.manev.quislisting.repository.taxonomy.NavMenuRepository;
 import com.manev.quislisting.service.QlConfigService;
 import com.manev.quislisting.service.post.StaticPageService;
+import com.manev.quislisting.service.post.dto.DlListingDTO;
+import com.manev.quislisting.service.taxonomy.DlLocationService;
+import com.manev.quislisting.service.taxonomy.dto.DlLocationDTO;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
+import com.manev.quislisting.web.model.JsTranslations;
 import com.manev.quislisting.web.mvc.model.BaseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -26,8 +32,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class BaseController {
 
@@ -52,6 +60,8 @@ public class BaseController {
     protected LanguageTranslationRepository languageTranslationRepository;
     @Autowired
     protected MessageSource messageSource;
+    @Autowired
+    private DlLocationService dlLocationService;
 
     @ModelAttribute("baseModel")
     public BaseModel baseModel(HttpServletRequest request) throws IOException {
@@ -98,6 +108,8 @@ public class BaseController {
         } else {
             baseModel.setActiveLanguages(makeActiveLanguageBeansNoTranslation(activeLanguages));
         }
+
+        baseModel.setJsTranslations(getJsTranslations(locale));
 
         baseModel.setBaseUrl(qlConfigService.findOneByKey("base-url").getValue());
 
@@ -155,4 +167,27 @@ public class BaseController {
         return REDIRECT + URLEncoder.encode("page-not-found", "UTF-8");
     }
 
+    protected Map<String, String> getJsTranslations(Locale locale) {
+        JsTranslations jsTranslations = new JsTranslations();
+        jsTranslations.addTranslation("page.my_listings.edit_listing.notifications.publish_validation.title", messageSource.getMessage("page.my_listings.edit_listing.notifications.publish_validation.title", null, locale));
+        jsTranslations.addTranslation("page.my_listings.edit_listing.notifications.publish_validation.message", messageSource.getMessage("page.my_listings.edit_listing.notifications.publish_validation.message", null, locale));
+        jsTranslations.addTranslation("rest.general.upload_success", messageSource.getMessage("rest.general.upload_success", null, locale));
+        jsTranslations.addTranslation("rest.general.save_success", messageSource.getMessage("rest.general.save_success", null, locale));
+        jsTranslations.addTranslation("info.save_success", messageSource.getMessage("info.save_success", null, locale));
+        jsTranslations.addTranslation("info.general_server_error", messageSource.getMessage("info.general_server_error", null, locale));
+
+        return jsTranslations.getTranslations();
+    }
+
+    protected void fillListingLocationsMode(ModelMap modelMap, DlListingDTO dlListingDTO, String language) {
+        List<DlLocationDTO> dlLocations = dlListingDTO.getDlLocations();
+        if (!CollectionUtils.isEmpty(dlLocations)) {
+            DlLocationDTO dlLocationDTO = dlLocations.get(0);
+            modelMap.addAttribute("dlLocationStates", dlLocationService.findAllByParentId(dlLocationDTO.getParent().getParent().getId(), language));
+            modelMap.addAttribute("dlLocationCities", dlLocationService.findAllByParentId(dlLocationDTO.getParent().getId(), language));
+        } else {
+            modelMap.addAttribute("dlLocationStates", Collections.emptyList());
+            modelMap.addAttribute("dlLocationCities", Collections.emptyList());
+        }
+    }
 }

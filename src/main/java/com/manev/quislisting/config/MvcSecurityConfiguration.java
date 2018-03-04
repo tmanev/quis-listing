@@ -3,7 +3,7 @@ package com.manev.quislisting.config;
 import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.ContinueEntryPoint;
 import com.manev.quislisting.security.MvcAuthenticationSuccessHandler;
-import com.manev.quislisting.security.jwt.JWTConfigurer;
+import com.manev.quislisting.security.jwt.MvcJWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.GeoLocationService;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(1)
+@Order(2)
 public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final TokenProvider tokenProvider;
@@ -35,17 +35,17 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
-    private final MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler;
+    private final MvcAuthenticationSuccessHandler mvcAuthenticationSuccessHandler;
 
     private final GeoLocationService geoLocationService;
 
     public MvcSecurityConfiguration(TokenProvider tokenProvider, SessionRegistry sessionRegistry,
-                                    CorsFilter corsFilter, MvcAuthenticationSuccessHandler quisAuthenticationSuccessHandler, GeoLocationService geoLocationService) {
+                                    CorsFilter corsFilter, MvcAuthenticationSuccessHandler mvcAuthenticationSuccessHandler, GeoLocationService geoLocationService) {
 
         this.tokenProvider = tokenProvider;
         this.sessionRegistry = sessionRegistry;
         this.corsFilter = corsFilter;
-        this.quisAuthenticationSuccessHandler = quisAuthenticationSuccessHandler;
+        this.mvcAuthenticationSuccessHandler = mvcAuthenticationSuccessHandler;
         this.geoLocationService = geoLocationService;
     }
 
@@ -62,7 +62,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/bower_components/**")
                 .antMatchers("/i18n/**")
                 .antMatchers("/content/**")
-                .antMatchers("/swagger-ui/index.html")
+                .antMatchers("/swagger-ui.html")
                 .antMatchers("/test/**")
                 .antMatchers("/h2-console/**");
     }
@@ -96,11 +96,11 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
-                .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/swagger-ui.html").hasAuthority(AuthoritiesConstants.ADMIN)
                 .and()
                 .formLogin()
 
-                .successHandler(quisAuthenticationSuccessHandler)
+                .successHandler(mvcAuthenticationSuccessHandler)
 
                 .loginPage("/sign-in")
 
@@ -114,8 +114,8 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-    private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider, geoLocationService);
+    private MvcJWTConfigurer securityConfigurerAdapter() {
+        return new MvcJWTConfigurer(tokenProvider, geoLocationService);
     }
 
     @Bean

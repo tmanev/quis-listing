@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+<div th:fragment="listing-attachment-component">
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="listing-attachment-component">
+        <div>
+            <div class="drop-box" style="cursor: pointer;" v-on:dragover.prevent="" v-on:drop="onDrop" v-on:click="onBoxClick">
+                <input id="image-upload" type="file" name="image" v-on:change="onChange" style="display: none" accept="image/*" multiple/>
+                <span th:text="#{page.my_listings.edit_listing.label.drop_images_or_click}" >Drop images here or click to upload</span>
+            </div>
+            <div id="upload_info" class="row" v-for="queueFile in queueFiles">
+                <div class="col-md-2">
+                    {{queueFile.file.name}}
+                </div>
+                <div class="col-md-10">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             v-bind:aria-valuenow="queueFile.progress"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             v-bind:style="{width: queueFile.progress+'%'}">
+                            {{queueFile.progress}}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-6 col-md-4" v-for="attachment in listing.attachments">
+                    <div class="card">
+                        <img v-bind:src="'/content/files' + attachment.attachmentMetadata.smallImageResizeMeta.detail.file"/>
+                        <div class="card-body">
+                            <button class="btn btn-outline-danger btn-sm" v-on:click="confirmRemoveImage(attachment)">
+                                <i class="fa fa-times-circle-o"></i>
+                                <span class="hidden-sm-down" th:text="#{page.my_listings.edit_listing.btn_remove}">Remove</span>
+                            </button>
+                            <label class="radio-inline">
+                                <input type="radio" v-bind:value="attachment" v-model="listing.featuredAttachment">
+                                <span th:text="#{page.my_listings.edit_listing.set_featured_attachment}">Set the image as the main one</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="confirm-remove-image-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalWindow" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><i class="fa fa-warning"></i> <span th:text="#{page.my_listings.label.delete}">Delete</span></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+
+                        <!--<div class="modal-body"><slot></slot></div>-->
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary"
+                                    v-on:click="removeImage(confirmRemoveImageModal.attachment)"
+                                    th:text="#{page.my_listings.label.yes}">Yes
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    th:text="#{page.my_listings.label.no}">No
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+
+</body>
+</html>

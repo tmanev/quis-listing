@@ -6,33 +6,50 @@
         .controller('DlContentFieldConfigDialogController', DlContentFieldConfigDialogController)
     ;
 
-    DlContentFieldConfigDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DlContentField', 'AlertService', 'DlContentFieldItem'];
+    DlContentFieldConfigDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DlContentField', 'AlertService', 'DlContentFieldItem', 'DlContentFieldItemGroup'];
 
-    function DlContentFieldConfigDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, DlContentField, AlertService, DlContentFieldItem) {
+    function DlContentFieldConfigDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, DlContentField, AlertService, DlContentFieldItem, DlContentFieldItemGroup) {
         var vm = this;
         vm.predicate = 'id';
 
         vm.dlContentField = entity;
         vm.dlContentFieldItems = [];
+        vm.dlContentFieldItemGroups = [];
         vm.rootDlContentFieldItems = [];
         vm.parentDlContentFieldItem = null;
-        vm.newDlContentFieldItem = {id: null, value: '', parent: null, children: null, orderNum: 0};
+        vm.selectedDlContentFieldItemGroup = null;
+        vm.newDlContentFieldItem = getNewDlContentFieldItem();
+        vm.newDlContentFieldItemGroup = getNewDlContentFieldItemGroup();
         vm.dlContentFieldOption = {};
 
         vm.clear = clear;
         vm.save = save;
         vm.initDlContentFieldOptionModel = initDlContentFieldOptionModel;
         vm.deleteItem = deleteItem;
+        vm.deleteDlContentFieldItemGroup = deleteDlContentFieldItemGroup;
         vm.saveItem = saveItem;
+        vm.saveDlContentFieldItemGroup = saveDlContentFieldItemGroup;
         vm.addDlContentFieldItem = addDlContentFieldItem;
+        vm.addDlContentFieldItemGroup = addDlContentFieldItemGroup;
         vm.onSelectParentItemCallback = onSelectParentItemCallback;
+        vm.onSelectDlContentFieldItemGroup = onSelectDlContentFieldItemGroup;
         vm.clearParent = clearParent;
+        vm.clearDlContentFieldItemGroup = clearDlContentFieldItemGroup;
 
 
+        vm.loadDlContentFieldItemGroups = loadDlContentFieldItemGroups;
         vm.loadItems = loadItems;
         vm.loadRootItems = loadRootItems;
 
         initDlContentFieldOptionModel();
+
+        function getNewDlContentFieldItem() {
+            return {id: null, value: '', parent: null, children: null, orderNum: 0, dlContentFieldItemGroup: null};
+        }
+
+        function getNewDlContentFieldItemGroup() {
+            return {id: null, name: '', description: '', orderNum: 0};
+        }
 
         function addDlContentFieldItem() {
             let parent = null;
@@ -40,11 +57,28 @@
                 parent = {id: vm.parentDlContentFieldItem}
             }
             vm.newDlContentFieldItem.parent = parent;
+
+            if (vm.selectedDlContentFieldItemGroup !== null) {
+                vm.newDlContentFieldItem.dlContentFieldItemGroup = {id : vm.selectedDlContentFieldItemGroup};
+            }
+
             if (vm.newDlContentFieldItem.id !== null) {
                 DlContentFieldItem.update({dlContentFieldId: vm.dlContentField.id}, vm.newDlContentFieldItem, onAddSuccess, onError);
             } else {
                 DlContentFieldItem.save({dlContentFieldId: vm.dlContentField.id}, vm.newDlContentFieldItem, onAddSuccess, onError);
             }
+        }
+
+        function addDlContentFieldItemGroup() {
+            if (vm.newDlContentFieldItemGroup.id !== null) {
+                DlContentFieldItemGroup.update({dlContentFieldId: vm.dlContentField.id}, vm.newDlContentFieldItemGroup, onAddDlContentFieldItemGroupSuccess, onError);
+            } else {
+                DlContentFieldItemGroup.save({dlContentFieldId: vm.dlContentField.id}, vm.newDlContentFieldItemGroup, onAddDlContentFieldItemGroupSuccess, onError);
+            }
+        }
+
+        function deleteDlContentFieldItemGroup(dlContentFieldItemGroup) {
+            DlContentFieldItemGroup.delete({dlContentFieldId: vm.dlContentField.id, id: dlContentFieldItemGroup.id}, onDeleteDlContentFieldItemGroupSuccess, onError);
         }
 
         function deleteItem(dlContentFieldItem) {
@@ -59,6 +93,14 @@
             }
         }
 
+        function saveDlContentFieldItemGroup(dlContentFieldItemGroup) {
+            if (dlContentFieldItemGroup.id !== null) {
+                DlContentFieldItemGroup.update({dlContentFieldId: vm.dlContentField.id}, dlContentFieldItemGroup, onSuccess, onError);
+            } else {
+                DlContentFieldItemGroup.save({dlContentFieldId: vm.dlContentField.id}, dlContentFieldItemGroup, onSuccess, onError);
+            }
+        }
+
         function onDeleteItemSuccess(result) {
             vm.loadItems();
             if (vm.parentDlContentFieldItem===null) {
@@ -66,12 +108,21 @@
             }
         }
 
+        function onDeleteDlContentFieldItemGroupSuccess(result) {
+            vm.loadDlContentFieldItemGroups();
+        }
+
         function onAddSuccess(result) {
-            vm.newDlContentFieldItem = {id: null, value: '', parent: null, children: null, orderNum: 0};
+            vm.newDlContentFieldItem = getNewDlContentFieldItem();
             vm.loadItems();
             if (vm.parentDlContentFieldItem===null) {
                 vm.loadRootItems();
             }
+        }
+
+        function onAddDlContentFieldItemGroupSuccess(result) {
+            vm.newDlContentFieldItem = getNewDlContentFieldItemGroup();
+            vm.loadDlContentFieldItemGroups();
         }
 
         function onError(error) {
@@ -119,8 +170,13 @@
                         useDefaultLinkText: false
                     };
                 }
-            } else if (vm.dlContentField.type === 'SELECT' || vm.dlContentField.type === 'CHECKBOX') {
+            } else if (vm.dlContentField.type === 'SELECT') {
                 vm.loadItems();
+            } else if (vm.dlContentField.type === 'CHECKBOX') {
+                vm.loadItems();
+            } else if (vm.dlContentField.type === 'CHECKBOX_GROUP') {
+                vm.loadItems();
+                vm.loadDlContentFieldItemGroups();
             } else if (vm.dlContentField.type === 'DEPENDENT_SELECT') {
                 vm.loadItems();
                 vm.loadRootItems();
@@ -129,11 +185,20 @@
 
         function loadItems() {
             let parentId = vm.parentDlContentFieldItem !== null ? vm.parentDlContentFieldItem : null;
+            let dlContentFieldItemGroupId = vm.selectedDlContentFieldItemGroup !== null ? vm.selectedDlContentFieldItemGroup : null;
             DlContentFieldItem.query({
                 dlContentFieldId: vm.dlContentField.id,
                 parentId: parentId,
+                dlContentFieldItemGroupId: dlContentFieldItemGroupId,
                 size: 500
             }, onItemsSuccess, onItemsError);
+        }
+
+        function loadDlContentFieldItemGroups() {
+            DlContentFieldItemGroup.query({
+                dlContentFieldId: vm.dlContentField.id,
+                size: 500
+            }, onDlContentFieldItemGroupsSuccess, onItemsError);
         }
 
         function loadRootItems() {
@@ -151,15 +216,29 @@
         function onSelectParentItemCallback($item, $model) {
             vm.loadItems();
         }
-        
+
+        function onSelectDlContentFieldItemGroup($item, $model) {
+            vm.loadItems();
+        }
+
         function clearParent() {
             vm.parentDlContentFieldItem = null;
+            vm.loadItems();
+        }
+
+        function clearDlContentFieldItemGroup() {
+            vm.selectedDlContentFieldItemGroup = null;
             vm.loadItems();
         }
 
         function onItemsSuccess(data, headers) {
             console.log("Succes retrievinf dl-content-field-items");
             vm.dlContentFieldItems = data;
+        }
+
+        function onDlContentFieldItemGroupsSuccess(data, headers) {
+            console.log("Succes retrievinf dl-content-field-items");
+            vm.dlContentFieldItemGroups = data;
         }
 
         function onItemsError(error) {

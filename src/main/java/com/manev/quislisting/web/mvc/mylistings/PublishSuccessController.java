@@ -26,7 +26,7 @@ public class PublishSuccessController extends BaseController {
         String language = locale.getLanguage();
         modelMap.addAttribute(ATTRIBUTE_TITLE, messageSource.getMessage("page.my_listings.publish_successful.title", null, locale));
 
-        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id), language);
+        DlListingDTO dlListingDTO = dlListingService.findOne(Long.valueOf(id));
         modelMap.addAttribute("dlListing", dlListingDTO);
         modelMap.addAttribute("view", "client/my-listings/publish-successful");
 

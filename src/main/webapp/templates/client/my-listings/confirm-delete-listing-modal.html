@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+<body>
+    <div th:fragment="confirm-delete-listing-modal">
+        <b-modal hide-footer ref="confirmDeleteListingModal" >
+            <div slot="modal-title">
+                <h5><i class="fa fa-warning"></i> <span th:text="#{page.my_listings.label.delete}">Delete</span></h5>
+            </div>
+            <div class="float-right">
+                <button type="button" class="btn btn-primary" v-on:click="deleteListing">
+                    <i v-if="btnConfirmListingDeleteLoading" class="fa fa-circle-o-notch fa-spin"></i>
+                    <span th:text="#{page.my_listings.label.yes}">Yes</span>
+                </button>
+                <button type="button" class="btn btn-secondary" v-on:click="cancelDeleteListing" th:text="#{page.my_listings.label.no}">No</button>
+            </div>
+        </b-modal>
+    </div>
+</body>
+</html>

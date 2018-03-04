@@ -26,6 +26,7 @@
         vm.loadAll = loadAll;
         vm.onLanguageChange = onLanguageChange;
         vm.rebuildElasticsearch = rebuildElasticsearch;
+        vm.rebuildImages = rebuildImages;
 
         vm.selectedLanguageCode = vm.dataLanguageHub.selectedLanguageCode;
         vm.activeLanguages = [
@@ -123,6 +124,10 @@
 
         function rebuildElasticsearch() {
             DlListing.rebuildElasticsearch();
+        }
+
+        function rebuildImages() {
+            DlListing.rebuildImages();
         }
     }
 })();

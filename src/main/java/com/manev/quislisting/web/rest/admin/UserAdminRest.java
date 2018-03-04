@@ -4,7 +4,6 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.search.UserSearchRepository;
 import com.manev.quislisting.security.AuthoritiesConstants;
-import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.UserDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
@@ -20,7 +19,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,17 +66,13 @@ public class UserAdminRest {
     private final Logger log = LoggerFactory.getLogger(UserAdminRest.class);
     private final UserRepository userRepository;
 
-    private final MailService mailService;
-
     private final UserService userService;
 
     private final UserSearchRepository userSearchRepository;
 
-    public UserAdminRest(UserRepository userRepository, MailService mailService,
-                         UserService userService, UserSearchRepository userSearchRepository) {
+    public UserAdminRest(UserRepository userRepository, UserService userService, UserSearchRepository userSearchRepository) {
 
         this.userRepository = userRepository;
-        this.mailService = mailService;
         this.userService = userService;
         this.userSearchRepository = userSearchRepository;
     }
@@ -104,7 +105,6 @@ public class UserAdminRest {
                     .body(null);
         } else {
             User newUser = userService.createUser(managedUserVM);
-            mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                     .headers(HeaderUtil.createAlert("userManagement.created", newUser.getLogin()))
                     .body(newUser);

@@ -1,5 +1,5 @@
 Contacts = {
-    init: function () {
+    init: function (jsTranslations) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, between, email} = window.validators;
 
@@ -7,23 +7,27 @@ Contacts = {
         var contactApp = new Vue({
             el: '#contactApp',
             data: {
+                contactWasValidated: false,
                 contact: {
                     name: '',
                     email: '',
                     subject: '',
-                    message: ''
+                    message: '',
+                    languageCode: Cookies.get('ql-lang-key')
                 }
             },
-            validations: {
-                contact:{
-                    name: {
-                        required: required
-                    },
-                    email: {
-                        required: required,
-                        email: email
+            validations: function() {
+                return {
+                    contact:{
+                        name: {
+                            required: required
+                        },
+                        email: {
+                            required: required,
+                            email: email
+                        }
                     }
-                }
+                };
             },
             methods : {
                 onSubmit: function (event) {
@@ -41,22 +45,14 @@ Contacts = {
                               name: '',
                                 email: '',
                                 subject: '',
-                                message: ''
+                                message: '',
+                                languageCode: Cookies.get('ql-lang-key')
                             };
                             this.$v.contact.$reset();
-                            $.notify({
-                                message: response.headers.get('X-qlService-alert')
-                            },{
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.contact.message.sent_success']});
                             $btn.button('reset');
                         }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            },{
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             $btn.button('reset');
                         });
 

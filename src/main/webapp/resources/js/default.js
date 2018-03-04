@@ -1,5 +1,5 @@
 LandingPage = {
-    init: function (totalDlListings, loadedDlListings) {
+    init: function (totalDlListings, loadedDlListings, jsTranslations) {
         Vue.use(window.vuelidate.default);
 
         var landingApp = new Vue({
@@ -24,11 +24,13 @@ LandingPage = {
             methods: {
                 onLoadNext: function () {
                     this.pagingParams.isLoading = true;
-                    var $btn = $('#btnLoadMore').button('loading');
+                    let $btn = $('#btnLoadMore');
+                    QlUtil.UI.btnStartLoading($btn);
                     this.$http({
                         params: {
                             page: this.pagingParams.page,
-                            size: this.pagingParams.itemsPerPage
+                            size: this.pagingParams.itemsPerPage,
+                            languageCode: Cookies.get('ql-lang-key')
                         },
                         url: this.pagingParams.url,
                         method: 'GET'
@@ -40,16 +42,11 @@ LandingPage = {
                         this.pagingParams.page++;
                         this.pagingParams.loadedDlListings += response.data.length;
                         this.pagingParams.isLoading = false;
-                        $btn.button('reset');
+                        QlUtil.UI.btnStopLoading($btn);
                     }, function (response) {
-                        console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.pagingParams.isLoading = false;
-                        $btn.button('reset');
+                        QlUtil.UI.btnStopLoading($btn);
                     });
                 },
                 onSearch: function (event) {

@@ -1,11 +1,11 @@
 Profile = {
-    init: function (user) {
+    init: function (user, jsTranslations) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
         const touchMap = new WeakMap();
 
-        var profileApp = new Vue({
+        let profileApp = new Vue({
             el: '#profileApp',
             data: {
                 profile: {
@@ -20,7 +20,9 @@ Profile = {
                     oldPassword: '',
                     newPassword: '',
                     newPasswordRepeat: ''
-                }
+                },
+                btnSaveProfileLoading: false,
+                btnSavePasswordLoading: false
             },
             validations: {
                 profile: {
@@ -54,96 +56,69 @@ Profile = {
                     touchMap.set($v, setTimeout($v.$touch, 1000))
                 },
                 onSubmit: function (event) {
-                    if (this.$v.profile.$invalid) {
-                        console.log("Please fill the required fields!");
-                        // show notification
-
-                        this.$v.profile.$touch();
+                    let vm = this;
+                    if (vm.$v.profile.$invalid) {
+                        vm.$v.profile.$touch();
                     } else {
-                        console.log("valid");
-                        var $btn = $('#btnSaveProfile').button('loading');
-                        this.$http({
-                            url: '/api/account',
-                            body: this.profile,
-                            method: 'POST'
-                        }).then(function (response) {
-                            console.log('Success!:', response.data);
-                            var headerLocaleKey = "ql-locale-header";
-                            var localeCookie = "QuisListingLocaleCookie";
-                            if (response.headers.get(headerLocaleKey)) {
-                                eraseCookie(localeCookie);
-                                createCookie(localeCookie, response.headers.get(headerLocaleKey));
+                        vm.btnSaveProfileLoading = true;
+                        axios.post('/api/account', vm.profile, {
+                            headers: {
+                                'Authorization': QlUtil.Rest.authorizationBearer()
                             }
-                            this.$v.profile.$reset();
-                            $.notify({
-                                message: response.bodyText
-                            }, {
-                                type: 'success'
-                            });
-                            $btn.button('reset');
+                        }).then(function (response) {
+                            let headerLocaleKey = "ql-locale-header";
+                            let localeCookie = "ql-lang-key";
+                            if (response.headers[headerLocaleKey]) {
+                                eraseCookie(localeCookie);
+                                createCookie(localeCookie, response.headers[headerLocaleKey]);
+                            }
+                            vm.$v.profile.$reset();
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
+                            vm.btnSaveProfileLoading = false;
 
                             function createCookie(name,value,days) {
+                                let expires = "";
                                 if (days) {
-                                    var date = new Date();
+                                    let date = new Date();
                                     date.setTime(date.getTime()+(days*24*60*60*1000));
-                                    var expires = "; expires="+date.toGMTString();
+                                    expires = "; expires="+date.toGMTString();
                                 }
-                                else var expires = "";
-                                document.cookie = name+"="+value+expires+"; path=/";
+                                document.cookie = name + "=" + value + expires + "; path=/";
                             }
 
                             function eraseCookie(name) {
                                 createCookie(name,"",-1);
                             }
                             // trigger successful block
-                        }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
-                            $btn.button('reset');
+                        }).catch(function (response) {
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
+                            vm.btnSaveProfileLoading = false;
                         });
                     }
                 },
                 onSubmitPassword: function (event) {
-                    if (this.$v.password.$invalid) {
-                        console.log("Please fill the required fields!");
-                        // show notification
-
-                        this.$v.password.$touch();
+                    let vm = this;
+                    if (vm.$v.password.$invalid) {
+                        vm.$v.password.$touch();
                     } else {
-                        console.log("valid");
-                        var $btn = $('#btnSavePassword').button('loading');
-                        this.$http({
-                            url: '/api/account/change_password',
-                            body: this.password,
-                            method: 'POST'
+                        vm.btnSavePasswordLoading = true;
+                        axios.post('/api/account/change_password', vm.password, {
+                            headers: {
+                                'Authorization': QlUtil.Rest.authorizationBearer()
+                            }
                         }).then(function (response) {
-                            console.log('Success!:', response.data);
-
-                            this.profile = {
+                            vm.password = {
                                 oldPassword: '',
                                 newPassword: '',
                                 newPasswordRepeat: ''
                             };
-                            this.$v.profile.$reset();
-                            $.notify({
-                                message: response.bodyText
-                            }, {
-                                type: 'success'
-                            });
-                            $btn.button('reset');
+                            vm.$v.password.$reset();
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
+                            vm.btnSavePasswordLoading = false;
                             // trigger successful block
-                        }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
-                            $btn.button('reset');
+                        }).catch(function (response) {
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
+                            vm.btnSavePasswordLoading = false;
                         });
                     }
                 }

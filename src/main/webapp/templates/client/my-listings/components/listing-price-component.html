@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+
+</head>
+<body>
+<div th:fragment="listing-price-component">
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="listing-price-component">
+        <div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="field_price"
+                       th:text="#{page.my_listings.edit_listing.label.price}">Price</label>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col">
+                            <input type="number" class="form-control" name="title" id="field_price" v-model="listing.price"/>
+                        </div>
+                        <div class="col">
+                            <select v-model="listing.priceCurrency" class="form-control" id="price_currency">
+                                <option value="-1" th:text="#{page.my_listings.edit_listing.label.currency}">- Currency -</option>
+                                <option>BGN</option>
+                                <option>EUR</option>
+                                <option>RON</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="V2018_02_09_2221" author="tmanev">
+        <comment>Update nav-menu slug fo listing adding</comment>
+        <sqlFile path="classpath:config/liquibase/sql/V2018_02_09_2221__update_add_listing_navmenu.sql" relativeToChangelogFile="false" />
+    </changeSet>
+
+</databaseChangeLog>

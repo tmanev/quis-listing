@@ -5,6 +5,7 @@ import com.manev.quislisting.domain.StaticPage;
 import com.manev.quislisting.web.model.ActiveLanguageBean;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BaseModel {
@@ -15,6 +16,7 @@ public class BaseModel {
     private StaticPage profilePage;
     private String baseUrl;
     private String analytics;
+    private Map<String, String> jsTranslations;
 
     public Set<NavMenuItem> getTopHeaderMenus() {
         return topHeaderMenus;
@@ -72,5 +74,13 @@ public class BaseModel {
 
     public void setAnalytics(String analytics) {
         this.analytics = analytics;
+    }
+
+    public Map<String, String> getJsTranslations() {
+        return jsTranslations;
+    }
+
+    public void setJsTranslations(Map<String, String> jsTranslations) {
+        this.jsTranslations = jsTranslations;
     }
 }

@@ -18,113 +18,138 @@
 </head>
 <body>
 <div th:fragment="content" class="container">
-    <div id="myListingsApp" >
-        <div class="page-header">
-            <h1 th:text="#{page.my_listings.title}">My Listings</h1>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-4">
-                    <a class="btn btn-primary" th:href="'/my-listings/add'">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        <span class="hidden-xs-down" th:text="#{page.my_listings.add_listing}">
-                            Create new Listing
-                        </span>
-                    </a>
-                </div>
-            </div>
-            <div class="row" style="margin-top: 10px;">
-                <table class="table table-hover" v-bind:class="{loading: isLoading}" v-cloak>
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th th:text="#{page.my_listings.label.title}">Title</th>
-                        <th th:text="#{page.my_listings.label.status}">Status</th>
-                        <th th:text="#{page.my_listings.label.validity}">Validity</th>
-                        <th th:text="#{page.my_listings.label.action}">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="dlListing in dlListings">
-                        <th scope="row">{{dlListing.id}}</th>
-                        <td>{{dlListing.title}}</td>
-                        <td>
-                            <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
-                            <span v-if="dlListing.status==='PUBLISH_REQUEST'" th:text="#{page.my_listings.label.publish_requested}"></span>
-                            <span v-if="dlListing.status==='PUBLISH_DISAPPROVED'" th:text="#{page.my_listings.label.publish_disapproved}"></span>
-                            <span v-if="dlListing.status==='PUBLISHED'" th:text="#{page.my_listings.label.published}"></span>
-                            <span v-if="dlListing.status==='PUBLISH_EXPIRED'" th:text="#{page.my_listings.label.publish_expired}"></span>
-                        </td>
-                        <td>
-                            <span>Last modified on {{dlListing.modified | fullTime}}</span>
-                        </td>
-                        <td>
-                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/my-listings/' + dlListing.id + '/preview'">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">
-                                    Preview
-                                </span>
-                            </a>
-                            <a class="btn btn-warning btn-sm" v-bind:href="'/my-listings/' + dlListing.id">
-                                <span class="glyphicon glyphicon-edit"></span>
-                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">
-                                    Edit
-                                </span>
-                            </a>
-                            <a class="btn btn-danger btn-sm" v-on:click="confirmDeleteListing(dlListing)">
-                                <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">
-                                    Delete
-                                </span>
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="text-center" v-cloak>
-                    <div class="info">
-                        <span th:text="#{page.my_listings.label.showing}">Showing</span> {{((pagingParams.page - 1) * pagingParams.itemsPerPage) == 0 ? 1 : ((pagingParams.page - 1) * pagingParams.itemsPerPage + 1)}} -
-                        {{(pagingParams.page * pagingParams.itemsPerPage) < pagingParams.info.queryCount ? (pagingParams.page * pagingParams.itemsPerPage) : pagingParams.info.queryCount}}
-                        <span th:text="#{page.my_listings.label.of}">of</span> {{pagingParams.info.queryCount}} <span th:text="#{page.my_listings.label.items}">items</span>.
-                    </div>
-
-                    <ul class="pagination">
-                        <li role="menuitem" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noPrevious()}" class="pagination-first"><a href v-on:click="selectPage(1, $event)" v-bind:disabled="noPrevious()||'disabled'" th:text="#{page.my_listings.label.first}">First</a></li>
-                        <li role="menuitem" v-if="pagination.directionLinks" v-bind:class="{disabled: noPrevious()}" class="pagination-prev"><a href v-on:click="selectPage(pagingParams.page - 1, $event)" v-bind:disabled="noPrevious()" th:text="#{page.my_listings.label.previous}">Previous</a></li>
-                        <li role="menuitem" v-for="page in pages" v-bind:class="{active: page.active}" class="pagination-page"><a href v-on:click="selectPage(page.number, $event)" v-bind:disabled="page.active" >{{page.text}}</a></li>
-                        <li role="menuitem" v-if="pagination.directionLinks" v-bind:class="{disabled: noNext()}" class="pagination-next"><a href v-on:click="selectPage(pagingParams.page + 1, $event)" v-bind:disabled="noNext()" th:text="#{page.my_listings.label.next}">Next</a></li>
-                        <li role="menuitem" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noNext()}" class="pagination-last"><a href v-on:click="selectPage(pagingParams.info.totalPages, $event)" v-bind:disabled="noNext()||'disabled'" th:text="#{page.my_listings.label.last}">Last</a></li>
-                    </ul>
-                </div>
+    <div id="myListingsApp" v-cloak>
+        <h4 th:text="#{page.my_listings.title}">My Listings</h4>
+        <div class="row">
+            <div class="col-xs-4">
+                <a class="btn btn-primary" th:href="'/my-listings/add-listing-step-1'">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-xs-down" th:text="#{page.my_listings.add_listing}">Create new Listing</span>
+                </a>
             </div>
         </div>
-
-        <div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalWindow">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title"><i class="fa fa-warning"></i> <span th:text="#{page.my_listings.label.delete}">Delete</span></h4>
-                    </div>
-
-                    <!--<div class="modal-body"><slot></slot></div>-->
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" v-on:click="deleteListing"
-                                th:text="#{page.my_listings.label.yes}">Yes</button>
-                        <button type="button" class="btn btn-default"  data-dismiss="modal"
-                                th:text="#{page.my_listings.label.no}">No</button>
-                    </div>
-                </div>
+        <div class="row" style="margin-top: 10px;">
+            <table class="table table-hover" v-bind:class="{loading: isLoading}">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col" th:text="#{page.my_listings.label.title}">Title</th>
+                    <th scope="col" th:text="#{page.my_listings.label.status}">Status</th>
+                    <th scope="col" th:text="#{page.my_listings.label.action}">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(dlListing, index) in dlListings">
+                    <th scope="row">
+                        <div class="media">
+                            <img v-if="dlListing.featuredAttachment==null" src="../../resources/images/no-image-available.jpg"
+                                 th:src="@{/resources/images/no-image-available.jpg}"
+                                 alt="No image available"
+                                 data-holder-rendered="true" width="75" height="50"/>
+                            <img v-else
+                                 v-bind:src="'/content/files' + dlListing.featuredAttachment.smallImage"
+                                 data-holder-rendered="true" width="75" height="50"/>
+                        </div>
+                    </th>
+                    <td class="align-middle">
+                        <a class="btn btn-link" v-bind:href="'/my-listings/' + dlListing.id">
+                            {{dlListing.title}}
+                        </a>
+                    </td>
+                    <td class="align-middle">
+                        <span v-if="dlListing.status==='DRAFT'" th:text="#{page.my_listings.label.draft}"></span>
+                        <span v-if="dlListing.status==='PUBLISH_REQUEST'"
+                              th:text="#{page.my_listings.label.publish_requested}"></span>
+                        <span v-if="dlListing.status==='PUBLISH_DISAPPROVED'"
+                              th:text="#{page.my_listings.label.publish_disapproved}"></span>
+                        <span v-if="dlListing.status==='PUBLISHED'"
+                              th:text="#{page.my_listings.label.published}"></span>
+                        <span v-if="dlListing.status==='PUBLISH_EXPIRED'"
+                              th:text="#{page.my_listings.label.publish_expired}"></span>
+                        <div>Last modified on {{dlListing.modified | fullTime}}</div>
+                    </td>
+                    <td class="align-middle">
+                        <b-btn v-bind:id="'btnSettings'+ index"
+                                variant="light" ref="button">
+                            <i class="fa fa-cog" aria-hidden="true"></i>
+                        </b-btn>
+                        <b-popover v-bind:target="'btnSettings'+ index"
+                                   triggers="focus"
+                                   placement="left"
+                                   ref="popover">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-light btn-block text-left" target="_blank"
+                                       v-bind:href="'/my-listings/' + dlListing.id + '/preview'">
+                                        <i class="fa fa-eye"></i>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.preview}">Preview</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-light btn-block text-left" v-bind:href="'/my-listings/' + dlListing.id">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.edit}">Edit</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-light btn-block text-left" v-on:click="confirmDeleteListing(dlListing)">
+                                        <i class="fa fa-times-circle-o"></i>
+                                        <span class="hidden-xs-down" th:text="#{page.my_listings.label.delete}">Delete</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </b-popover>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="col-md-12">
+                <p class="text-center">
+                    <span th:text="#{page.my_listings.label.showing}">Showing</span> {{((pagingParams.page - 1) *
+                    pagingParams.itemsPerPage) == 0 ? 1 : ((pagingParams.page - 1) * pagingParams.itemsPerPage + 1)}} -
+                    {{(pagingParams.page * pagingParams.itemsPerPage) < pagingParams.info.queryCount ?
+                    (pagingParams.page * pagingParams.itemsPerPage) : pagingParams.info.queryCount}}
+                    <span th:text="#{page.my_listings.label.of}">of</span> {{pagingParams.info.queryCount}} <span
+                        th:text="#{page.my_listings.label.items}">items</span>.
+                </p>
             </div>
+            <nav aria-label="Page navigation" class="col-md-12">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noPrevious()}">
+                        <a class="page-link" href v-on:click="selectPage(1, $event)"
+                           v-bind:disabled="noPrevious()||'disabled'"
+                           th:text="#{page.my_listings.label.first}">First</a></li>
+                    <li class="page-item" v-if="pagination.directionLinks" v-bind:class="{disabled: noPrevious()}">
+                        <a class="page-link" href v-on:click="selectPage(pagingParams.page - 1, $event)"
+                           v-bind:disabled="noPrevious()"
+                           th:text="#{page.my_listings.label.previous}">Previous</a></li>
+                    <li class="page-item" v-for="page in pages" v-bind:class="{active: page.active}">
+                        <a class="page-link" href v-on:click="selectPage(page.number, $event)"
+                           v-bind:disabled="page.active">{{page.text}}</a></li>
+                    <li class="page-item" v-if="pagination.directionLinks" v-bind:class="{disabled: noNext()}">
+                        <a class="page-link" href v-on:click="selectPage(pagingParams.page + 1, $event)"
+                           v-bind:disabled="noNext()" th:text="#{page.my_listings.label.next}">Next</a>
+                    </li>
+                    <li class="page-item" v-if="pagination.boundaryLinks" v-bind:class="{disabled: noNext()}">
+                        <a class="page-link" href v-on:click="selectPage(pagingParams.info.totalPages, $event)"
+                           v-bind:disabled="noNext()||'disabled'"
+                           th:text="#{page.my_listings.label.last}">Last</a></li>
+                </ul>
+            </nav>
         </div>
+
+        <div th:replace="client/my-listings/confirm-delete-listing-modal :: confirm-delete-listing-modal"></div>
     </div>
 
     <script src="../../../resources/js/my-listings/my-listings.js"
             th:src="@{/resources/js/my-listings/my-listings.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var jsTranslations = [[${jsTranslations}]];
+            var jsTranslations = [[${baseModel.jsTranslations}]];
             MyListings.init(jsTranslations);
         };
     </script>

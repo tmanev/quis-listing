@@ -1,5 +1,5 @@
 Search = {
-    init: function (dlLocationCountries, totalDlListings, loadedDlListings) {
+    init: function (dlLocationCountries, totalDlListings, loadedDlListings, jsTranslations) {
         var filterInit = {
             text: '',
             categoryId: -1,
@@ -93,56 +93,38 @@ Search = {
             validations: {},
             methods: {
                 onLoadNext: function () {
+                    let vm = this;
                     this.pagingParams.isLoading = true;
-                    var $btn = $('#btnLoadMore').button('loading');
-                    this.$http({
-                        url: '/api/dl-listings/_search',
-                        method: 'GET',
-                        params: {
-                            page: this.pagingParams.page,
-                            size: this.pagingParams.itemsPerPage
-                        }
-                    }).then(function (response) {
+                    let $btn = $('#btnLoadMore');
+                    QlUtil.UI.btnStartLoading($btn);
+                    let query = this.getQuery();
+                    let params = {
+                        query: encodeURIComponent(query),
+                        page: this.pagingParams.page,
+                        size: this.pagingParams.itemsPerPage,
+                        languageCode: Cookies.get('ql-lang-key')
+                    };
+                    QlUtil.Rest.Listing.search(params).then(function (response) {
                         console.log('Success!:', response.data);
-                        for (var i = 0; i<response.data.length; i++) {
-                            this.dlListings.push(response.data[i]);
+                        for (let i = 0; i<response.data.length; i++) {
+                            vm.dlListings.push(response.data[i]);
                         }
-                        this.pagingParams.page++;
-                        this.pagingParams.loadedDlListings += response.data.length;
-                        this.pagingParams.isLoading = false;
-                        $btn.button('reset');
-                    }, function (response) {
+                        vm.pagingParams.page++;
+                        vm.pagingParams.loadedDlListings += response.data.length;
+                        vm.pagingParams.isLoading = false;
+                        QlUtil.UI.btnStopLoading($btn);
+                    }).catch(function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
-                        this.pagingParams.isLoading = false;
-                        $btn.button('reset');
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
+                        vm.pagingParams.isLoading = false;
+                        QlUtil.UI.btnStopLoading($btn);
                     });
                 },
                 onSearch: function (event) {
-                    var $btn = $('#searchButton').button('loading');
-
-                    var filter = {};
-                    filter.text = this.filter.text;
-                    if (this.filter.selectedCategoryId != -1) {
-                        filter.categoryId = this.filter.selectedCategoryId;
-                    }
-                    if (this.filter.selectedCityId != -1) {
-                        filter.cityId = this.filter.selectedCityId;
-                    }
-                    if (this.filter.selectedStateId != -1) {
-                        filter.stateId = this.filter.selectedStateId;
-                    }
-                    if (this.filter.selectedCountryId != -1) {
-                        filter.countryId = this.filter.selectedCountryId;
-                    }
-                    let params = {
-                        query: JSON.stringify(filter)
-                    };
-                    document.location.search='query=' + encodeURIComponent(params.query);
+                    let $btn = $('#searchButton');
+                    QlUtil.UI.btnStartLoading($btn);
+                    let query = this.getQuery();
+                    document.location.search='query=' + encodeURIComponent(query);
                 },
                 onCategoryChange: function (event) {
                     // if (this.selectedCategoryId!==-1) {
@@ -169,7 +151,8 @@ Search = {
                 },
                 fetchStates: function (parentId) {
                     var params = {
-                        parentId: parentId
+                        parentId: parentId,
+                        languageCode: Cookies.get('ql-lang-key')
                     };
                     this.isStateSelectLoading = true;
                     this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
@@ -178,17 +161,14 @@ Search = {
                         this.isStateSelectLoading = false;
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.isStateSelectLoading = false;
                     });
                 },
                 fetchCities: function (parentId) {
                     var params = {
-                        parentId: parentId
+                        parentId: parentId,
+                        languageCode: Cookies.get('ql-lang-key')
                     };
                     this.isCitySelectLoading = true;
                     this.$http({url: '/api/dl-locations', params: params, method: 'GET'}).then(function (response) {
@@ -197,13 +177,27 @@ Search = {
                         this.isCitySelectLoading = false;
                     }, function (response) {
                         console.log('Error!:', response.data);
-                        $.notify({
-                            message: response.data
-                        }, {
-                            type: 'danger'
-                        });
+                        QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                         this.isCitySelectLoading = false;
                     });
+                },
+                getQuery: function () {
+                    let filter = {};
+                    filter.text = this.filter.text;
+                    if (this.filter.selectedCategoryId != -1) {
+                        filter.categoryId = this.filter.selectedCategoryId;
+                    }
+                    if (this.filter.selectedCityId != -1) {
+                        filter.cityId = this.filter.selectedCityId;
+                    }
+                    if (this.filter.selectedStateId != -1) {
+                        filter.stateId = this.filter.selectedStateId;
+                    }
+                    if (this.filter.selectedCountryId != -1) {
+                        filter.countryId = this.filter.selectedCountryId;
+                    }
+
+                    return JSON.stringify(filter)
                 }
             },
             mounted: function () {

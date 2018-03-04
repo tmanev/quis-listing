@@ -12,65 +12,63 @@
 <body>
 
 <div th:fragment="content" class="container">
-    <div class="row">
-        <div class="alert alert-danger alert-dismissible col-md-6 col-md-offset-3"
-             th:if="${errMsg != null}"
-             role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <span th:text="${errMsg}">Your email and password seem to be incorrect. Please try again.</span>
-        </div>
-        <form class="form-horizontal col-md-6 col-md-offset-3" method="post"
-               name="loginVM">
-            <fieldset>
-                <legend th:text="#{page.signin.form.legend}">Please Sign In</legend>
-                <div class="form-group">
-                    <label for="inputEmail" class="col-lg-2 control-label" th:text="#{page.signin.form.label.email}">Email</label>
-                    <div class="col-lg-10">
-                        <input type="text" class="form-control" id="inputEmail" placeholder="Email" name="username"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputPassword" class="col-lg-2 control-label"
-                           th:text="#{page.signin.form.label.password}">Password</label>
-                    <div class="col-lg-10">
-                        <input type="password" class="form-control" id="inputPassword" placeholder="Password"
-                               name="password"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-offset-2 col-lg-10">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="rememberMe"/>
-                                <span th:text="#{page.signin.form.label.remember_me}">Remember me</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-offset-2 col-lg-10">
-                        <button type="submit" class="btn btn-default" th:text="#{page.signin.form.button.signin}">Sign
-                            in
-                        </button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <span th:text="#{page.signin.form.p.new_here}">New here?</span>
-                        <span>
-                            <a href="/sign-up" th:href="@{/sign-up}" th:text="#{page.signin.form.link.signup}">Sign Up</a>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-offset-2 col-lg-10">
-                        <a href="/forgot-password" th:href="@{/forgot-password}"
-                           th:text="#{page.signin.form.link.forgot_your_password}">Forgot your password?</a>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
+    <div class="alert alert-danger alert-dismissible" th:if="${errMsg != null}" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <span th:text="${errMsg}">Your email and password seem to be incorrect. Please try again.</span>
     </div>
+    <form method="post" name="loginVM">
+        <fieldset>
+            <legend th:text="#{page.signin.form.legend}">Please Sign In</legend>
+            <div class="form-group row">
+                <label for="inputEmail" class="col-lg-2 text-right col-form-label"
+                       th:text="#{page.signin.form.label.email}">Email</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="inputEmail" placeholder="Email" name="username"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-lg-2 text-right col-form-label"
+                       th:text="#{page.signin.form.label.password}">Password</label>
+                <div class="col-lg-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+                           name="password"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-lg-2 col-lg-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="rememberMe"/>
+                            <span th:text="#{page.signin.form.label.remember_me}">Remember me</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-lg-2 col-lg-10">
+                    <button type="submit" class="btn btn-default" th:text="#{page.signin.form.button.signin}">Sign
+                        in
+                    </button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-md-2 col-md-10">
+                    <span th:text="#{page.signin.form.p.new_here}">New here?</span>
+                    <span>
+                            <a href="/sign-up" th:href="@{/sign-up}"
+                               th:text="#{page.signin.form.link.signup}">Sign Up</a>
+                        </span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-lg-2 col-lg-10">
+                    <a href="/forgot-password" th:href="@{/forgot-password}"
+                       th:text="#{page.signin.form.link.forgot_your_password}">Forgot your password?</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </div>
 
 </body>

@@ -47,19 +47,11 @@ ForgotPassword = {
                                 email: ''
                             };
                             this.$v.forgotPassword.$reset();
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                             $btn.button('reset');
                         }, function (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             $btn.button('reset');
                         });
 

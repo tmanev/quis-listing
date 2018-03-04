@@ -32,77 +32,169 @@
                        ng-model="vm.dlContentFieldOption.regex"/>
             </div>
         </div>
-        <div ng-if="vm.dlContentField.type == 'DEPENDENT_SELECT' || vm.dlContentField.type == 'SELECT' || vm.dlContentField.type == 'CHECKBOX'">
-            <div class="form-horizontal">
-                <div class="form-group" ng-if="vm.dlContentField.type == 'DEPENDENT_SELECT'">
-                    <label class="control-label col-md-2">Parent</label>
-                    <div class="col-md-10">
-                        <div class="input-group">
-                            <ui-select allow-clear
-                                       ng-model="vm.parentDlContentFieldItem"
-                                       on-select="vm.onSelectParentItemCallback($item, $model)" theme="bootstrap">
-                                <ui-select-match placeholder="Select or search a content field item in the list...">
-                                    {{$select.selected.value}}
-                                </ui-select-match>
-                                <ui-select-choices
-                                        repeat="item.id as item in vm.rootDlContentFieldItems | filter: $select.search">
-                                    <span ng-bind-html="item.value | highlight: $select.search"></span>
-                                </ui-select-choices>
-                            </ui-select>
+        <div ng-if="vm.dlContentField.type == 'DEPENDENT_SELECT' || vm.dlContentField.type == 'SELECT' || vm.dlContentField.type == 'CHECKBOX' || vm.dlContentField.type == 'CHECKBOX_GROUP'">
+            <uib-tabset active="active">
+                <uib-tab index="0" heading="Configuration" >
+                    <div class="form-horizontal" style="margin-top: 10px;">
+                        <div class="form-group" ng-if="vm.dlContentField.type == 'DEPENDENT_SELECT'">
+                            <label class="control-label col-md-2">Parent</label>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <ui-select allow-clear
+                                               ng-model="vm.parentDlContentFieldItem"
+                                               on-select="vm.onSelectParentItemCallback($item, $model)" theme="bootstrap">
+                                        <ui-select-match placeholder="Select or search a content field item in the list...">
+                                            {{$select.selected.value}}
+                                        </ui-select-match>
+                                        <ui-select-choices
+                                                repeat="item.id as item in vm.rootDlContentFieldItems | filter: $select.search">
+                                            <span ng-bind-html="item.value | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
 
-                            <span class="input-group-btn">
-                              <button type="button" ng-click="vm.clearParent()" class="btn btn-default">
-                                <span class="glyphicon glyphicon-trash"></span>
-                              </button>
-                        </span>
+                                    <span class="input-group-btn">
+                                          <button type="button" ng-click="vm.clearParent()" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                          </button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2">Item Name</label>
-                    <div class="col-md-5">
-                        <input class="form-control" type="text" class="form-control" placeholder="Item Name"
-                               ng-model="vm.newDlContentFieldItem.value"/>
-                    </div>
-                    <label class="control-label col-md-1">Or.N</label>
-                    <div class="col-md-2">
-                        <input class="form-control" type="number" class="form-control" placeholder="Order number"
-                               ng-model="vm.newDlContentFieldItem.orderNum"/>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-default btn-block" ng-click="vm.addDlContentFieldItem()">
-                            Add
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <hr/>
-            <div ng-repeat="dlContentFieldItem in vm.dlContentFieldItems">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label class="control-label col-md-1">Id: {{dlContentFieldItem.id}}</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" ng-model="dlContentFieldItem.value"/>
-                        </div>
-                        <label class="control-label col-md-1">Or.N</label>
-                        <div class="col-md-2">
-                            <input type="number" class="form-control" ng-model="dlContentFieldItem.orderNum"/>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-default btn-block" ng-click="vm.saveItem(dlContentFieldItem)">
-                                <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-danger btn-block" ng-click="vm.deleteItem(dlContentFieldItem)">
-                                <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
-                                    data-translate="entity.action.delete">Delete</span>
-                            </button>
-                        </div>
+                        <div class="form-group" ng-if="vm.dlContentField.type == 'CHECKBOX_GROUP'">
+                            <label class="control-label col-md-2">Group</label>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <ui-select allow-clear
+                                               ng-model="vm.selectedDlContentFieldItemGroup"
+                                               on-select="vm.onSelectDlContentFieldItemGroup($item, $model)" theme="bootstrap">
+                                        <ui-select-match placeholder="Select or search a content field item group in the list...">
+                                            {{$select.selected.name}}
+                                        </ui-select-match>
+                                        <ui-select-choices
+                                                repeat="item.id as item in vm.dlContentFieldItemGroups | filter: $select.search">
+                                            <span ng-bind-html="item.name | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
 
+                                    <span class="input-group-btn">
+                                          <button type="button" ng-click="vm.clearDlContentFieldItemGroup()" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                          </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Item Name</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" class="form-control" placeholder="Item Name"
+                                       ng-model="vm.newDlContentFieldItem.value"/>
+                            </div>
+                            <label class="control-label col-md-1">Or.N</label>
+                            <div class="col-md-2">
+                                <input class="form-control" type="number" class="form-control" placeholder="Order number"
+                                       ng-model="vm.newDlContentFieldItem.orderNum"/>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-default btn-block" ng-click="vm.addDlContentFieldItem()">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                    <hr/>
+                    <div ng-repeat="dlContentFieldItem in vm.dlContentFieldItems">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-1">Id: {{dlContentFieldItem.id}}</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="dlContentFieldItem.value"/>
+                                </div>
+                                <label class="control-label col-md-1">Or.N</label>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" ng-model="dlContentFieldItem.orderNum"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group" ng-if="vm.dlContentField.type == 'CHECKBOX_GROUP'">
+                                        <ui-select allow-clear
+                                                   ng-model="dlContentFieldItem.dlContentFieldItemGroupId"
+                                                   theme="bootstrap">
+                                            <ui-select-match placeholder="None">
+                                                {{$select.selected.name}}
+                                            </ui-select-match>
+                                            <ui-select-choices repeat="item.id as item in vm.dlContentFieldItemGroups | filter: $select.search">
+                                                <span ng-bind-html="item.name | highlight: $select.search"></span>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                        <span class="input-group-btn">
+                                              <button type="button" ng-click="dlContentFieldItem.dlContentFieldItemGroup = null" class="btn btn-default">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                              </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-default btn-block" ng-click="vm.saveItem(dlContentFieldItem)">
+                                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                                    </button>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-danger btn-block" ng-click="vm.deleteItem(dlContentFieldItem)">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </uib-tab>
+                <uib-tab index="1" heading="Groups config." ng-if="vm.dlContentField.type == 'CHECKBOX_GROUP'">
+                    <div class="form-horizontal" style="margin-top: 10px;">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Group Name</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" class="form-control" placeholder="Group Name"
+                                       ng-model="vm.newDlContentFieldItemGroup.name"/>
+                            </div>
+                            <label class="control-label col-md-1">Or.N</label>
+                            <div class="col-md-2">
+                                <input class="form-control" type="number" class="form-control" placeholder="Order number"
+                                       ng-model="vm.newDlContentFieldItemGroup.orderNum"/>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-default btn-block" ng-click="vm.addDlContentFieldItemGroup()">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div ng-repeat="dlContentFieldItemGroup in vm.dlContentFieldItemGroups">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-1">Id: {{dlContentFieldItemGroup.id}}</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="dlContentFieldItemGroup.name"/>
+                                </div>
+                                <label class="control-label col-md-1">Or.N</label>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" ng-model="dlContentFieldItemGroup.orderNum"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-default btn-block" ng-click="vm.saveDlContentFieldItemGroup(dlContentFieldItemGroup)">
+                                        <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger btn-block" ng-click="vm.deleteDlContentFieldItemGroup(dlContentFieldItemGroup)">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;<span
+                                            data-translate="entity.action.delete">Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </uib-tab>
+            </uib-tabset>
         </div>
         <div ng-if="vm.dlContentField.type == 'NUMBER' || vm.dlContentField.type == 'NUMBER_UNIT'">
             <div class="form-group">

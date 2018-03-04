@@ -2,9 +2,8 @@ package com.manev.quislisting.config;
 
 import com.manev.quislisting.security.AuthoritiesConstants;
 import com.manev.quislisting.security.Http401UnauthorizedEntryPoint;
-import com.manev.quislisting.security.jwt.JWTConfigurer;
+import com.manev.quislisting.security.jwt.ApiJWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
-import com.manev.quislisting.service.GeoLocationService;
 import com.manev.quislisting.web.rest.RestRouter;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +30,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(2)
+@Order(1)
 public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -44,18 +43,14 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
-    private final GeoLocationService geoLocationService;
-
     public ApiSecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService,
-                                    TokenProvider tokenProvider, SessionRegistry sessionRegistry,
-                                    CorsFilter corsFilter, GeoLocationService geoLocationService) {
+                                    TokenProvider tokenProvider, SessionRegistry sessionRegistry, CorsFilter corsFilter) {
 
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userDetailsService = userDetailsService;
         this.tokenProvider = tokenProvider;
         this.sessionRegistry = sessionRegistry;
         this.corsFilter = corsFilter;
-        this.geoLocationService = geoLocationService;
     }
 
     @PostConstruct
@@ -87,7 +82,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/bower_components/**")
             .antMatchers("/i18n/**")
             .antMatchers("/content/**")
-            .antMatchers("/swagger-ui/index.html")
+            .antMatchers("/swagger-ui.html")
             .antMatchers("/test/**")
             .antMatchers("/h2-console/**");
     }
@@ -114,6 +109,8 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
+                .antMatchers("/api/dl-locations").permitAll()
+                .antMatchers(RestRouter.DlListing.SEARCH).permitAll()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/activate").permitAll()
                 .antMatchers("/api/authenticate").permitAll()
@@ -122,6 +119,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/profile-info").permitAll()
                 .antMatchers("/api/contacts").permitAll()
                 .antMatchers(RestRouter.DlListing.RECENT +"/**").permitAll()
+                .antMatchers(RestRouter.DlListing.DETAIL +"/**").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .and()
@@ -129,8 +127,8 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-    private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider, geoLocationService);
+    private ApiJWTConfigurer securityConfigurerAdapter() {
+        return new ApiJWTConfigurer(tokenProvider);
     }
 
     @Bean

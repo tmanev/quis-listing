@@ -17,5 +17,10 @@
     <include file="classpath:config/liquibase/changelog/V2017_12_09_2006__add_order_num_column.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2017_12_13_2312__add_default_content_groups.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2018_01_13_1042__add_dl_content_field_enabled.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_02_01_1852__add_configurations.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_02_09_2221__update_add_listing_navmenu.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_02_26_2357__dl_listing_price.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_02_27_1425__dl_listing_contact_info.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_02_27_1815__add_dl_content_field_item_group.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

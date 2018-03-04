@@ -12,7 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,10 +67,11 @@ public class DlContentFieldItemAdminRest {
 
     @GetMapping(AdminRestRouter.DlContentFields.DlContentFieldItem.LIST)
     public ResponseEntity<List<DlContentFieldItemDTO>> getAllDlContentFieldItems(@PathVariable("dlContentFieldId") Long dlContentFieldId,
+                                                                                 @RequestParam(value = "dlContentFieldItemGroupId", required = false) Long dlContentFieldItemGroupId,
                                                                                  @RequestParam(value = "parentId", required = false) Long parentId,
                                                                                  Pageable pageable) {
         log.debug("REST request to get a page of DlContentFieldDTO");
-        Page<DlContentFieldItemDTO> page = dlContentFieldItemService.findAll(pageable, dlContentFieldId, parentId);
+        Page<DlContentFieldItemDTO> page = dlContentFieldItemService.findAll(pageable, dlContentFieldId, parentId, dlContentFieldItemGroupId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.DlContentFields.DlContentFieldItem.LIST);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -1,6 +1,8 @@
 package com.manev.quislisting.service.post.dto;
 
 import com.manev.quislisting.service.dto.DlContentFieldGroupDTO;
+import com.manev.quislisting.service.model.DlListingFieldItemGroupModel;
+import com.manev.quislisting.service.model.QlStringTranslationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +12,12 @@ public class DlListingFieldDTO {
     private Long id;
     private String type;
     private String name;
-    private String translatedName;
+    private List<QlStringTranslationModel> translatedNames;
     private String value;
     private String selectedValue;
-    private String translatedValue;
+    private List<QlStringTranslationModel> translatedValues;
     private List<DlListingFieldItemDTO> dlListingFieldItemDTOs;
+    private List<DlListingFieldItemGroupModel> dlListingFieldItemGroups;
     private DlContentFieldGroupDTO dlContentFieldGroup;
 
     public String getName() {
@@ -27,19 +30,6 @@ public class DlListingFieldDTO {
 
     public DlListingFieldDTO name(String name) {
         this.name = name;
-        return this;
-    }
-
-    public String getTranslatedName() {
-        return translatedName;
-    }
-
-    public void setTranslatedName(String translatedName) {
-        this.translatedName = translatedName;
-    }
-
-    public DlListingFieldDTO translatedName(String translatedName) {
-        this.translatedName = translatedName;
         return this;
     }
 
@@ -66,19 +56,6 @@ public class DlListingFieldDTO {
 
     public DlListingFieldDTO value(String value) {
         this.value = value;
-        return this;
-    }
-
-    public String getTranslatedValue() {
-        return translatedValue;
-    }
-
-    public void setTranslatedValue(String translatedValue) {
-        this.translatedValue = translatedValue;
-    }
-
-    public DlListingFieldDTO translatedValue(String translatedValue) {
-        this.translatedValue = translatedValue;
         return this;
     }
 
@@ -115,6 +92,19 @@ public class DlListingFieldDTO {
         dlListingFieldItemDTOs.add(dlListingFieldItemDTO);
     }
 
+    public List<DlListingFieldItemGroupModel> getDlListingFieldItemGroups() {
+        return dlListingFieldItemGroups;
+    }
+
+    public void setDlListingFieldItemGroups(List<DlListingFieldItemGroupModel> dlListingFieldItemGroups) {
+        this.dlListingFieldItemGroups = dlListingFieldItemGroups;
+    }
+
+    public DlListingFieldDTO dlListingFieldItemGroups(List<DlListingFieldItemGroupModel> dlListingFieldItemGroups) {
+        this.dlListingFieldItemGroups = dlListingFieldItemGroups;
+        return this;
+    }
+
     public String getType() {
         return type;
     }
@@ -139,5 +129,21 @@ public class DlListingFieldDTO {
     public DlListingFieldDTO dlContentFieldGroup(DlContentFieldGroupDTO dlContentFieldGroup) {
         this.dlContentFieldGroup = dlContentFieldGroup;
         return this;
+    }
+
+    public List<QlStringTranslationModel> getTranslatedNames() {
+        return translatedNames;
+    }
+
+    public void setTranslatedNames(List<QlStringTranslationModel> translatedNames) {
+        this.translatedNames = translatedNames;
+    }
+
+    public List<QlStringTranslationModel> getTranslatedValues() {
+        return translatedValues;
+    }
+
+    public void setTranslatedValues(List<QlStringTranslationModel> translatedValues) {
+        this.translatedValues = translatedValues;
     }
 }

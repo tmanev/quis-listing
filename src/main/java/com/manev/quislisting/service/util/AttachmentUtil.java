@@ -8,6 +8,7 @@ import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.springframework.util.CollectionUtils;
 
 public class AttachmentUtil {
 
@@ -22,11 +23,9 @@ public class AttachmentUtil {
         filePaths.add(attachmentMetadata.getDetail().getFile());
 
         AttachmentMetadata.ImageResizeMeta thumbnailImageResizeMeta = attachmentMetadata.getSmallImageResizeMeta();
-        AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = attachmentMetadata.getMediumImageResizeMeta();
-        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getLargeImageResizeMeta();
+        AttachmentMetadata.ImageResizeMeta bigImageResizeMeta = attachmentMetadata.getOriginalImageResizeMeta();
 
         addIfNotNull(filePaths, thumbnailImageResizeMeta);
-        addIfNotNull(filePaths, mediumImageResizeMeta);
         addIfNotNull(filePaths, bigImageResizeMeta);
 
         return filePaths;
@@ -42,7 +41,7 @@ public class AttachmentUtil {
         Set<DlAttachmentResize> dlAttachmentResizes = attachment.getDlAttachmentResizes();
         List<String> filePaths = new ArrayList<>();
         filePaths.add(attachment.getPath());
-        if (dlAttachmentResizes != null) {
+        if (!CollectionUtils.isEmpty(dlAttachmentResizes)) {
             for (DlAttachmentResize dlAttachmentResize : dlAttachmentResizes) {
                 filePaths.add(dlAttachmentResize.getPath());
             }

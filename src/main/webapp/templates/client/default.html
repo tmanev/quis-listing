@@ -5,29 +5,29 @@
     <title th:text="${title}">Home</title>
 </head>
 <body>
-<div class="container" th:fragment="content">
-    <div id="landingApp" v-cloak>
-        <div class="row">
-            <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px; margin-bottom: 20px;">
-                <h2 style="text-align: center;" th:text="#{page.home.label.add_your_listing}">Add your listing!</h2>
-                <p style="text-align: center;" th:text="#{page.home.label.easy_setup}">Easy setup, 100% free</p>
-                <p style="text-align: center;">
-                    <a class="btn btn-primary btn-lg" href="my-listings/add" role="button" th:text="#{page.home.label.get_started}">
-                        Get started
-                    </a>
-                </p>
-            </div>
+<div th:fragment="content">
+    <div id="landingApp" class="container" v-cloak>
+        <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 style="text-align: center;" th:text="#{page.home.label.add_your_listing}">Add your listing!</h2>
+            <p style="text-align: center;" th:text="#{page.home.label.easy_setup}">Easy setup, 100% free</p>
+            <p style="text-align: center;">
+                <a class="btn btn-primary" href="my-listings/add-listing-step-1" role="button" th:text="#{page.home.label.get_started}">
+                    Get started
+                </a>
+            </p>
         </div>
         <div class="row">
             <div class="col-sm-12" >
-                <div class="well well-sm" >
-                    <div class="input-group" >
-                        <input type="text" class="form-control" v-model="filter.text" v-on:keyup.enter="onSearch"
-                               th:placeholder="#{page.home.label.search_for_listing}"
-                               placeholder="Search for a listing ...">
-                        <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" v-on:click="onSearch" th:text="#{page.home.label.go}">Go!</button>
-                      </span>
+                <div class="card" >
+                    <div class="card-header">
+                        <div class="input-group" >
+                            <input type="text" class="form-control" v-model="filter.text" v-on:keyup.enter="onSearch"
+                                   th:placeholder="#{page.home.label.search_for_listing}"
+                                   placeholder="Search for a listing ...">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" v-on:click="onSearch" th:text="#{page.home.label.go}">Go!</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -39,16 +39,20 @@
                     <div class="flex-row row">
                         <div th:each="dlListing : ${dlListings}"
                              class="col-xs-12 col-sm-4 col-lg-3">
-                            <div class="thumbnail">
+                            <div class="card">
                                 <a th:href="'/listings/' + ${dlListing.id} + '/' + ${dlListing.name}">
-                                    <img th:if="${dlListing.attachments==null} or ${#lists.size(dlListing.attachments) == 0}" src="../../resources/images/no-image-available.jpg"
+                                    <img th:if="${dlListing.featuredAttachment==null}" src="../../resources/images/no-image-available.jpg"
                                          th:src="@{/resources/images/no-image-available.jpg}"
+                                         class="card-img-top"
                                          alt="No image available"
                                          data-holder-rendered="true"/>
-                                    <img th:if="${dlListing.attachments!=null} and ${#lists.size(dlListing.attachments) > 0}"
-                                         th:src="'/content/files' + ${dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file}"
+                                    <img th:if="${dlListing.featuredAttachment!=null}"
+                                         th:src="'/content/files' + ${dlListing.featuredAttachment.smallImage}"
+                                         class="card-img-top"
                                          data-holder-rendered="true" />
-                                    <div class="caption"><h4 th:text="${dlListing.title}">Some title</h4></div>
+                                    <div class="card-body">
+                                        <h6 class="card-link" th:text="${dlListing.title}">Card title</h6>
+                                    </div>
                                 </a>
                             </div>
                         </div>
@@ -58,16 +62,18 @@
                     <div class="flex-row row">
                         <div v-for="dlListing in dlListings" class="col-xs-12 col-sm-4 col-lg-3"
                              v-bind:style="{ display: dlListings.length>0 ? 'unset' : 'none' }">
-                            <div class="thumbnail">
+                            <div class="card">
                                 <a v-bind:href="'/listings/' + dlListing.id + '/' + dlListing.name">
-                                    <img v-if="dlListing.attachments==null || dlListing.attachments.length==0" src="../../resources/images/no-image-available.jpg"
+                                    <img v-if="dlListing.featuredAttachment==null" src="../../resources/images/no-image-available.jpg"
                                          th:src="@{/resources/images/no-image-available.jpg}"
                                          alt="No image available"
                                          data-holder-rendered="true" />
                                     <img v-else
-                                         v-bind:src="'/content/files' + dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file"
+                                         v-bind:src="'/content/files' + dlListing.featuredAttachment.smallImage"
                                          data-holder-rendered="true" />
-                                    <div class="caption"><h4>{{dlListing.title}}</h4></div>
+                                    <div class="card-body">
+                                        <h6 class="card-link">{{dlListing.title}}</h6>
+                                    </div>
                                 </a>
                             </div>
                         </div>
@@ -77,10 +83,11 @@
                             <!--<span th:text="${dlCategory.count}"></span>-->
                         <!--</div>-->
                     </div>
-                    <div class="row text-center" v-if="pagingParams.loadedDlListings<pagingParams.totalDlListings">
-                        <div style="margin-bottom: 20px;">
-                            <button id="btnLoadMore" href="#" class="btn btn-default btn-block btn-lg" role="button"
-                                    th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i>' + #{page.default.btn_load_mode}"
+                    <div class="row" style="margin-top: 20px; margin-bottom: 20px;" v-if="pagingParams.loadedDlListings<pagingParams.totalDlListings">
+                        <div class="col-sm">
+                            <button id="btnLoadMore" class="btn btn-secondary btn-block"
+                                    th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i> ' + #{page.default.btn_load_mode}"
+                                    th:text="#{page.default.btn_load_mode}"
                                     v-bind:disabled="pagingParams.isLoading"
                                     v-on:click="onLoadNext">Load more</button>
                         </div>
@@ -93,9 +100,10 @@
             th:src="@{/resources/js/default.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var totalDlListings = [[${totalDlListings}]];
-            var loadedDlListings = [[${loadedDlListings}]];
-            LandingPage.init(totalDlListings, loadedDlListings);
+            let totalDlListings = [[${totalDlListings}]];
+            let loadedDlListings = [[${loadedDlListings}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
+            LandingPage.init(totalDlListings, loadedDlListings, jsTranslations);
         };
     </script>
 </div>

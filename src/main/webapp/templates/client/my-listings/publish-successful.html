@@ -19,7 +19,7 @@
             <h3 style="margin-top: 0; margin-bottom: 0;" th:text="#{page.my_listings.publish_successful.msg_01}">Your listing has been successfully published</h3>
         </div>
 
-        <div class="thumbnail" style="display: inline-block;">
+        <div class="card" style="display: inline-block;">
             <a th:href="'/listings/' + ${dlListing.id} + '/' + ${dlListing.name}">
                 <img th:if="${dlListing.attachments==null} or ${#lists.size(dlListing.attachments) == 0}" src="../../resources/images/no-image-available.jpg"
                      th:src="@{/resources/images/no-image-available.jpg}"
@@ -28,17 +28,19 @@
                 <img th:if="${dlListing.attachments!=null} and ${#lists.size(dlListing.attachments) > 0}"
                      th:src="'/content/files' + ${dlListing.attachments[0].attachmentMetadata.smallImageResizeMeta.detail.file}"
                      data-holder-rendered="true" />
-                <div class="caption"><h4 th:text="${dlListing.title}">Some title</h4></div>
+                <div class="card-body">
+                    <h6 class="card-link" th:text="${dlListing.title}">Card title</h6>
+                </div>
             </a>
         </div>
 
         <h2>
-            <a href="/" class="btn btn-default">
-                <span class="glyphicon glyphicon-home"></span>
+            <a href="/" class="btn btn-secondary">
+                <i class="fa fa-home" aria-hidden="true"></i>
                 <span th:text="#{page.page_not_found.button.take_me_home}"> Take Me Home</span>
             </a>
-            <a href="/my-listings" class="btn btn-default">
-                <span class="glyphicon glyphicon-th-list"></span>
+            <a href="/my-listings" class="btn btn-secondary">
+                <i class="fa fa-list" aria-hidden="true"></i>
                 <span th:text="#{page.my_listings.label.my_listings}"> My Listings</span>
             </a>
         </h2>

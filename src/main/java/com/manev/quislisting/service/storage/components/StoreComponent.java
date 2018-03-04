@@ -1,19 +1,16 @@
 package com.manev.quislisting.service.storage.components;
 
-import com.github.slugify.Slugify;
 import com.manev.quislisting.config.QuisListingProperties;
 import com.manev.quislisting.domain.AttachmentStreamResource;
 import com.manev.quislisting.service.dto.AttachmentMetadata;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
-import com.manev.quislisting.service.storage.ResizedImages;
-import com.manev.quislisting.service.util.SlugUtil;
+import com.manev.quislisting.service.post.dto.QlImageFile;
 import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,9 +27,6 @@ import java.util.List;
 @Component
 public class StoreComponent {
 
-    private static final String DL_MEDIUM = "medium";
-    private static final String DL_LARGE = "large";
-    private static final String DL_SMALL = "small";
     private final Logger log = LoggerFactory.getLogger(StoreComponent.class);
     private QuisListingProperties quisListingProperties;
 
@@ -40,30 +34,21 @@ public class StoreComponent {
         this.quisListingProperties = quisListingProperties;
     }
 
-    public AttachmentDTO storeInRepository(MultipartFile file, BufferedImage inputWatermarked, ResizedImages resizedImages) throws IOException {
+    public AttachmentDTO storeInRepository(QlImageFile qlImageFile) throws IOException {
+        File pathDirForOriginal = getPathDirForOriginal();
+        BufferedImage bufferedImage = qlImageFile.getBufferedImage();
+        File fileNode = createFileNode(QlFileUtils.generateFileName(qlImageFile.getOriginalFilename()), pathDirForOriginal, bufferedImage);
 
-        String fileNameSlug = SlugUtil.getFileNameSlug(file.getOriginalFilename());
-
-        File fileNode = createFileNode(fileNameSlug, inputWatermarked);
-
-        AttachmentDTO attachmentDTO = createAttachmentDTO(file.getOriginalFilename(), fileNode.getName());
+        AttachmentDTO attachmentDTO = createAttachmentDTO(qlImageFile.getOriginalFilename(), fileNode.getName());
 
         AttachmentMetadata attachmentMetadata = new AttachmentMetadata();
         AttachmentMetadata.DetailSize detailSize = new AttachmentMetadata.DetailSize();
         detailSize.setFile(extractPathForUrl(fileNode.getPath().replace("\\", "/").split(quisListingProperties.getAttachmentStoragePath())[1]));
-        detailSize.setWidth(inputWatermarked.getWidth());
-        detailSize.setHeight(inputWatermarked.getHeight());
+        detailSize.setWidth(bufferedImage.getWidth());
+        detailSize.setHeight(bufferedImage.getHeight());
         detailSize.setSize(fileNode.length());
-        detailSize.setMimeType(file.getContentType());
+        detailSize.setMimeType(qlImageFile.getContentType());
         attachmentMetadata.setDetail(detailSize);
-
-        AttachmentMetadata.ImageResizeMeta smallImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_SMALL, resizedImages.getSmall());
-        AttachmentMetadata.ImageResizeMeta mediumImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_MEDIUM, resizedImages.getMedium());
-        AttachmentMetadata.ImageResizeMeta largeImageResizeMeta = storeImage(fileNode.getName(), file.getContentType(), DL_LARGE, resizedImages.getBig());
-
-        attachmentMetadata.setSmallImageResizeMeta(smallImageResizeMeta);
-        attachmentMetadata.setMediumImageResizeMeta(mediumImageResizeMeta);
-        attachmentMetadata.setLargeImageResizeMeta(largeImageResizeMeta);
 
         attachmentDTO.setAttachmentMetadata(attachmentMetadata);
 
@@ -74,15 +59,12 @@ public class StoreComponent {
         return urlPath;
     }
 
-    private AttachmentMetadata.ImageResizeMeta storeImage(String fileNameSlug, String contentType, String key, BufferedImage resizedImage) throws IOException {
+    public AttachmentMetadata.ImageResizeMeta storeResizedImage(File pathDirForStorage, String originalFilename, String contentType, String imageSizeType, BufferedImage resizedImage) throws IOException {
         if (resizedImage != null) {
-            String extension = FilenameUtils.getExtension(fileNameSlug);
-            String fileName = FilenameUtils.getBaseName(fileNameSlug);
-            String fileNameSlugResize = fileName + "-" + key + (extension.isEmpty() ? "" : "." + new Slugify().slugify(extension));
-            File fileNode = createFileNode(fileNameSlugResize, resizedImage);
+            File fileNode = createFileNode(QlFileUtils.generateFileName(originalFilename), pathDirForStorage, resizedImage);
 
             AttachmentMetadata.ImageResizeMeta imageResizeMeta = new AttachmentMetadata.ImageResizeMeta();
-            imageResizeMeta.setName(key);
+            imageResizeMeta.setName(imageSizeType);
             AttachmentMetadata.DetailSize detail = new AttachmentMetadata.DetailSize();
             detail.setFile(extractPathForUrl(fileNode.getPath().replace("\\", "/").split(quisListingProperties.getAttachmentStoragePath())[1]));
             detail.setMimeType(contentType);
@@ -102,30 +84,44 @@ public class StoreComponent {
         return attachmentDTO;
     }
 
-    private File createFileNode(String fileName, BufferedImage resizedImage) throws IOException {
+    private File getPathDirForStorage() {
+        String pathStr = getPathFromCurrentDate();
+
+        // check if file path exists
+        return new File(quisListingProperties.getAttachmentStoragePath() + File.separator + pathStr);
+    }
+
+    private File getPathDirForOriginal() {
+        String pathStr = getPathFromCurrentDate();
+
+        // check if file path exists
+        return new File(quisListingProperties.getAttachmentStoragePath() + File.separator + pathStr + File.separator + "originals");
+    }
+
+    private String getPathFromCurrentDate() {
         DateTime dateTime = new DateTime();
         String yearStr = String.valueOf(dateTime.getYear());
         String monthOfYearStr = String.format("%02d", dateTime.getMonthOfYear());
         String dayOfMonthStr = String.format("%02d", dateTime.getDayOfMonth());
-        String pathStr = yearStr + File.separator + monthOfYearStr + File.separator + dayOfMonthStr;
+        return yearStr + File.separator + monthOfYearStr + File.separator + dayOfMonthStr;
+    }
 
-        // check if file path exists
-        File pathDir = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + pathStr);
-        if (pathDir.exists()) {
+    private File createFileNode(String fileName, File pathToStore, BufferedImage bufferedImage) throws IOException {
+        if (pathToStore.exists()) {
             // store file
-            File checkedFileName = checkFileName(fileName, pathDir);
+            File checkedFileName = new File(pathToStore, fileName);
 
-            writeStream(resizedImage, FilenameUtils.getExtension(checkedFileName.getName()), checkedFileName);
+            writeStream(bufferedImage, FilenameUtils.getExtension(checkedFileName.getName()), checkedFileName);
 
             return checkedFileName;
         } else {
             // create and store file
-            Path directories = Files.createDirectories(pathDir.toPath());
+            Path directories = Files.createDirectories(pathToStore.toPath());
 
             String extension = FilenameUtils.getExtension(fileName);
             File file = new File(directories.toFile(), fileName);
 
-            writeStream(resizedImage, extension, file);
+            writeStream(bufferedImage, extension, file);
             return file;
         }
     }
@@ -136,30 +132,19 @@ public class StoreComponent {
         Files.copy(new ByteArrayInputStream(os.toByteArray()), file.toPath());
     }
 
-    private File checkFileName(String fileName, File parent) {
-        String checkedFileName;
-        String baseName = FilenameUtils.getBaseName(fileName);
-        int counter = 0;
-        File file = new File(parent, fileName);
-
-        while (file.exists()) {
-            String extension = FilenameUtils.getExtension(fileName);
-            checkedFileName = baseName + "-" + (counter + 1) + (extension.isEmpty() ? "" : "." + extension);
-            file = new File(parent, checkedFileName);
-            counter++;
-        }
-        return file;
-    }
-
     public void removeInRepository(List<String> filePaths) {
         for (String filePath : filePaths) {
-            File file = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + filePath);
-            if (file.exists()) {
-                try {
-                    Files.delete(Paths.get(file.toURI()));
-                } catch (IOException e) {
-                    log.error("Failed to remove file: {}", filePath, e);
-                }
+            removeInRepository(filePath);
+        }
+    }
+
+    public void removeInRepository(String filePath) {
+        File file = new File(quisListingProperties.getAttachmentStoragePath() + File.separator + filePath);
+        if (file.exists()) {
+            try {
+                Files.delete(Paths.get(file.toURI()));
+            } catch (IOException e) {
+                log.error("Failed to remove file: {}", filePath, e);
             }
         }
     }
@@ -173,5 +158,9 @@ public class StoreComponent {
                 file.getName());
 
         return attachmentStreamResource;
+    }
+
+    public File getFile(String path) {
+        return new File(quisListingProperties.getAttachmentStoragePath() + File.separator + path);
     }
 }

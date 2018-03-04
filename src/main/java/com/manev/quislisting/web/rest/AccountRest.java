@@ -3,7 +3,7 @@ package com.manev.quislisting.web.rest;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.security.SecurityUtils;
-import com.manev.quislisting.security.jwt.JWTConfigurer;
+import com.manev.quislisting.security.jwt.ApiJWTConfigurer;
 import com.manev.quislisting.security.jwt.TokenProvider;
 import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.UserService;
@@ -141,7 +141,7 @@ public class AccountRest {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
             String jwt = tokenProvider.createToken(authentication, rememberMe);
-            response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            response.addHeader(ApiJWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
             return ResponseEntity.ok(new JWTToken(jwt));
         } catch (AuthenticationException exception) {
             return new ResponseEntity<>(Collections.singletonMap("AuthenticationException",exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);

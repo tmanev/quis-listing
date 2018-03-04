@@ -54,6 +54,10 @@ public class DlContentFieldItem {
     @Column
     private Integer orderNum;
 
+    @ManyToOne
+    @JoinColumn(name = "dl_content_field_item_group_id")
+    private DlContentFieldItemGroup dlContentFieldItemGroup;
+
     public Long getId() {
         return id;
     }
@@ -135,4 +139,11 @@ public class DlContentFieldItem {
         this.children = children;
     }
 
+    public DlContentFieldItemGroup getDlContentFieldItemGroup() {
+        return dlContentFieldItemGroup;
+    }
+
+    public void setDlContentFieldItemGroup(DlContentFieldItemGroup dlContentFieldItemGroup) {
+        this.dlContentFieldItemGroup = dlContentFieldItemGroup;
+    }
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+<div th:fragment="category-item-component">
+    <!-- Load current page javascript file -->
+    <script type="text/x-template" id="category-item-component">
+        <div class="card" v-bind:id="getPanelId" style="margin-bottom: 5px;">
+            <div class="card-header"
+                 v-if="isFolder"
+                 v-bind:id="getHeadingId"
+                 v-bind:class="open ? 'collapsed' : null"
+                 v-bind:aria-expanded="open ? 'true' : 'false'"
+                 v-bind:aria-controls="getBodyId"
+                 v-on:click="toggleCategory()"
+                 style="cursor: pointer;">
+                <h5>
+                    <span v-if="open">
+                        <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+                    </span>
+                    <span v-if="!open">
+                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                    </span>
+                    <span>{{category.name}}</span>
+                </h5>
+            </div>
+            <div v-if="!isFolder">
+                <a href="#" class="btn btn-outline-success btn-block"
+                   v-bind:class="{ 'active': category.active }"
+                   v-bind:data-parent="getPanelIdWithHashTag"
+                   v-bind:href="getBodyIdWithHashTag"
+                   v-bind:aria-controls="getBodyId"
+                   v-on:click="selectCategory">{{category.name}}</a>
+            </div>
+            <b-collapse v-if="isFolder"
+                        v-bind:id="getBodyId"
+                        v-model="open">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <category-item-component class="item" v-for="category in category.children"
+                                                 v-bind:category="category"
+                                                 v-bind:selected-category="selectedCategory"
+                                                 v-bind:listing="listing">
+                        </category-item-component>
+                    </li>
+                </ul>
+            </b-collapse>
+        </div>
+    </script>
+</div>
+</body>
+</html>

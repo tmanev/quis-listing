@@ -89,7 +89,7 @@ public class LanguageAdminRest {
      * @return the ResponseEntity with status 200 (OK) and the list of languages in body
      */
     @GetMapping(AdminRestRouter.Language.LIST)
-    public ResponseEntity<List<Language>> getAllLanguages(@PageableDefault(page = 0, value = Integer.MAX_VALUE) Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
+    public ResponseEntity<List<Language>> getAllLanguages(@PageableDefault(value = Integer.MAX_VALUE) Pageable pageable, @RequestParam Map<String, String> allRequestParams) {
         log.debug("REST request to get a page of Languages");
         Page<Language> page = languageService.findAll(pageable, allRequestParams);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AdminRestRouter.Language.LIST);

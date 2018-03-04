@@ -2,7 +2,9 @@ package com.manev.quislisting.service;
 
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
+import com.manev.quislisting.domain.DlContentFieldItemGroup;
 import com.manev.quislisting.domain.qlml.QlString;
+import com.manev.quislisting.repository.DlContentFieldItemGroupRepository;
 import com.manev.quislisting.repository.DlContentFieldItemRepository;
 import com.manev.quislisting.repository.DlContentFieldRepository;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
@@ -19,11 +21,13 @@ public class DlContentFieldItemService {
     private DlContentFieldItemMapper dlContentFieldItemMapper;
     private DlContentFieldItemRepository dlContentFieldItemRepository;
     private DlContentFieldRepository dlContentFieldRepository;
+    private DlContentFieldItemGroupRepository dlContentFieldItemGroupRepository;
 
-    public DlContentFieldItemService(DlContentFieldItemMapper dlContentFieldItemMapper, DlContentFieldItemRepository dlContentFieldItemRepository, DlContentFieldRepository dlContentFieldRepository) {
+    public DlContentFieldItemService(DlContentFieldItemMapper dlContentFieldItemMapper, DlContentFieldItemRepository dlContentFieldItemRepository, DlContentFieldRepository dlContentFieldRepository, DlContentFieldItemGroupRepository dlContentFieldItemGroupRepository) {
         this.dlContentFieldItemMapper = dlContentFieldItemMapper;
         this.dlContentFieldItemRepository = dlContentFieldItemRepository;
         this.dlContentFieldRepository = dlContentFieldRepository;
+        this.dlContentFieldItemGroupRepository = dlContentFieldItemGroupRepository;
     }
 
     public DlContentFieldItemDTO save(DlContentFieldItemDTO dlContentFieldItemDTO, Long dlContentFieldId) {
@@ -37,6 +41,7 @@ public class DlContentFieldItemService {
 
         setDlContentField(dlContentFieldId, dlContentFieldItem);
         setParent(dlContentFieldItemDTO, dlContentFieldItem);
+        setDlContentFieldItemGroup(dlContentFieldItemDTO, dlContentFieldItem);
         dlContentFieldItemRepository.save(dlContentFieldItem);
 
         saveQlString(dlContentFieldItem);
@@ -44,17 +49,41 @@ public class DlContentFieldItemService {
         return dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null);
     }
 
-    public Page<DlContentFieldItemDTO> findAll(Pageable pageable, Long dlContentFieldId, Long parentId) {
+    private void setDlContentFieldItemGroup(DlContentFieldItemDTO dlContentFieldItemDTO, DlContentFieldItem dlContentFieldItem) {
+        Long dlContentFieldItemGroupId = dlContentFieldItemDTO.getDlContentFieldItemGroupId();
+        if (dlContentFieldItemGroupId != null) {
+            DlContentFieldItemGroup group = getDlContentFieldItemGroup(dlContentFieldItemGroupId);
+            dlContentFieldItem.setDlContentFieldItemGroup(group);
+        }
+    }
+
+    public Page<DlContentFieldItemDTO> findAll(Pageable pageable, Long dlContentFieldId, Long parentId, Long dlContentFieldItemGroupId) {
         DlContentField one = dlContentFieldRepository.findOne(dlContentFieldId);
+        DlContentFieldItemGroup dlContentFieldItemGroup = getDlContentFieldItemGroup(dlContentFieldItemGroupId);
         Page<DlContentFieldItem> dlContentFieldItems;
-        if (parentId != null) {
-            DlContentFieldItem parent = dlContentFieldItemRepository.findOne(parentId);
-            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParentOrderByOrderNum(pageable, one, parent);
+        DlContentFieldItem parent = getDlContentFieldItem(parentId);
+
+        if (dlContentFieldItemGroup != null) {
+            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParentAndDlContentFieldItemGroupOrderByOrderNum(pageable, one, parent, dlContentFieldItemGroup);
         } else {
-            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParentOrderByOrderNum(pageable, one, null);
+            dlContentFieldItems = dlContentFieldItemRepository.findAllByDlContentFieldAndParentOrderByOrderNum(pageable, one, parent);
         }
 
         return dlContentFieldItems.map(dlContentFieldItem -> dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, null));
+    }
+
+    private DlContentFieldItem getDlContentFieldItem(Long parentId) {
+        if (parentId!=null) {
+            return dlContentFieldItemRepository.findOne(parentId);
+        }
+        return null;
+    }
+
+    private DlContentFieldItemGroup getDlContentFieldItemGroup(Long dlContentFieldItemGroupId) {
+        if (dlContentFieldItemGroupId != null) {
+            return dlContentFieldItemGroupRepository.findOne(dlContentFieldItemGroupId);
+        }
+        return null;
     }
 
     public DlContentFieldItemDTO findOne(Long id, String languageCode) {

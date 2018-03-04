@@ -2,18 +2,23 @@ package com.manev.quislisting.service.mapper;
 
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
+import com.manev.quislisting.domain.DlContentFieldItemGroup;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.service.dto.DlContentFieldDTO;
 import com.manev.quislisting.service.dto.DlContentFieldItemDTO;
+import com.manev.quislisting.service.dto.DlContentFieldItemGroupDTO;
 import com.manev.quislisting.service.taxonomy.dto.DlCategoryDTO;
 import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -24,11 +29,13 @@ public class DlContentFieldMapper {
     private DlCategoryMapper dlCategoryMapper;
     private DlContentFieldItemMapper dlContentFieldItemMapper;
     private DlContentFieldGroupMapper dlContentFieldGroupMapper;
+    private DlContentFieldItemGroupMapper dlContentFieldItemGroupMapper;
 
-    public DlContentFieldMapper(DlCategoryMapper dlCategoryMapper, DlContentFieldItemMapper dlContentFieldItemMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper) {
+    public DlContentFieldMapper(DlCategoryMapper dlCategoryMapper, DlContentFieldItemMapper dlContentFieldItemMapper, DlContentFieldGroupMapper dlContentFieldGroupMapper, DlContentFieldItemGroupMapper dlContentFieldItemGroupMapper) {
         this.dlCategoryMapper = dlCategoryMapper;
         this.dlContentFieldItemMapper = dlContentFieldItemMapper;
         this.dlContentFieldGroupMapper = dlContentFieldGroupMapper;
+        this.dlContentFieldItemGroupMapper = dlContentFieldItemGroupMapper;
     }
 
     public DlContentField dlContentFieldDTOToDlContentField(DlContentField dlContentField, DlContentFieldDTO dlContentFieldDTO) {
@@ -89,7 +96,8 @@ public class DlContentFieldMapper {
                 .options(dlContentField.getOptions())
                 .searchOptions(dlContentField.getSearchOptions())
                 .dlCategories(getDlCategoriesDTO(dlContentField.getDlCategories()))
-                .dlContentFieldItems(getDlContentFieldsDTO(dlContentField.getDlContentFieldItems(), languageCode))
+                .dlContentFieldItems(getDlContentFieldItemsDTO(dlContentField, dlContentField.getDlContentFieldItems(), languageCode))
+                .dlContentFieldItemGroups(getDlContentFieldItemGroupsDTO(dlContentField, languageCode))
                 .dlContentFieldGroup(dlContentField.getDlContentFieldGroup() != null ?
                         dlContentFieldGroupMapper.dlContentFieldGroupToDlContentFieldGroupDTO(dlContentField.getDlContentFieldGroup()) : null)
                 .enabled(dlContentField.getEnabled());
@@ -121,15 +129,46 @@ public class DlContentFieldMapper {
         return dlCategoryDTOList;
     }
 
-    private List<DlContentFieldItemDTO> getDlContentFieldsDTO(Set<DlContentFieldItem> dlContentFieldItems, String languageCode) {
+    private List<DlContentFieldItemDTO> getDlContentFieldItemsDTO(DlContentField dlContentField, Set<DlContentFieldItem> dlContentFieldItems, String languageCode) {
+        long start = System.currentTimeMillis();
         List<DlContentFieldItemDTO> result = new ArrayList<>();
-        if (dlContentFieldItems != null && !dlContentFieldItems.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlContentFieldItems)) {
             for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
                 result.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, languageCode));
             }
         }
-
+        log.info("getDlContentFieldItemsDTO for id: {}, name: {}, took: {} ms", dlContentField.getId(), dlContentField.getName(), System.currentTimeMillis() - start);
         return result;
+    }
+
+    private List<DlContentFieldItemGroupDTO> getDlContentFieldItemGroupsDTO(DlContentField dlContentField, String languageCode) {
+        long start = System.currentTimeMillis();
+
+
+        Map<DlContentFieldItemGroup, List<DlContentFieldItemDTO>> groups = new LinkedHashMap<>();
+        Set<DlContentFieldItem> dlContentFieldItems = dlContentField.getDlContentFieldItems();
+        if (!CollectionUtils.isEmpty(dlContentFieldItems)) {
+            for (DlContentFieldItem dlContentFieldItem : dlContentFieldItems) {
+                if (dlContentFieldItem.getDlContentFieldItemGroup() != null) {
+                    List<DlContentFieldItemDTO> dlListingFieldItemDTOS = groups.get(dlContentFieldItem.getDlContentFieldItemGroup());
+                    if (dlListingFieldItemDTOS == null) {
+                        dlListingFieldItemDTOS = new ArrayList<>();
+                    }
+                    dlListingFieldItemDTOS.add(dlContentFieldItemMapper.dlContentFieldItemToDlContentFieldItemDTO(dlContentFieldItem, languageCode));
+                    groups.put(dlContentFieldItem.getDlContentFieldItemGroup(), dlListingFieldItemDTOS);
+                }
+            }
+        }
+
+        List<DlContentFieldItemGroupDTO> groupsModel = new ArrayList<>();
+        for (Map.Entry<DlContentFieldItemGroup, List<DlContentFieldItemDTO>> entry : groups.entrySet()) {
+            DlContentFieldItemGroupDTO dlListingFieldItemGroupModel = dlContentFieldItemGroupMapper.mapDto(entry.getKey(), languageCode);
+            dlListingFieldItemGroupModel.setDlContentFieldItems(entry.getValue());
+            groupsModel.add(dlListingFieldItemGroupModel);
+        }
+
+        log.info("getDlContentFieldItemsDTO for id: {}, name: {}, took: {} ms", dlContentField.getId(), dlContentField.getName(), System.currentTimeMillis() - start);
+        return groupsModel;
     }
 
 

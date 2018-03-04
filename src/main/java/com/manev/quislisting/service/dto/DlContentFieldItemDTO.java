@@ -12,6 +12,7 @@ public class DlContentFieldItemDTO {
     private Integer orderNum;
 
     private DlContentFieldDTO dlContentFieldDTO;
+    private Long dlContentFieldItemGroupId;
 
 //    @JsonBackReference(value = "dl_content_field_item_dto_parent_reference")
     private DlContentFieldItemDTO parent;
@@ -77,6 +78,19 @@ public class DlContentFieldItemDTO {
 
     public void setDlContentFieldDTO(DlContentFieldDTO dlContentFieldDTO) {
         this.dlContentFieldDTO = dlContentFieldDTO;
+    }
+
+    public Long getDlContentFieldItemGroupId() {
+        return dlContentFieldItemGroupId;
+    }
+
+    public void setDlContentFieldItemGroupId(Long dlContentFieldItemGroupId) {
+        this.dlContentFieldItemGroupId = dlContentFieldItemGroupId;
+    }
+
+    public DlContentFieldItemDTO dlContentFieldItemGroupId(Long dlContentFieldItemGroupId) {
+        this.dlContentFieldItemGroupId = dlContentFieldItemGroupId;
+        return this;
     }
 
     public DlContentFieldItemDTO getParent() {

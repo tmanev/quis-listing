@@ -2,18 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="footer">
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div id="bs-example-navbar-collapse-2">
-                <ul class="nav navbar-nav">
-                    <li th:each="navMenuItem : ${baseModel.footerMenus}">
-                        <a th:if="${navMenuItem.staticPage} != null" th:href="@{/{path}(path=${navMenuItem.staticPage.name})}" th:text="${navMenuItem.staticPage.title}"></a>
-                        <a th:if="${navMenuItem.staticPage} == null" th:href="@{/{path}(path=${navMenuItem.slug})}" th:text="${navMenuItem.title}"></a>
-                    </li>
-                </ul>
-            </div>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" th:each="navMenuItem : ${baseModel.footerMenus}">
+                    <a class="nav-link" th:if="${navMenuItem.staticPage} != null"
+                       th:href="@{/{path}(path=${navMenuItem.staticPage.name})}"
+                       th:text="${navMenuItem.staticPage.title}"></a>
+                    <a class="nav-link" th:if="${navMenuItem.staticPage} == null"
+                       th:href="@{/{path}(path=${navMenuItem.slug})}" th:text="${navMenuItem.title}"></a>
+                </li>
+            </ul>
         </div>
     </nav>
 </div>

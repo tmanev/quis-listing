@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.springframework.util.StringUtils;
 
 /**
  * Service Implementation for managing Language.
@@ -56,7 +57,7 @@ public class LanguageService {
 
         String active = allRequestParams.get("active");
 
-        if (active != null) {
+        if (!StringUtils.isEmpty(active)) {
             return languageRepository.findAllByActive(pageable, Boolean.valueOf(active));
         } else {
             return languageRepository.findAll(pageable);

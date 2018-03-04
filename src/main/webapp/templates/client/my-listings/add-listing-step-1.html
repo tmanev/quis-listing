@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="${title}">Profile</title>
+
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
+          rel="stylesheet"/>
+    <link href="../../../resources/css/styles.css"
+          th:href="@{/resources/css/styles.css}"
+          rel="stylesheet"/>
+</head>
+<body>
+<div th:fragment="content" class="container">
+    <div id="addListingStep1App">
+        <div class="page-header">
+            <h3 th:text="#{page.my_listings.add_listing.title}">Add listing</h3>
+        </div>
+        <add-listing-wizard-progress-component v-bind:active-step="0"></add-listing-wizard-progress-component>
+        <form v-on:submit.prevent="onSubmit($event)" v-cloak>
+            <div th:replace="client/fragments/indicate-required-fields :: indicate-required-fields"></div>
+            <listing-category-component ref="listingCategoryComponent" v-bind:listing="listing"></listing-category-component>
+            <listing-description-component ref="listingDescriptionComponent" v-bind:listing="listing"></listing-description-component>
+            <listing-price-component ref="listingPriceComponent" v-bind:listing="listing"></listing-price-component>
+            <listing-contact-component ref="listingContactComponent" v-bind:listing="listing"></listing-contact-component>
+            <div class="form-group row">
+                <div class="offset-xs-7 col-xs-5 offset-sm-8 col-sm-4">
+                    <button type="submit" class="btn btn-primary btn-block" id="btnNext"
+                            th:attr="data-loading-text='<i class=\'fa fa-circle-o-notch fa-spin\'></i> ' + #{page.my_listings.add_listing.form.btn.next}">
+                        <span th:text="#{page.my_listings.add_listing.form.btn.next}">Next</span>
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="client/my-listings/components/add-listing-wizard-progress-component :: add-listing-wizard-progress-component"></div>
+    <div th:replace="client/my-listings/components/category-item-component :: category-item-component"></div>
+    <div th:replace="client/my-listings/components/listing-category-component :: listing-category-component"></div>
+    <div th:replace="client/my-listings/components/listing-description-component :: listing-description-component"></div>
+    <div th:replace="client/my-listings/components/listing-price-component :: listing-price-component"></div>
+    <div th:replace="client/my-listings/components/listing-contact-component :: listing-contact-component"></div>
+
+    <script src="../../../resources/js/my-listings/components/util.js"
+            th:src="@{/resources/js/my-listings/components/util.js}"></script>
+    <script src="../../../resources/js/my-listings/components/my-listing-service.js"
+            th:src="@{/resources/js/my-listings/components/my-listing-service.js}"></script>
+    <script src="../../../resources/js/my-listings/add-listing-step-1.js"
+            th:src="@{/resources/js/my-listings/add-listing-step-1.js}"></script>
+    <script src="../../../resources/js/my-listings/components/add-listing-wizard-progress-component.js"
+            th:src="@{/resources/js/my-listings/components/add-listing-wizard-progress-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-description-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-description-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/category-item-component.js"
+            th:src="@{/resources/js/my-listings/components/category-item-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-category-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-category-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-price-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-price-component.js}"></script>
+    <script src="../../../resources/js/my-listings/components/listing-contact-component.js"
+            th:src="@{/resources/js/my-listings/components/listing-contact-component.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        window.onload = function () {
+            let dlListingDTO = [[${dlListingDTO}]];
+            let dlCategoriesDtoFlat = [[${dlCategoriesDtoFlat}]];
+            let jsTranslations = [[${baseModel.jsTranslations}]];
+            AddListingWizardProgressComponent.init();
+            ListingDescriptionComponent.init();
+            CategoryItemComponent.init();
+            ListingCategoryComponent.init(dlCategoriesDtoFlat);
+            ListingPriceComponent.init();
+            ListingContactComponent.init();
+            AddListingStep1.init(dlListingDTO, jsTranslations);
+        };
+    </script>
+</div>
+
+
+<!-- JavaScript libraries used to be able to open the html page itself in browser -->
+<script src="../../../resources/vendor/vue/vue.min.js"
+        th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/vuelidate.min.js"
+        th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/validators.min.js"
+        th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+<script src="../../../resources/vendor/vue-resource/vue-resource.min.js"
+        th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+<script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"
+        th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap/js/bootstrap.min.js"
+        th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+        th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+</body>
+</html>

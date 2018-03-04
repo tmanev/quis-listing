@@ -1,5 +1,5 @@
 PasswordResetFinish = {
-    init: function () {
+    init: function (jsTranslations) {
         Vue.use(window.vuelidate.default);
         const {required, minLength, maxLength, between, email, sameAs} = window.validators;
 
@@ -59,21 +59,13 @@ PasswordResetFinish = {
                                 repeatPassword: ''
                             };
                             this.$v.form.$reset();
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'success'
-                            });
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['info.save_success']});
                             $btn.button('reset');
                             this.success = true;
                             // trigger successful block
                         }, function (response) {
                             console.log('Error!:', response.data);
-                            $.notify({
-                                message: response.data
-                            }, {
-                                type: 'danger'
-                            });
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
                             $btn.button('reset');
                         });
                     }

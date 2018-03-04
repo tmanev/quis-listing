@@ -1,19 +1,15 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.config.QuisListingProperties;
-import com.manev.quislisting.domain.User;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
-import java.util.Locale;
 
 /**
  * Service for sending e-mails.
@@ -24,22 +20,15 @@ import java.util.Locale;
 @Service
 public class MailService {
 
-    private static final String USER = "user";
-    private static final String BASE_URL = "baseUrl";
-
     private final Logger log = LoggerFactory.getLogger(MailService.class);
     private final QuisListingProperties quisListingProperties;
 
     private final JavaMailSender javaMailSender;
 
-    private final MessageSource messageSource;
-
-    public MailService(QuisListingProperties quisListingProperties, JavaMailSender javaMailSender,
-                       MessageSource messageSource) {
+    public MailService(QuisListingProperties quisListingProperties, JavaMailSender javaMailSender) {
 
         this.quisListingProperties = quisListingProperties;
         this.javaMailSender = javaMailSender;
-        this.messageSource = messageSource;
     }
 
     @Async
@@ -62,31 +51,4 @@ public class MailService {
         }
     }
 
-    @Async
-    public void sendCreationEmail(User user) {
-        log.debug("Sending creation e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-
-//        String content = templateEngine.process("creationEmail", context);
-        String content = "Empty";
-
-        String subject = messageSource.getMessage("email.activation.title", null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
-    }
-
-    @Async
-    public void sendPasswordResetMail(User user) {
-        log.debug("Sending password reset e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, quisListingProperties.getMail().getBaseUrl());
-//        String content = templateEngine.process("passwordResetEmail", context);
-        String content = "Empty";
-        String subject = messageSource.getMessage("email.reset.title", null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
-    }
 }

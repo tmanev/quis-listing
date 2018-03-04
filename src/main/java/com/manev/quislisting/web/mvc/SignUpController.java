@@ -71,6 +71,10 @@ public class SignUpController extends BaseController {
         Optional<User> oneByEmail = userRepository.findOneByEmail(signUpUserBean.getEmail());
         if (oneByEmail.isPresent()) {
             // email address already in use
+            setTermsAndConditionPageInModel(model, locale);
+            // reset pass
+            signUpUserBean.setPassword("");
+            model.addAttribute("signUpUserBean", signUpUserBean);
             model.addAttribute("errMsg", messageSource.getMessage("page.signup.error.email_already_registered", null, locale));
         } else {
             User user = userService.createUser(signUpUserBean.getEmail(), signUpUserBean.getPassword(),

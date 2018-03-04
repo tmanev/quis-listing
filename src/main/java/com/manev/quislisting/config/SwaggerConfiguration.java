@@ -10,9 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
@@ -42,6 +46,7 @@ public class SwaggerConfiguration {
                 "",
                 "trajche.manev@gmail.com");
 
+        List<VendorExtension> vendorExtensionList = new ArrayList<>();
         ApiInfo apiInfo = new ApiInfo(
                 "REST API for a QUIS Listing Service",
                 "Restful api for listings",
@@ -49,7 +54,7 @@ public class SwaggerConfiguration {
                 "",
                 contact,
                 "",
-                "");
+                "", vendorExtensionList);
 
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)

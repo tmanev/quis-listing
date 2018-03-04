@@ -1,10 +1,14 @@
 package com.manev.quislisting.service.util;
 
 import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 
 public class ImageResizeUtil {
+
+    private static Logger log = LoggerFactory.getLogger(ImageResizeUtil.class);
 
     private ImageResizeUtil() {
         // closing the public constructor
@@ -30,30 +34,38 @@ public class ImageResizeUtil {
             return inputImage;
         }
 
-        // Scale in respect to width or height?
-        Scalr.Mode scaleMode;
-
         // find out which side is the shortest
-        int maxSize;
+        int maxSize = 0;
+        Scalr.Mode scaleMode = Scalr.Mode.AUTOMATIC;
         if (originHeight > originWidth) {
             // scale to width
             scaleMode = Scalr.Mode.FIT_TO_WIDTH;
             maxSize = resultWidth;
-        } else {
-            scaleMode = Scalr.Mode.FIT_TO_HEIGHT;
-            maxSize = resultHeight;
+        } else if (originWidth >= originHeight) {
+            // check ratio
+            double originRatio = (double) originWidth/originHeight;
+            double resultRatio = (double) resultWidth/resultHeight;
+            if (originRatio < resultRatio) {
+                scaleMode = Scalr.Mode.FIT_TO_WIDTH;
+                maxSize = resultWidth;
+            } else {
+                scaleMode = Scalr.Mode.FIT_TO_HEIGHT;
+                maxSize = resultHeight;
+            }
         }
 
         // Scale the image to given size
-        BufferedImage outputImage = Scalr.resize(inputImage, Scalr.Method.AUTOMATIC, scaleMode, maxSize);
+        BufferedImage outputImage = Scalr.resize(inputImage, Scalr.Method.AUTOMATIC,  scaleMode, maxSize);
 
-        // okay, now let us check that both sides are fitting to our result scaling
-        if (scaleMode.equals(Scalr.Mode.FIT_TO_WIDTH) && outputImage.getHeight() > resultHeight) {
-            // the height is too large, resize again
-            outputImage = Scalr.resize(outputImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_HEIGHT, resultHeight);
-        } else if (scaleMode.equals(Scalr.Mode.FIT_TO_HEIGHT) && outputImage.getWidth() > resultWidth) {
-            // the width is too large, resize again
-            outputImage = Scalr.resize(outputImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, resultWidth);
+        try{
+            // Crop the image in the center
+            outputImage = Scalr.crop(outputImage,
+                    Math.abs(outputImage.getWidth() - resultWidth) / 2,
+                    Math.abs(outputImage.getHeight() - resultHeight) / 2,
+                    resultWidth, resultHeight);
+        } catch (IllegalArgumentException ex) {
+            log.error("Could not crop image.", ex);
+            throw ex;
         }
 
         // flush both images

@@ -28,9 +28,9 @@ import java.util.Optional;
 @RestController
 public class DlContentFieldGroupAdminRest {
 
-    private static final String ENTITY_NAME = "DlContentField";
+    private static final String ENTITY_NAME = "DlContentFieldGroup";
 
-    private final Logger log = LoggerFactory.getLogger(DlCategoryAdminRest.class);
+    private final Logger log = LoggerFactory.getLogger(DlContentFieldGroupAdminRest.class);
     private final DlContentFieldGroupService dlContentFieldGroupService;
 
     public DlContentFieldGroupAdminRest(DlContentFieldGroupService dlContentFieldGroupService) {

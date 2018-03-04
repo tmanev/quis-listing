@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional
@@ -100,7 +101,7 @@ public class DlLocationService {
         String parentId = allRequestParams.get("parentId");
         DlLocation parentLocation;
         Page<DlLocation> result;
-        if (parentId != null) {
+        if (!StringUtils.isEmpty(parentId)) {
             parentLocation = dlLocationRepository.findOne(Long.valueOf(parentId));
             result = dlLocationRepository.findAllByParentAndTranslation_languageCode(pageable, parentLocation, languageCode);
         } else {

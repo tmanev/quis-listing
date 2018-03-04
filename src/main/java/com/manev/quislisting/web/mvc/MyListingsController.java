@@ -14,7 +14,7 @@ public class MyListingsController extends BaseController {
 
     private static final String PAGE_MY_LISTINGS_NOTIFICATIONS_DELETE_LISTING_SUCCESS = "page.my_listings.notifications.delete_listing_success";
 
-    @RequestMapping(value = MvcRouter.MyListings.BASE, method = RequestMethod.GET)
+    @RequestMapping(value = MvcRouter.MyListings.LIST, method = RequestMethod.GET)
     public String showMyListingsPage(final ModelMap modelMap, HttpServletRequest request) {
         Locale locale = localeResolver.resolveLocale(request);
 
