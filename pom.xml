@@ -8,7 +8,7 @@
 	<packaging>war</packaging>
 
 	<name>quis-listing</name>
-	<description>Any Listing close to you</description>
+	<description>Listing platform</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
