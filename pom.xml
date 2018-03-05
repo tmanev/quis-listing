@@ -4,11 +4,11 @@
 
 	<groupId>com.manev</groupId>
 	<artifactId>quis-listing</artifactId>
-	<version>18.02.004-SNAPSHOT</version>
+	<version>18.03.001</version>
 	<packaging>war</packaging>
 
 	<name>quis-listing</name>
-	<description>Any Listing</description>
+	<description>Any Listing close to you</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
