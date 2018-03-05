@@ -2,8 +2,6 @@ package com.manev.quislisting.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manev.quislisting.domain.qlml.QlString;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +19,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_content_field_item")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlContentFieldItem {
 
     @Id
@@ -34,7 +31,6 @@ public class DlContentFieldItem {
 
     @JsonBackReference(value = "dl_content_field_item_children_reference")
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<DlContentFieldItem> children;
 
     @JsonBackReference

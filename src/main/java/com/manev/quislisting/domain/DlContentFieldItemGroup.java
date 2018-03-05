@@ -1,8 +1,6 @@
 package com.manev.quislisting.domain;
 
 import com.manev.quislisting.domain.qlml.QlString;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,7 +18,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_content_field_item_group")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlContentFieldItemGroup {
 
     @Id

@@ -45,13 +45,6 @@ public class CacheConfiguration {
             cm.createCache(com.manev.quislisting.domain.qlml.StringTranslation.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.qlml.QlString.class.getName() + ".stringTranslation", jcacheConfiguration);
 
-            cm.createCache(com.manev.quislisting.domain.DlContentField.class.getName(), jcacheConfiguration);
-            cm.createCache(com.manev.quislisting.domain.DlContentFieldItem.class.getName(), jcacheConfiguration);
-            cm.createCache(com.manev.quislisting.domain.DlContentFieldItem.class.getName() + ".children", jcacheConfiguration);
-            cm.createCache(com.manev.quislisting.domain.DlContentFieldGroup.class.getName(), jcacheConfiguration);
-            cm.createCache(com.manev.quislisting.domain.DlContentFieldItemGroup.class.getName(), jcacheConfiguration);
-            cm.createCache(com.manev.quislisting.domain.DlContentField.class.getName() + ".dlContentFieldItems", jcacheConfiguration);
-
             cm.createCache(com.manev.quislisting.domain.Translation.class.getName(), jcacheConfiguration);
             cm.createCache(com.manev.quislisting.domain.TranslationGroup.class.getName(), jcacheConfiguration);
 
