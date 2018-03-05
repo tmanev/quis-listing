@@ -1,8 +1,6 @@
 package com.manev.quislisting.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +14,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ql_dl_content_field_group")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DlContentFieldGroup {
 
     @Id
