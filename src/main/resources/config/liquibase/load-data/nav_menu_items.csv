@@ -3,25 +3,22 @@ id;title;slug;static_page_id;term_taxonomy_id;translation_id;menu_order
 2;Search;search;null;8;39;2
 3;Add Listing;my-listings/add;null;8;40;3
 4;My Listings;my-listings;null;8;41;4
-5;My Messages;my-messages;null;8;42;5
 
-6;Начало;?lang=bg;null;19;43;1
-7;Търси;search;null;19;44;2
-8;Добави обява;my-listings/add;null;19;45;3
-9;Моите обяви;my-listings;null;19;46;4
-10;My Messages;my-messages;null;19;47;5
+5;Начало;?lang=bg;null;19;42;1
+6;Търси;search;null;19;43;2
+7;Добави обява;my-listings/add;null;19;44;3
+8;Моите обяви;my-listings;null;19;45;4
 
-11;Acasă;?lang=ro;null;21;48;1
-12;Căutare;search;null;21;49;2
-13;Adăugați o listă;my-listings/add;null;21;50;3
-14;Anunțurile mele;my-listings;null;21;51;4
-15;My Messages;my-messages;null;21;52;5
+9;Acasă;?lang=ro;null;21;46;1
+10;Căutare;search;null;21;47;2
+11;Adăugați o listă;my-listings/add;null;21;48;3
+12;Anunțurile mele;my-listings;null;21;49;4
 
-16;Terms and Conditions;null;1;9;53;1
-17;Contact;contact;null;9;54;2
+13;Terms and Conditions;null;1;9;50;1
+14;Contact;contact;null;9;51;2
 
-18;Общи условия;null;2;18;55;1
-19;Контакт;contact;null;18;56;2
+15;Общи условия;null;2;18;52;1
+16;Контакт;contact;null;18;53;2
 
-20;Termeni si conditii;null;3;20;57;1
-21;Contact;contact;null;20;58;2
+17;Termeni si conditii;null;3;20;54;1
+18;Contact;contact;null;20;55;2

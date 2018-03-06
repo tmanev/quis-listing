@@ -40,25 +40,22 @@ id;tr_group_id;language_code;source_language_code
 39;27;en;null
 40;28;en;null
 41;29;en;null
-42;30;en;null
 
-43;26;bg;en
-44;27;bg;en
-45;28;bg;en
-46;29;bg;en
-47;30;bg;en
+42;26;bg;en
+43;27;bg;en
+44;28;bg;en
+45;29;bg;en
 
-48;26;ro;en
-49;27;ro;en
-50;28;ro;en
-51;29;ro;en
-52;30;ro;en
+46;26;ro;en
+47;27;ro;en
+48;28;ro;en
+49;29;ro;en
 
-53;30;en;null
-54;31;en;null
+50;30;en;null
+51;31;en;null
 
-55;30;bg;en
-56;31;bg;en
+52;30;bg;en
+53;31;bg;en
 
-57;30;ro;en
-58;31;ro;en
+54;30;ro;en
+55;31;ro;en
