@@ -30,17 +30,18 @@ public class HomeController extends BaseController {
     private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(final ModelMap model, HttpServletRequest request) {
-        Locale locale = localeResolver.resolveLocale(request);
-        String title = messageSource.getMessage("page.home.title", null, locale);
+    public String indexPage(final ModelMap model, final HttpServletRequest request) {
+        final Locale locale = localeResolver.resolveLocale(request);
+        final String title = messageSource.getMessage("page.home.title", null, locale);
 
-        Page<DlListingDTO> page = dlListingService.findAllForFrontPage(new PageRequest(0, 12), locale.getLanguage());
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        final Page<DlListingDTO> page = dlListingService.findAllForFrontPage(new PageRequest(0, 12), locale.getLanguage());
+        final Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel(),
+                locale.getLanguage()));
 
         model.addAttribute("dlListings", dlListingBaseModels.getContent());
         model.addAttribute("totalDlListings", page.getTotalElements());
         model.addAttribute("loadedDlListings", page.getNumberOfElements());
-        List<CategoryCount> allCategoriesWithCount = dlCategoryService.findAllCategoriesWithCount();
+        final List<CategoryCount> allCategoriesWithCount = dlCategoryService.findAllCategoriesWithCount();
         model.addAttribute("dlCategories", allCategoriesWithCount);
 
         model.addAttribute("title", title);

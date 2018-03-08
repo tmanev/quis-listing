@@ -8,6 +8,8 @@ import com.manev.quislisting.service.post.dto.serializer.TimestampSerializer;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DlListingBaseModel {
 
@@ -26,12 +28,13 @@ public class DlListingBaseModel {
     private DlListing.Status status;
     private BigDecimal price;
     private String priceCurrency;
+    private List<DlLocationModel> dlLocations;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -39,7 +42,7 @@ public class DlListingBaseModel {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -47,7 +50,7 @@ public class DlListingBaseModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -55,7 +58,7 @@ public class DlListingBaseModel {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(final Timestamp modified) {
         this.modified = modified;
     }
 
@@ -63,7 +66,7 @@ public class DlListingBaseModel {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(final Timestamp created) {
         this.created = created;
     }
 
@@ -71,7 +74,7 @@ public class DlListingBaseModel {
         return languageCode;
     }
 
-    public void setLanguageCode(String languageCode) {
+    public void setLanguageCode(final String languageCode) {
         this.languageCode = languageCode;
     }
 
@@ -79,7 +82,7 @@ public class DlListingBaseModel {
         return sourceLanguageCode;
     }
 
-    public void setSourceLanguageCode(String sourceLanguageCode) {
+    public void setSourceLanguageCode(final String sourceLanguageCode) {
         this.sourceLanguageCode = sourceLanguageCode;
     }
 
@@ -87,7 +90,7 @@ public class DlListingBaseModel {
         return featuredAttachment;
     }
 
-    public void setFeaturedAttachment(AttachmentModel featuredAttachment) {
+    public void setFeaturedAttachment(final AttachmentModel featuredAttachment) {
         this.featuredAttachment = featuredAttachment;
     }
 
@@ -95,7 +98,7 @@ public class DlListingBaseModel {
         return status;
     }
 
-    public void setStatus(DlListing.Status status) {
+    public void setStatus(final DlListing.Status status) {
         this.status = status;
     }
 
@@ -103,7 +106,7 @@ public class DlListingBaseModel {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(final BigDecimal price) {
         this.price = price;
     }
 
@@ -111,7 +114,22 @@ public class DlListingBaseModel {
         return priceCurrency;
     }
 
-    public void setPriceCurrency(String priceCurrency) {
+    public void setPriceCurrency(final String priceCurrency) {
         this.priceCurrency = priceCurrency;
+    }
+
+    public List<DlLocationModel> getDlLocations() {
+        return dlLocations;
+    }
+
+    public void setDlLocations(final List<DlLocationModel> dlLocations) {
+        this.dlLocations = dlLocations;
+    }
+
+    public void addDlLocation(final DlLocationModel dlLocationModel) {
+        if (this.dlLocations == null) {
+            this.dlLocations = new ArrayList<>();
+        }
+        this.dlLocations.add(dlLocationModel);
     }
 }

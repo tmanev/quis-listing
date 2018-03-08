@@ -10,7 +10,6 @@ public class DlListingModel extends DlListingBaseModel {
 
     private List<DlListingFieldModel> dlListingFields;
 
-    private List<DlLocationModel> dlLocations;
     private List<String> dlCategories;
 
     private List<AttachmentModel> attachments;
@@ -19,7 +18,7 @@ public class DlListingModel extends DlListingBaseModel {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
@@ -27,7 +26,7 @@ public class DlListingModel extends DlListingBaseModel {
         return contactInfo;
     }
 
-    public void setContactInfo(String contactInfo) {
+    public void setContactInfo(final String contactInfo) {
         this.contactInfo = contactInfo;
     }
 
@@ -35,34 +34,19 @@ public class DlListingModel extends DlListingBaseModel {
         return dlListingFields;
     }
 
-    public void setDlListingFields(List<DlListingFieldModel> dlListingFields) {
+    public void setDlListingFields(final List<DlListingFieldModel> dlListingFields) {
         this.dlListingFields = dlListingFields;
-    }
-
-    public List<DlLocationModel> getDlLocations() {
-        return dlLocations;
-    }
-
-    public void setDlLocations(List<DlLocationModel> dlLocations) {
-        this.dlLocations = dlLocations;
-    }
-
-    public void addDlLocation(DlLocationModel dlLocationModel) {
-        if (this.dlLocations == null) {
-            this.dlLocations = new ArrayList<>();
-        }
-        this.dlLocations.add(dlLocationModel);
     }
 
     public List<String> getDlCategories() {
         return dlCategories;
     }
 
-    public void setDlCategories(List<String> dlCategories) {
+    public void setDlCategories(final List<String> dlCategories) {
         this.dlCategories = dlCategories;
     }
 
-    public void addDlCategory(String category) {
+    public void addDlCategory(final String category) {
         if (this.dlCategories == null) {
             this.dlCategories = new ArrayList<>();
         }
@@ -73,7 +57,7 @@ public class DlListingModel extends DlListingBaseModel {
         return attachments;
     }
 
-    public void setAttachments(List<AttachmentModel> attachments) {
+    public void setAttachments(final List<AttachmentModel> attachments) {
         this.attachments = attachments;
     }
 }
