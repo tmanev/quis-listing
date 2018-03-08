@@ -24,21 +24,23 @@ import java.util.List;
 @Component
 public class DlListingDtoToDlListingModelMapper {
 
-    private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
-    private DlAttachmentModelMapper dlAttachmentModelMapper;
+    private final DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
+    private final DlAttachmentModelMapper dlAttachmentModelMapper;
 
-    public DlListingDtoToDlListingModelMapper(DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper, DlAttachmentModelMapper dlAttachmentModelMapper) {
+    public DlListingDtoToDlListingModelMapper(final DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper,
+            final DlAttachmentModelMapper dlAttachmentModelMapper) {
         this.dlListingDtoToDlListingBaseMapper = dlListingDtoToDlListingBaseMapper;
         this.dlAttachmentModelMapper = dlAttachmentModelMapper;
     }
 
-    public DlListingModel convert(DlListingDTO dlListingDTO, String languageCode) {
-        DlListingModel model = (DlListingModel) dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingModel());
+    public DlListingModel convert(final DlListingDTO dlListingDTO, final String languageCode) {
+        final DlListingModel model = (DlListingModel) dlListingDtoToDlListingBaseMapper.convert(dlListingDTO,
+                new DlListingModel(), languageCode);
 
         model.setContent(dlListingDTO.getContent());
         model.setContactInfo(dlListingDTO.getContactInfo());
 
-        setDlLocation(dlListingDTO, model, languageCode);
+        dlListingDtoToDlListingBaseMapper.setDlLocation(dlListingDTO, model, languageCode);
         setDlCategories(dlListingDTO, model, languageCode);
         setDlListingContentFields(dlListingDTO, model, languageCode);
 
@@ -47,38 +49,41 @@ public class DlListingDtoToDlListingModelMapper {
         return model;
     }
 
-    private void setDlAttachments(DlListingDTO dlListingDTO, DlListingModel model) {
-        List<AttachmentModel> attachmentModels = new ArrayList<>();
-        List<AttachmentDTO> attachments = dlListingDTO.getAttachments();
-        for (AttachmentDTO attachment : attachments) {
+    private void setDlAttachments(final DlListingDTO dlListingDTO, final DlListingModel model) {
+        final List<AttachmentModel> attachmentModels = new ArrayList<>();
+        final List<AttachmentDTO> attachments = dlListingDTO.getAttachments();
+        for (final AttachmentDTO attachment : attachments) {
             attachmentModels.add(dlAttachmentModelMapper.convert(attachment));
         }
         model.setAttachments(attachmentModels);
     }
 
-    private void setDlListingContentFields(DlListingDTO dlListingDTO, DlListingModel model, String languageCode) {
-        List<DlListingFieldDTO> dlListingFields = dlListingDTO.getDlListingFields();
-        List<DlListingFieldModel> dlListingFieldModels = new ArrayList<>();
+    private void setDlListingContentFields(final DlListingDTO dlListingDTO, final DlListingModel model,
+            final String languageCode) {
+        final List<DlListingFieldDTO> dlListingFields = dlListingDTO.getDlListingFields();
+        final List<DlListingFieldModel> dlListingFieldModels = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(dlListingFields)) {
-            for (DlListingFieldDTO dlListingField : dlListingFields) {
-                DlListingFieldModel dlListingFieldModel = new DlListingFieldModel();
+            for (final DlListingFieldDTO dlListingField : dlListingFields) {
+                final DlListingFieldModel dlListingFieldModel = new DlListingFieldModel();
 
                 dlListingFieldModel.setId(dlListingField.getId());
                 dlListingFieldModel.setType(dlListingField.getType());
                 dlListingFieldModel.setDlContentFieldGroup(dlListingField.getDlContentFieldGroup());
 
-                List<QlStringTranslationModel> translatedNames = dlListingField.getTranslatedNames();
+                final List<QlStringTranslationModel> translatedNames = dlListingField.getTranslatedNames();
 
-                String translatedName = findTranslation(translatedNames, languageCode);
-                dlListingFieldModel.setName(!StringUtils.isEmpty(translatedName) ? translatedName : dlListingField.getName());
+                final String translatedName = findTranslation(translatedNames, languageCode);
+                dlListingFieldModel.setName(!StringUtils.isEmpty(translatedName) ? translatedName
+                        : dlListingField.getName());
 
-                List<QlStringTranslationModel> translatedValues = dlListingField.getTranslatedValues();
-                String translatedValue = findTranslation(translatedValues, languageCode);
-                dlListingFieldModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue : dlListingField.getValue());
+                final List<QlStringTranslationModel> translatedValues = dlListingField.getTranslatedValues();
+                final String translatedValue = findTranslation(translatedValues, languageCode);
+                dlListingFieldModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue
+                        : dlListingField.getValue());
 
                 setItems(languageCode, dlListingField, dlListingFieldModel);
-                setDlContentFieldItemGroups(languageCode, dlListingField, dlListingFieldModel);
+                setDlContentFieldItemGroups(dlListingField, dlListingFieldModel);
 
                 dlListingFieldModels.add(dlListingFieldModel);
             }
@@ -87,30 +92,33 @@ public class DlListingDtoToDlListingModelMapper {
         model.setDlListingFields(dlListingFieldModels);
     }
 
-    private void setItems(String languageCode, DlListingFieldDTO dlListingField, DlListingFieldModel dlListingFieldModel) {
-        List<DlListingFieldItemDTO> dlListingFieldItemDTOs = dlListingField.getDlListingFieldItemDTOs();
-        List<DlListingFieldItemModel> items = new ArrayList<>();
-        for (DlListingFieldItemDTO dlListingFieldItemDTO : dlListingFieldItemDTOs) {
-            DlListingFieldItemModel dlListingFieldItemModel = new DlListingFieldItemModel();
+    private void setItems(final String languageCode, final DlListingFieldDTO dlListingField,
+            final DlListingFieldModel dlListingFieldModel) {
+        final List<DlListingFieldItemDTO> dlListingFieldItemDTOs = dlListingField.getDlListingFieldItemDTOs();
+        final List<DlListingFieldItemModel> items = new ArrayList<>();
+        for (final DlListingFieldItemDTO dlListingFieldItemDTO : dlListingFieldItemDTOs) {
+            final DlListingFieldItemModel dlListingFieldItemModel = new DlListingFieldItemModel();
 
             dlListingFieldItemModel.setId(dlListingFieldItemDTO.getId());
-            List<QlStringTranslationModel> translatedValues = dlListingFieldItemDTO.getTranslatedValues();
-            String translatedValue = findTranslation(translatedValues, languageCode);
-            dlListingFieldItemModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue : dlListingFieldItemDTO.getValue());
+            final List<QlStringTranslationModel> translatedValues = dlListingFieldItemDTO.getTranslatedValues();
+            final String translatedValue = findTranslation(translatedValues, languageCode);
+            dlListingFieldItemModel.setValue(!StringUtils.isEmpty(translatedValue) ? translatedValue
+                    : dlListingFieldItemDTO.getValue());
 
             items.add(dlListingFieldItemModel);
         }
         dlListingFieldModel.setItems(items);
     }
 
-    private void setDlContentFieldItemGroups(String languageCode, DlListingFieldDTO dlListingField, DlListingFieldModel dlListingFieldModel) {
-        List<DlListingFieldItemGroupModel> dlListingFieldItemGroups = dlListingField.getDlListingFieldItemGroups();
+    private void setDlContentFieldItemGroups(final DlListingFieldDTO dlListingField,
+            final DlListingFieldModel dlListingFieldModel) {
+        final List<DlListingFieldItemGroupModel> dlListingFieldItemGroups = dlListingField.getDlListingFieldItemGroups();
         dlListingFieldModel.setDlListingFieldItemGroups(dlListingFieldItemGroups);
     }
 
-    private String findTranslation(List<QlStringTranslationModel> translationModels, String languageCode) {
+    private String findTranslation(final List<QlStringTranslationModel> translationModels, final String languageCode) {
         if (!CollectionUtils.isEmpty(translationModels)) {
-            for (QlStringTranslationModel qlStringModel : translationModels) {
+            for (final QlStringTranslationModel qlStringModel : translationModels) {
                 if (qlStringModel.getLanguageCode().equals(languageCode)) {
                     return qlStringModel.getValue();
                 }
@@ -120,52 +128,16 @@ public class DlListingDtoToDlListingModelMapper {
         return null;
     }
 
-    private void setDlLocation(DlListingDTO dlListingDTO, DlListingModel model, String languageCode) {
-        List<DlLocationDTO> dlLocations = dlListingDTO.getDlLocations();
-        List<TranslatedTermDTO> translatedLocations = dlListingDTO.getTranslatedLocations();
-        if (!CollectionUtils.isEmpty(dlLocations)) {
-            for (DlLocationDTO dlLocationDTO : dlLocations) {
-                model.addDlLocation(createDlLocationModelParent(dlLocationDTO, translatedLocations, languageCode));
-            }
-        }
-    }
-
-    private DlLocationModel createDlLocationModelParent(DlLocationDTO dlLocationDTO, List<TranslatedTermDTO> translatedLocations, String languageCode) {
-        TranslatedTermDTO translatedTerm = findTranslatedTerm(dlLocationDTO.getTranslationGroupId(), languageCode, translatedLocations);
-
-        if (translatedTerm != null) {
-            DlLocationModel dlLocationModel = new DlLocationModel();
-            if (dlLocationDTO.getParent() != null) {
-                dlLocationModel.setParent(createDlLocationModelParent(dlLocationDTO.getParent(), translatedLocations, languageCode));
-            }
-
-            dlLocationModel.setId(translatedTerm.getId());
-            dlLocationModel.setLocation(translatedTerm.getName());
-
-            return dlLocationModel;
-        }
-        return null;
-    }
-
-    private void setDlCategories(DlListingDTO dlListingDTO, DlListingModel model, String languageCode) {
-        List<DlCategoryDTO> dlCategories = dlListingDTO.getDlCategories();
-        List<TranslatedTermDTO> translatedCategories = dlListingDTO.getTranslatedCategories();
-        for (DlCategoryDTO dlCategory : dlCategories) {
-            TranslatedTermDTO translatedTerm = findTranslatedTerm(dlCategory.getTranslationGroupId(), languageCode, translatedCategories);
+    private void setDlCategories(final DlListingDTO dlListingDTO, final DlListingModel model,
+            final String languageCode) {
+        final List<DlCategoryDTO> dlCategories = dlListingDTO.getDlCategories();
+        final List<TranslatedTermDTO> translatedCategories = dlListingDTO.getTranslatedCategories();
+        for (final DlCategoryDTO dlCategory : dlCategories) {
+            final TranslatedTermDTO translatedTerm = dlListingDtoToDlListingBaseMapper
+                    .findTranslatedTerm(dlCategory.getTranslationGroupId(), languageCode, translatedCategories);
             if (translatedTerm != null) {
                 model.addDlCategory(translatedTerm.getName());
             }
         }
-    }
-
-    private TranslatedTermDTO findTranslatedTerm(Long translationGroupId, String languageCode, List<TranslatedTermDTO> translatedTermDTOS) {
-        for (TranslatedTermDTO translatedTermDTO : translatedTermDTOS) {
-            if (translatedTermDTO.getTranslationGroupId().equals(translationGroupId)
-                    && translatedTermDTO.getLangKey().equals(languageCode)) {
-                return translatedTermDTO;
-            }
-        }
-
-        return null;
     }
 }

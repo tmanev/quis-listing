@@ -158,7 +158,8 @@ public class DlListingRest {
 
         Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode, oneByLogin.get());
 
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel(),
+                languageCode));
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.LIST);
         return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
@@ -193,14 +194,15 @@ public class DlListingRest {
     }
 
     @GetMapping(RestRouter.DlListing.RECENT)
-    public ResponseEntity<List<DlListingBaseModel>> getRecentListings(Pageable pageable,
-                                                                @RequestParam(required = false, defaultValue = "en") String languageCode) {
+    public ResponseEntity<List<DlListingBaseModel>> getRecentListings(final Pageable pageable,
+                                                                final @RequestParam(required = false, defaultValue = "en") String languageCode) {
         log.debug("REST request to get a page of DlListingDTO");
 
-        Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, languageCode);
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        final Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, languageCode);
+        final Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper
+                .convert(dlListingDTO, new DlListingBaseModel(), languageCode));
 
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.RECENT);
+        final HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.RECENT);
         return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
     }
 
@@ -217,7 +219,8 @@ public class DlListingRest {
         }
 
         Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, pageable);
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel(),
+                languageCode));
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, dlListingBaseModels, RestRouter.DlListing.SEARCH);
         return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
     }

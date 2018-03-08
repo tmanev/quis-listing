@@ -41,29 +41,34 @@ public class SearchController extends BaseController {
     private DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(final ModelMap model, @RequestParam(required = false) String query, HttpServletRequest request) throws IOException {
-        Locale locale = localeResolver.resolveLocale(request);
-        String title = messageSource.getMessage("page.search.title", null, locale);
+    public String indexPage(final ModelMap model, final @RequestParam(required = false) String query,
+            final HttpServletRequest request) throws IOException {
+        final Locale locale = localeResolver.resolveLocale(request);
+        final String title = messageSource.getMessage("page.search.title", null, locale);
 
-        Map<DlCategory, List<DlCategory>> dlCategories = dlCategoryService.findAllByLanguageCodeGrouped(locale.getLanguage());
+        final Map<DlCategory, List<DlCategory>> dlCategories = dlCategoryService
+                .findAllByLanguageCodeGrouped(locale.getLanguage());
         model.addAttribute("dlCategoriesGrouped", dlCategories);
 
         // find countries
-        List<DlLocationDTO> allByParentId = dlLocationService.findAllByParentId(null, locale.getLanguage());
+        final List<DlLocationDTO> allByParentId = dlLocationService.findAllByParentId(null, locale.getLanguage());
         model.addAttribute("dlLocationCountries", allByParentId);
 
         model.addAttribute("dlListings", new ArrayList<>());
         model.addAttribute("totalDlListings", 0);
         model.addAttribute("loadedDlListings", 0);
         if (query!=null) {
-            ObjectMapper mapper = new ObjectMapper();
-            DlListingSearchFilter dlListingSearchFilter = mapper.readValue(URLDecoder.decode(query, "UTF-8"), DlListingSearchFilter.class);
+            final ObjectMapper mapper = new ObjectMapper();
+            final DlListingSearchFilter dlListingSearchFilter = mapper
+                    .readValue(URLDecoder.decode(query, "UTF-8"), DlListingSearchFilter.class);
 
             if (dlListingSearchFilter.getLanguageCode() == null) {
                 dlListingSearchFilter.setLanguageCode(locale.getLanguage());
             }
-            Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, new PageRequest(0, 8));
-            Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+            final Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, new PageRequest(0, 8));
+            final Page<DlListingBaseModel> dlListingBaseModels = page
+                    .map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel(),
+                    locale.getLanguage()));
             model.addAttribute("dlListings", dlListingBaseModels.getContent());
             model.addAttribute("totalDlListings", page.getTotalElements());
             model.addAttribute("loadedDlListings", page.getNumberOfElements());
