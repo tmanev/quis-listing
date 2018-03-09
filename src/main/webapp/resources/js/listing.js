@@ -1,75 +1,80 @@
 Listing = {
-    init: function (senderName, senderEmail, jsTranslations) {
+    init: function (listingId, isAuthenticated, jsTranslations) {
         Vue.use(window.vuelidate.default);
-        const {required, minLength, between, email} = window.validators;
+        const {required, minLength, maxLength, between, email} = window.validators;
 
-        var listingApp = new Vue({
+        let vm = new Vue({
             el: '#listingApp',
             data: {
-                dlmessage: {
-                    id: '',
-                    senderId: '',
-                    senderName: senderName,
-                    senderEmail: senderEmail,
-                    createdDate: '',
-                    receiverId: '',
-                    text: '',
-                    listingId: ''
-                }
+                listingId: listingId,
+                isAuthenticated: isAuthenticated,
+                dlMessage: {
+                    senderName: '',
+                    senderEmail: '',
+                    text: ''
+                },
+                btnSendMessageLoading: false,
+                tabIndex: 0
             },
-            validations: {
-                dlmessage: {
-                    senderName: {
-                        required: required
-                    },
-                    senderEmail: {
-                        required: required
-                    },
-                    text: {
-                        required: required
+            validations: function () {
+                if (this.isAuthenticated) {
+                    return {
+                        dlMessage: {
+                            senderName: {
+                                required: false
+                            },
+                            senderEmail: {
+                                required: false
+                            },
+                            text: {
+                                required: required
+                            }
+                        }
+                    }
+                } else {
+                    return {
+                        dlMessage: {
+                            senderName: {
+                                required: required
+                            },
+                            senderEmail: {
+                                required: required,
+                                email: email,
+                                minLength: minLength(5),
+                                maxLength: maxLength(100)
+                            },
+                            text: {
+                                required: required
+                            }
+                        }
                     }
                 }
             },
-            methods : {
-                showContactForm: function () {
-                    document.getElementById("nameLabel").style.display = "block";
-                    document.getElementById("senderName").style.display = "block";
-                    document.getElementById("emailLabel").style.display = "block";
-                    document.getElementById("senderEmail").style.display = "block";
-                    document.getElementById("textLabel").style.display = "block";
-                    document.getElementById("text").style.display = "block";
-                    document.getElementById("btnSend").style.display = "block";
-                },
-                onSubmit: function (event) {
-                    if (this.$v.dlmessage.$invalid) {
-                        this.$v.dlmessage.$touch();
+            methods: {
+                onSendMessage: function () {
+                    if (vm.$v.dlMessage.$invalid) {
+                        vm.$v.dlMessage.$touch();
                     } else {
-                        var $btn = $('#btnNext').button('loading');
-                        this.dlmessage.listingId = document.getElementById("listingId").value;
-                        var payload = this.dlmessage;
-                        this.$http({
-                            url: '/api/dl-messages',
-                            body: payload,
-                            method: 'POST'
-                        }).then(function (response) {
-                            $.notify({
-                                message: jsTranslations['page.my_listings.edit_listing.label.sendmessage.success']
-                            }, {
-                                type: 'success'
-                            });
-                            $btn.button('reset');
-                        }, function (response) {
-                            console.log('Error!:', response.data);
-                            $.notify({
-                                message: jsTranslations['page.my_listings.edit_listing.label.sendmessage.failure']
-                            }, {
-                                type: 'danger'
-                            });
-                            $btn.button('reset');
+                        vm.btnSendMessageLoading = true;
+                        let payload = vm.dlMessage;
+                        axios.post('/api/dl-listings/' + vm.listingId + '/messages', payload, {
+                            headers: {
+                                'Authorization': QlUtil.Rest.authorizationBearer()
+                            }
+                        }).then(function () {
+                            QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.listing.label.send_message.success']});
+                            vm.btnSendMessageLoading = false;
+                            vm.dlMessage.senderName = '';
+                            vm.dlMessage.senderEmail = '';
+                            vm.dlMessage.text = '';
+                        }, function () {
+                            QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
+                            vm.btnSendMessageLoading = false;
                         });
                     }
                 }
             }
         });
+
     }
 };

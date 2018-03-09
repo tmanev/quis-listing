@@ -9,14 +9,7 @@ import com.manev.quislisting.service.post.DlListingService;
 import com.manev.quislisting.service.post.DlMessagesService;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
-import com.manev.quislisting.web.rest.util.LanguageUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,10 +21,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.LocaleResolver;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Rest controller that is responsible for all GET and POST requests for the messages interface.
@@ -53,7 +49,7 @@ public class DlMessageRest {
     private final MailService mailService;
 
     public DlMessageRest(final DlMessagesService dlMessagesService, final UserService userService,
-            final DlListingService dlListingService, final MailService mailService) {
+                         final DlListingService dlListingService, final MailService mailService) {
         this.dlMessagesService = dlMessagesService;
         this.userService = userService;
         this.dlListingService = dlListingService;
@@ -61,8 +57,7 @@ public class DlMessageRest {
     }
 
     @PostMapping(RestRouter.DlMessage.LIST)
-    public ResponseEntity<DlMessageDTO> createDlMessage(final @RequestBody DlMessageDTO dlMessageDTO,
-            final HttpServletRequest request) throws URISyntaxException {
+    public ResponseEntity<DlMessageDTO> createDlMessage(final @RequestBody DlMessageDTO dlMessageDTO) throws URISyntaxException {
         log.debug("REST request to save DlMessageDTO : {}", dlMessageDTO);
 
         if (dlMessageDTO.getId() != null) {

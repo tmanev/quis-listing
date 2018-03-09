@@ -9,12 +9,9 @@
     <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
           rel="stylesheet"/>
-    <link href="../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
-          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
-          rel="stylesheet"/>
 </head>
 <body>
-<div th:fragment="content" id="listingApp" class="container">
+<div th:fragment="content" id="listingApp" class="container" v-cloak>
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-md-2">
             <a th:if="${showEditButton}" class="btn btn-primary" th:href="'/my-listings/' + ${dlListingDTO.id}">
@@ -33,17 +30,17 @@
     </div>
 
     <div class="row" style="margin-bottom: 20px;">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <h4 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlCategories)}">
                 <span th:text="#{page.listing.label.category}">Category</span> &nbsp;<span th:text="${dlListingDTO.dlCategories[0]}">Work</span>
             </h4>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <h4 style="text-align: center; margin-top: 0px;" th:if="${!#lists.isEmpty(dlListingDTO.dlLocations)}">
                 <span th:text="#{page.listing.label.location}">Location</span> &nbsp;<span th:text="${dlListingDTO.dlLocations[0].location}">Orlando, Miami, USA</span>
             </h4>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <h4 style="text-align: center; margin-top: 0px;">
                 <span th:text="#{page.listing.label.price}">Price</span>
                 <span th:if="${dlListingDTO.price != null}" th:text="${dlListingDTO.price}">200</span>
@@ -51,21 +48,14 @@
                 <span th:if="${dlListingDTO.priceCurrency!=null}" th:text="${dlListingDTO.priceCurrency}">EUR</span>
             </h4>
         </div>
-        <div class="col-md-3">
-            <h4 style="text-align: center; margin-top: 0px;">
-                <span th:text="#{page.listing.label.contact}">Contact</span>
-                <span th:if="${dlListingDTO.contactInfo != null}" th:text="${dlListingDTO.contactInfo}">12345567890</span>
-                <span th:if="${dlListingDTO.contactInfo == null}">-</span>
-            </h4>
-        </div>
     </div>
 
     <div class="row" style="margin-bottom: 20px;">
         <div class="col-md-6">
 
-            <div class="panel panel-default">
+            <div>
                 <!-- Default panel contents -->
-                <div class="panel-heading" th:text="#{page.listing.label.details}">Details</div>
+                <div th:text="#{page.listing.label.details}">Details</div>
                 <!-- Table -->
                 <table class="table table-striped table-bordered">
                     <tbody>
@@ -97,9 +87,9 @@
             </div>
 
             <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
+                <div th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
                     <th:block th:if="${dlListingField.type} == 'CHECKBOX'">
-                        <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
+                        <div th:text="#{page.listing.label.features}">Features</div>
                         <div class="container-fluid">
                             <th:block th:each="dlListingFieldItem : ${dlListingField.items}">
                                 <h4 style="display: inline-block">
@@ -115,9 +105,9 @@
             </th:block>
 
             <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
+                <div th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'features'">
                     <th:block th:if="${dlListingField.type} == 'CHECKBOX_GROUP'">
-                        <div class="panel-heading" th:text="#{page.listing.label.features}">Features</div>
+                        <div th:text="#{page.listing.label.features}">Features</div>
                         <th:block th:each="dlListingFieldItemGroup : ${dlListingField.dlListingFieldItemGroups}">
                             <div class="card">
                                 <div class="card-header" th:text="${dlListingFieldItemGroup.value}">
@@ -140,10 +130,8 @@
             </th:block>
 
             <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
-                <div class="panel panel-default" th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'contact'">
-
-                    <div class="panel-heading" th:text="#{page.listing.label.contact}">Contact</div>
-
+                <div th:if="${dlListingField.dlContentFieldGroup} != null and ${dlListingField.dlContentFieldGroup.slug} == 'contact'">
+                    <div th:text="#{page.listing.label.contact}">Contact</div>
                     <table class="table table-striped table-bordered">
                         <tbody>
                         <th:block th:each="dlListingField : ${dlListingDTO.dlListingFields}">
@@ -156,7 +144,83 @@
                     </table>
                 </div>
             </th:block>
+            <hr/>
+            <b-card no-body>
+                <b-tabs card v-model="tabIndex">
+                    <b-tab th:title="#{page.listing.label.contact}" title="Contact" >
+                        <div class="container-fluid">
+                            <h4>
+                                <span th:if="${dlListingDTO.contactInfo != null}" th:text="${dlListingDTO.contactInfo}">12345567890</span>
+                            </h4>
+                            <b-btn style="margin: 0 0 10px 0" class="btn btn-outline-secondary" th:if="${dlListingDTO.contactInfo == null}" v-on:click="tabIndex=1">
+                                <span th:text="#{page.listing.label.write_message}">Write a message</span></b-btn>
+                        </div>
+                    </b-tab>
+                    <b-tab th:title="#{page.listing.label.send_message}" title="Send message">
+                        <div class="container-fluid" >
+                            <div class="form-group row required" v-if="!isAuthenticated" style="margin-top: 20px;">
+                                <label class="col-sm-3 col-form-label" for="senderName" th:text="#{page.listing.label.your_name}">Your Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="senderName" id="senderName"
+                                           v-model="dlMessage.senderName"
+                                           v-bind:class="{ 'is-invalid': $v.dlMessage.senderName.$error, 'is-valid': $v.dlMessage.senderName.$dirty &amp;&amp; !$v.dlMessage.senderName.$invalid }"/>
+                                    <div class="invalid-feedback"
+                                          v-if="!$v.dlMessage.senderName.required &amp;&amp; $v.dlMessage.senderName.$dirty"
+                                          th:text="#{validation.required}">Field is required</div>
+                                </div>
+                            </div>
 
+                            <div class="form-group row required" v-if="!isAuthenticated">
+                                <label class="col-sm-3 col-form-label" for="senderEmail" th:text="#{page.listing.label.your_email}">Your Email</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="senderEmail" id="senderEmail"
+                                           v-model="dlMessage.senderEmail"
+                                           v-bind:class="{ 'is-invalid': $v.dlMessage.senderEmail.$error, 'is-valid': $v.dlMessage.senderEmail.$dirty &amp;&amp; !$v.dlMessage.senderEmail.$invalid }"/>
+                                    <div class="invalid-feedback"
+                                          v-if="!$v.dlMessage.senderEmail.required &amp;&amp; $v.dlMessage.senderEmail.$dirty"
+                                          th:text="#{validation.required}">Field is required</div>
+                                    <div class="invalid-feedback" v-if="!$v.dlMessage.senderEmail.email"
+                                         th:text="#{validation.invalid_email}">Invalid email</div>
+                                    <div class="invalid-feedback"
+                                         v-if="!$v.dlMessage.senderEmail.minLength">
+                                        <span th:text="#{validation.min}">Min</span>
+                                        <span>{{ $v.dlMessage.senderEmail.$params.minLength.min }}</span>
+                                        <span th:text="#{validation.letters}">letters</span>.
+                                    </div>
+                                    <div class="invalid-feedback"
+                                         v-if="!$v.dlMessage.senderEmail.maxLength">
+                                        <span th:text="#{validation.max}">Max</span>
+                                        <span>{{ $v.dlMessage.senderEmail.$params.maxLength.max }}</span>
+                                        <span th:text="#{validation.letters}">letters</span>.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row required">
+                                <label class="col-sm-3 col-form-label" for="text" th:text="#{page.listing.label.your_message}">Your Message</label>
+                                <div class="col-sm-9">
+                                    <textarea rows="4" id="text" type="text" name="text" class="form-control"
+                                              v-model="dlMessage.text"
+                                              v-bind:class="{ 'is-invalid': $v.dlMessage.text.$error, 'is-valid': $v.dlMessage.text.$dirty &amp;&amp; !$v.dlMessage.text.$invalid }"></textarea>
+                                    <div class="invalid-feedback"
+                                          v-if="!$v.dlMessage.text.required &amp;&amp; $v.dlMessage.text.$dirty"
+                                          th:text="#{validation.required}">Field is required</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="offset-sm-3 col-sm-9">
+                                    <button type="submit" class="btn btn-primary" v-on:click="onSendMessage()">
+                                        <i v-if="btnSendMessageLoading" class="fa fa-circle-o-notch fa-spin\"></i>
+                                        <i v-if="!btnSendMessageLoading" class="fa fa-paper-plane" aria-hidden="true"></i>
+                                        <span th:text="#{page.listing.label.btn_send_message}">Send</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </b-tab>
+                </b-tabs>
+            </b-card>
         </div>
         <div class="col-md-6">
             <div id="gallery" th:if="${!#lists.isEmpty(dlListingDTO.attachments)}">
@@ -171,63 +235,15 @@
         </div>
     </div>
 
-    <div th:if="${showContactForm} == true">
-        <div class="row" style="margin-bottom: 10px;">
-            <input type="hidden" id="listingId" th:value="${dlListingDTO.id}" />
-            <div class="col-sm-10">
-                <a href="javascript:void(0);" v-on:click="showContactForm()">Contact seller</a><br/><br />
-            </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 10px;">
-            <label class="col-sm-2 control-label" id="nameLabel" for="senderName" style="display: none" th:text="#{page.my_listings.edit_listing.label.name}">Your Name</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="senderName" id="senderName" style="display: none" th:value="${senderName}"/>
-                <span class="help-block"
-                      v-if="!$v.dlmessage.senderName.required &amp;&amp; $v.dlmessage.senderName.$dirty"
-                      th:text="#{validation.required}">Field is required</span>
-            </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 10px;">
-            <label class="col-sm-2 control-label" id="emailLabel" for="senderEmail" style="display: none" th:text="#{page.my_listings.edit_listing.label.email}">Your Email</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="senderEmail" id="senderEmail" style="display: none" th:value="${senderEmail}"/>
-                <span class="help-block"
-                      v-if="!$v.dlmessage.senderEmail.required &amp;&amp; $v.dlmessage.senderEmail.$dirty"
-                      th:text="#{validation.required}">Field is required</span>
-            </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 10px;">
-            <label class="col-sm-2 control-label" id="textLabel" for="text" style="display: none" th:text="#{page.my_listings.edit_listing.label.message}">Your Message</label>
-            <div class="col-sm-10">
-                <textarea rows="4" id="text" type="text" name="text" class="form-control" style="display: none" v-model="dlmessage.text"></textarea>
-                <span class="help-block"
-                      v-if="!$v.dlmessage.text.required &amp;&amp; $v.dlmessage.text.$dirty"
-                      th:text="#{validation.required}">Field is required</span>
-            </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 10px;">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary" id="btnSend" style="display: none" th:text="#{page.my_listings.edit_listing.label.btn.send}" v-on:click="onSubmit($event)">Send</span>
-                    <span>Send</span>
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Load current page javascript file -->
     <script src="../../resources/js/listing.js"
             th:src="@{/resources/js/listing.js}"></script>
     <script type="text/javascript" th:inline="javascript">
         window.onload = function () {
-            var senderName = [[${senderName}]];
-            var senderEmail= [[${senderEmail}]];
-            var jsTranslations = [[${jsTranslations}]];
-            Listing.init(senderName, senderEmail, jsTranslations);
+            let listingId = [[${listingId}]];
+            let isAuthenticated = [[${isAuthenticated}]];
+            let jsTranslations = [[${jsTranslations}]];
+            Listing.init(listingId, isAuthenticated, jsTranslations);
             $("#gallery").unitegallery();
         };
     </script>

@@ -61,6 +61,7 @@ public final class RestRouter {
         public static final String ACTIVE_LANGUAGES = "/api/dl-listings/active-languages";
         public static final String RECENT = "/api/dl-listings/recent";
         public static final String SEARCH = "/api/dl-listings/_search";
+        public static final String MESSAGES = "/api/dl-listings/{id}/messages";
 
         private DlListing() {
         }

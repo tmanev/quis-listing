@@ -1,15 +1,10 @@
 package com.manev.quislisting.service.dto;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-
 /**
  * DTO object for the messages interface.
  */
-@Document(indexName = "dl_messages")
 public class DlMessageDTO {
 
-    @Id
     private Long id;
     private Long senderId;
     private String senderName;
