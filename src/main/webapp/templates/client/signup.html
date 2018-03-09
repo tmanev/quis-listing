@@ -8,9 +8,6 @@
     <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
           rel="stylesheet"/>
-    <link href="../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
-          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
-          rel="stylesheet"/>
 </head>
 
 <body>
@@ -59,13 +56,13 @@
                     <div class="invalid-feedback"
                          v-if="!$v.signUp.email.minLength">
                         <span th:text="#{validation.min}">Min</span>
-                        {{ $v.signUp.email.$params.minLength.min }}
+                        <span>{{ $v.signUp.email.$params.minLength.min }}</span>
                         <span th:text="#{validation.letters}">letters</span>.
                     </div>
                     <div class="invalid-feedback"
                          v-if="!$v.signUp.email.maxLength">
                         <span th:text="#{validation.max}">Max</span>
-                        {{ $v.signUp.email.$params.maxLength.max }}
+                        <span>{{ $v.signUp.email.$params.maxLength.max }}</span>
                         <span th:text="#{validation.letters}">letters</span>.
                     </div>
                 </div>
@@ -86,7 +83,7 @@
                     <div class="invalid-feedback"
                          v-if="!$v.signUp.firstName.maxLength">
                         <span th:text="#{validation.max}">Max</span>
-                        {{ $v.signUp.firstName.$params.maxLength.max }}
+                        <span>{{ $v.signUp.firstName.$params.maxLength.max }}</span>
                         <span th:text="#{validation.letters}">letters</span>.
                     </div>
                 </div>
@@ -107,7 +104,7 @@
                     <div class="invalid-feedback"
                          v-if="!$v.signUp.lastName.maxLength">
                         <span th:text="#{validation.max}">Max</span>
-                        {{ $v.signUp.lastName.$params.maxLength.max }}
+                        <span>{{ $v.signUp.lastName.$params.maxLength.max }}</span>
                         <span th:text="#{validation.letters}">letters</span>.
                     </div>
                 </div>
@@ -128,13 +125,13 @@
                     <div class="invalid-feedback"
                          v-if="!$v.signUp.password.minLength">
                         <span th:text="#{validation.min}">Must have at least</span>
-                        {{ $v.signUp.password.$params.minLength.min }}
+                        <span>{{ $v.signUp.password.$params.minLength.min }}</span>
                         <span th:text="#{validation.letters}">letters</span>.
                     </div>
                     <div class="invalid-feedback"
                          v-if="!$v.signUp.password.maxLength">
                         <span th:text="#{validation.max}">Max</span>
-                        {{ $v.signUp.password.$params.maxLength.max }}
+                        <span>{{ $v.signUp.password.$params.maxLength.max }}</span>
                         <span th:text="#{validation.letters}">letters</span>.
                     </div>
                 </div>
