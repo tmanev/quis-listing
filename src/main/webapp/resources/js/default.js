@@ -2,7 +2,7 @@ LandingPage = {
     init: function (totalDlListings, loadedDlListings, jsTranslations) {
         Vue.use(window.vuelidate.default);
 
-        var landingApp = new Vue({
+        let landingApp = new Vue({
             el: '#landingApp',
             data: {
                 pagingParams: {
@@ -23,35 +23,29 @@ LandingPage = {
             validations: {},
             methods: {
                 onLoadNext: function () {
-                    this.pagingParams.isLoading = true;
-                    let $btn = $('#btnLoadMore');
-                    QlUtil.UI.btnStartLoading($btn);
-                    this.$http({
+                    let vm = this;
+                    vm.pagingParams.isLoading = true;
+                    axios.get(vm.pagingParams.url, {
                         params: {
-                            page: this.pagingParams.page,
-                            size: this.pagingParams.itemsPerPage,
+                            page: vm.pagingParams.page,
+                            size: vm.pagingParams.itemsPerPage,
                             languageCode: Cookies.get('ql-lang-key')
-                        },
-                        url: this.pagingParams.url,
-                        method: 'GET'
-                    }).then(function (response) {
-                        console.log('Success!:', response.data);
-                        for (var i = 0; i<response.data.length; i++) {
-                            this.dlListings.push(response.data[i]);
                         }
-                        this.pagingParams.page++;
-                        this.pagingParams.loadedDlListings += response.data.length;
-                        this.pagingParams.isLoading = false;
-                        QlUtil.UI.btnStopLoading($btn);
-                    }, function (response) {
+                    }).then(function (response) {
+                        for (let i = 0; i<response.data.length; i++) {
+                            vm.dlListings.push(response.data[i]);
+                        }
+                        vm.pagingParams.page++;
+                        vm.pagingParams.loadedDlListings += response.data.length;
+                        vm.pagingParams.isLoading = false;
+                    }).catch(function () {
                         QlUtil.UI.Notification.showError({message: jsTranslations['info.general_server_error']});
-                        this.pagingParams.isLoading = false;
-                        QlUtil.UI.btnStopLoading($btn);
+                        vm.pagingParams.isLoading = false;
                     });
                 },
-                onSearch: function (event) {
+                onSearch: function () {
                     if (this.filter.text !== '') {
-                        var filter = {};
+                        let filter = {};
                         filter.text = this.filter.text;
                         let params = {
                             query: JSON.stringify(filter)
