@@ -42,7 +42,7 @@
                 <tr v-for="(dlListing, index) in dlListings">
                     <th scope="row">
                         <div class="media">
-                            <img v-if="dlListing.featuredAttachment==null" src="../../resources/images/no-image-available.jpg"
+                            <img v-if="dlListing.featuredAttachment==null" src="../../../resources/images/no-image-available.jpg"
                                  th:src="@{/resources/images/no-image-available.jpg}"
                                  alt="No image available"
                                  data-holder-rendered="true" width="75" height="50"/>
@@ -69,11 +69,11 @@
                         <div>Last modified on {{dlListing.modified | fullTime}}</div>
                     </td>
                     <td class="align-middle">
-                        <b-btn v-bind:id="'btnSettings'+ index"
+                        <b-btn v-bind:id="'btnSettings' + index"
                                 variant="light" ref="button">
                             <i class="fa fa-cog" aria-hidden="true"></i>
                         </b-btn>
-                        <b-popover v-bind:target="'btnSettings'+ index"
+                        <b-popover v-bind:target="'btnSettings' + index"
                                    triggers="focus"
                                    placement="left"
                                    ref="popover">
