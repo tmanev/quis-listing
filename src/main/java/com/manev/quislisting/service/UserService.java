@@ -269,4 +269,8 @@ public class UserService {
     public Optional<User> findOneByLogin(String currentUserLogin) {
         return userRepository.findOneByLogin(currentUserLogin);
     }
+
+    public User findOne(Long id) {
+        return userRepository.findOne(id);
+    }
 }

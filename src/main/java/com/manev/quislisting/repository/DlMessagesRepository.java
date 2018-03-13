@@ -1,7 +1,7 @@
 package com.manev.quislisting.repository;
 
 import com.manev.quislisting.domain.DlMessage;
-import java.util.List;
+import com.manev.quislisting.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,22 +18,13 @@ public interface DlMessagesRepository extends JpaRepository<DlMessage, Long> {
     /**
      * Returns all messages between two users.
      *
-     * @param pageable {@link Pageable}
-     * @param listingId {@link Long} id of the listing
-     * @param receiver {@link Long} user that received the message
-     * @param sender {@link Long} user that send the message
+     * @param pageable       {@link Pageable}
+     * @param listingId      {@link Long} id of the listing
+     * @param sender {@link User} user that send the message
+     * @param receiver {@link User} user that received the message
      * @return {@link Page} of {@link DlMessage}
      */
-    @Query("select dlm from DlMessage dlm where listingId = :listingId and (receiver = :receiver or receiver = :sender) and (sender = :sender or sender = :receiver) and deleted = null order by created_date")
-    Page<DlMessage> findAllMessagesForListingId(Pageable pageable, @Param("listingId") Long listingId,
-            @Param("receiver") Long receiver, @Param("sender") Long sender);
+    @Query("select dlm from DlMessage dlm where dlm.listingId = :listingId and (dlm.sender = :sender or dlm.sender = :receiver) and (dlm.receiver = :receiver or dlm.receiver = :sender) order by dlm.created desc")
+    Page<DlMessage> findAllMessages(Pageable pageable, @Param("listingId") Long listingId, @Param("sender") User sender, @Param("receiver") User receiver);
 
-    /**
-     * Returns {@List} of {@link DlMessage} based on the listing id.
-     *
-     * @param listingId {@link Long} id of the listing
-     * @return {@List} of {@link DlMessage}
-     */
-    @Query("select dlm from DlMessage dlm where listingId = :listingId")
-    List<DlMessage> findAllByListingId(@Param("listingId") Long listingId);
 }

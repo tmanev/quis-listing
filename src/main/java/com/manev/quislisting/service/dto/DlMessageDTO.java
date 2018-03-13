@@ -1,80 +1,66 @@
 package com.manev.quislisting.service.dto;
 
+import com.manev.quislisting.service.model.UserBaseModel;
+
+import java.sql.Timestamp;
+
 /**
  * DTO object for the messages interface.
  */
 public class DlMessageDTO {
 
     private Long id;
-    private Long senderId;
-    private String senderName;
-    private String senderEmail;
-    private Long receiverId;
-    private String text;
+    private UserBaseModel sender;
+    private UserBaseModel receiver;
     private Long listingId;
-    private String createdDate;
+    private String text;
+    private Timestamp created;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getSenderId() {
-        return senderId;
+    public UserBaseModel getSender() {
+        return sender;
     }
 
-    public void setSenderId(final Long senderId) {
-        this.senderId = senderId;
+    public void setSender(UserBaseModel sender) {
+        this.sender = sender;
     }
 
-    public String getSenderName() {
-        return senderName;
+    public UserBaseModel getReceiver() {
+        return receiver;
     }
 
-    public void setSenderName(final String senderName) {
-        this.senderName = senderName;
-    }
-
-    public String getSenderEmail() {
-        return senderEmail;
-    }
-
-    public void setSenderEmail(final String senderEmail) {
-        this.senderEmail = senderEmail;
-    }
-
-    public Long getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(final Long receiverId) {
-        this.receiverId = receiverId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(final String text) {
-        this.text = text;
+    public void setReceiver(UserBaseModel receiver) {
+        this.receiver = receiver;
     }
 
     public Long getListingId() {
         return listingId;
     }
 
-    public void setListingId(final Long listingId) {
+    public void setListingId(Long listingId) {
         this.listingId = listingId;
     }
 
-    public String getCreatedDate() {
-        return createdDate;
+    public String getText() {
+        return text;
     }
 
-    public void setCreatedDate(final String createdDate) {
-        this.createdDate = createdDate;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 }

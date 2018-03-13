@@ -13,7 +13,7 @@ import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
-import com.manev.quislisting.repository.DlMessagesOverviewRepository;
+import com.manev.quislisting.repository.DlMessageOverviewRepository;
 import com.manev.quislisting.repository.DlMessagesRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
@@ -146,7 +146,7 @@ public class DlListingRestTest extends GenericResourceTest {
     private DlMessagesRepository dlMessagesRepository;
 
     @Autowired
-    private DlMessagesOverviewRepository dlMessagesOverviewRepository;
+    private DlMessageOverviewRepository dlMessagesOverviewRepository;
 
     private MockMvc restDlListingMockMvc;
 

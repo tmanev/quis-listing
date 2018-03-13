@@ -2,12 +2,10 @@ package com.manev.quislisting.web.rest;
 
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.security.SecurityUtils;
-import com.manev.quislisting.service.MailService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.DlMessageDTO;
-import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.form.DlWriteMessageForm;
 import com.manev.quislisting.service.post.DlMessagesService;
-import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -24,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -36,7 +35,6 @@ import java.util.Optional;
 public class DlMessageRest {
 
     private static final String ENTITY_NAME = "DlMessages";
-    private static final String NEW_MAIL_FOR_LISTING = "You received new email for your listing %s";
 
     private final Logger log = LoggerFactory.getLogger(DlListingRest.class);
 
@@ -44,69 +42,71 @@ public class DlMessageRest {
 
     private final UserService userService;
 
-    private final DlListingService dlListingService;
-
-    private final MailService mailService;
-
-    public DlMessageRest(final DlMessagesService dlMessagesService, final UserService userService,
-                         final DlListingService dlListingService, final MailService mailService) {
+    public DlMessageRest(final DlMessagesService dlMessagesService, final UserService userService) {
         this.dlMessagesService = dlMessagesService;
         this.userService = userService;
-        this.dlListingService = dlListingService;
-        this.mailService = mailService;
     }
 
-    @PostMapping(RestRouter.DlMessage.LIST)
-    public ResponseEntity<DlMessageDTO> createDlMessage(final @RequestBody DlMessageDTO dlMessageDTO) throws URISyntaxException {
-        log.debug("REST request to save DlMessageDTO : {}", dlMessageDTO);
-
-        if (dlMessageDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(
-                    HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists",
-                            "A new entity cannot already have an ID")).body(null);
-        }
+    @PostMapping(RestRouter.DlMessageCenter.CONVERSATION_THREAD)
+    public ResponseEntity<DlMessageDTO> writeMessage(@PathVariable Long dlMessageOverviewId, @Valid @RequestBody DlWriteMessageForm dlWriteMessageForm) throws URISyntaxException {
+        log.debug("REST request to save DlMessageForm : {}", dlWriteMessageForm);
 
         final String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-        final Optional<User> sender = userService.findOneByLogin(currentUserLogin);
-
-        final DlListingDTO listingDTO = dlListingService.findOne(dlMessageDTO.getListingId());
-
-        if (dlMessageDTO.getReceiverId() == null) {
-            dlMessageDTO.setReceiverId(listingDTO.getAuthor().getId());
+        final Optional<User> receiver = userService.findOneByLogin(currentUserLogin);
+        if (!receiver.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        dlMessageDTO.setListingId(listingDTO.getId());
+        DlMessageDTO dlMessageOverview = dlMessagesService.findMessageOverviewById(dlMessageOverviewId);
+        if (!dlMessageOverview.getReceiver().getId().equals(receiver.get().getId())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
-        final DlMessageDTO result = dlMessagesService.save(dlMessageDTO, sender);
+        final DlMessageDTO result = dlMessagesService.create(dlWriteMessageForm, dlMessageOverviewId);
 
-        mailService.sendEmail(listingDTO.getAuthor().getLogin(), String.format(NEW_MAIL_FOR_LISTING,
-                listingDTO.getName()), dlMessageDTO.getText(), false, true);
-
-        return ResponseEntity.created(new URI(RestRouter.DlMessage.LIST + String.format("/%s", result.getId())))
+        return ResponseEntity.created(new URI(RestRouter.DlMessageCenter.CONVERSATIONS + String.format("/%s", result.getId())))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
-    @GetMapping(RestRouter.DlMessage.LIST)
-    public ResponseEntity<List<DlMessageDTO>> getAllMessagesByReceiver(final Pageable pageable) {
-        log.debug("REST request to get a page of DlMessageDTO");
+    @GetMapping(RestRouter.DlMessageCenter.CONVERSATIONS)
+    public ResponseEntity<List<DlMessageDTO>> getAllConversationsForLoggedUser(final Pageable pageable) {
+        log.debug("REST request to get overview messages for logged user");
 
         final String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-        final Optional<User> oneByLogin = userService.findOneByLogin(currentUserLogin);
-        if (!oneByLogin.isPresent()) {
+        final Optional<User> currentUser = userService.findOneByLogin(currentUserLogin);
+        if (!currentUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        final Page<DlMessageDTO> page = dlMessagesService.findAllMessagesByReceiver(pageable, oneByLogin.get().getId());
-        final HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlMessage.LIST);
+        final Page<DlMessageDTO> page = dlMessagesService.findAllOverviewMessagesForUser(pageable, currentUser.get().getId());
+        final HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlMessageCenter.CONVERSATIONS);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @DeleteMapping(RestRouter.DlMessage.DETAIL)
-    public ResponseEntity<Void> deleteDlMessages(final @PathVariable Long listingId) {
-        log.debug("REST request to delete DlMessage and DlMessageOverview : {}", listingId);
-        dlMessagesService.delete(listingId);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, listingId.toString()))
+    @GetMapping(RestRouter.DlMessageCenter.CONVERSATION_THREAD)
+    public ResponseEntity<List<DlMessageDTO>> getConversationThread(Pageable pageable, @PathVariable Long dlMessageOverviewId) {
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> currentUser = userService.findOneByLogin(currentUserLogin);
+        if (!currentUser.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        DlMessageDTO messageOverviewById = dlMessagesService.findMessageOverviewById(dlMessageOverviewId);
+        if (!messageOverviewById.getReceiver().getId().equals(currentUser.get().getId())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Page<DlMessageDTO> page = dlMessagesService.findConversationMessages(pageable, messageOverviewById.getListingId(), messageOverviewById.getReceiver().getId(), messageOverviewById.getSender().getId());
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, RestRouter.DlMessageCenter.CONVERSATIONS);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping(RestRouter.DlMessageCenter.CONVERSATION_THREAD)
+    public ResponseEntity<Void> deleteConversationThread(final @PathVariable Long dlMessageOverviewId) {
+        log.debug("REST request to delete DlMessage and DlMessageOverview : {}", dlMessageOverviewId);
+        dlMessagesService.delete(dlMessageOverviewId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, dlMessageOverviewId.toString()))
                 .build();
     }
 

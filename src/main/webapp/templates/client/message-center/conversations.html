@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title th:text="${title}">Conversations</title>
+
+        <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+              th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+              rel="stylesheet"/>
+        <link href="../../../resources/css/styles.css"
+              th:href="@{/resources/css/styles.css}"
+              rel="stylesheet"/>
+    </head>
+    <body>
+        <div th:fragment="content"  class="container">
+            <div id="conversationsApp" v-cloak>
+                <h4 th:text="#{page.message_center.conversations.title}">Conversations</h4>
+
+                <div class="row" style="margin-top: 10px;">
+                    <b-table show-empty
+                             hover="true"
+                             head-variant="light"
+                             th:empty-text="#{page.message_center.conversations.label.no_records}"
+                             ref="conversationsTable"
+                             v-bind:items="dlMessagesProvider"
+                             v-bind:fields="fields"
+                             v-bind:current-page="pagingParams.currentPage"
+                             v-bind:per-page="pagingParams.perPage">
+                        <template slot="sender" slot-scope="data">
+                            {{data.value.firstName + ' ' + data.value.lastName}}
+                        </template>
+                        <template slot="text" slot-scope="item">
+                            <a v-bind:href="'/message-center/conversations/' + item.item.id + '/thread'">
+                                {{item.value}}
+                            </a>
+                        </template>
+                        <template slot="dateSent" slot-scope="row">{{row.value}}{{row.item}}</template>
+                        <template slot="action" slot-scope="row">
+                            <b-btn v-bind:id="'btnSettings' + row.index" variant="light" ref="button">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                            </b-btn>
+                            <b-popover v-bind:target="'btnSettings' + row.index"
+                                       triggers="focus"
+                                       placement="left"
+                                       ref="popover">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <a class="btn btn-light btn-block text-left" target="_blank"
+                                           v-bind:href="'/listings/' + row.item.listingId">
+                                            <i class="fa fa-eye"></i>
+                                            <span class="hidden-xs-down" th:text="#{page.message_center.conversations.label.go_to_listing}">Go to listing</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <a class="btn btn-light btn-block text-left" v-on:click="confirmDeleteConversation(row.item)">
+                                            <i class="fa fa-times-circle-o"></i>
+                                            <span class="hidden-xs-down" th:text="#{page.message_center.conversations.label.delete}">Delete</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </b-popover>
+                        </template>
+                    </b-table>
+                </div>
+                <div class="row mb-4 mt-2">
+                    <div class="mx-auto">
+                        <b-pagination v-bind:total-rows="pagingParams.totalRows" v-bind:per-page="pagingParams.perPage" v-model="pagingParams.currentPage" class="my-0" />
+                    </div>
+                </div>
+
+                <b-modal hide-footer ref="confirmDeleteConversationModal" >
+                    <div slot="modal-title">
+                        <h5><i class="fa fa-warning"></i> <span th:text="#{page.message_center.conversations.label.delete}">Delete</span></h5>
+                    </div>
+                    <div class="float-right">
+                        <button type="button" class="btn btn-primary" v-on:click="deleteConversation">
+                            <i v-if="btnConfirmConversationDeleteLoading" class="fa fa-circle-o-notch fa-spin"></i>
+                            <span th:text="#{page.message_center.conversations.label.yes}">Yes</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" v-on:click="cancelDeleteConversation" th:text="#{page.message_center.conversations.label.no}">No</button>
+                    </div>
+                </b-modal>
+            </div>
+
+            <script src="../../../resources/js/message-center/conversations.js"
+                    th:src="@{/resources/js/message-center/conversations.js}"></script>
+            <script type="text/javascript" th:inline="javascript">
+                window.onload = function () {
+                    let tableFields = [
+                        { key: 'sender', label: [[#{page.message_center.conversations.label.from}]], sortable: false },
+                        { key: 'text', label: [[#{page.message_center.conversations.label.message}]], sortable: false },
+                        { key: 'created', label: [[#{page.message_center.conversations.label.datesent}]], sortable: false, formatter: 'fullTime' },
+                        { key:'action', label: [[#{page.message_center.conversations.label.action}]], sortable: false }
+                    ];
+                    let jsTranslations = [[${jsTranslations}]];
+                    Conversations.init(jsTranslations, tableFields);
+                };
+            </script>
+        </div>
+
+        <!-- JavaScript libraries used to be able to open the html page itself in browser -->
+        <script src="../../../resources/vendor/vue/vue.min.js"
+                th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+        <script src="../../../resources/vendor/vuelidate/vuelidate.min.js"
+                th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+        <script src="../../../resources/vendor/vuelidate/validators.min.js"
+                th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+        <script src="../../../resources/vendor/vue-resource/vue-resource.min.js"
+                th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+        <script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"
+                th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+        <script src="../../../resources/vendor/bootstrap/js/bootstrap.min.js"
+                th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+        <script src="../../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+                th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+    </body>
+</html>

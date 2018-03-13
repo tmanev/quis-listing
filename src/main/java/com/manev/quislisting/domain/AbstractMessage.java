@@ -1,9 +1,8 @@
 package com.manev.quislisting.domain;
 
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.Column;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,29 +10,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
-import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.sql.Timestamp;
 
 /**
  * Abstract entity that holds the common attributes for the messages interface.
  */
 @MappedSuperclass
-@Audited
-@EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "sender", nullable = false, updatable = false)
+    @JoinColumn(name = "sender_user_id", nullable = false, updatable = false)
     private User sender;
 
     @NotNull
-    @Column
-    private Long receiver;
+    @ManyToOne
+    @JoinColumn(name = "receiver_user_id", nullable = false, updatable = false)
+    private User receiver;
 
     @NotNull
     @Column
@@ -44,11 +41,8 @@ public abstract class AbstractMessage {
     private Long listingId;
 
     @CreatedDate
-    @Column(name = "created_date", nullable = false)
-    private ZonedDateTime createdDate = ZonedDateTime.now();
-
-    @Column
-    private Timestamp deleted;
+    @Column(name = "created", nullable = false)
+    private Timestamp created;
 
     public Long getId() {
         return id;
@@ -66,11 +60,11 @@ public abstract class AbstractMessage {
         this.sender = sender;
     }
 
-    public Long getReceiver() {
+    public User getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(final Long receiver) {
+    public void setReceiver(User receiver) {
         this.receiver = receiver;
     }
 
@@ -90,19 +84,12 @@ public abstract class AbstractMessage {
         this.listingId = listingId;
     }
 
-    public ZonedDateTime getCreatedDate() {
-        return createdDate;
+    public Timestamp getCreated() {
+        return created;
     }
 
-    public void setCreatedDate(final ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 
-    public Timestamp getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(final Timestamp deleted) {
-        this.deleted = deleted;
-    }
 }

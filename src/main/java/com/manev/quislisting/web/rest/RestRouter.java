@@ -67,11 +67,11 @@ public final class RestRouter {
         }
     }
 
-    public class DlMessage {
-        public static final String LIST = "/api/dl-messages";
-        public static final String DETAIL = "/api/dl-messages/{listingId}";
+    public class DlMessageCenter {
+        public static final String CONVERSATIONS = "/api/dl-messages";
+        public static final String CONVERSATION_THREAD = "/api/dl-messages/{dlMessageOverviewId}";
 
-        private DlMessage() {
+        private DlMessageCenter() {
         }
     }
 

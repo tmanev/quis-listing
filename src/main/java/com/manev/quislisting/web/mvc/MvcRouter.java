@@ -40,11 +40,11 @@ public class MvcRouter {
         }
     }
 
-    public class MyMessages {
-        public static final String BASE = "/my-messages";
-        public static final String PREVIEW = BASE + "/{id}/preview";
+    public class MessageCenter {
+        public static final String CONVERSATIONS = "/message-center/conversations";
+        public static final String CONVERSATION_THREAD = "/message-center/conversations/{messageOverviewId}/thread";
 
-        private MyMessages() {
+        private MessageCenter() {
         }
     }
 

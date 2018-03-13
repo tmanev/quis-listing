@@ -1,22 +1,16 @@
 package com.manev.quislisting.service;
 
 import com.manev.quislisting.domain.Authority;
-import com.manev.quislisting.domain.DlMessage;
-import com.manev.quislisting.domain.DlMessageOverview;
 import com.manev.quislisting.domain.User;
-import com.manev.quislisting.domain.builder.DlMessageBuilder;
-import com.manev.quislisting.repository.DlMessagesOverviewRepository;
+import com.manev.quislisting.repository.DlMessageOverviewRepository;
 import com.manev.quislisting.repository.DlMessagesRepository;
 import com.manev.quislisting.repository.UserRepository;
-import com.manev.quislisting.service.dto.DlMessageDTO;
-import com.manev.quislisting.service.dto.builder.DlMessageDTOBuilder;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Test component for creation of the data needed for testing the rest controller.
@@ -34,8 +28,6 @@ public class DlMessageTestComponent {
     public static final String IMAGE_URL = "http://placehold.it/50x50";
     public static final String PASSWORD = "pass";
     public static final boolean ACTIVATED = true;
-    public static final String EMPTY_SEPARATOR = " ";
-    public static final String DATE_PATTERN = "dd/MM/yyyy";
     public static final String LANG_KEY = "en";
 
     @Autowired
@@ -45,61 +37,13 @@ public class DlMessageTestComponent {
     private DlMessagesRepository dlMessagesRepository;
 
     @Autowired
-    private DlMessagesOverviewRepository dlMessagesOverviewRepository;
+    private DlMessageOverviewRepository dlMessagesOverviewRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public DlMessageOverview createDlMessageOverview() {
-        final DlMessageOverview dlMessageOverview = createDlMessageOverviewEntity();
-
-        dlMessageOverview.setSender(userRepository.findOneByLogin(LOGIN).orElse(null));
-
-        return dlMessagesOverviewRepository.saveAndFlush(dlMessageOverview);
-    }
-
-    public DlMessage createDlMessage() {
-        final DlMessage dlMessage = createDlMessageEntity();
-        dlMessage.setSender(userRepository.findOneByLogin(LOGIN).orElse(null));
-
-        return dlMessagesRepository.saveAndFlush(dlMessage);
-    }
-
-    public static DlMessageOverview createDlMessageOverviewEntity() {
-        return DlMessageBuilder.dlMessage()
-                .withReceiver(RECEIVER)
-                .withText(TEXT)
-                .withListingId(LISTING_ID)
-                .withCreatedDate(ZonedDateTime.now())
-                .buildDlMessageOverview();
-    }
-
-    public static DlMessage createDlMessageEntity() {
-        return DlMessageBuilder.dlMessage()
-                .withReceiver(RECEIVER)
-                .withText(TEXT)
-                .withListingId(LISTING_ID)
-                .withCreatedDate(ZonedDateTime.now())
-                .buildDlMessage();
-    }
-
-    public DlMessageDTO createDlMessageDTO() {
-        final User sender = userRepository.findOneByLogin(LOGIN).orElse(null);
-
-        final DlMessageDTO dlMessageDTO = DlMessageDTOBuilder.dlMessageDTO()
-                .withSenderId(sender.getId())
-                .withSenderName(sender.getFirstName() + EMPTY_SEPARATOR + sender.getLastName())
-                .withSenderEmail(sender.getLogin())
-                .withReceiverId(RECEIVER)
-                .withText(TEXT)
-                .withCreatedDate(DateTimeFormatter.ofPattern(DATE_PATTERN).format(ZonedDateTime.now()))
-                .build();
-
-        return dlMessageDTO;
-    }
-
     public User createUser(final String login, final String firstName, final String lastName, final String email,
-            final String imageUrl, final String password, final boolean activated, final String authorityName) {
+                           final String imageUrl, final String password, final boolean activated, final String authorityName) {
         final User user = new User();
         user.setLogin(login);
         user.setFirstName(firstName);

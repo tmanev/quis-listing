@@ -5,33 +5,43 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="V2018_02_08_0851" author="dgavrilov">
-        <comment>Added new helper ql_messages_overview table.</comment>
+        <comment>Added new helper ql_message_overview table.</comment>
         <createTable tableName="ql_dl_message_overview">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="sender" type="bigint" defaultValue="0">
-                <constraints nullable="false"
-                    foreignKeyName="fk_dl_messageoverview_sender_user"
-                    referencedTableName="ql_user"
-                    referencedColumnNames="id"/>
-            </column>
-            <column name="receiver" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="text" type="varchar(160)">
-                <constraints nullable="false"/>
-            </column>
             <column name="listing_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_message_overview_listing"
+                             referencedTableName="ql_dl_listing"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="sender_user_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_message_overview_sender_user"
+                             referencedTableName="ql_user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="receiver_user_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_message_overview_receiver_user"
+                             referencedTableName="ql_user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="text" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+            <column name="created" type="timestamp" defaultValueDate="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="deleted" type="timestamp">
                 <constraints nullable="true"/>
             </column>
+            <column name="is_read" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
+        <addUniqueConstraint tableName="ql_dl_message_overview" columnNames="listing_id, sender_user_id, receiver_user_id" />
     </changeSet>
 
 </databaseChangeLog>

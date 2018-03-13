@@ -92,6 +92,7 @@ public class MvcSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sign-in/**").permitAll()
                 .antMatchers("/content/**").permitAll()
                 .antMatchers("/my-listings/**").authenticated()
+                .antMatchers("/message-center/**").authenticated()
                 .antMatchers("/account/**").authenticated()
                 .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/v2/api-docs/**").permitAll()

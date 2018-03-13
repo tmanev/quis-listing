@@ -220,8 +220,6 @@ let MyListings = {
                         url: '/api/dl-listings/' + this.confirmModal.listingToDelete.id,
                         method: 'DELETE'
                     }).then(function (response) {
-                        console.log('Success!:', response.data);
-
                         let index = this.dlListings.indexOf(this.confirmModal.listingToDelete);
                         this.dlListings.splice(index, 1);
                         QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.my_listings.notifications.delete_listing_success']});
