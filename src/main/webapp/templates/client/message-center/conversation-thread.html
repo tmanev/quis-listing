@@ -19,7 +19,7 @@
             <label class="col-sm-3 col-form-label" id="textLabel" for="text"
                    th:text="#{page.message_center.conversation_thread.label.your_message}">Your message</label>
             <div class="col-sm-9">
-                    <textarea rows="2" id="text" type="text" name="text" class="form-control"
+                    <textarea rows="3" id="text" type="text" name="text" class="form-control"
                               placeholder="Type a message..."
                               th:placeholder="#{page.message_center.conversation_thread.label.type_message}"
                               v-model="dlMessage.text"
@@ -51,8 +51,11 @@
                                      th:src="@{/resources/images/profile_2.png}" alt="User name">
                                 <div class="status offline"></div>
                             </div>
-                            <div class="name">{{dlMessage.sender.firstName + ' ' + dlMessage.sender.lastName}}</div>
-                            <div class="text">{{dlMessage.text}}</div>
+                            <div class="name">
+                                <span v-if="dlMessage.sender.firstName">{{dlMessage.sender.firstName}}</span>
+                                <span v-if="dlMessage.sender.lastName">{{dlMessage.sender.lastName}}</span>
+                            </div>
+                            <div class="text note"><pre>{{dlMessage.text}}</pre></div>
                             <div class="time">{{dlMessage.created | fullTime}}</div>
                         </div>
                         <div class="answer right" v-if="(dlMessage.sender.id == dlMessageOverview.receiver.id)">
@@ -61,8 +64,11 @@
                                      th:src="@{/resources/images/profile_2.png}" alt="User name">
                                 <div class="status offline"></div>
                             </div>
-                            <div class="name">{{dlMessage.sender.firstName + ' ' + dlMessage.sender.lastName}}</div>
-                            <div class="text">{{dlMessage.text}}</div>
+                            <div class="name">
+                                <span v-if="dlMessage.sender.firstName">{{dlMessage.sender.firstName}}</span>
+                                <span v-if="dlMessage.sender.lastName">{{dlMessage.sender.lastName}}</span>
+                            </div>
+                            <div class="text note"><pre class="note">{{dlMessage.text}}</pre></div>
                             <div class="time">{{dlMessage.created | fullTime}}</div>
                         </div>
                     </div>

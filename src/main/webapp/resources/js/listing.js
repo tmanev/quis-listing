@@ -11,7 +11,8 @@ Listing = {
                 dlMessage: {
                     senderName: '',
                     senderEmail: '',
-                    text: ''
+                    text: '',
+                    languageCode: Cookies.get('ql-lang-key')
                 },
                 btnSendMessageLoading: false,
                 tabIndex: 0

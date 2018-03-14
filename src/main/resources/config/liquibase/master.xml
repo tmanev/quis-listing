@@ -25,5 +25,6 @@
     <include file="classpath:config/liquibase/changelog/V2018_01_30_1412__add_ql_message_table.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2018_02_07_0928__add_ql_message_overview_table.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/V2018_03_06_2149__add_messages_navmenu.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/V2018_03_13_2158__new_message_email_templates.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

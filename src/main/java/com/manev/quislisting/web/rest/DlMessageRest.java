@@ -105,6 +105,18 @@ public class DlMessageRest {
     @DeleteMapping(RestRouter.DlMessageCenter.CONVERSATION_THREAD)
     public ResponseEntity<Void> deleteConversationThread(final @PathVariable Long dlMessageOverviewId) {
         log.debug("REST request to delete DlMessage and DlMessageOverview : {}", dlMessageOverviewId);
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> currentUser = userService.findOneByLogin(currentUserLogin);
+        if (!currentUser.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        DlMessageDTO messageOverviewById = dlMessagesService.findMessageOverviewById(dlMessageOverviewId);
+        if (!messageOverviewById.getReceiver().getId().equals(currentUser.get().getId())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         dlMessagesService.delete(dlMessageOverviewId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, dlMessageOverviewId.toString()))
                 .build();

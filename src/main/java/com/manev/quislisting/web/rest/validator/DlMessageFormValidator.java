@@ -22,6 +22,10 @@ public class DlMessageFormValidator {
         if (StringUtils.isEmpty(form.getText())) {
             throw new InvalidDlListingMessageFormException();
         }
+
+        if (StringUtils.isEmpty(form.getLanguageCode())) {
+            throw new InvalidDlListingMessageFormException();
+        }
     }
 
 }

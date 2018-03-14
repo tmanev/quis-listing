@@ -7,6 +7,7 @@ import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.repository.DlMessageOverviewRepository;
 import com.manev.quislisting.repository.DlMessagesRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
+import com.manev.quislisting.service.EmailSendingService;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.DlMessageDTO;
 import com.manev.quislisting.service.form.DlListingMessageForm;
@@ -38,36 +39,35 @@ public class DlMessagesService {
     private final DlMessagesMapper dlMessagesMapper;
     private final DlListingRepository dlListingRepository;
     private final UserService userService;
+    private final EmailSendingService emailSendingService;
 
     public DlMessagesService(final DlMessagesRepository dlMessagesRepository,
-                             final DlMessageOverviewRepository dlMessagesOverviewRepository, final DlMessagesMapper dlMessagesMapper, DlListingRepository dlListingRepository, UserService userService) {
+                             final DlMessageOverviewRepository dlMessagesOverviewRepository, final DlMessagesMapper dlMessagesMapper, DlListingRepository dlListingRepository, UserService userService, EmailSendingService emailSendingService) {
         this.dlMessagesRepository = dlMessagesRepository;
         this.dlMessagesOverviewRepository = dlMessagesOverviewRepository;
         this.dlMessagesMapper = dlMessagesMapper;
         this.dlListingRepository = dlListingRepository;
         this.userService = userService;
+        this.emailSendingService = emailSendingService;
     }
 
     public DlMessageDTO create(final DlWriteMessageForm dlWriteMessageForm, final Long dlMessageOverviewId) {
         log.debug("Request to save DlMessageDTO : {}", dlWriteMessageForm);
-        DlMessageOverview dlMessageOverview = dlMessagesOverviewRepository.findOne(dlMessageOverviewId);
+        DlMessageOverview dlMessageOverviewForSender = dlMessagesOverviewRepository.findOne(dlMessageOverviewId);
 
         final DlMessage dlMessage = new DlMessage();
 
         // same user that initially sent the message
-        dlMessage.setSender(dlMessageOverview.getReceiver());
-        dlMessage.setReceiver(dlMessageOverview.getSender());
+        dlMessage.setSender(dlMessageOverviewForSender.getReceiver());
+        dlMessage.setReceiver(dlMessageOverviewForSender.getSender());
         dlMessage.setText(dlWriteMessageForm.getText());
         dlMessage.setCreated(new Timestamp(clock.millis()));
-        dlMessage.setListingId(dlMessageOverview.getListingId());
+        dlMessage.setListingId(dlMessageOverviewForSender.getListingId());
 
         dlMessagesRepository.save(dlMessage);
-        //        mailService.sendEmail(listingDTO.getAuthor().getLogin(), String.format(NEW_MAIL_FOR_LISTING,
-//                listingDTO.getName()), dlWriteMessageForm.getText(), false, true);
-
         // update overview messages
-        saveMessageOverview(dlMessage);
-
+        DlMessageOverview dlMessageOverviewForReceiver = saveMessageOverviewForReceiver(dlMessage);
+        emailSendingService.sendNewMessageEmail(dlMessageOverviewForReceiver, dlMessage);
         return dlMessagesMapper.messageToDlMessageDTO(dlMessage);
     }
 
@@ -108,7 +108,8 @@ public class DlMessagesService {
         DlMessage dlMessage = createDlMessage(form, dlListing, sender);
         dlMessagesRepository.save(dlMessage);
 
-        saveMessageOverview(dlMessage);
+        DlMessageOverview dlMessageOverviewForReceiver = saveMessageOverviewForReceiver(dlMessage);
+        emailSendingService.sendNewMessageEmail(dlMessageOverviewForReceiver, dlMessage);
     }
 
     private DlMessage createDlMessage(DlListingMessageForm form, DlListing dlListing, User sender) {
@@ -121,27 +122,28 @@ public class DlMessagesService {
         return dlMessage;
     }
 
-    private void saveMessageOverview(DlMessage dlMessage) {
+    private DlMessageOverview saveMessageOverviewForReceiver(DlMessage dlMessage) {
         DlMessageOverview messageBySenderOrReceiver = dlMessagesOverviewRepository.findOneByDlListingAndSenderAndReceiver(dlMessage.getListingId(), dlMessage.getSender(), dlMessage.getReceiver());
         if (messageBySenderOrReceiver == null) {
             final DlMessageOverview dlMessageOverview = dlMessagesMapper.createMessageOverview(dlMessage);
-            dlMessagesOverviewRepository.save(dlMessageOverview);
+            return dlMessagesOverviewRepository.save(dlMessageOverview);
         } else {
             messageBySenderOrReceiver.setText(dlMessage.getText());
             messageBySenderOrReceiver.setCreated(dlMessage.getCreated());
             messageBySenderOrReceiver.setDeleted(null);
-            dlMessagesOverviewRepository.save(messageBySenderOrReceiver);
+            messageBySenderOrReceiver.setIsRead(null);
+            return dlMessagesOverviewRepository.save(messageBySenderOrReceiver);
         }
     }
 
     private User getSender(DlListingMessageForm form, String currentUserLogin) {
         if (!StringUtils.isEmpty(currentUserLogin)) {
             Optional<User> sender = userService.findOneByLogin(currentUserLogin);
-            return sender.orElseGet(() -> userService.createUserFromMessageForm(form.getSenderName(), form.getSenderEmail()));
+            return sender.orElseGet(() -> userService.createUserFromMessageForm(form.getSenderName(), form.getSenderEmail(), form.getLanguageCode()));
         } else {
             // create user from form input
             Optional<User> oneByLoginEmail = userService.findOneByLogin(form.getSenderEmail());
-            return oneByLoginEmail.orElseGet(() -> userService.createUserFromMessageForm(form.getSenderName(), form.getSenderEmail()));
+            return oneByLoginEmail.orElseGet(() -> userService.createUserFromMessageForm(form.getSenderName(), form.getSenderEmail(), form.getLanguageCode()));
         }
     }
 

@@ -43,6 +43,8 @@ public class DlMessagesMapper {
         dlMessageOverview.setReceiver(dlMessage.getReceiver());
         dlMessageOverview.setText(dlMessage.getText());
         dlMessageOverview.setCreated(dlMessage.getCreated());
+        dlMessageOverview.setIsRead(null);
+        dlMessageOverview.setDeleted(null);
 
         return dlMessageOverview;
     }

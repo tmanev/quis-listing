@@ -1,5 +1,8 @@
 package com.manev.quislisting.web.mvc;
 
+import com.manev.quislisting.domain.User;
+import com.manev.quislisting.security.SecurityUtils;
+import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.dto.DlMessageDTO;
 import com.manev.quislisting.service.post.DlMessagesService;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Controller for the messages preview interface.
@@ -22,17 +26,29 @@ import java.util.Locale;
 public class ConversationThreadController extends BaseController {
 
     private final DlMessagesService dlMessagesService;
+    private final UserService userService;
 
-    public ConversationThreadController(final DlMessagesService dlMessagesService) {
+    public ConversationThreadController(final DlMessagesService dlMessagesService, UserService userService) {
         this.dlMessagesService = dlMessagesService;
+        this.userService = userService;
     }
 
     @RequestMapping(value = MvcRouter.MessageCenter.CONVERSATION_THREAD, method = RequestMethod.GET)
     public String showConversationThreadPage(final @PathVariable String messageOverviewId, final ModelMap modelMap,
                                           final HttpServletRequest request) throws IOException {
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> currentUser = userService.findOneByLogin(currentUserLogin);
+        if (!currentUser.isPresent()) {
+            return redirectToPageNotFound();
+        }
+
         final DlMessageDTO dlMessageOverviewDTO = dlMessagesService.findMessageOverviewById(Long.valueOf(messageOverviewId));
 
         if (dlMessageOverviewDTO == null) {
+            return redirectToPageNotFound();
+        }
+
+        if (!dlMessageOverviewDTO.getReceiver().getId().equals(currentUser.get().getId())) {
             return redirectToPageNotFound();
         }
 

@@ -29,7 +29,8 @@
                              v-bind:current-page="pagingParams.currentPage"
                              v-bind:per-page="pagingParams.perPage">
                         <template slot="sender" slot-scope="data">
-                            {{data.value.firstName + ' ' + data.value.lastName}}
+                            <span v-if="data.value.firstName">{{data.value.firstName}}</span>
+                            <span v-if="data.value.lastName">{{data.value.lastName}}</span>
                         </template>
                         <template slot="text" slot-scope="item">
                             <a v-bind:href="'/message-center/conversations/' + item.item.id + '/thread'">

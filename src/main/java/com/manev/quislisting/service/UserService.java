@@ -145,7 +145,7 @@ public class UserService {
         return user;
     }
 
-    public User createUserFromMessageForm(String name, String email) {
+    public User createUserFromMessageForm(String name, String email, String languageCode) {
         User user = new User();
         user.setLogin(email);
         user.setEmail(email);
@@ -154,6 +154,7 @@ public class UserService {
         user.setFirstName(name);
         user.setActivated(Boolean.FALSE);
         user.setUpdates(Boolean.FALSE);
+        user.setLangKey(languageCode);
 
         Authority authority = authorityRepository.findOne(AuthoritiesConstants.ANONYMOUS);
         Set<Authority> authorities = new HashSet<>();

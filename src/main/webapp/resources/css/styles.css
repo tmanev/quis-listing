@@ -410,4 +410,15 @@ table.loading tbody:after {
     color: #333333;
 }
 
+.note pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: inherit;
+    color: inherit;
+    padding: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    position: inherit;
+}
+
 /*****************CHAT BODY END*******************/
