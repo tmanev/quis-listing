@@ -610,6 +610,7 @@ public class DlListingRestTest extends GenericResourceTest {
         form.setSenderEmail(email);
         form.setSenderName("Some name");
         form.setText("Some text");
+        form.setLanguageCode(DlMessageTestComponent.LANG_KEY);
 
         restDlListingMockMvc.perform(post(RestRouter.DlListing.MESSAGES, dlListing.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -637,6 +638,7 @@ public class DlListingRestTest extends GenericResourceTest {
 
         DlListingMessageForm form = new DlListingMessageForm();
         form.setText("Some text");
+        form.setLanguageCode(DlMessageTestComponent.LANG_KEY);
 
         restDlListingMockMvc.perform(post(RestRouter.DlListing.MESSAGES, dlListing.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
