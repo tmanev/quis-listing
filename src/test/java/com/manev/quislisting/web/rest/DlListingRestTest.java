@@ -6,11 +6,15 @@ import com.manev.quislisting.domain.DlAttachment;
 import com.manev.quislisting.domain.DlContentField;
 import com.manev.quislisting.domain.DlContentFieldItem;
 import com.manev.quislisting.domain.DlListingContentFieldRel;
+import com.manev.quislisting.domain.DlMessage;
+import com.manev.quislisting.domain.DlMessageOverview;
 import com.manev.quislisting.domain.User;
 import com.manev.quislisting.domain.post.discriminator.DlListing;
 import com.manev.quislisting.domain.qlml.Language;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlCategory;
 import com.manev.quislisting.domain.taxonomy.discriminator.DlLocation;
+import com.manev.quislisting.repository.DlMessageOverviewRepository;
+import com.manev.quislisting.repository.DlMessagesRepository;
 import com.manev.quislisting.repository.UserRepository;
 import com.manev.quislisting.repository.post.DlListingRepository;
 import com.manev.quislisting.repository.qlml.LanguageRepository;
@@ -19,12 +23,15 @@ import com.manev.quislisting.service.DlCategoryTestComponent;
 import com.manev.quislisting.service.DlContentFieldTestComponent;
 import com.manev.quislisting.service.DlListingTestComponent;
 import com.manev.quislisting.service.DlLocationTestComponent;
+import com.manev.quislisting.service.DlMessageTestComponent;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.form.DlListingMessageForm;
 import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
 import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
 import com.manev.quislisting.service.model.DlContentFieldInput;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.post.DlMessagesService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.post.dto.DlListingFieldDTO;
@@ -33,6 +40,7 @@ import com.manev.quislisting.service.taxonomy.mapper.DlCategoryMapper;
 import com.manev.quislisting.service.taxonomy.mapper.DlLocationMapper;
 import com.manev.quislisting.web.rest.filter.DlContentFieldFilter;
 import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
+import com.manev.quislisting.web.rest.validator.DlMessageFormValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,12 +136,24 @@ public class DlListingRestTest extends GenericResourceTest {
     @Autowired
     private DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper;
 
+    @Autowired
+    private DlMessageFormValidator dlMessageFormValidator;
+
+    @Autowired
+    private DlMessagesService dlMessagesService;
+
+    @Autowired
+    private DlMessagesRepository dlMessagesRepository;
+
+    @Autowired
+    private DlMessageOverviewRepository dlMessagesOverviewRepository;
+
     private MockMvc restDlListingMockMvc;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DlListingRest dlListingResource = new DlListingRest(dlListingService, userService, dlListingDtoToDlListingBaseMapper, dlListingDtoToDlListingModelMapper);
+        DlListingRest dlListingResource = new DlListingRest(dlListingService, userService, dlListingDtoToDlListingBaseMapper, dlListingDtoToDlListingModelMapper, dlMessageFormValidator, dlMessagesService);
         this.restDlListingMockMvc = MockMvcBuilders.standaloneSetup(dlListingResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setMessageConverters(jacksonMessageConverter).build();
@@ -574,6 +594,59 @@ public class DlListingRestTest extends GenericResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(savedDlListingDTO2.getId().intValue())))
                 .andExpect(header().string("X-Total-Count", "1"));
+    }
+
+    @Test
+    @Transactional
+    public void shouldCreateListingMessageForNotLoggedUser() throws Exception {
+        int messageTableBeforeCreate = dlMessagesRepository.findAll().size();
+        int messageOverviewTableBeforeCreate = dlMessagesOverviewRepository.findAll().size();
+
+        DlListing dlListing = dlListingTestComponent.createDlListing(dlCategoryTestComponent
+                .initCategory(DlMessageTestComponent.LANG_KEY));
+
+        DlListingMessageForm form = new DlListingMessageForm();
+        String email = "some@email.com";
+        form.setSenderEmail(email);
+        form.setSenderName("Some name");
+        form.setText("Some text");
+
+        restDlListingMockMvc.perform(post(RestRouter.DlListing.MESSAGES, dlListing.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(form)))
+                .andExpect(status().isNoContent());
+
+        List<DlMessage> dlMessageList = dlMessagesRepository.findAll();
+        List<DlMessageOverview> dlMessageOverviewList = dlMessagesOverviewRepository.findAll();
+        assertThat(dlMessageList).hasSize(messageTableBeforeCreate + 1);
+        assertThat(dlMessageOverviewList).hasSize(messageOverviewTableBeforeCreate + 1);
+
+        Optional<User> oneByLogin = userService.findOneByLogin(email);
+        assertThat(oneByLogin.isPresent()).isTrue();
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails
+    public void shouldCreateDlListingMessageForLoggedUser() throws Exception {
+        int messageTableBeforeCreate = dlMessagesRepository.findAll().size();
+        int messageOverviewTableBeforeCreate = dlMessagesOverviewRepository.findAll().size();
+
+        DlListing dlListing = dlListingTestComponent.createDlListing(dlCategoryTestComponent
+                .initCategory(DlMessageTestComponent.LANG_KEY));
+
+        DlListingMessageForm form = new DlListingMessageForm();
+        form.setText("Some text");
+
+        restDlListingMockMvc.perform(post(RestRouter.DlListing.MESSAGES, dlListing.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(form)))
+                .andExpect(status().isNoContent());
+
+        List<DlMessage> dlMessageList = dlMessagesRepository.findAll();
+        List<DlMessageOverview> dlMessageOverviewList = dlMessagesOverviewRepository.findAll();
+        assertThat(dlMessageList).hasSize(messageTableBeforeCreate + 1);
+        assertThat(dlMessageOverviewList).hasSize(messageOverviewTableBeforeCreate + 1);
     }
 
     private DlContentFieldItem findByName(String item, Set<DlContentFieldItem> items) {

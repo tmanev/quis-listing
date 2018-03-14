@@ -1,6 +1,5 @@
 package com.manev.quislisting.security;
 
-import com.manev.quislisting.domain.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,8 +26,6 @@ public final class SecurityUtils {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
                 userName = springSecurityUser.getUsername();
-            } else if (authentication.getPrincipal() instanceof String) {
-                userName = (String) authentication.getPrincipal();
             }
         }
         return userName;

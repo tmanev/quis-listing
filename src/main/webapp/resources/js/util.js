@@ -33,7 +33,7 @@ QlUtil = {
     },
     Rest: {
         authorizationBearer: function () {
-            return 'Bearer ' + Cookies.get('ql-auth').split(":")[1];
+            return 'Bearer ' + (Cookies.get('ql-auth') !== undefined ? Cookies.get('ql-auth').split(":")[1] : '');
         },
         Location: {
             getLocations: function (params) {
@@ -41,7 +41,8 @@ QlUtil = {
                     params: params,
                     headers: {
                         'Authorization': QlUtil.Rest.authorizationBearer()
-                    }});
+                    }
+                });
             }
         },
         Listing: {

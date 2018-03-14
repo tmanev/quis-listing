@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="${title}">Title</title>
+
+    <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
+          th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+</head>
+<body>
+<div th:fragment="content" class="container">
+    <div id="conversationThreadApp">
+        <h4 th:text="#{page.message_center.conversation_thread.title}">Conversation</h4>
+
+        <div class="form-group row required">
+            <label class="col-sm-3 col-form-label" id="textLabel" for="text"
+                   th:text="#{page.message_center.conversation_thread.label.your_message}">Your message</label>
+            <div class="col-sm-9">
+                    <textarea rows="3" id="text" type="text" name="text" class="form-control"
+                              placeholder="Type a message..."
+                              th:placeholder="#{page.message_center.conversation_thread.label.type_message}"
+                              v-model="dlMessage.text"
+                              v-bind:class="{ 'is-invalid': $v.dlMessage.text.$error, 'is-valid': $v.dlMessage.text.$dirty &amp;&amp; !$v.dlMessage.text.$invalid }"></textarea>
+                <span class="invalid-feedback"
+                      v-if="!$v.dlMessage.text.required &amp;&amp; $v.dlMessage.text.$dirty"
+                      th:text="#{validation.required}">Field is required</span>
+            </div>
+        </div>
+
+        <div class="form-group row" v-cloak>
+            <div class="offset-sm-3 col-sm-9">
+                <button type="submit" class="btn btn-primary" id="btnSend" v-on:click="onSendMessage()">
+                    <i v-if="btnSendMessageLoading" class="fa fa-circle-o-notch fa-spin"></i>
+                    <i v-if="!btnSendMessageLoading" class="fa fa-paper-plane" aria-hidden="true"></i>
+                    <span th:text="#{page.message_center.conversation_thread.btn_send}">Send</span>
+                </button>
+            </div>
+        </div>
+        <hr/>
+        <div class="col-sm-12 chat" style="overflow: hidden; outline: none;" v-cloak>
+            <div class="col-inside-lg decor-default">
+                <div class="chat-body">
+                    <h6 th:text="#{page.message_center.conversation_thread.label.history}">History</h6>
+                    <div v-for="dlMessage in dlMessages">
+                        <div class="answer left" v-if="(dlMessage.sender.id == dlMessageOverview.sender.id)">
+                            <div class="avatar">
+                                <img src="../../../resources/images/profile_2.png"
+                                     th:src="@{/resources/images/profile_2.png}" alt="User name">
+                                <div class="status offline"></div>
+                            </div>
+                            <div class="name">
+                                <span v-if="dlMessage.sender.firstName">{{dlMessage.sender.firstName}}</span>
+                                <span v-if="dlMessage.sender.lastName">{{dlMessage.sender.lastName}}</span>
+                            </div>
+                            <div class="text note"><pre>{{dlMessage.text}}</pre></div>
+                            <div class="time">{{dlMessage.created | fullTime}}</div>
+                        </div>
+                        <div class="answer right" v-if="(dlMessage.sender.id == dlMessageOverview.receiver.id)">
+                            <div class="avatar">
+                                <img src="../../../resources/images/profile_2.png"
+                                     th:src="@{/resources/images/profile_2.png}" alt="User name">
+                                <div class="status offline"></div>
+                            </div>
+                            <div class="name">
+                                <span v-if="dlMessage.sender.firstName">{{dlMessage.sender.firstName}}</span>
+                                <span v-if="dlMessage.sender.lastName">{{dlMessage.sender.lastName}}</span>
+                            </div>
+                            <div class="text note"><pre class="note">{{dlMessage.text}}</pre></div>
+                            <div class="time">{{dlMessage.created | fullTime}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px; margin-bottom: 20px;" v-if="pagingParams.loadedDlMessages < pagingParams.totalDlMessages" v-cloak>
+            <div class="col-sm">
+                <button id="btnLoadMore" class="btn btn-secondary btn-block"
+                        v-bind:disabled="pagingParams.isLoading"
+                        v-on:click="onLoadNextDlMessages">
+                    <i v-if="btnLoadMoreLoading" class="fa fa-circle-o-notch fa-spin"></i>
+                    <span th:text="#{page.default.btn_load_mode}">Load more</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Load current page javascript file -->
+    <script src="../../../resources/js/message-center/conversation-thread.js"
+            th:src="@{/resources/js/message-center/conversation-thread.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        window.onload = function () {
+            let totalDlMessages = [[${totalDlMessages}]];
+            let loadedDlMessages = [[${loadedDlMessages}]];
+            let jsTranslations = [[${jsTranslations}]];
+            let dlMessageOverview = [[${dlMessageOverview}]];
+            let dlMessages = [[${dlMessages}]];
+            ConversationThread.init(dlMessageOverview, dlMessages, jsTranslations, totalDlMessages, loadedDlMessages);
+        };
+    </script>
+</div>
+
+<!-- JavaScript libraries used to be able to open the html page itself in browser -->
+<script src="../../../resources/vendor/vue/vue.min.js"
+        th:src="@{/resources/vendor/vue/vue.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/vuelidate.min.js"
+        th:src="@{/resources/vendor/vuelidate/vuelidate.min.js}"></script>
+<script src="../../../resources/vendor/vuelidate/validators.min.js"
+        th:src="@{/resources/vendor/vuelidate/validators.min.js}"></script>
+<script src="../../../resources/vendor/vue-resource/vue-resource.min.js"
+        th:src="@{/resources/vendor/vue-resource/vue-resource.min.js}"></script>
+<script src="../../../resources/vendor/jquery/jquery-3.2.1.min.js"
+        th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap/js/bootstrap.min.js"
+        th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script src="../../../resources/vendor/bootstrap-notify/bootstrap-notify.min.js"
+        th:src="@{/resources/vendor/bootstrap-notify/bootstrap-notify.min.js}"></script>
+</body>
+</html>

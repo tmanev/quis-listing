@@ -1,4 +1,4 @@
-var MyListings = {
+let MyListings = {
     init: function (jsTranslations) {
         Vue.use(window.vuelidate.default);
 
@@ -8,25 +8,25 @@ var MyListings = {
             }
 
             // Split parts by comma
-            var parts = header.split(',');
-            var links = {};
+            let parts = header.split(',');
+            let links = {};
             // Parse each part into a named link
             parts.forEach(function(p, index) {
-                var section = p.split('>;');
+                let section = p.split('>;');
                 if (section.length !== 2) {
                     throw new Error('section could not be split on ">;"');
                 }
-                var url = section[0].replace(/<(.*)/, '$1').trim();
-                var queryString = {};
+                let url = section[0].replace(/<(.*)/, '$1').trim();
+                let queryString = {};
                 url.replace(
                     new RegExp('([^?=&]+)(=([^&]*))?', 'g'),
                     function($0, $1, $2, $3) { queryString[$1] = $3; }
                 );
-                var page = queryString.page;
+                let page = queryString.page;
                 if (typeof page === 'string' || page instanceof String) {
                     page = parseInt(page);
                 }
-                var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+                let name = section[1].replace(/rel="(.*)"/, '$1').trim();
                 links[name] = page;
             });
             return links;
@@ -220,8 +220,6 @@ var MyListings = {
                         url: '/api/dl-listings/' + this.confirmModal.listingToDelete.id,
                         method: 'DELETE'
                     }).then(function (response) {
-                        console.log('Success!:', response.data);
-
                         let index = this.dlListings.indexOf(this.confirmModal.listingToDelete);
                         this.dlListings.splice(index, 1);
                         QlUtil.UI.Notification.showSuccess({message: jsTranslations['page.my_listings.notifications.delete_listing_success']});

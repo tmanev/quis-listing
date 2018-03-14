@@ -40,6 +40,14 @@ public class MvcRouter {
         }
     }
 
+    public class MessageCenter {
+        public static final String CONVERSATIONS = "/message-center/conversations";
+        public static final String CONVERSATION_THREAD = "/message-center/conversations/{messageOverviewId}/thread";
+
+        private MessageCenter() {
+        }
+    }
+
     public class Account {
         public static final String PROFILE = "/account/profile";
 

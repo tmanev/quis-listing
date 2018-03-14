@@ -175,6 +175,9 @@ public class BaseController {
         jsTranslations.addTranslation("rest.general.save_success", messageSource.getMessage("rest.general.save_success", null, locale));
         jsTranslations.addTranslation("info.save_success", messageSource.getMessage("info.save_success", null, locale));
         jsTranslations.addTranslation("info.general_server_error", messageSource.getMessage("info.general_server_error", null, locale));
+        jsTranslations.addTranslation("page.message_center.conversations.notifications.delete_listing_success", messageSource.getMessage("page.message_center.conversations.notifications.delete_listing_success",null, locale));
+        jsTranslations.addTranslation("page.message_center.conversation_thread.label.sendmessage.success", messageSource.getMessage("page.message_center.conversation_thread.label.sendmessage.success", null, locale));
+        jsTranslations.addTranslation("page.message_center.conversation_thread.label.sendmessage.failure", messageSource.getMessage("page.message_center.conversation_thread.label.sendmessage.failure", null, locale));
 
         return jsTranslations.getTranslations();
     }

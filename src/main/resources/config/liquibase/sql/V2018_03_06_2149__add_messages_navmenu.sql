@@ -1,0 +1,8 @@
+INSERT INTO ql_translation_group () VALUES ();
+INSERT INTO ql_translation (tr_group_id, language_code, source_language_code) VALUES ((SELECT max(tr_gr.id) FROM ql_translation_group tr_gr), 'en', NULL);
+INSERT INTO ql_translation (tr_group_id, language_code, source_language_code) VALUES ((SELECT max(tr_gr.id) FROM ql_translation_group tr_gr), 'bg', 'en');
+INSERT INTO ql_translation (tr_group_id, language_code, source_language_code) VALUES ((SELECT max(tr_gr.id) FROM ql_translation_group tr_gr), 'ro', 'en');
+
+INSERT INTO ql_nav_menu_item (title, slug, static_page_id, term_taxonomy_id, translation_id, menu_order) VALUES ('Message center', 'message-center/conversations', NULL , 8, (SELECT tr.id from ql_translation tr WHERE tr.language_code='en' AND tr.tr_group_id=((SELECT max(tr_gr.id) FROM ql_translation_group tr_gr))), 5);
+INSERT INTO ql_nav_menu_item (title, slug, static_page_id, term_taxonomy_id, translation_id, menu_order) VALUES ('Център за съобщения', 'message-center/conversations', NULL , 19, (SELECT tr.id from ql_translation tr WHERE tr.language_code='bg' AND tr.tr_group_id=((SELECT max(tr_gr.id) FROM ql_translation_group tr_gr))), 5);
+INSERT INTO ql_nav_menu_item (title, slug, static_page_id, term_taxonomy_id, translation_id, menu_order) VALUES ('Centrul de mesaje', 'message-center/conversations', NULL , 21, (SELECT tr.id from ql_translation tr WHERE tr.language_code='ro' AND tr.tr_group_id=((SELECT max(tr_gr.id) FROM ql_translation_group tr_gr))), 5);
