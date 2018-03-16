@@ -111,7 +111,7 @@ public class DlContentFieldMapper {
 
     private Set<DlCategory> getDlCategories(List<DlCategoryDTO> dlCategoryDTOList) {
         Set<DlCategory> dlCategories = new HashSet<>();
-        if (dlCategoryDTOList != null && !dlCategoryDTOList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlCategoryDTOList)) {
             for (DlCategoryDTO dlCategoryDTO : dlCategoryDTOList) {
                 dlCategories.add(dlCategoryMapper.dlCategoryDtoToDlCategory(dlCategoryDTO));
             }
@@ -121,7 +121,7 @@ public class DlContentFieldMapper {
 
     private List<DlCategoryDTO> getDlCategoriesDTO(Set<DlCategory> dlCategories) {
         List<DlCategoryDTO> dlCategoryDTOList = new ArrayList<>();
-        if (dlCategories != null && !dlCategories.isEmpty()) {
+        if (!CollectionUtils.isEmpty(dlCategories)) {
             for (DlCategory dlCategory : dlCategories) {
                 dlCategoryDTOList.add(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
             }

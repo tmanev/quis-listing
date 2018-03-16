@@ -1,6 +1,7 @@
 package com.manev.quislisting.config.audit;
 
 import com.manev.quislisting.domain.PersistentAuditEvent;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class AuditEventConverter {
     public Map<String, Object> convertDataToObjects(Map<String, String> data) {
         Map<String, Object> results = new HashMap<>();
 
-        if (data != null) {
+        if (MapUtils.isNotEmpty(data)) {
             for (Map.Entry<String, String> entry : data.entrySet()) {
                 results.put(entry.getKey(), entry.getValue());
             }
@@ -68,7 +69,7 @@ public class AuditEventConverter {
     public Map<String, String> convertDataToStrings(Map<String, Object> data) {
         Map<String, String> results = new HashMap<>();
 
-        if (data != null) {
+        if (MapUtils.isNotEmpty(data)) {
             for (Map.Entry<String, Object> entry : data.entrySet()) {
                 Object object = entry.getValue();
 
