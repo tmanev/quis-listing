@@ -75,6 +75,14 @@ public final class RestRouter {
         }
     }
 
+    public class DlCategory {
+
+        public static final String LIST = "/api/dl-categories";
+
+        private DlCategory() {
+        }
+    }
+
     private RestRouter() {
     }
 
