@@ -14,8 +14,12 @@ import com.manev.quislisting.service.util.SlugUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import org.springframework.util.CollectionUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class NavMenuMapper {
@@ -59,7 +63,7 @@ public class NavMenuMapper {
 
     private void setTranslationsDTO(NavMenu navMenu, NavMenuDTO navMenuDTO, List<Language> activeLanguages) {
         Set<Translation> translations = navMenu.getTranslation().getTranslationGroup().getTranslations();
-        if (!CollectionUtils.isEmpty(translations)) {
+        if (translations != null) {
             Map<String, Translation> stringTranslationMap = mapTranslationsByLanguageCode(translations);
             for (Language activeLanguage : activeLanguages) {
                 // I don't need the language that the page is displayed

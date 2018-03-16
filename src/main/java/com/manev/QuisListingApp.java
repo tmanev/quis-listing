@@ -14,7 +14,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
-import org.springframework.util.StringUtils;
 
 @SpringBootApplication
 @EnableConfigurationProperties({LiquibaseProperties.class})
@@ -38,7 +37,7 @@ public class QuisListingApp {
         SpringApplication app = new SpringApplication(QuisListingApp.class);
         Environment env = app.run(args).getEnvironment();
         String protocol = "http";
-        if (!StringUtils.isEmpty(env.getProperty("server.ssl.key-store"))) {
+        if (env.getProperty("server.ssl.key-store") != null) {
             protocol = "https";
         }
         log.info("\n----------------------------------------------------------\n\t" +
