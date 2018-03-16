@@ -9,10 +9,6 @@
     <link href="../../../resources/vendor/bootstrap/css/bootstrap.min.css"
           th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}"
           rel="stylesheet"/>
-    <link href="../../../resources/vendor/bootstrap/css/bootstrap-theme.min.css"
-          th:href="@{/resources/vendor/bootstrap/css/bootstrap-theme.min.css}"
-          rel="stylesheet"/>
-
 </head>
 <body>
 <div th:fragment="content" class="container">
@@ -101,7 +97,8 @@
                                 id="btnSaveDescription"
                                 v-on:click="onSaveDescription">
                             <i v-if="editParts[0].btnSaveLoading" class="fa fa-circle-o-notch fa-spin\"></i>
-                            <i v-if="!editParts[0].btnSaveLoading" class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;<span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
+                            <i v-if="!editParts[0].btnSaveLoading" class="fa fa-floppy-o" aria-hidden="true"></i>
+                            <span th:text="#{page.my_listings.edit_listing.btn_save}">Save</span>
                         </button>
                     </div>
                 </div>

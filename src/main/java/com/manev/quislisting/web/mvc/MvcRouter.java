@@ -18,6 +18,12 @@ public class MvcRouter {
     private MvcRouter() {
     }
 
+    public class Social {
+        public static final String SIGN_UP = "/social/sign-up";
+
+        private Social() {}
+    }
+
     public class Listings {
         public static final String VIEW = "/listings/{id}/{slug}";
 
@@ -37,6 +43,14 @@ public class MvcRouter {
         public static final String PUBLISH_REQUEST_SUCCESS = "/my-listings/{id}/publish-successful";
 
         private MyListings() {
+        }
+    }
+
+    public class MessageCenter {
+        public static final String CONVERSATIONS = "/message-center/conversations";
+        public static final String CONVERSATION_THREAD = "/message-center/conversations/{messageOverviewId}/thread";
+
+        private MessageCenter() {
         }
     }
 

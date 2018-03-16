@@ -1,5 +1,7 @@
 package com.manev.quislisting.service;
 
+import com.manev.quislisting.domain.DlMessage;
+import com.manev.quislisting.domain.DlMessageOverview;
 import com.manev.quislisting.domain.EmailTemplate;
 import com.manev.quislisting.domain.QlConfig;
 import com.manev.quislisting.domain.User;
@@ -8,6 +10,7 @@ import com.manev.quislisting.domain.qlml.QlString;
 import com.manev.quislisting.domain.qlml.StringTranslation;
 import com.manev.quislisting.service.dto.ContactDTO;
 import com.manev.quislisting.service.util.UrlUtil;
+import com.manev.quislisting.web.mvc.MvcRouter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -175,6 +178,30 @@ public class EmailSendingService {
         mailService.sendEmail(adminEmailConfig.getValue(), "New user has been registered", String.format("User id is: %s, with email: %s", user.getId(), user.getEmail()), false, true);
     }
 
+    @Async
+    public void sendNewMessageEmail(DlMessageOverview dlMessageOverviewForReceiver, DlMessage dlMessage) {
+        User receiver = dlMessageOverviewForReceiver.getReceiver();
+        User sender = dlMessageOverviewForReceiver.getSender();
+        log.debug("Sending new message e-mail to '{}'", receiver.getEmail());
+        Locale locale = Locale.forLanguageTag(receiver.getLangKey());
+        EmailTemplate newMessageTemplate = emailTemplateService.findOneByName("you_have_new_message");
+        String subject = messageSource.getMessage("email.you_have_new_message.subject", new String[]{sender.getFirstName()}, locale);
+        String html = getValueByLanguage(receiver.getLangKey(), newMessageTemplate.getQlString());
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(BASE_NAME, getSiteName());
+        variables.put(BASE_URL, getBaseUrl());
+        variables.put("sender", sender);
+        variables.put("receiver", receiver);
+        variables.put("message", dlMessage.getText().replaceAll("(\r\n|\n)", "<br />"));
+        variables.put("conversationThreadLink", getBaseUrl() + MvcRouter.MessageCenter.CONVERSATION_THREAD.replace("{messageOverviewId}", String.valueOf(dlMessageOverviewForReceiver.getId())));
+        variables.put("signUpLink", getBaseUrl() + MvcRouter.SIGN_UP);
+
+        String innerEmailContent = templateEngineComponent.getTemplateFromMap(html, variables);
+        String emailContent = processFinalEmailTemplate(innerEmailContent, locale.getLanguage());
+        mailService.sendEmail(receiver.getEmail(), subject, emailContent, false, true);
+    }
+
     private String getValueByLanguage(String languageCode, QlString qlString) {
         if (qlString.getLanguageCode().equals(languageCode)) {
             return qlString.getValue();
@@ -208,7 +235,7 @@ public class EmailSendingService {
         Map<String, Object> variables = new HashMap<>();
         variables.put(BASE_NAME, getSiteName());
         variables.put(BASE_URL, getBaseUrl());
-        variables.put(EMAIL_LOGO_IMAGE, getBaseUrl()+"/resources/images/logo-ql.png");
+        variables.put(EMAIL_LOGO_IMAGE, getBaseUrl() + "/resources/images/logo-ql.png");
         variables.put(CURRENT_YEAR, Calendar.getInstance().get(Calendar.YEAR));
         variables.put(INNER_EMAIL, innerEmail);
 

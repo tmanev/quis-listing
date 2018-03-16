@@ -17,6 +17,8 @@ public class QuisListingProperties {
 
     private final Security security = new Security();
     private final Ribbon ribbon = new Ribbon();
+    private final Social social = new Social();
+    private final Twitter twitter = new Twitter();
     private final QuisListingProperties.Mail mail = new QuisListingProperties.Mail();
     private final CorsConfiguration cors = new CorsConfiguration();
     private final QuisListingProperties.Async async = new QuisListingProperties.Async();
@@ -44,7 +46,7 @@ public class QuisListingProperties {
         return attachmentStoragePath;
     }
 
-    public void setAttachmentStoragePath(String attachmentStoragePath) {
+    public void setAttachmentStoragePath(final String attachmentStoragePath) {
         this.attachmentStoragePath = attachmentStoragePath;
     }
 
@@ -52,7 +54,7 @@ public class QuisListingProperties {
         return geoLocationDbPath;
     }
 
-    public void setGeoLocationDbPath(String geoLocationDbPath) {
+    public void setGeoLocationDbPath(final String geoLocationDbPath) {
         this.geoLocationDbPath = geoLocationDbPath;
     }
 
@@ -62,6 +64,14 @@ public class QuisListingProperties {
 
     public Cache getCache() {
         return cache;
+    }
+
+    public Social getSocial() {
+        return social;
+    }
+
+    public Twitter getTwitter() {
+        return twitter;
     }
 
     public static class Security {
@@ -92,7 +102,7 @@ public class QuisListingProperties {
                     return secret;
                 }
 
-                public void setSecret(String secret) {
+                public void setSecret(final String secret) {
                     this.secret = secret;
                 }
 
@@ -100,7 +110,7 @@ public class QuisListingProperties {
                     return tokenValidityInSeconds;
                 }
 
-                public void setTokenValidityInSeconds(long tokenValidityInSeconds) {
+                public void setTokenValidityInSeconds(final long tokenValidityInSeconds) {
                     this.tokenValidityInSeconds = tokenValidityInSeconds;
                 }
 
@@ -108,7 +118,7 @@ public class QuisListingProperties {
                     return tokenValidityInSecondsForRememberMe;
                 }
 
-                public void setTokenValidityInSecondsForRememberMe(long tokenValidityInSecondsForRememberMe) {
+                public void setTokenValidityInSecondsForRememberMe(final long tokenValidityInSecondsForRememberMe) {
                     this.tokenValidityInSecondsForRememberMe = tokenValidityInSecondsForRememberMe;
                 }
             }
@@ -123,7 +133,7 @@ public class QuisListingProperties {
             return displayOnActiveProfiles;
         }
 
-        public void setDisplayOnActiveProfiles(String[] displayOnActiveProfiles) {
+        public void setDisplayOnActiveProfiles(final String[] displayOnActiveProfiles) {
             this.displayOnActiveProfiles = displayOnActiveProfiles;
         }
     }
@@ -135,7 +145,7 @@ public class QuisListingProperties {
             return this.from;
         }
 
-        public void setFrom(String from) {
+        public void setFrom(final String from) {
             this.from = from;
         }
 
@@ -154,7 +164,7 @@ public class QuisListingProperties {
             return this.corePoolSize;
         }
 
-        public void setCorePoolSize(int corePoolSize) {
+        public void setCorePoolSize(final int corePoolSize) {
             this.corePoolSize = corePoolSize;
         }
 
@@ -162,7 +172,7 @@ public class QuisListingProperties {
             return this.maxPoolSize;
         }
 
-        public void setMaxPoolSize(int maxPoolSize) {
+        public void setMaxPoolSize(final int maxPoolSize) {
             this.maxPoolSize = maxPoolSize;
         }
 
@@ -170,7 +180,7 @@ public class QuisListingProperties {
             return this.queueCapacity;
         }
 
-        public void setQueueCapacity(int queueCapacity) {
+        public void setQueueCapacity(final int queueCapacity) {
             this.queueCapacity = queueCapacity;
         }
     }
@@ -193,7 +203,7 @@ public class QuisListingProperties {
                 return timeToLiveSeconds;
             }
 
-            public void setTimeToLiveSeconds(int timeToLiveSeconds) {
+            public void setTimeToLiveSeconds(final int timeToLiveSeconds) {
                 this.timeToLiveSeconds = timeToLiveSeconds;
             }
 
@@ -201,9 +211,43 @@ public class QuisListingProperties {
                 return maxEntries;
             }
 
-            public void setMaxEntries(long maxEntries) {
+            public void setMaxEntries(final long maxEntries) {
                 this.maxEntries = maxEntries;
             }
+        }
+    }
+
+    public static class Social {
+        private String redirectAfterSignIn = "";
+
+        public String getRedirectAfterSignIn() {
+            return this.redirectAfterSignIn;
+        }
+
+        public void setRedirectAfterSignIn(final String redirectAfterSignIn) {
+            this.redirectAfterSignIn = redirectAfterSignIn;
+        }
+
+    }
+
+    public static class Twitter {
+        private String accessToken = "";
+        private String accessTokenSecret = "";
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public void setAccessToken(final String accessToken) {
+            this.accessToken = accessToken;
+        }
+
+        public String getAccessTokenSecret() {
+            return accessTokenSecret;
+        }
+
+        public void setAccessTokenSecret(final String accessTokenSecret) {
+            this.accessTokenSecret = accessTokenSecret;
         }
     }
 

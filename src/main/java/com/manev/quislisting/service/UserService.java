@@ -145,6 +145,27 @@ public class UserService {
         return user;
     }
 
+    public User createUserFromMessageForm(String name, String email, String languageCode) {
+        User user = new User();
+        user.setLogin(email);
+        user.setEmail(email);
+        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        user.setPassword(encryptedPassword);
+        user.setFirstName(name);
+        user.setActivated(Boolean.FALSE);
+        user.setUpdates(Boolean.FALSE);
+        user.setLangKey(languageCode);
+
+        Authority authority = authorityRepository.findOne(AuthoritiesConstants.ANONYMOUS);
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(authority);
+        user.setAuthorities(authorities);
+
+        userRepository.save(user);
+        userSearchRepository.save(user);
+        return user;
+    }
+
     /**
      * Update basic information (first name, last name, language) for the current user.
      */
@@ -248,5 +269,9 @@ public class UserService {
 
     public Optional<User> findOneByLogin(String currentUserLogin) {
         return userRepository.findOneByLogin(currentUserLogin);
+    }
+
+    public User findOne(Long id) {
+        return userRepository.findOne(id);
     }
 }

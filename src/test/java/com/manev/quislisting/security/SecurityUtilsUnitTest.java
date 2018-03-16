@@ -6,10 +6,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
+import static com.manev.quislisting.security.AuthoritiesConstants.ADMIN;
+import static com.manev.quislisting.security.AuthoritiesConstants.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -22,7 +26,8 @@ public class SecurityUtilsUnitTest {
     @Test
     public void testgetCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
+        User user = new User("admin", "admin", Arrays.asList(new SimpleGrantedAuthority(ADMIN), new SimpleGrantedAuthority(USER)));
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(user, "admin"));
         SecurityContextHolder.setContext(securityContext);
         String login = SecurityUtils.getCurrentUserLogin();
         assertThat(login).isEqualTo("admin");

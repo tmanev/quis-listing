@@ -5,12 +5,14 @@ import com.manev.quislisting.domain.User;
 import com.manev.quislisting.security.SecurityUtils;
 import com.manev.quislisting.service.UserService;
 import com.manev.quislisting.service.form.DlListingForm;
+import com.manev.quislisting.service.form.DlListingMessageForm;
 import com.manev.quislisting.service.form.DlListingPatch;
 import com.manev.quislisting.service.mapper.DlListingDtoToDlListingBaseMapper;
 import com.manev.quislisting.service.mapper.DlListingDtoToDlListingModelMapper;
 import com.manev.quislisting.service.model.DlListingBaseModel;
 import com.manev.quislisting.service.model.DlListingModel;
 import com.manev.quislisting.service.post.DlListingService;
+import com.manev.quislisting.service.post.DlMessagesService;
 import com.manev.quislisting.service.post.dto.AttachmentDTO;
 import com.manev.quislisting.service.post.dto.DlListingDTO;
 import com.manev.quislisting.service.taxonomy.dto.ActiveLanguageDTO;
@@ -18,6 +20,7 @@ import com.manev.quislisting.web.rest.filter.DlListingSearchFilter;
 import com.manev.quislisting.web.rest.util.HeaderUtil;
 import com.manev.quislisting.web.rest.util.PaginationUtil;
 import com.manev.quislisting.web.rest.util.ResponseUtil;
+import com.manev.quislisting.web.rest.validator.DlMessageFormValidator;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +60,16 @@ public class DlListingRest {
     private final UserService userService;
     private final DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper;
     private final DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper;
+    private final DlMessageFormValidator dlMessageFormValidator;
+    private final DlMessagesService dlMessagesService;
 
-    public DlListingRest(DlListingService dlListingService, UserService userService, DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper, DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper) {
+    public DlListingRest(DlListingService dlListingService, UserService userService, DlListingDtoToDlListingBaseMapper dlListingDtoToDlListingBaseMapper, DlListingDtoToDlListingModelMapper dlListingDtoToDlListingModelMapper, DlMessageFormValidator dlMessageFormValidator, DlMessagesService dlMessagesService) {
         this.dlListingService = dlListingService;
         this.userService = userService;
         this.dlListingDtoToDlListingBaseMapper = dlListingDtoToDlListingBaseMapper;
         this.dlListingDtoToDlListingModelMapper = dlListingDtoToDlListingModelMapper;
+        this.dlMessageFormValidator = dlMessageFormValidator;
+        this.dlMessagesService = dlMessagesService;
     }
 
     @PatchMapping(RestRouter.DlListing.LIST)
@@ -158,7 +165,8 @@ public class DlListingRest {
 
         Page<DlListingDTO> page = dlListingService.findAllByLanguageAndUser(pageable, languageCode, oneByLogin.get());
 
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel(),
+                languageCode));
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.LIST);
         return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
@@ -193,14 +201,15 @@ public class DlListingRest {
     }
 
     @GetMapping(RestRouter.DlListing.RECENT)
-    public ResponseEntity<List<DlListingBaseModel>> getRecentListings(Pageable pageable,
-                                                                @RequestParam(required = false, defaultValue = "en") String languageCode) {
+    public ResponseEntity<List<DlListingBaseModel>> getRecentListings(final Pageable pageable,
+                                                                final @RequestParam(required = false, defaultValue = "en") String languageCode) {
         log.debug("REST request to get a page of DlListingDTO");
 
-        Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, languageCode);
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        final Page<DlListingDTO> page = dlListingService.findAllForFrontPage(pageable, languageCode);
+        final Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper
+                .convert(dlListingDTO, new DlListingBaseModel(), languageCode));
 
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.RECENT);
+        final HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(dlListingBaseModels, RestRouter.DlListing.RECENT);
         return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
     }
 
@@ -217,9 +226,20 @@ public class DlListingRest {
         }
 
         Page<DlListingDTO> page = dlListingService.search(dlListingSearchFilter, pageable);
-        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel()));
+        Page<DlListingBaseModel> dlListingBaseModels = page.map(dlListingDTO -> dlListingDtoToDlListingBaseMapper.convert(dlListingDTO, new DlListingBaseModel(),
+                languageCode));
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, dlListingBaseModels, RestRouter.DlListing.SEARCH);
         return new ResponseEntity<>(dlListingBaseModels.getContent(), headers, HttpStatus.OK);
+    }
+
+    @PostMapping(RestRouter.DlListing.MESSAGES)
+    public ResponseEntity<Void> sendDlListingMessage(@PathVariable Long id, @RequestBody DlListingMessageForm form) {
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+
+        dlMessageFormValidator.validate(form, currentUserLogin);
+
+        dlMessagesService.sendMessageForListing(id, form, currentUserLogin);
+        return ResponseEntity.noContent().build();
     }
 
     private User getAuthenticatedUser(String login) {
