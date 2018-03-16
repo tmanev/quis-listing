@@ -110,6 +110,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .and()
             .authorizeRequests()
                 .antMatchers("/api/dl-locations").permitAll()
+                .antMatchers("/api/dl-categories").permitAll()
                 .antMatchers(RestRouter.DlListing.SEARCH).permitAll()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/activate").permitAll()

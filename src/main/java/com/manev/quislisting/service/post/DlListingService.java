@@ -385,7 +385,7 @@ public class DlListingService {
     }
 
     private DlListingContentFieldRel findDlContentFieldRelationship(DlContentField dlContentField, Set<DlListingContentFieldRel> dlListingContentFieldRels) {
-        if (dlListingContentFieldRels != null) {
+        if (!CollectionUtils.isEmpty(dlListingContentFieldRels)) {
             for (DlListingContentFieldRel dlListingContentFieldRel : dlListingContentFieldRels) {
                 if (dlContentField.getId().equals(dlListingContentFieldRel.getDlContentField().getId())) {
                     return dlListingContentFieldRel;
