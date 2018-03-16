@@ -1,8 +1,6 @@
 package com.manev.quislisting.domain;
 
 
-import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,12 +8,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A Social user.
  */
 @Entity
-@Table(name = "ql_dl_social_user")
+@Table(name = "ql_social_user_connection")
 public class SocialUserConnection implements Serializable {
 
     private static final long serialVersionUID = 1L;

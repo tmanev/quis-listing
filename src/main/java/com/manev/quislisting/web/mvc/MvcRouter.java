@@ -13,11 +13,15 @@ public class MvcRouter {
     public static final String SIGN_IN = "/sign-in";
     public static final String SIGN_OUT = "/sign-out";
     public static final String SIGN_UP = "/sign-up";
-    public static final String SIGNUP = "/signup";
     public static final String STATIC_PAGE = "/{name}";
-    public static final String SOCIAL = "/social";
 
     private MvcRouter() {
+    }
+
+    public class Social {
+        public static final String SIGN_UP = "/social/sign-up";
+
+        private Social() {}
     }
 
     public class Listings {

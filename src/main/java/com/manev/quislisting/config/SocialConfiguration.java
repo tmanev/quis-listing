@@ -4,6 +4,7 @@ import com.manev.quislisting.repository.CustomSocialUsersConnectionRepository;
 import com.manev.quislisting.repository.SocialUserConnectionRepository;
 import com.manev.quislisting.security.CustomSignInAdapter;
 import com.manev.quislisting.security.jwt.TokenProvider;
+import com.manev.quislisting.web.mvc.MvcRouter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +100,7 @@ public class SocialConfiguration implements SocialConfigurer {
             final UsersConnectionRepository usersConnectionRepository, final SignInAdapter signInAdapter) {
         final ProviderSignInController providerSignInController = new ProviderSignInController(connectionFactoryLocator,
                 usersConnectionRepository, signInAdapter);
-        providerSignInController.setSignUpUrl("/social/signup");
+        providerSignInController.setSignUpUrl(MvcRouter.Social.SIGN_UP);
         providerSignInController.setApplicationUrl(environment.getProperty("spring.application.url"));
         return providerSignInController;
     }

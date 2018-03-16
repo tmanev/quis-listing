@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="V2018_02_19_0820" author="dgavrilov">
-        <createTable tableName="ql_dl_social_user">
+        <createTable tableName="ql_social_user_connection">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -32,7 +32,8 @@
             <column name="expire_time" type="bigint"/>
         </createTable>
 
-        <addUniqueConstraint tableName="ql_dl_social_user" columnNames="provider_id"/>
+        <addUniqueConstraint tableName="ql_social_user_connection" columnNames="user_id, provider_id, provider_user_id"/>
+        <addUniqueConstraint tableName="ql_social_user_connection" columnNames="user_id, provider_id, rank"/>
     </changeSet>
 
 </databaseChangeLog>
