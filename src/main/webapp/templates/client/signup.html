@@ -13,172 +13,180 @@
 <body>
 
 <div th:fragment="content" class="container" id="signUpApp">
-    <div th:if="${success != null}">
-        <div class="page-header">
-            <h1 th:text="#{page.signup.success.thank_you_for_registering}">Thank you for registering</h1>
-            <h3 th:text="#{page.signup.success.email_sent}">An Email has been sent to the address that you provided.
-                Once you receive that email click on
-                activation link to activate your profile.</h3>
-        </div>
-    </div>
-    <div class="alert alert-danger alert-dismissible"
-         th:if="${errMsg != null}"
-         role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-        <span th:text="${errMsg}">Your email and password seem to be incorrect. Please try again.</span>
-    </div>
-    <form th:if="${success == null}"
-          id="signUp"
-          action="#"
-          th:action="@{/sign-up}"
-          th:object="${signUpUserBean}"
-          method="post"
-          v-on:submit.prevent="onSubmit($event)"
-          v-cloak>
-        <fieldset>
-            <legend th:text="#{page.signup.form.legend}">Sign Up</legend>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input type="text" class="form-control"
-                           th:placeholder="#{page.signup.form.input.placeholder.email_address}"
-                           placeholder="Email address"
-                           th:field="*{email}"
-                           v-model="signUp.email"
-                           v-on:input="$v.signUp.email.$touch"
-                           v-bind:class="{ 'is-invalid': $v.signUp.email.$error, 'is-valid': $v.signUp.email.$dirty &amp;&amp; !$v.signUp.email.$invalid }"/>
-                    <div class="invalid-feedback" v-if="!$v.signUp.email.email"
-                         th:text="#{validation.invalid_email}">Invalid email
-                    </div>
-                    <div class="invalid-feedback" v-if="!$v.signUp.email.required &amp;&amp; $v.signUp.email.$dirty"
-                         th:text="#{validation.required}">Field is required
-                    </div>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.email.minLength">
-                        <span th:text="#{validation.min}">Min</span>
-                        <span>{{ $v.signUp.email.$params.minLength.min }}</span>
-                        <span th:text="#{validation.letters}">letters</span>.
-                    </div>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.email.maxLength">
-                        <span th:text="#{validation.max}">Max</span>
-                        <span>{{ $v.signUp.email.$params.maxLength.max }}</span>
-                        <span th:text="#{validation.letters}">letters</span>.
-                    </div>
+    <div class="row">
+        <div class="col-lg-9">
+            <div th:if="${success != null}">
+                <div class="page-header">
+                    <h1 th:text="#{page.signup.success.thank_you_for_registering}">Thank you for registering</h1>
+                    <h3 th:text="#{page.signup.success.email_sent}">An Email has been sent to the address that you provided.
+                        Once you receive that email click on
+                        activation link to activate your profile.</h3>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input type="text" class="form-control" id="inputFirstname"
-                           th:placeholder="#{page.signup.form.input.placeholder.first_name}"
-                           placeholder="First name" name="firstName"
-                           th:field="*{firstName}"
-                           v-model="signUp.firstName"
-                           v-on:input="$v.signUp.firstName.$touch"
-                           v-bind:class="{ 'is-invalid': $v.signUp.firstName.$error, 'is-valid': $v.signUp.firstName.$dirty &amp;&amp; !$v.signUp.firstName.$invalid }"/>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.firstName.required &amp;&amp; $v.signUp.firstName.$dirty"
-                         th:text="#{validation.required}">Field is required
-                    </div>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.firstName.maxLength">
-                        <span th:text="#{validation.max}">Max</span>
-                        <span>{{ $v.signUp.firstName.$params.maxLength.max }}</span>
-                        <span th:text="#{validation.letters}">letters</span>.
-                    </div>
-                </div>
+            <div class="alert alert-danger alert-dismissible"
+                 th:if="${errMsg != null}"
+                 role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <span th:text="${errMsg}">Your email and password seem to be incorrect. Please try again.</span>
             </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input type="text" class="form-control" id="inputLastname"
-                           th:placeholder="#{page.signup.form.input.placeholder.last_name}"
-                           placeholder="Last name" name="lastName" autocomplete="nope"
-                           th:field="*{lastName}"
-                           v-model="signUp.lastName"
-                           v-on:input="$v.signUp.lastName.$touch"
-                           v-bind:class="{ 'is-invalid': $v.signUp.lastName.$error, 'is-valid': $v.signUp.lastName.$dirty &amp;&amp; !$v.signUp.lastName.$invalid }"/>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.lastName.required &amp;&amp; $v.signUp.lastName.$dirty"
-                         th:text="#{validation.required}">Field is required
+            <form th:if="${success == null}"
+                  id="signUp"
+                  action="#"
+                  th:action="@{/sign-up}"
+                  th:object="${signUpUserBean}"
+                  method="post"
+                  v-on:submit.prevent="onSubmit($event)"
+                  v-cloak>
+                <fieldset>
+                    <legend th:text="#{page.signup.form.legend}">Sign Up</legend>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="text" class="form-control"
+                                   th:placeholder="#{page.signup.form.input.placeholder.email_address}"
+                                   placeholder="Email address"
+                                   th:field="*{email}"
+                                   v-model="signUp.email"
+                                   v-on:input="$v.signUp.email.$touch"
+                                   v-bind:class="{ 'is-invalid': $v.signUp.email.$error, 'is-valid': $v.signUp.email.$dirty &amp;&amp; !$v.signUp.email.$invalid }"/>
+                            <div class="invalid-feedback" v-if="!$v.signUp.email.email"
+                                 th:text="#{validation.invalid_email}">Invalid email
+                            </div>
+                            <div class="invalid-feedback" v-if="!$v.signUp.email.required &amp;&amp; $v.signUp.email.$dirty"
+                                 th:text="#{validation.required}">Field is required
+                            </div>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.email.minLength">
+                                <span th:text="#{validation.min}">Min</span>
+                                <span>{{ $v.signUp.email.$params.minLength.min }}</span>
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </div>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.email.maxLength">
+                                <span th:text="#{validation.max}">Max</span>
+                                <span>{{ $v.signUp.email.$params.maxLength.max }}</span>
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </div>
+                        </div>
                     </div>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.lastName.maxLength">
-                        <span th:text="#{validation.max}">Max</span>
-                        <span>{{ $v.signUp.lastName.$params.maxLength.max }}</span>
-                        <span th:text="#{validation.letters}">letters</span>.
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="inputFirstname"
+                                   th:placeholder="#{page.signup.form.input.placeholder.first_name}"
+                                   placeholder="First name" name="firstName"
+                                   th:field="*{firstName}"
+                                   v-model="signUp.firstName"
+                                   v-on:input="$v.signUp.firstName.$touch"
+                                   v-bind:class="{ 'is-invalid': $v.signUp.firstName.$error, 'is-valid': $v.signUp.firstName.$dirty &amp;&amp; !$v.signUp.firstName.$invalid }"/>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.firstName.required &amp;&amp; $v.signUp.firstName.$dirty"
+                                 th:text="#{validation.required}">Field is required
+                            </div>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.firstName.maxLength">
+                                <span th:text="#{validation.max}">Max</span>
+                                <span>{{ $v.signUp.firstName.$params.maxLength.max }}</span>
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input type="password" class="form-control" id="inputPassword"
-                           th:placeholder="#{page.signup.form.input.placeholder.password}"
-                           placeholder="Password" name="password" autocomplete="new-password"
-                           th:field="*{password}"
-                           v-model="signUp.password"
-                           v-on:input="$v.signUp.password.$touch"
-                           v-bind:class="{ 'is-invalid': $v.signUp.password.$error, 'is-valid': $v.signUp.password.$dirty &amp;&amp; !$v.signUp.password.$invalid }"/>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.password.required &amp;&amp; $v.signUp.password.$dirty"
-                         th:text="#{validation.required}">Field is required
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="inputLastname"
+                                   th:placeholder="#{page.signup.form.input.placeholder.last_name}"
+                                   placeholder="Last name" name="lastName" autocomplete="nope"
+                                   th:field="*{lastName}"
+                                   v-model="signUp.lastName"
+                                   v-on:input="$v.signUp.lastName.$touch"
+                                   v-bind:class="{ 'is-invalid': $v.signUp.lastName.$error, 'is-valid': $v.signUp.lastName.$dirty &amp;&amp; !$v.signUp.lastName.$invalid }"/>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.lastName.required &amp;&amp; $v.signUp.lastName.$dirty"
+                                 th:text="#{validation.required}">Field is required
+                            </div>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.lastName.maxLength">
+                                <span th:text="#{validation.max}">Max</span>
+                                <span>{{ $v.signUp.lastName.$params.maxLength.max }}</span>
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </div>
+                        </div>
                     </div>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.password.minLength">
-                        <span th:text="#{validation.min}">Must have at least</span>
-                        <span>{{ $v.signUp.password.$params.minLength.min }}</span>
-                        <span th:text="#{validation.letters}">letters</span>.
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="password" class="form-control" id="inputPassword"
+                                   th:placeholder="#{page.signup.form.input.placeholder.password}"
+                                   placeholder="Password" name="password" autocomplete="new-password"
+                                   th:field="*{password}"
+                                   v-model="signUp.password"
+                                   v-on:input="$v.signUp.password.$touch"
+                                   v-bind:class="{ 'is-invalid': $v.signUp.password.$error, 'is-valid': $v.signUp.password.$dirty &amp;&amp; !$v.signUp.password.$invalid }"/>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.password.required &amp;&amp; $v.signUp.password.$dirty"
+                                 th:text="#{validation.required}">Field is required
+                            </div>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.password.minLength">
+                                <span th:text="#{validation.min}">Must have at least</span>
+                                <span>{{ $v.signUp.password.$params.minLength.min }}</span>
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </div>
+                            <div class="invalid-feedback"
+                                 v-if="!$v.signUp.password.maxLength">
+                                <span th:text="#{validation.max}">Max</span>
+                                <span>{{ $v.signUp.password.$params.maxLength.max }}</span>
+                                <span th:text="#{validation.letters}">letters</span>.
+                            </div>
+                        </div>
                     </div>
-                    <div class="invalid-feedback"
-                         v-if="!$v.signUp.password.maxLength">
-                        <span th:text="#{validation.max}">Max</span>
-                        <span>{{ $v.signUp.password.$params.maxLength.max }}</span>
-                        <span th:text="#{validation.letters}">letters</span>.
-                    </div>
-                </div>
-            </div>
-            <div class="form-group" th:if="${termsAndConditionsPage!=null and siteName!=null}">
-                <div class="col-md-12">
-                    <p>
+                    <div class="form-group" th:if="${termsAndConditionsPage!=null and siteName!=null}">
+                        <div class="col-md-12">
+                            <p>
                         <span th:text="#{page.signup.form.terms_and_conditions(${siteName})}">
                             By clicking Sign up or Continue with, I agree to {0}
                         </span>
-                        <a th:href="${termsAndConditionsPage.name}" th:text="${termsAndConditionsPage.title}"></a>
-                    </p>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="updates" checked="checked"
-                                   th:field="*{updates}"
-                                   v-model="signUp.updates"/>
-                            <span th:text="#{page.signup.form.checkbox.recieve_updates(${siteName})}">
+                                <a th:href="${termsAndConditionsPage.name}" th:text="${termsAndConditionsPage.title}"></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="updates" checked="checked"
+                                           th:field="*{updates}"
+                                           v-model="signUp.updates"/>
+                                    <span th:text="#{page.signup.form.checkbox.recieve_updates(${siteName})}">
                                 I’d like to receive coupons, promotions, surveys, and updates via email about Quis Listing.
                             </span>
-                        </label>
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary btn-block"
-                            th:text="#{page.signup.form.button.signup}">
-                        Sign up
-                    </button>
-                </div>
-            </div>
-            <hr/>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <span th:text="#{page.signup.form.span.already_have_an_account}">Already have an account?</span>
-                    <a class="" href="/sign-in" th:href="@{/sign-in}"
-                       th:text="#{page.signup.form.button.login}">Log in
-                    </a>
-                </div>
-            </div>
-        </fieldset>
-    </form>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block"
+                                    th:text="#{page.signup.form.button.signup}">
+                                Sign up
+                            </button>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <span th:text="#{page.signup.form.span.already_have_an_account}">Already have an account?</span>
+                            <a class="" href="/sign-in" th:href="@{/sign-in}"
+                               th:text="#{page.signup.form.button.login}">Log in
+                            </a>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-lg-3 mt-lg-4">
+            <div th:replace="client/fragments/social-sign-in-fields :: social-sign-in-fields"></div>
+        </div>
+    </div>
+
 
     <!-- Load current page javascript file -->
     <script src="../../resources/js/signup.js"

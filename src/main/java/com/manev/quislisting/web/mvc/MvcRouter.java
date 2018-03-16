@@ -18,6 +18,12 @@ public class MvcRouter {
     private MvcRouter() {
     }
 
+    public class Social {
+        public static final String SIGN_UP = "/social/sign-up";
+
+        private Social() {}
+    }
+
     public class Listings {
         public static final String VIEW = "/listings/{id}/{slug}";
 

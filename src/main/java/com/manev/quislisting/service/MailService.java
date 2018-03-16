@@ -21,32 +21,34 @@ import javax.mail.internet.MimeMessage;
 public class MailService {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
+
     private final QuisListingProperties quisListingProperties;
 
     private final JavaMailSender javaMailSender;
 
-    public MailService(QuisListingProperties quisListingProperties, JavaMailSender javaMailSender) {
+    public MailService(final QuisListingProperties quisListingProperties, final JavaMailSender javaMailSender) {
 
         this.quisListingProperties = quisListingProperties;
         this.javaMailSender = javaMailSender;
     }
 
     @Async
-    public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+    public void sendEmail(final String to, final String subject, final String content, final boolean isMultipart,
+            final boolean isHtml) {
         log.debug("Send e-mail[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
                 isMultipart, isHtml, to, subject, content);
 
         // Prepare message using a Spring helper
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
-            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, CharEncoding.UTF_8);
+            final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, CharEncoding.UTF_8);
             message.setTo(to);
             message.setFrom(quisListingProperties.getMail().getFrom());
             message.setSubject(subject);
             message.setText(content, isHtml);
             javaMailSender.send(mimeMessage);
             log.debug("Sent e-mail to User '{}'", to);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.warn("E-mail could not be sent to user '{}'", to, e);
         }
     }
