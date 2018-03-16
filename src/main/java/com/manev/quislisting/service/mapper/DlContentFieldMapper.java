@@ -114,7 +114,7 @@ public class DlContentFieldMapper {
 
     private List<DlCategoryDTO> getDlCategoriesDTO(Set<DlCategory> dlCategories) {
         List<DlCategoryDTO> dlCategoryDTOList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(dlCategoryDTOList)) {
+        if (!CollectionUtils.isEmpty(dlCategories)) {
             for (DlCategory dlCategory : dlCategories) {
                 dlCategoryDTOList.add(dlCategoryMapper.dlCategoryToDlCategoryDTO(dlCategory));
             }
